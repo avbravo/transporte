@@ -7,6 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
                 xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -20,7 +21,7 @@
         </style>
         <h1>#{msg['titleview.vehiculo']}</h1>
         <hr/>
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.vehiculo.query}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.vehiculo.query}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -49,14 +50,21 @@
                         <a:inputText value="#{vehiculoController.vehiculo.pasajeros}" id="pasajeros" span="4" label="#{msg['field.pasajeros']}" />
 
                         <p:outputLabel  value="#{msg['field.tipovehiculo']}" />
+
+
                         <a:selectOneMenu
-                            id="rol"
+                            id="tipovehiculo"
                             value="#{vehiculoController.vehiculo.tipovehiculo}" 
                             requiredMessage="#{msg['field.idtipovehiculo']}"
+                            selectLabel="#{vehiculoController.vehiculo.tipovehiculo.idtipovehiculo}"
+                            selectValue="#{vehiculoController.vehiculo.tipovehiculo}"
+
                             selectItemsValue="#{vehiculoController.tipovehiculoServices.tipovehiculoList}"
                             selectItemsLabel="#{item.idtipovehiculo}"
 
+
                             />
+
 
                         <p:outputLabel  value="#{msg['field.combustible']}" />
                         <b:selectOneMenu value="#{vehiculoController.vehiculo.combustible}"

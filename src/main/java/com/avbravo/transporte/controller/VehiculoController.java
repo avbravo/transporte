@@ -387,7 +387,7 @@ String action = loginController.get("vehiculo");
     @Override
     public String edit() {
         try {
-
+JsfUtil.testMessage(" tipo "+vehiculo.getTipovehiculo().getIdtipovehiculo());
             vehiculo.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
           
