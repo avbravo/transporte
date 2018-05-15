@@ -26,19 +26,19 @@
                              size="#{cc.attrs.size}" 
                             emptyMessage="#{app['info.nohayregistros']}" 
                             value="#{cc.attrs.value}"  
-                            completeMethod="#{estatusController.estatusServices.complete}"    
+                            completeMethod="#{tipovehiculoController.tipovehiculoServices.complete}"    
                             var="p"
                             required="#{cc.attrs.required}"
                             itemLabel="#{cc.attrs.itemLabel}"
                             itemValue="#{p}" 
                             forceSelection="true"> 
-            <f:converter binding="#{estatusConverter}"/>
+            <f:converter binding="#{tipovehiculoConverter}"/>
             <f:attribute name="field" value="#{cc.attrs.field}"/>
             <p:ajax event="itemSelect" listener="#{cc.attrs.listener}"
                     update="#{cc.attrs.update}" />  
             <f:facet name="itemtip">
                 <h:panelGrid columns="1" cellpadding="5">
-                    <h:outputText value="#{msg['field.estatus']} #{p.idestatus}" />
+                    <h:outputText value="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}" />
                     
                 </h:panelGrid>
             </f:facet>
