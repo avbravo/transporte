@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
+    <ui:define name="content">
+        <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            } 
+        </style>
+        <h1>#{msg['titlelist.vehiculo']}</h1>
+        <hr/>
+         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.vehiculo.list}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+
+          <b:growl  id="msgs"/>
+         
+            <b:panel title="#{app['label.search']}" id="content"> 
+                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
+                <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
+
+
+
+                    <p:outputLabel value="#{msg['field.idvehiculo']}"/>
+                    <e:autocompletevehiculo listener="#{vehiculoController.handleSelect}"
+                                                  value="#{vehiculoController.vehiculoSelected}"
+                                                  itemLabel=" #{p.idvehiculo}"
+                                                  field="idvehiculo"
+                                                  update=" :form:dataTable"/>
+                    
+                    <p:outputLabel value="#{msg['field.marca']}"/>
+                    <e:autocompletevehiculo listener="#{vehiculoController.handleSelect}"
+                                                  value="#{vehiculoController.vehiculoSelected}"
+                                                  itemLabel=" #{p.marca}"
+                                                  field="marca"
+                                                  update=" :form:dataTable"/>
+
+               
+                    <p:outputLabel value="#{msg['field.modelo']}"/>
+                    <e:autocompletevehiculo listener="#{vehiculoController.handleSelect}"
+                                                  value="#{vehiculoController.vehiculoSelected}"
+                                                  itemLabel=" #{p.modelo}"
+                                                  field="modelo"
+                                                  update=" :form:dataTable"/>
+
+               
+                      
+                      
+
+                </b:panelGrid>
+            </b:panel>
+            <b:panel id="dataTable">
+                <a:paginator 
+                    clear="#{vehiculoController.clear()}"
+                    first="#{vehiculoController.first()}"
+                    back="#{vehiculoController.back()}"
+                    next="#{vehiculoController.next()}"
+                    last="#{vehiculoController.last()}"
+                    page="#{vehiculoController.page}"
+                    pages="#{vehiculoController.pages}"
+                 skip="ajax:vehiculoController.skip(vehiculoController.page)" 
+                    new="#{vehiculoController.prepare('gonew',vehiculoController.vehiculo)}"
+                    printAll="#{vehiculoController.printAll()}"
+                    />
+                <b:dataTable value="#{vehiculoController.vehiculoDataModel}"
+                             var="item"
+                             id="dataTable2"
+                             paginated="false"
+                             onpage="console.log('page');">
+
+                    <b:dataTableColumn value="#{item.idvehiculo}" label="#{msg['field.idvehiculo']}"/>
+                    <b:dataTableColumn value="#{item.marca}" label="#{msg['field.marca']}"/>
+                    <b:dataTableColumn value="#{item.modelo}" label="#{msg['field.modelo']}"/>
+                    <b:dataTableColumn value="#{item.anio}" label="#{msg['field.anio']}"/>
+                    <b:dataTableColumn value="#{item.tipovehiculo.idtipovehiculo}" label="#{msg['field.idtipovehiculo']}"/>
+                    <b:dataTableColumn value="#{item.pasajeros}" label="#{msg['field.pasajeros']}"/>
+                    <b:dataTableColumn value="#{item.combustible}" label="#{msg['field.combustible']}"/>
+                    <b:dataTableColumn value="#{item.km}" label="#{msg['field.km']}"/>
+
+                    <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
+                  
+                    <b:dataTableColumn label="">
+
+                        <a:column
+
+                            edit="#{vehiculoController.prepare('view',item)}"
+                            delete="#{vehiculoController.delete(item,false)}"
+                            rendered="#{applicationMenu.vehiculo.delete}"
+                            />
+                    </b:dataTableColumn>
+
+                </b:dataTable>
+            </b:panel>
+
+        </b:form>
+
+        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.vehiculo.list}" />
+    </ui:define>
+</ui:composition>

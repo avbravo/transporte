@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+    <ui:define name="content">
+        <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            }
+        </style>
+        <h1>#{msg['titleview.vehiculo']}</h1>
+        <hr/>
+         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.vehiculo.query}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+            <h:panelGroup id="content" layout="block"> 
+
+                <a:messages id="msg"/>
+                <b:panel title="#{app['title.data']}">
+                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{vehiculoController.writable}"> 
+                        <p:outputLabel  value="#{msg['field.idvehiculo']}" />
+                        <p:outputLabel  value="#{vehiculoController.vehiculo.idvehiculo}" id="idvehiculo"   />
+
+                        <p:outputLabel  value="#{msg['field.marca']}" />
+                        <a:inputText value="#{vehiculoController.vehiculo.marca}" id="marca"  label="#{msg['field.marca']}" />
+
+
+                        <p:outputLabel  value="#{msg['field.modelo']}" />
+                        <a:inputText value="#{vehiculoController.vehiculo.modelo}" id="modelo" span="4" label="#{msg['field.modelo']}" />
+
+                        <p:outputLabel  value="#{msg['field.chasis']}" />
+                        <a:inputText value="#{vehiculoController.vehiculo.chasis}" id="chasis" span="4" label="#{msg['field.chasis']}" />
+
+                        <p:outputLabel  value="#{msg['field.anio']}" />
+                        <a:inputText value="#{vehiculoController.vehiculo.anio}" id="anio" span="4" label="#{msg['field.anio']}" />
+
+
+                        <p:outputLabel  value="#{msg['field.pasajeros']}" />
+                        <a:inputText value="#{vehiculoController.vehiculo.pasajeros}" id="pasajeros" span="4" label="#{msg['field.pasajeros']}" />
+
+                        <p:outputLabel  value="#{msg['field.tipovehiculo']}" />
+                        <a:selectOneMenu
+                            id="rol"
+                            value="#{vehiculoController.vehiculo.tipovehiculo}" 
+                            requiredMessage="#{msg['field.idtipovehiculo']}"
+                            selectItemsValue="#{vehiculoController.tipovehiculoServices.tipovehiculoList}"
+                            selectItemsLabel="#{item.idtipovehiculo}"
+
+                            />
+
+                        <p:outputLabel  value="#{msg['field.combustible']}" />
+                        <b:selectOneMenu value="#{vehiculoController.vehiculo.combustible}"
+                                         colMd="2" 
+                                         required="2" 
+                                         requiredMessage="#{msg['field.combustible']} #{app['info.notnull']}"
+                                         labelColMd="2" >
+                            <f:selectItem itemLabel="#{msg['label.diesel']}" itemValue="diesel" />
+                            <f:selectItem itemLabel="#{msg['label.gasolina']}" itemValue="gasolina" />
+
+                        </b:selectOneMenu>
+
+                        <p:outputLabel  value="#{msg['field.km']}" />
+                        <a:inputText value="#{vehiculoController.vehiculo.km}" id="km" span="4" label="#{msg['field.km']}" />
+
+
+
+                        <p:outputLabel  value="#{msg['field.activo']}" />
+                        <a:yesno value="#{vehiculoController.vehiculo.activo}" id="activo"  required="true"/>
+
+                    </b:panelGrid>
+                    <a:view 
+                        renderedDelete="#{applicationMenu.vehiculo.delete and vehiculoController.writable }"
+                        renderedEdit="#{applicationMenu.vehiculo.edit and vehiculoController.writable}" 
+                        renderedList="#{applicationMenu.vehiculo.list and vehiculoController.writable}"
+                        edit="#{vehiculoController.edit()}"
+                        delete="#{vehiculoController.delete(vehiculoController.vehiculo,true)}"
+                        print="#{vehiculoController.print()}"
+                        url="#{vehiculoController.prepare('golist',vehiculoController.vehiculo)}"
+                        />
+                </b:panel>
+            </h:panelGroup>
+        </b:form>
+        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.vehiculo.query}" />
+        <br/><br/><br/>
+    </ui:define>
+</ui:composition>
