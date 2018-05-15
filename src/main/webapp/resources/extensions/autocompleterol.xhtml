@@ -9,6 +9,7 @@
 
 
         <composite:attribute name="value" />
+        <composite:attribute name="multiple" default="false" />
         <composite:attribute name="itemLabel" />
         <composite:attribute name="update" />
         <composite:attribute name="rendered"/>
@@ -21,7 +22,8 @@
     </composite:interface>
     <composite:implementation>
 
-        <p:autoComplete     dropdown="false"    
+        <p:autoComplete     dropdown="false"   
+                            multiple="#{cc.attrs.multiple}" 
                             scrollHeight="250"  
                              size="#{cc.attrs.size}" 
                             emptyMessage="#{app['info.nohayregistros']}" 

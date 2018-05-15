@@ -5,7 +5,8 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+       xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
     <h:head> 
         <title>#{msg['application.title']}</title>
         <meta name="author" content="Aristides Villarreal"></meta>
@@ -40,6 +41,17 @@
                         <b:iconAwesome name="key" />
                     </f:facet>
                 </b:inputText>
+                
+                
+                 <p:outputLabel  value="#{msg['field.rol']}" />
+                           <a:selectOneMenu
+                            id="rol"
+                            value="#{loginController.rol}" 
+                            requiredMessage="#{msg['field.idrol']}"
+                            selectItemsValue="#{usuarioController.rolServices.rolList}"
+                            selectItemsLabel="#{item.idrol}"
+                            
+                            />
                 
                 <b:commandButton look="primary btn-block" value="#{app['button.login']}" 
                                  action="#{loginController.doLogin()}" icon="log-in" size="lg"

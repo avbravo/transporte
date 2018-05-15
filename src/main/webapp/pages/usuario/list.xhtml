@@ -2,13 +2,12 @@
 <!DOCTYPE html>
 <ui:composition template="/layout/template.xhtml" 
                 xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
-                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
+                xmlns:c="http://xmlns.jcp.org/jsf">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -72,9 +71,18 @@
 
                     <b:dataTableColumn value="#{item.username}" label="#{msg['field.username']}"/>
                     <b:dataTableColumn value="#{item.nombre}" label="#{msg['field.nombre']}" />
-                    <b:dataTableColumn value="#{item.rol.rol}" label="#{msg['field.rol']}" />
+                   
 
                  
+                    <b:dataTableColumn label="">
+                        <p:panelGrid columns="2" styleClass="form-group ui-panelgrid-blank" layout="grid">
+
+                            <p:repeat value="#{item.rol}" var="car">
+                                <p:outputLabel value="#{car.idrol}"/>
+                            </p:repeat>
+                        </p:panelGrid>
+                    </b:dataTableColumn>
+                    
                     <b:dataTableColumn label="">
 
                         <a:column

@@ -79,6 +79,17 @@ public class LoginController implements Serializable, SecurityInterface {
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="getter/setter">
 
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
+    
+    
+    
     public String getPasswordold() {
         return passwordold;
     }
@@ -303,8 +314,21 @@ public class LoginController implements Serializable, SecurityInterface {
                     JsfUtil.successMessage(rf.getAppMessage("login.passwordnotvalid"));
                     return false;
                 }
-                if (!validadorRoles.validarRoles(usuario.getRol().getIdrol())) {
-                    JsfUtil.successMessage(rf.getAppMessage("login.notienerolenelsistema") + " " + usuario.getRol().getIdrol());
+                //Valida los roles del usuario si coincide con el seleccionado
+                Boolean foundrol=false;
+                for(Rol r:usuario.getRol()){
+                    if(rol.getIdrol().equals(r.getIdrol())){
+                        foundrol=true;
+                    }
+                }
+                if(!foundrol){
+JsfUtil.successMessage(rf.getAppMessage("login.notienerolenelsistema") + " " + rol.getIdrol());
+return false;
+                }
+//                if (!validadorRoles.validarRoles(usuario.getRol().getIdrol())) {
+                if (!validadorRoles.validarRoles(rol.getIdrol())) {
+//                    JsfUtil.successMessage(rf.getAppMessage("login.notienerolenelsistema") + " " + usuario.getRol().getIdrol());
+                   JsfUtil.successMessage(rf.getAppMessage("login.notienerolenelsistema") + " " + rol.getIdrol());
                     return false;
                 }
             }
@@ -396,7 +420,7 @@ public class LoginController implements Serializable, SecurityInterface {
 // <editor-fold defaultstate="collapsed" desc="doLogout">
 
     public String doLogout() {
-        return logout("/seguridad/faces/login.xhtml?faces-redirect=true");
+        return logout("/transporte/faces/login.xhtml?faces-redirect=true");
     }
 
     // </editor-fold>

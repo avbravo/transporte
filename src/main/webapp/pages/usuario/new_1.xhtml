@@ -7,7 +7,6 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
                 xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -72,13 +71,6 @@
                             selectItemsLabel="#{item.idrol}"
                             
                             />
-                             <p:outputLabel  value="#{msg['field.rol']}" />
-  <e:autocompleterol listener="#{rolController.handleSelect}"
-                     multiple="true"
-                                                  value="#{usuarioControllerController.rolList}"
-                                                  itemLabel="#{p.idrol}"
-                                                  field="idrol"
-                                                  />
 
                        
 

@@ -28,7 +28,7 @@ private static final long serialVersionUID = 1L;
  @Inject
  RolAdministrador rolAdministrador;
  @Inject
- RolProfesor rolProfesor;
+ RolDocente rolDocente;
  
  @Inject
  RolSecretaria rolSecretaria;
@@ -42,7 +42,7 @@ private static final long serialVersionUID = 1L;
                 rolAdministrador.enabled();
                  break;
             case "profesor": 
-                rolProfesor.enabled();
+                rolDocente.enabled();
                  break;
            
                  

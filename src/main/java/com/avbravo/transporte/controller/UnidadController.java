@@ -12,15 +12,12 @@ import com.avbravo.ejbjmoordb.interfaces.IController;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
-import com.avbravo.transporteejb.datamodel.UsuarioDataModel;
-import com.avbravo.transporteejb.entity.Rol;
-import com.avbravo.transporteejb.entity.Usuario;
-import com.avbravo.transporteejb.repository.AutoincrementableRepository;
+import com.avbravo.transporteejb.datamodel.UnidadDataModel;
+import com.avbravo.transporteejb.entity.Unidad;
+import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.RevisionHistoryRepository;
-import com.avbravo.transporteejb.repository.UsuarioRepository;
+import com.avbravo.transporteejb.services.UnidadServices;
 import com.avbravo.transporteejb.services.LookupServices;
-import com.avbravo.transporteejb.services.RolServices;
-import com.avbravo.transporteejb.services.UsuarioServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -36,48 +33,42 @@ import org.bson.Document;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
-
+ 
 /**
  *
  * @authoravbravo
  */
 @Named
 @ViewScoped
-public class UsuarioController implements Serializable, IController {
+public class UnidadController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
-    
-    private String passwordnewrepeat;
 
 //    @Inject
 //private transient ExternalContext externalContext;
     private Boolean writable = false;
     //DataModel
-    private UsuarioDataModel usuarioDataModel;
+    private UnidadDataModel unidadDataModel;
+    
 
     Integer page = 1;
     Integer rowPage = 25;
+ 
     List<Integer> pages = new ArrayList<>();
-    
-    
-    //Para multiples roles
-    List<Rol> rolList = new ArrayList();
+    //
 
     //Entity
-    Usuario usuario;
-    Usuario usuarioSelected;
+    Unidad unidad;
+    Unidad unidadSelected;
 
     //List
-    List<Usuario> usuarioList = new ArrayList<>();
-    List<Usuario> usuarioFiltered = new ArrayList<>();
+    List<Unidad> unidadList = new ArrayList<>();
+    List<Unidad> unidadFiltered = new ArrayList<>();
 
     //Repository
     @Inject
-    AutoincrementableRepository autoincrementableRepository;
-    @Inject
-    UsuarioRepository usuarioRepository;
-
+    UnidadRepository unidadRepository;
     @Inject
     RevisionHistoryRepository revisionHistoryRepository;
 
@@ -85,15 +76,13 @@ public class UsuarioController implements Serializable, IController {
      //Atributos para busquedas
     @Inject
     LookupServices lookupServices;
+    
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
     UserInfoServices userInfoServices;
     @Inject
-    UsuarioServices usuarioServices;
-    @Inject
-    RolServices rolServices;
-    
+    UnidadServices unidadServices;
     @Inject
     ResourcesFiles rf;
     @Inject
@@ -107,56 +96,29 @@ public class UsuarioController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="getter/setter">
     public List<Integer> getPages() {
 
-        return usuarioRepository.listOfPage(rowPage);
+        return unidadRepository.listOfPage(rowPage);
     }
-
-
-    public LookupServices getLookupServices() {
-        return lookupServices;
-    }
-
-    public List<Rol> getRolList() {
-        return rolList;
-    }
-
-    public void setRolList(List<Rol> rolList) {
-        this.rolList = rolList;
-    }
-
-    public String getPasswordnewrepeat() {
-        return passwordnewrepeat;
-    }
-
-    public void setPasswordnewrepeat(String passwordnewrepeat) {
-        this.passwordnewrepeat = passwordnewrepeat;
-    }
-
-    
-    
-    public void setLookupServices(LookupServices lookupServices) {
-        this.lookupServices = lookupServices;
-    }
-    
-    
 
     public void setPages(List<Integer> pages) {
         this.pages = pages;
     }
 
+    public LookupServices getLookupServices() {
+        return lookupServices;
+    }
+
+    public void setLookupServices(LookupServices lookupServices) {
+        this.lookupServices = lookupServices;
+    }
+
+    
+    
     public Integer getPage() {
         return page;
     }
 
     public void setPage(Integer page) {
         this.page = page;
-    }
-
-    public RolServices getRolServices() {
-        return rolServices;
-    }
-
-    public void setRolServices(RolServices rolServices) {
-        this.rolServices = rolServices;
     }
 
     public Integer getRowPage() {
@@ -167,52 +129,52 @@ public class UsuarioController implements Serializable, IController {
         this.rowPage = rowPage;
     }
 
-    public UsuarioServices getUsuarioServices() {
-        return usuarioServices;
+    public UnidadServices getUnidadServices() {
+        return unidadServices;
     }
 
-    public void setUsuarioServices(UsuarioServices usuarioServices) {
-        this.usuarioServices = usuarioServices;
+    public void setUnidadServices(UnidadServices unidadServices) {
+        this.unidadServices = unidadServices;
     }
 
-    public List<Usuario> getUsuarioList() {
-        return usuarioList;
+    public List<Unidad> getUnidadList() {
+        return unidadList;
     }
 
-    public void setUsuarioList(List<Usuario> usuarioList) {
-        this.usuarioList = usuarioList;
+    public void setUnidadList(List<Unidad> unidadList) {
+        this.unidadList = unidadList;
     }
 
-    public List<Usuario> getUsuarioFiltered() {
-        return usuarioFiltered;
+    public List<Unidad> getUnidadFiltered() {
+        return unidadFiltered;
     }
 
-    public void setUsuarioFiltered(List<Usuario> usuarioFiltered) {
-        this.usuarioFiltered = usuarioFiltered;
+    public void setUnidadFiltered(List<Unidad> unidadFiltered) {
+        this.unidadFiltered = unidadFiltered;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public Unidad getUnidad() {
+        return unidad;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setUnidad(Unidad unidad) {
+        this.unidad = unidad;
     }
 
-    public Usuario getUsuarioSelected() {
-        return usuarioSelected;
+    public Unidad getUnidadSelected() {
+        return unidadSelected;
     }
 
-    public void setUsuarioSelected(Usuario usuarioSelected) {
-        this.usuarioSelected = usuarioSelected;
+    public void setUnidadSelected(Unidad unidadSelected) {
+        this.unidadSelected = unidadSelected;
     }
 
-    public UsuarioDataModel getUsuarioDataModel() {
-        return usuarioDataModel;
+    public UnidadDataModel getUnidadDataModel() {
+        return unidadDataModel;
     }
 
-    public void setUsuarioDataModel(UsuarioDataModel usuarioDataModel) {
-        this.usuarioDataModel = usuarioDataModel;
+    public void setUnidadDataModel(UnidadDataModel unidadDataModel) {
+        this.unidadDataModel = unidadDataModel;
     }
 
     public Boolean getWritable() {
@@ -225,7 +187,7 @@ public class UsuarioController implements Serializable, IController {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public UsuarioController() {
+    public UnidadController() {
     }
 
     // </editor-fold>
@@ -241,40 +203,39 @@ public class UsuarioController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-            String action = loginController.get("usuario");
-            String id = loginController.get("username");
-            String pageSession = loginController.get("pageusuario");
+String action = loginController.get("unidad");
+            String id = loginController.get("idunidad");
+            String pageSession = loginController.get("pageunidad");
                 //Search
-            loginController.put("searchusuario", "_init");
+            loginController.put("searchunidad", "_init");
             writable = false;
 
-            usuarioList = new ArrayList<>();
-            usuarioFiltered = new ArrayList<>();
-            usuario = new Usuario();
-            usuarioDataModel = new UsuarioDataModel(usuarioList);
-
+            unidadList = new ArrayList<>();
+            unidadFiltered = new ArrayList<>();
+            unidad = new Unidad();
+            unidadDataModel = new UnidadDataModel(unidadList);
+          
+            
             if (id != null) {
-                Optional<Usuario> optional = usuarioRepository.find("username", id);
-                if (optional.isPresent()) {
-                    usuario = optional.get();
-                     
-                    usuario.setPassword(JsfUtil.desencriptar(usuario.getPassword()));
-                   
-                    usuarioSelected = usuario;
+                Optional<Unidad> optional = unidadRepository.find("idunidad", id);
+                 if (optional.isPresent()) {
+                    unidad = optional.get();
+                    unidadSelected = unidad;
                     writable = true;
-
+                      
                 }
-            }
-            if (action != null && action.equals("gonew")) {
-                usuario = new Usuario();
-                usuarioSelected = usuario;
-                writable = false;
+            } 
+           if (action != null && action.equals("gonew")) {
+                unidad = new Unidad();
+                unidadSelected = unidad;
+                writable =false;
 
             }
-            if (pageSession != null) {
+            if (pageSession != null) 
+            {
                 page = Integer.parseInt(pageSession);
             }
-            Integer c = usuarioRepository.sizeOfPage(rowPage);
+            Integer c = unidadRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
             move();
 
@@ -290,39 +251,42 @@ public class UsuarioController implements Serializable, IController {
         RequestContext.getCurrentInstance().reset(":form:content");
         prepare("new");
     }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
 
+// <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
     @Override
     public String prepare(String action, Object... item) {
         String url = "";
         try {
-            loginController.put("pageusuario", page.toString());
-            loginController.put("usuario", action);
+              loginController.put("pageunidad", page.toString());
+            loginController.put("unidad", action);
+
             switch (action) {
                 case "new":
-                    usuario = new Usuario();
-                    usuarioSelected = new Usuario();
+                    unidad = new Unidad();
+                    unidadSelected = new Unidad();
 
                     writable = false;
                     break;
 
                 case "view":
                     if (item.length != 0) {
-                        usuarioSelected = (Usuario) item[0];
-                        usuario = usuarioSelected;
-                        loginController.put("username", usuario.getUsername());
+                        unidadSelected = (Unidad) item[0];
+                        unidad = unidadSelected;
+                        loginController.put("idunidad", unidad.getIdunidad());
                     }
 
-                    url = "/pages/usuario/view.xhtml";
+                    url = "/pages/unidad/view.xhtml";
                     break;
+                    
                 case "golist":
-
-                    url = "/pages/usuario/list.xhtml";
+                    url = "/pages/unidad/list.xhtml";
                     break;
-
+                    
                 case "gonew":
-                    url = "/pages/usuario/new.xhtml";
+                    url = "/pages/unidad/new.xhtml";
                     break;
+                    
+                    
             }
 
         } catch (Exception e) {
@@ -331,16 +295,16 @@ public class UsuarioController implements Serializable, IController {
 
         return url;
     }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="showAll">
 
+// <editor-fold defaultstate="collapsed" desc="showAll">
     @Override
     public String showAll() {
         try {
-            usuarioList = new ArrayList<>();
-            usuarioFiltered = new ArrayList<>();
-            usuarioList = usuarioRepository.findAll();
-            usuarioFiltered = usuarioList;
-            usuarioDataModel = new UsuarioDataModel(usuarioList);
+            unidadList = new ArrayList<>();
+            unidadFiltered = new ArrayList<>();
+            unidadList = unidadRepository.findAll();
+            unidadFiltered = unidadList;
+            unidadDataModel = new UnidadDataModel(unidadList);
 
         } catch (Exception e) {
             JsfUtil.errorMessage("showAll()" + e.getLocalizedMessage());
@@ -353,21 +317,21 @@ public class UsuarioController implements Serializable, IController {
     public String isNew() {
         try {
             writable = true;
-           if(JsfUtil.isVacio(usuario.getUsername())){
-                writable=false;
+            if (JsfUtil.isVacio(unidad.getIdunidad())) {
+                writable = false;
                 return "";
             }
-            Optional<Usuario> optional = usuarioRepository.findById(usuario);
+            Optional<Unidad> optional = unidadRepository.findById(unidad);
             if (optional.isPresent()) {
                 writable = false;
 
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return "";
             } else {
-                String id = usuario.getUsername();
-                usuario = new Usuario();
-                usuario.setUsername(id);
-                usuarioSelected = new Usuario();
+                String id = unidad.getIdunidad();
+                unidad = new Unidad();
+                unidad.setIdunidad(id);
+                unidadSelected = new Unidad();
             }
 
         } catch (Exception e) {
@@ -380,27 +344,23 @@ public class UsuarioController implements Serializable, IController {
     @Override
     public String save() {
         try {
-            Optional<Usuario> optional = usuarioRepository.findById(usuario);
+            Optional<Unidad> optional = unidadRepository.findById(unidad);
             if (optional.isPresent()) {
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
+               JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));
                 return null;
             }
-              if (!usuario.getPassword().equals(passwordnewrepeat)) {
-                //password nuevo no coincide
-                JsfUtil.warningMessage(rf.getMessage("warning.passwordnocoinciden"));
-                return "";
-            }
-              
-              
-usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
-            usuario.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
-            if (usuarioRepository.save(usuario)) {
-                 revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(),
-                    "create", "usuario", usuarioRepository.toDocument(usuario).toString()));
+
+            //Lo datos del usuario
+            unidad.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+            if (unidadRepository.save(unidad)) {
+                  //guarda el contenido anterior
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(),
+                    "create", "unidad", unidadRepository.toDocument(unidad).toString()));
+
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
             } else {
-                JsfUtil.successMessage("save() " + usuarioRepository.getException().toString());
+                JsfUtil.successMessage("save() " + unidadRepository.getException().toString());
             }
 
         } catch (Exception e) {
@@ -413,46 +373,44 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
     @Override
     public String edit() {
         try {
-            usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
-            usuario.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
-            //guarda el contenido anterior
-           
+            unidad.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
+          
             //guarda el contenido actualizado
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(),
-                    "update", "usuario", usuarioRepository.toDocument(usuario).toString()));
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(),
+                    "update", "unidad", unidadRepository.toDocument(unidad).toString()));
 
-            usuarioRepository.update(usuario);
+            unidadRepository.update(unidad);
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
             JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="delete(Object item, Boolean deleteonviewpage) ">
+// <editor-fold defaultstate="collapsed" desc="delete(Object item, Boolean deleteonviewpage)">
 
     @Override
     public String delete(Object item, Boolean deleteonviewpage) {
         String path = "";
         try {
-            usuario = (Usuario) item;
-
-            usuarioSelected = usuario;
-            if (usuarioRepository.delete("username", usuario.getUsername())) {
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(), "delete", "usuario", usuarioRepository.toDocument(usuario).toString()));
+            unidad = (Unidad) item;
+            
+            unidadSelected = unidad;
+            if (unidadRepository.delete("idunidad", unidad.getIdunidad())) {
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(), "delete", "unidad", unidadRepository.toDocument(unidad).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
-                    usuarioList.remove(usuario);
-                    usuarioFiltered = usuarioList;
-                    usuarioDataModel = new UsuarioDataModel(usuarioList);
+                    unidadList.remove(unidad);
+                    unidadFiltered = unidadList;
+                    unidadDataModel = new UnidadDataModel(unidadList);
 
-                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageusuario", page.toString());
+                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageunidad", page.toString());
 
                 } else {
-                    usuario = new Usuario();
-                    usuarioSelected = new Usuario();
+                    unidad = new Unidad();
+                    unidadSelected = new Unidad();
                     writable = false;
 
                 }
@@ -462,15 +420,15 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
         } catch (Exception e) {
             JsfUtil.errorMessage("delete() " + e.getLocalizedMessage());
         }
-//        path = deleteonviewpage ? "/pages/usuario/list.xhtml" : "";
-        path = "";
+       // path = deleteonviewpage ? "/pages/unidad/list.xhtml" : "";
+       path="";
         return path;
     }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="deleteAll">
 
+// <editor-fold defaultstate="collapsed" desc="deleteAll">
     @Override
     public String deleteAll() {
-        if (usuarioRepository.deleteAll() != 0) {
+        if (unidadRepository.deleteAll() != 0) {
             JsfUtil.successMessage(rf.getAppMessage("info.delete"));
         }
         return "";
@@ -480,10 +438,10 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
     @Override
     public String print() {
         try {
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageusuario", page.toString());
-            List<Usuario> list = new ArrayList<>();
-            list.add(usuario);
-            String ruta = "/resources/reportes/usuario/details.jasper";
+             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageunidad", page.toString());
+            List<Unidad> list = new ArrayList<>();
+            list.add(unidad);
+            String ruta = "/resources/reportes/unidad/details.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
@@ -497,10 +455,10 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
     @Override
     public String printAll() {
         try {
-            List<Usuario> list = new ArrayList<>();
-            list = usuarioRepository.findAll(new Document("username", 1));
-
-            String ruta = "/resources/reportes/usuario/all.jasper";
+             List<Unidad> list = new ArrayList<>();
+            list = unidadRepository.findAll(new Document("idunidad",1));
+           
+            String ruta = "/resources/reportes/unidad/all.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
@@ -513,21 +471,21 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
 
     public void handleSelect(SelectEvent event) {
         try {
-            usuarioList.removeAll(usuarioList);
-            usuarioList.add(usuarioSelected);
-            usuarioFiltered = usuarioList;
-            usuarioDataModel = new UsuarioDataModel(usuarioList);
-             loginController.put("searchusuario", "_autocomplete");
+            unidadList.removeAll(unidadList);
+            unidadList.add(unidadSelected);
+            unidadFiltered = unidadList;
+            unidadDataModel = new UnidadDataModel(unidadList);
+             loginController.put("searchunidad", "_autocomplete");
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="last">
 
+// <editor-fold defaultstate="collapsed" desc="last">
     @Override
     public String last() {
         try {
-            page = usuarioRepository.sizeOfPage(rowPage);
+            page = unidadRepository.sizeOfPage(rowPage);
             move();
         } catch (Exception e) {
             JsfUtil.errorMessage("last() " + e.getLocalizedMessage());
@@ -551,7 +509,7 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
     @Override
     public String next() {
         try {
-            if (page < (usuarioRepository.sizeOfPage(rowPage))) {
+            if (page < (unidadRepository.sizeOfPage(rowPage))) {
                 page++;
             }
             move();
@@ -590,45 +548,47 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
 
     @Override
     public void move() {
-  
-             try {
+     
+
+              try {
 
           
                 Document doc;
-                switch (loginController.get("searchusuario")) {
+                switch (loginController.get("searchunidad")) {
                     case "_init":
-                         usuarioList = usuarioRepository.findPagination(page, rowPage);
+                         unidadList = unidadRepository.findPagination(page, rowPage);
 
                         break;
                     case "_autocomplete":
                         //no se realiza ninguna accion 
                         break;
               
-                    case "username":
-                        doc = new Document("username", usuario.getUsername());
-                        usuarioList = usuarioRepository.findFilterPagination(doc, page, rowPage, new Document("username", -1));
+                    case "idunidad":
+                        doc = new Document("idunidad", unidad.getIdunidad());
+                        unidadList = unidadRepository.findFilterPagination(doc, page, rowPage, new Document("idunidad", -1));
                         break;
                   
                     default:
 
-                     usuarioList = usuarioRepository.findPagination(page, rowPage);
+                     unidadList = unidadRepository.findPagination(page, rowPage);
                         break;
                 }
             
 
-            usuarioFiltered = usuarioList;
+            unidadFiltered = unidadList;
 
-            usuarioDataModel = new UsuarioDataModel(usuarioList);
+            unidadDataModel = new UnidadDataModel(unidadList);
 
         } catch (Exception e) {
             JsfUtil.errorMessage("move() " + e.getLocalizedMessage());
         }
     }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="clear">
+
+   // <editor-fold defaultstate="collapsed" desc="clear">
     @Override
     public String clear() {
         try {
-            loginController.put("searchusuario", "_init");
+            loginController.put("searchunidad", "_init");
             page = 1;
             move();
         } catch (Exception e) {
@@ -636,14 +596,14 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
         }
         return "";
     }// </editor-fold>
-    
 
-   // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
+
+  // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
     @Override
     public String searchBy(String string) {
         try {
 
-            loginController.put("searchusuario", string);      
+            loginController.put("searchunidad", string);      
       
             writable = true;
             move();
@@ -653,5 +613,6 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
         }
         return "";
     }// </editor-fold>
+
 
 }
