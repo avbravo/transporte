@@ -35,9 +35,8 @@ import javax.enterprise.context.SessionScoped;
 @Named
 @SessionScoped
 public class LoginController implements Serializable, SecurityInterface {
-    
-// <editor-fold defaultstate="collapsed" desc="fields">
 
+// <editor-fold defaultstate="collapsed" desc="fields">
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = Logger.getLogger(LoginController.class.getName());
     private HashMap<String, String> parameters = new HashMap<>();
@@ -46,8 +45,8 @@ public class LoginController implements Serializable, SecurityInterface {
     private String passwordnew;
     private String passwordnewrepeat;
 
-    
-    
+    Rol rol = new Rol();
+
     //Acceso
     @Inject
     AccessInfoServices accessInfoServices;
@@ -75,10 +74,9 @@ public class LoginController implements Serializable, SecurityInterface {
     Usuario usuario = new Usuario();
     @Inject
     RolRepository rolRepository;
-    Rol rol = new Rol();
+
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="getter/setter">
-
     public Rol getRol() {
         return rol;
     }
@@ -87,9 +85,6 @@ public class LoginController implements Serializable, SecurityInterface {
         this.rol = rol;
     }
 
-    
-    
-    
     public String getPasswordold() {
         return passwordold;
     }
@@ -256,9 +251,9 @@ public class LoginController implements Serializable, SecurityInterface {
                 if (isUserLogged(username)) {
                     userwasLoged = true;
                     JsfUtil.warningMessage(rf.getAppMessage("login.alreadylogged"));
-                   if( destroyByUsername(username)){
-                       
-                   }
+                    if (destroyByUsername(username)) {
+
+                    }
                     return "";
                 }
 
@@ -315,20 +310,20 @@ public class LoginController implements Serializable, SecurityInterface {
                     return false;
                 }
                 //Valida los roles del usuario si coincide con el seleccionado
-                Boolean foundrol=false;
-                for(Rol r:usuario.getRol()){
-                    if(rol.getIdrol().equals(r.getIdrol())){
-                        foundrol=true;
+                Boolean foundrol = false;
+                for (Rol r : usuario.getRol()) {
+                    if (rol.getIdrol().equals(r.getIdrol())) {
+                        foundrol = true;
                     }
                 }
-                if(!foundrol){
-JsfUtil.successMessage(rf.getAppMessage("login.notienerolenelsistema") + " " + rol.getIdrol());
-return false;
+                if (!foundrol) {
+                    JsfUtil.successMessage(rf.getAppMessage("login.notienerolenelsistema") + " " + rol.getIdrol());
+                    return false;
                 }
 //                if (!validadorRoles.validarRoles(usuario.getRol().getIdrol())) {
-                if (!validadorRoles.validarRoles(rol.getIdrol())) {
 //                    JsfUtil.successMessage(rf.getAppMessage("login.notienerolenelsistema") + " " + usuario.getRol().getIdrol());
-                   JsfUtil.successMessage(rf.getAppMessage("login.notienerolenelsistema") + " " + rol.getIdrol());
+                if (!validadorRoles.validarRoles(rol.getIdrol())) {
+                    JsfUtil.successMessage(rf.getAppMessage("login.notienerolenelsistema") + " " + rol.getIdrol());
                     return false;
                 }
             }
@@ -489,9 +484,4 @@ return false;
         return value;
     }   // </editor-fold>
 
-     public String save(){
-        String texto ="fue el nombre "+username;
-        JsfUtil.warningMessage(texto);
-        return "";
-    }
 }
