@@ -17,6 +17,7 @@ import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.repository.AutoincrementableRepository;
 import com.avbravo.transporteejb.repository.RevisionHistoryRepository;
+import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.services.LookupServices;
 import com.avbravo.transporteejb.services.RolServices;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.PostConstruct;
+import javax.faces.component.UIComponent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -47,7 +49,7 @@ public class UsuarioController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
-    
+
     private String passwordnewrepeat;
 
 //    @Inject
@@ -59,8 +61,7 @@ public class UsuarioController implements Serializable, IController {
     Integer page = 1;
     Integer rowPage = 25;
     List<Integer> pages = new ArrayList<>();
-    
-    
+
     //Para multiples roles
     List<Rol> rolList = new ArrayList();
 
@@ -76,13 +77,14 @@ public class UsuarioController implements Serializable, IController {
     @Inject
     AutoincrementableRepository autoincrementableRepository;
     @Inject
+    RevisionHistoryRepository revisionHistoryRepository;
+    @Inject
+    RolRepository rolRepository;
+    @Inject
     UsuarioRepository usuarioRepository;
 
-    @Inject
-    RevisionHistoryRepository revisionHistoryRepository;
-
     //Services
-     //Atributos para busquedas
+    //Atributos para busquedas
     @Inject
     LookupServices lookupServices;
     @Inject
@@ -93,7 +95,7 @@ public class UsuarioController implements Serializable, IController {
     UsuarioServices usuarioServices;
     @Inject
     RolServices rolServices;
-    
+
     @Inject
     ResourcesFiles rf;
     @Inject
@@ -110,9 +112,16 @@ public class UsuarioController implements Serializable, IController {
         return usuarioRepository.listOfPage(rowPage);
     }
 
-
     public LookupServices getLookupServices() {
         return lookupServices;
+    }
+
+    public RolRepository getRolRepository() {
+        return rolRepository;
+    }
+
+    public void setRolRepository(RolRepository rolRepository) {
+        this.rolRepository = rolRepository;
     }
 
     public List<Rol> getRolList() {
@@ -131,13 +140,9 @@ public class UsuarioController implements Serializable, IController {
         this.passwordnewrepeat = passwordnewrepeat;
     }
 
-    
-    
     public void setLookupServices(LookupServices lookupServices) {
         this.lookupServices = lookupServices;
     }
-    
-    
 
     public void setPages(List<Integer> pages) {
         this.pages = pages;
@@ -244,7 +249,7 @@ public class UsuarioController implements Serializable, IController {
             String action = loginController.get("usuario");
             String id = loginController.get("username");
             String pageSession = loginController.get("pageusuario");
-                //Search
+            //Search
             loginController.put("searchusuario", "_init");
             writable = false;
 
@@ -257,9 +262,10 @@ public class UsuarioController implements Serializable, IController {
                 Optional<Usuario> optional = usuarioRepository.find("username", id);
                 if (optional.isPresent()) {
                     usuario = optional.get();
-                     
+                    rolList = usuario.getRol();
+
                     usuario.setPassword(JsfUtil.desencriptar(usuario.getPassword()));
-                   
+
                     usuarioSelected = usuario;
                     writable = true;
 
@@ -309,6 +315,7 @@ public class UsuarioController implements Serializable, IController {
                 case "view":
                     if (item.length != 0) {
                         usuarioSelected = (Usuario) item[0];
+                        rolList = usuario.getRol();
                         usuario = usuarioSelected;
                         loginController.put("username", usuario.getUsername());
                     }
@@ -353,8 +360,8 @@ public class UsuarioController implements Serializable, IController {
     public String isNew() {
         try {
             writable = true;
-           if(JsfUtil.isVacio(usuario.getUsername())){
-                writable=false;
+            if (JsfUtil.isVacio(usuario.getUsername())) {
+                writable = false;
                 return "";
             }
             Optional<Usuario> optional = usuarioRepository.findById(usuario);
@@ -367,6 +374,7 @@ public class UsuarioController implements Serializable, IController {
                 String id = usuario.getUsername();
                 usuario = new Usuario();
                 usuario.setUsername(id);
+                rolList = new ArrayList<>();
                 usuarioSelected = new Usuario();
             }
 
@@ -385,18 +393,18 @@ public class UsuarioController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
-              if (!usuario.getPassword().equals(passwordnewrepeat)) {
+            if (!usuario.getPassword().equals(passwordnewrepeat)) {
                 //password nuevo no coincide
                 JsfUtil.warningMessage(rf.getMessage("warning.passwordnocoinciden"));
                 return "";
             }
-              
-              
-usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
+
+            usuario.setRol(rolList);
+            usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
             usuario.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (usuarioRepository.save(usuario)) {
-                 revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(),
-                    "create", "usuario", usuarioRepository.toDocument(usuario).toString()));
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(),
+                        "create", "usuario", usuarioRepository.toDocument(usuario).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
             } else {
@@ -413,12 +421,11 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
     @Override
     public String edit() {
         try {
+            usuario.setRol(rolList);
             usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
             usuario.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
             //guarda el contenido anterior
-           
-
             //guarda el contenido actualizado
             revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(),
                     "update", "usuario", usuarioRepository.toDocument(usuario).toString()));
@@ -517,7 +524,7 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
             usuarioList.add(usuarioSelected);
             usuarioFiltered = usuarioList;
             usuarioDataModel = new UsuarioDataModel(usuarioList);
-             loginController.put("searchusuario", "_autocomplete");
+            loginController.put("searchusuario", "_autocomplete");
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -590,31 +597,29 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
 
     @Override
     public void move() {
-  
-             try {
 
-          
-                Document doc;
-                switch (loginController.get("searchusuario")) {
-                    case "_init":
-                         usuarioList = usuarioRepository.findPagination(page, rowPage);
+        try {
 
-                        break;
-                    case "_autocomplete":
-                        //no se realiza ninguna accion 
-                        break;
-              
-                    case "username":
-                        doc = new Document("username", usuario.getUsername());
-                        usuarioList = usuarioRepository.findFilterPagination(doc, page, rowPage, new Document("username", -1));
-                        break;
-                  
-                    default:
+            Document doc;
+            switch (loginController.get("searchusuario")) {
+                case "_init":
+                    usuarioList = usuarioRepository.findPagination(page, rowPage);
 
-                     usuarioList = usuarioRepository.findPagination(page, rowPage);
-                        break;
-                }
-            
+                    break;
+                case "_autocomplete":
+                    //no se realiza ninguna accion 
+                    break;
+
+                case "username":
+                    doc = new Document("username", usuario.getUsername());
+                    usuarioList = usuarioRepository.findFilterPagination(doc, page, rowPage, new Document("username", -1));
+                    break;
+
+                default:
+
+                    usuarioList = usuarioRepository.findPagination(page, rowPage);
+                    break;
+            }
 
             usuarioFiltered = usuarioList;
 
@@ -625,6 +630,7 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="clear">
+
     @Override
     public String clear() {
         try {
@@ -636,15 +642,14 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
         }
         return "";
     }// </editor-fold>
-    
 
-   // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
+// <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
     @Override
     public String searchBy(String string) {
         try {
 
-            loginController.put("searchusuario", string);      
-      
+            loginController.put("searchusuario", string);
+
             writable = true;
             move();
 
@@ -653,5 +658,54 @@ usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
         }
         return "";
     }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="completeFiltrado(String query)">
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
+    public List<Rol> completeFiltrado(String query) {
+        List<Rol> suggestions = new ArrayList<>();
+        List<Rol> temp = new ArrayList<>();
+        try {
+            Boolean found = false;
+            query = query.trim();
+            if (query.length() < 1) {
+                return suggestions;
+            }
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            temp = rolRepository.findRegex(field, query, true, new Document(field, 1));
+
+            if (rolList.isEmpty()) {
+                if (!temp.isEmpty()) {
+                    suggestions = temp;
+                }
+            } else {
+                if (!temp.isEmpty()) {
+                    
+                    for (Rol r : temp) {
+                        found = false;
+                        for(Rol r2:rolList){
+                            if(r.getIdrol().equals(r2.getIdrol())){
+                                found=true;
+                            }
+                        }
+                        if(!found){
+                            suggestions.add(r);
+                        }
+
+                    }
+                }
+
+            }
+            //suggestions=  rolRepository.findRegex(field,query,true,new Document(field,1));
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("complete() " + e.getLocalizedMessage());
+        }
+        return suggestions;
+    }
 
 }

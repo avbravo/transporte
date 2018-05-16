@@ -7,6 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
                 xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -32,10 +33,9 @@
                         <p:outputLabel  value="#{usuarioController.usuario.username}" id="username"   />
 
 
-                     <p:outputLabel  value="#{msg['field.nombre']}" />
+                        <p:outputLabel  value="#{msg['field.nombre']}" />
                         <a:inputText value="#{usuarioController.usuario.nombre}" id="nombre"  label="#{msg['field.nombre']}" />
 
-                        
 
 
                         <p:outputLabel  value="#{msg['field.email']}" />
@@ -44,31 +44,42 @@
                         <p:outputLabel  value="#{msg['field.celular']}" />
                         <a:inputText value="#{usuarioController.usuario.celular}" id="celular" span="4" label="#{msg['field.celular']}" />
 
-                        
-                     
-                        
+
 
                         <p:outputLabel  value="#{msg['field.cargo']}" />
                         <a:inputText value="#{usuarioController.usuario.cargo}" id="cargo"  label="#{msg['field.cargo']}" />
 
+
                         <p:outputLabel  value="#{msg['field.rol']}" />
-                           <a:selectOneMenu
-                            id="rol"
-                            value="#{usuarioController.usuario.rol}" 
-                            requiredMessage="#{msg['field.idrol']}"
-                               selectLabel="#{usuarioController.usuario.rol.rol}"
-                           selectValue="#{usuarioController.usuario.rol}"
+                       <p:autoComplete     dropdown="false"   
+                 
+                            multiple="true" 
+                            scrollHeight="250"  
+                             size="25" 
+                            emptyMessage="#{app['info.nohayregistros']}" 
+                            value="#{usuarioController.rolList}"  
+                            completeMethod="#{usuarioController.completeFiltrado}"    
+                            var="p"
+                            required="true"
+                            itemLabel="#{p.idrol}"
+                            itemValue="#{p}" forceSelection="true"> 
+            <f:converter binding="#{rolConverter}"/>
+            <f:attribute name="field" value="idrol"/>
+            <p:ajax event="itemSelect" listener="#{rolController.handleSelect}"
+                   />  
+            <f:facet name="itemtip">
+                <h:panelGrid columns="1" cellpadding="5">
+                    <h:outputText value="#{msg['field.idrol']} #{p.idrol}" />
+                    <h:outputText value="#{msg['field.rol']} #{p.rol}" />
 
-                            selectItemsValue="#{usuarioController.rolServices.rolList}"
-                            selectItemsLabel="#{item.idrol}"
-                            
-                            />
+                </h:panelGrid>
+            </f:facet>
+        </p:autoComplete>  
 
-                       
+
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <a:yesno value="#{usuarioController.usuario.activo}" id="activo"  required="true"/>
-
 
 
 

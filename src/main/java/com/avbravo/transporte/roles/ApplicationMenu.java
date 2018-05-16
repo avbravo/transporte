@@ -10,7 +10,7 @@ import com.avbravo.avbravoutils.menu.MenuElement;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
+ 
 /**
  *
  * @authoravbravo
