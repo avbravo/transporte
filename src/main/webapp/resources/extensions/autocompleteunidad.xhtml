@@ -10,6 +10,7 @@
 
         <composite:attribute name="value" />
         <composite:attribute name="itemLabel" />
+        <composite:attribute name="multiple" default="false" />
         <composite:attribute name="update" />
         <composite:attribute name="rendered"/>
          <composite:attribute name="required" default="false" />
@@ -24,6 +25,7 @@
         <p:autoComplete     dropdown="false"    
                             scrollHeight="250"  
                              size="#{cc.attrs.size}" 
+                                multiple="#{cc.attrs.multiple}" 
                             emptyMessage="#{app['info.nohayregistros']}" 
                             value="#{cc.attrs.value}"  
                             completeMethod="#{unidadController.unidadServices.complete}"    
