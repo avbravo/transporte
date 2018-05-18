@@ -30,6 +30,7 @@ public class ApplicationMenu implements Serializable {
     private Boolean menuBarRegistros = false;
     private Boolean menuBarReportes = false;
     private Boolean menuBarAdministracion = false;
+    private Boolean menuBarViajes = false;
 
     /*
      elementos
