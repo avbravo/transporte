@@ -21,7 +21,7 @@
         </style>
         <h1>#{msg['titleview.usuario']}</h1>
         <hr/>
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.usuario.query}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.usuario.query}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -49,32 +49,45 @@
                         <p:outputLabel  value="#{msg['field.cargo']}" />
                         <a:inputText value="#{usuarioController.usuario.cargo}" id="cargo"  label="#{msg['field.cargo']}" />
 
+                        
+                         <p:outputLabel  value="#{msg['field.unidad']}" />
+                           <a:selectOneMenu
+                            id="rol"
+                            value="#{usuarioController.usuario.unidad}" 
+                            requiredMessage="#{msg['field.idunidad']}"
+                            selectLabel="#{usuarioController.usuario.unidad.idunidad}"
+                            selectValue="#{usuarioController.usuario.unidad}"
+                            selectItemsValue="#{usuarioController.unidadServices.unidadList}"
+                            selectItemsLabel="#{item.idunidad}"
+                            
+                            />
+                           
 
                         <p:outputLabel  value="#{msg['field.rol']}" />
-                       <p:autoComplete     dropdown="false"   
-                 
-                            multiple="true" 
-                            scrollHeight="250"  
-                             size="25" 
-                            emptyMessage="#{app['info.nohayregistros']}" 
-                            value="#{usuarioController.rolList}"  
-                            completeMethod="#{usuarioController.completeFiltrado}"    
-                            var="p"
-                            required="true"
-                            itemLabel="#{p.idrol}"
-                            itemValue="#{p}" forceSelection="true"> 
-            <f:converter binding="#{rolConverter}"/>
-            <f:attribute name="field" value="idrol"/>
-            <p:ajax event="itemSelect" listener="#{rolController.handleSelect}"
-                   />  
-            <f:facet name="itemtip">
-                <h:panelGrid columns="1" cellpadding="5">
-                    <h:outputText value="#{msg['field.idrol']} #{p.idrol}" />
-                    <h:outputText value="#{msg['field.rol']} #{p.rol}" />
+                        <p:autoComplete     dropdown="false"   
 
-                </h:panelGrid>
-            </f:facet>
-        </p:autoComplete>  
+                                            multiple="true" 
+                                            scrollHeight="250"  
+                                            size="25" 
+                                            emptyMessage="#{app['info.nohayregistros']}" 
+                                            value="#{usuarioController.rolList}"  
+                                            completeMethod="#{usuarioController.completeFiltrado}"    
+                                            var="p"
+                                            required="true"
+                                            itemLabel="#{p.idrol}"
+                                            itemValue="#{p}" forceSelection="true"> 
+                            <f:converter binding="#{rolConverter}"/>
+                            <f:attribute name="field" value="idrol"/>
+                            <p:ajax event="itemSelect" listener="#{rolController.handleSelect}"
+                                    />  
+                            <f:facet name="itemtip">
+                                <h:panelGrid columns="1" cellpadding="5">
+                                    <h:outputText value="#{msg['field.idrol']} #{p.idrol}" />
+                                    <h:outputText value="#{msg['field.rol']} #{p.rol}" />
+
+                                </h:panelGrid>
+                            </f:facet>
+                        </p:autoComplete>  
 
 
 

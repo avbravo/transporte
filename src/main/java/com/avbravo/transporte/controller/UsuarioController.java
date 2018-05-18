@@ -21,6 +21,7 @@ import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.services.LookupServices;
 import com.avbravo.transporteejb.services.RolServices;
+import com.avbravo.transporteejb.services.UnidadServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
 
 import java.util.ArrayList;
@@ -95,6 +96,8 @@ public class UsuarioController implements Serializable, IController {
     UsuarioServices usuarioServices;
     @Inject
     RolServices rolServices;
+    @Inject
+    UnidadServices unidadServices;
 
     @Inject
     ResourcesFiles rf;
@@ -116,6 +119,18 @@ public class UsuarioController implements Serializable, IController {
         return lookupServices;
     }
 
+    public UnidadServices getUnidadServices() {
+        return unidadServices;
+    }
+
+    public void setUnidadServices(UnidadServices unidadServices) {
+        this.unidadServices = unidadServices;
+    }
+
+    
+    
+    
+    
     public RolRepository getRolRepository() {
         return rolRepository;
     }

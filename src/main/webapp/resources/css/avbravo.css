@@ -46,27 +46,6 @@ and open the template in the editor.
 
 
 
-/*.ui-button {
-        -moz-box-shadow:inset 0px 1px 0px 0px #c1ed9c !important;
-        -webkit-box-shadow:inset 0px 1px 0px 0px #c1ed9c !important;
-        box-shadow:inset 0px 1px 0px 0px #c1ed9c !important;
-        background-color:#9dce2c !important;
-        -moz-border-radius:6px !important;
-        -webkit-border-radius:6px !important;
-        border-radius:4px !important;
-        border:1px solid #83c41a !important;
-        display:inline-block !important;
-        color:#ffffff !important;
-        font-family:Trebuchet MS !important;
-        font-size:10px !important;
-        font-weight:bold !important;
-        padding:10px 24px !important;
-        text-decoration:none !important;
-        text-shadow:1px 1px 0px #689324 !important;
-        
-}*/
-
-
 .ui-button.ui-state-default {
     /*background-color: #428bca!important;*/
 
@@ -74,12 +53,13 @@ and open the template in the editor.
     border:1px solid #83c41a !important;
     font-size:12px !important;
     padding:6px 18px !important;
-    color: #fff !important;
-    background-color: #0066cc !important;
+
+    background-color: #F2F5F9 !important;
     border-color: #357ebd !important;
 }
+
 .ui-button.ui-state-hover {
-    background-color: #0066cc !important;
+    background-color: #d4d0c8!important;
 }
 .ui-button.ui-state-active {
     background-color: blue !important;

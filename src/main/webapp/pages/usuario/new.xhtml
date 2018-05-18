@@ -21,7 +21,7 @@
         </style>
         <h1>#{msg['titleview.usuario']}</h1>
         <hr/>
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.usuario.create}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.usuario.create}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -45,10 +45,10 @@
                         <p:outputLabel  value="#{msg['field.nombre']}" />
                         <a:inputText value="#{usuarioController.usuario.nombre}" id="nombre"  label="#{msg['field.nombre']}" />
 
-                        
+
                         <p:outputLabel  value="#{msg['field.password']}" />
                         <a:password value="#{usuarioController.usuario.password}" id="password"  label="#{msg['field.password']}" />
-                    
+
                         <p:outputLabel  value="#{msg['field.passwordnuevorepetir']}" />
                         <a:password value="#{usuarioController.passwordnewrepeat}" id="passwordrepetido"  label="#{msg['field.passwordnuevorepetir']}" />
 
@@ -58,42 +58,48 @@
                         <p:outputLabel  value="#{msg['field.celular']}" />
                         <a:inputText value="#{usuarioController.usuario.celular}" id="celular" span="4" label="#{msg['field.celular']}" />
 
-                        
+
 
                         <p:outputLabel  value="#{msg['field.cargo']}" />
                         <a:inputText value="#{usuarioController.usuario.cargo}" id="cargo"  label="#{msg['field.cargo']}" />
 
-             
-                             <p:outputLabel  value="#{msg['field.rol']}" />
+   <p:outputLabel  value="#{msg['field.unidad']}" />
+                           <a:selectOneMenu
+                            id="unidad"
+                            value="#{usuarioController.usuario.unidad}" 
+                            requiredMessage="#{msg['field.idunidad']}"
+                            selectItemsValue="#{usuarioController.unidadServices.unidadList}"
+                            selectItemsLabel="#{item.idunidad}"
+                            
+                            />
+                        
+                        <p:outputLabel  value="#{msg['field.rol']}" />
+                        <p:autoComplete     dropdown="false"   
 
-  
-  
-   <p:autoComplete     dropdown="false"   
-                 
-                            multiple="true" 
-                            scrollHeight="250"  
-                             size="25" 
-                            emptyMessage="#{app['info.nohayregistros']}" 
-                            value="#{usuarioController.rolList}"  
-                            completeMethod="#{usuarioController.completeFiltrado}"    
-                            var="p"
-                            required="true"
-                            itemLabel="#{p.idrol}"
-                            itemValue="#{p}" forceSelection="true"> 
-            <f:converter binding="#{rolConverter}"/>
-            <f:attribute name="field" value="idrol"/>
-            <p:ajax event="itemSelect" listener="#{rolController.handleSelect}"
-                   />  
-            <f:facet name="itemtip">
-                <h:panelGrid columns="1" cellpadding="5">
-                    <h:outputText value="#{msg['field.idrol']} #{p.idrol}" />
-                    <h:outputText value="#{msg['field.rol']} #{p.rol}" />
+                                            multiple="true" 
+                                            scrollHeight="250"  
+                                            size="25" 
+                                            emptyMessage="#{app['info.nohayregistros']}" 
+                                            value="#{usuarioController.rolList}"  
+                                            completeMethod="#{usuarioController.completeFiltrado}"    
+                                            var="p"
+                                            required="true"
+                                            itemLabel="#{p.idrol}"
+                                            itemValue="#{p}" forceSelection="true"> 
+                            <f:converter binding="#{rolConverter}"/>
+                            <f:attribute name="field" value="idrol"/>
+                            <p:ajax event="itemSelect" listener="#{rolController.handleSelect}"
+                                    />  
+                            <f:facet name="itemtip">
+                                <h:panelGrid columns="1" cellpadding="5">
+                                    <h:outputText value="#{msg['field.idrol']} #{p.idrol}" />
+                                    <h:outputText value="#{msg['field.rol']} #{p.rol}" />
 
-                </h:panelGrid>
-            </f:facet>
-        </p:autoComplete>  
+                                </h:panelGrid>
+                            </f:facet>
+                        </p:autoComplete>  
 
-                       
+
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <a:yesno value="#{usuarioController.usuario.activo}" id="activo"  required="true"/>
@@ -102,7 +108,7 @@
 
 
                         <a:save rendered="#{usuarioController.writable and applicationMenu.usuario.create}"
-                                      save="#{usuarioController.save()}" />
+                                save="#{usuarioController.save()}" />
 
 
                     </b:panelGrid>
