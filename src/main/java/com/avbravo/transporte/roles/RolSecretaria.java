@@ -44,6 +44,7 @@ public class RolSecretaria implements Serializable {
         applicationMenu.getConductor().initialize(Boolean.TRUE);
         applicationMenu.getEstatus().initialize(Boolean.TRUE);
         applicationMenu.getRol().initialize(Boolean.TRUE);
+        applicationMenu.getTiposolicitud().initialize(Boolean.TRUE);
         applicationMenu.getTipovehiculo().initialize(Boolean.TRUE);
         applicationMenu.getSolicitud().initialize(Boolean.TRUE);
         applicationMenu.getVehiculo().initialize(Boolean.TRUE);
