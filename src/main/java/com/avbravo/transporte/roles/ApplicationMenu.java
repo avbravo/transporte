@@ -41,6 +41,10 @@ public class ApplicationMenu implements Serializable {
     MenuElement tipovehiculo = new MenuElement();
     MenuElement rol = new MenuElement();
     MenuElement solicitud = new MenuElement();
+    MenuElement solicitudDocente = new MenuElement();
+    MenuElement solicitudDocenteManual = new MenuElement();
+    MenuElement solicitudAdministrativo = new MenuElement();
+    MenuElement solicitudAdministrativoManual = new MenuElement();
     MenuElement vehiculo = new MenuElement();
     MenuElement viajes = new MenuElement();
     MenuElement usuario = new MenuElement();
@@ -57,6 +61,10 @@ public class ApplicationMenu implements Serializable {
         tipovehiculo.initialize(activo);
         rol.initialize(activo);
         solicitud.initialize(activo);
+        solicitudDocente.initialize(activo);
+        solicitudDocenteManual.initialize(activo);
+        solicitudAdministrativo.initialize(activo);
+        solicitudAdministrativoManual.initialize(activo);
         vehiculo.initialize(activo);
         viajes.initialize(activo);
         unidad.initialize(activo);
@@ -70,6 +78,38 @@ public class ApplicationMenu implements Serializable {
 
     public void setMenuBarViajes(Boolean menuBarViajes) {
         this.menuBarViajes = menuBarViajes;
+    }
+
+    public MenuElement getSolicitudDocente() {
+        return solicitudDocente;
+    }
+
+    public void setSolicitudDocente(MenuElement solicitudDocente) {
+        this.solicitudDocente = solicitudDocente;
+    }
+
+    public MenuElement getSolicitudDocenteManual() {
+        return solicitudDocenteManual;
+    }
+
+    public void setSolicitudDocenteManual(MenuElement solicitudDocenteManual) {
+        this.solicitudDocenteManual = solicitudDocenteManual;
+    }
+
+    public MenuElement getSolicitudAdministrativo() {
+        return solicitudAdministrativo;
+    }
+
+    public void setSolicitudAdministrativo(MenuElement solicitudAdministrativo) {
+        this.solicitudAdministrativo = solicitudAdministrativo;
+    }
+
+    public MenuElement getSolicitudAdministrativoManual() {
+        return solicitudAdministrativoManual;
+    }
+
+    public void setSolicitudAdministrativoManual(MenuElement solicitudAdministrativoManual) {
+        this.solicitudAdministrativoManual = solicitudAdministrativoManual;
     }
     
     
