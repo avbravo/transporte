@@ -18,36 +18,36 @@
                 border-color: #428BCA;
             }
         </style>
-        <h1>#{msg['titleview.estatus']}</h1>
+        <h1>#{msg['titleview.solicitud']}</h1>
         <hr/>
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.estatus.query}" onkeypress="if (event.keyCode == 13) {
+         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitud.query}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <a:messages id="msg"/>
                 <b:panel title="#{app['title.data']}">
-                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{estatusController.writable}"> 
-                        <p:outputLabel  value="#{msg['field.idestatus']}" />
-                        <p:outputLabel  value="#{estatusController.estatus.idestatus}" id="idestatus"   />
+                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{solicitudController.writable}"> 
+                        <p:outputLabel  value="#{msg['field.idsolicitud']}" />
+                        <p:outputLabel  value="#{solicitudController.solicitud.idsolicitud}" id="idsolicitud"   />
 
                      <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{estatusController.estatus.activo}" id="activo"  required="true"/>
+                        <a:yesno value="#{solicitudController.solicitud.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
                     <a:view 
-                        renderedDelete="#{applicationMenu.estatus.delete and estatusController.writable }"
-                        renderedEdit="#{applicationMenu.estatus.edit and estatusController.writable}" 
-                        renderedList="#{applicationMenu.estatus.list and estatusController.writable}"
-                        edit="#{estatusController.edit()}"
-                        delete="#{estatusController.delete(estatusController.estatus,true)}"
-                        print="#{estatusController.print()}"
-                        url="#{estatusController.prepare('golist',estatusController.estatus)}"
+                        renderedDelete="#{applicationMenu.solicitud.delete and solicitudController.writable }"
+                        renderedEdit="#{applicationMenu.solicitud.edit and solicitudController.writable}" 
+                        renderedList="#{applicationMenu.solicitud.list and solicitudController.writable}"
+                        edit="#{solicitudController.edit()}"
+                        delete="#{solicitudController.delete(solicitudController.solicitud,true)}"
+                        print="#{solicitudController.print()}"
+                        url="#{solicitudController.prepare('golist',solicitudController.solicitud)}"
                         />
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.estatus.query}" />
+        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitud.query}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

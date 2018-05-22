@@ -18,34 +18,34 @@
                 border-color: #428BCA;
             }
         </style>
-        <h1>#{msg['titleview.estatus']}</h1>
+        <h1>#{msg['titleview.solicitud']}</h1>
         <hr/>
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.estatus.create}" onkeypress="if (event.keyCode == 13) {
+         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitud.create}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <a:messages id="msg"/>
-                <a:new label="#{msg['field.idestatus']}"
-                       value="#{estatusController.estatus.idestatus}"
-                       isnew="#{estatusController.isNew()}"
-                       new="#{estatusController.prepare('new',estatusController.estatus)}"
-                       rendererList="#{applicationMenu.estatus.list}"
-                       list="#{estatusController.prepare('golist',estatusController.estatus)}"
+                <a:new label="#{msg['field.idsolicitud']}"
+                       value="#{solicitudController.solicitud.idsolicitud}"
+                       isnew="#{solicitudController.isNew()}"
+                       new="#{solicitudController.prepare('new',solicitudController.solicitud)}"
+                       rendererList="#{applicationMenu.solicitud.list}"
+                       list="#{solicitudController.prepare('golist',solicitudController.solicitud)}"
 
                        />
                 <b:panel title="#{app['title.data']}">
 
 
 
-                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{estatusController.writable}"> 
+                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{solicitudController.writable}"> 
 
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{estatusController.estatus.activo}" id="activo"  required="true"/>
+                        <a:yesno value="#{solicitudController.solicitud.activo}" id="activo"  required="true"/>
 
-                        <a:save rendered="#{estatusController.writable and applicationMenu.estatus.create}"
-                                      save="#{estatusController.save()}" />
+                        <a:save rendered="#{solicitudController.writable and applicationMenu.solicitud.create}"
+                                      save="#{solicitudController.save()}" />
 
 
                     </b:panelGrid>
@@ -54,7 +54,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.estatus.create}" />
+        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitud.create}" />
 
         <br/><br/><br/>
     </ui:define>

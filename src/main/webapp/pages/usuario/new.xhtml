@@ -52,12 +52,16 @@
                         <p:outputLabel  value="#{msg['field.passwordnuevorepetir']}" />
                         <a:password value="#{usuarioController.passwordnewrepeat}" id="passwordrepetido"  label="#{msg['field.passwordnuevorepetir']}" />
 
+ <p:outputLabel  value="#{msg['field.cedula']}" />
+                        <a:inputText value="#{usuarioController.usuario.cedula}" id="cedula" span="4" label="#{msg['field.cedula']}" />
+                        
+                         <p:outputLabel  value="#{msg['field.celular']}" />
+                        <a:inputText value="#{usuarioController.usuario.celular}" id="celular" span="4" label="#{msg['field.celular']}" />
+
                         <p:outputLabel  value="#{msg['field.email']}" />
                         <a:email value="#{usuarioController.usuario.email}" id="email"  label="#{msg['field.email']}" />
 
-                        <p:outputLabel  value="#{msg['field.celular']}" />
-                        <a:inputText value="#{usuarioController.usuario.celular}" id="celular" span="4" label="#{msg['field.celular']}" />
-
+                       
 
 
                         <p:outputLabel  value="#{msg['field.cargo']}" />

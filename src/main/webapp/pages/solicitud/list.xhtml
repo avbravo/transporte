@@ -19,9 +19,9 @@
                 border-color: #428BCA;
             } 
         </style>
-        <h1>#{msg['titlelist.estatus']}</h1>
+        <h1>#{msg['titlelist.solicitud']}</h1>
         <hr/>
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.estatus.list}" onkeypress="if (event.keyCode == 13) {
+         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitud.list}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
@@ -33,14 +33,8 @@
 
 
 
-                    <p:outputLabel value="#{msg['field.idestatus']}"/>
-                    <e:autocompleteestatus listener="#{estatusController.handleSelect}"
-                                                  value="#{estatusController.estatusSelected}"
-                                                  itemLabel=" #{p.idestatus}"
-                                                  field="idestatus"
-                                                  update=" :form:dataTable"/>
-
-               
+                    <p:outputLabel value="#{msg['field.idsolicitud']}"/>
+                    
                       
                       
 
@@ -48,34 +42,36 @@
             </b:panel>
             <b:panel id="dataTable">
                 <a:paginator 
-                    clear="#{estatusController.clear()}"
-                    first="#{estatusController.first()}"
-                    back="#{estatusController.back()}"
-                    next="#{estatusController.next()}"
-                    last="#{estatusController.last()}"
-                    page="#{estatusController.page}"
-                    pages="#{estatusController.pages}"
-                 skip="ajax:estatusController.skip(estatusController.page)" 
-                    new="#{estatusController.prepare('gonew',estatusController.estatus)}"
-                    printAll="#{estatusController.printAll()}"
+                    clear="#{solicitudController.clear()}"
+                    first="#{solicitudController.first()}"
+                    back="#{solicitudController.back()}"
+                    next="#{solicitudController.next()}"
+                    last="#{solicitudController.last()}"
+                    page="#{solicitudController.page}"
+                    pages="#{solicitudController.pages}"
+                 skip="ajax:solicitudController.skip(solicitudController.page)" 
+                    new="#{solicitudController.prepare('gonew',solicitudController.solicitud)}"
+                    printAll="#{solicitudController.printAll()}"
                     />
-                <b:dataTable value="#{estatusController.estatusDataModel}"
+                <b:dataTable value="#{solicitudController.solicitudDataModel}"
                              var="item"
                              id="dataTable2"
                              paginated="false"
                              onpage="console.log('page');">
 
-                    <b:dataTableColumn value="#{item.idestatus}" label="#{msg['field.idestatus']}"/>
+                    <b:dataTableColumn value="#{item.idsolicitud}" label="#{msg['field.idsolicitud']}"/>
 
+                    <b:dataTableColumn value="#{item.fecha}" label="#{msg['field.fecha']}" />
+                    <b:dataTableColumn value="#{item.mision}" label="#{msg['field.mision']}" />
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
                   
                     <b:dataTableColumn label="">
 
                         <a:column
 
-                            edit="#{estatusController.prepare('view',item)}"
-                            delete="#{estatusController.delete(item,false)}"
-                            rendered="#{applicationMenu.estatus.delete}"
+                            edit="#{solicitudController.prepare('view',item)}"
+                            delete="#{solicitudController.delete(item,false)}"
+                            rendered="#{applicationMenu.solicitud.delete}"
                             />
                     </b:dataTableColumn>
 
@@ -84,6 +80,6 @@
 
         </b:form>
 
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.estatus.list}" />
+        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitud.list}" />
     </ui:define>
 </ui:composition>

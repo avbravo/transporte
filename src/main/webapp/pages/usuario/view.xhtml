@@ -36,15 +36,18 @@
                         <p:outputLabel  value="#{msg['field.nombre']}" />
                         <a:inputText value="#{usuarioController.usuario.nombre}" id="nombre"  label="#{msg['field.nombre']}" />
 
+<p:outputLabel  value="#{msg['field.cedula']}" />
+                        <a:inputText value="#{usuarioController.usuario.cedula}" id="cedula" span="4" label="#{msg['field.cedula']}" />
+ 
+                        <p:outputLabel  value="#{msg['field.celular']}" />
+                        <a:inputText value="#{usuarioController.usuario.celular}" id="celular" span="4" label="#{msg['field.celular']}" />
+
 
 
                         <p:outputLabel  value="#{msg['field.email']}" />
                         <a:email value="#{usuarioController.usuario.email}" id="email"  label="#{msg['field.email']}" />
 
-                        <p:outputLabel  value="#{msg['field.celular']}" />
-                        <a:inputText value="#{usuarioController.usuario.celular}" id="celular" span="4" label="#{msg['field.celular']}" />
-
-
+                        
 
                         <p:outputLabel  value="#{msg['field.cargo']}" />
                         <a:inputText value="#{usuarioController.usuario.cargo}" id="cargo"  label="#{msg['field.cargo']}" />
