@@ -22,8 +22,8 @@
         <h1>#{msg['titlelist.facultad']}</h1>
         <hr/>
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.facultad.list}" onkeypress="if (event.keyCode == 13) {
-                     return false;
-                 }">
+                    return false;
+                }">
 
             <b:growl  id="msgs"/>
 
@@ -68,20 +68,43 @@
                     new="#{facultadController.prepare('gonew',facultadController.facultad)}"
                     printAll="#{facultadController.printAll()}"
                     />
-                
-                <b:dataTable value="#{facultadController.facultadDataModel}"
-                             var="item"
-                             id="dataTable2"
-                             paginated="false"
-                             onpage="console.log('page');">
-                    
 
-                    <b:dataTableColumn value="#{item.idfacultad}" label="#{msg['field.idfacultad']}"/>
-                    <b:dataTableColumn value="#{item.facultad}" label="#{msg['field.facultad']}"/>
 
-                    <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
 
-                    <b:dataTableColumn label="">
+                <p:dataTable id="dataTable2" var="item" 
+                             value="#{facultadController.facultadDataModel}"
+                             selectionMode="single" 
+                             widgetVar="widgetDataTable"
+                             selection="#{facultadController.facultadSelected}"
+                             filteredValue="#{facultadController.facultadFiltered}"
+                             paginator="false"
+                             rowKey="#{item.idtamano}"
+                             emptyMessage="#{app['info.datatableempty']}" reflow="true">
+
+                    <f:facet name="header">
+
+                        <p:outputPanel>
+                            <a:paginator 
+                                clear="#{facultadController.clear()}"
+                                first="#{facultadController.first()}"
+                                back="#{facultadController.back()}"
+                                next="#{facultadController.next()}"
+                                last="#{facultadController.last()}"
+                                page="#{facultadController.page}"
+                                pages="#{facultadController.pages}"
+                                skip="ajax:facultadController.skip(facultadController.page)" 
+                                new="#{facultadController.prepare('gonew',facultadController.facultad)}"
+                                printAll="#{facultadController.printAll()}"
+                                />
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:column headerText="#{msg['field.idtamano']}" filterBy="#{item.idtamano}" style="color: #000000; width:150px;text-align: center"
+                              sortBy="#{item.idtamano}"  filterMatchMode="contains" >
+                        <h:outputText value="#{item.idtamano}" />
+                    </p:column>
+
+
+                    <p:column style="width:80px;text-align: center" >
 
                         <a:column
 
@@ -89,9 +112,9 @@
                             delete="#{facultadController.delete(item,false)}"
                             rendered="#{applicationMenu.facultad.delete}"
                             />
-                    </b:dataTableColumn>
+                    </p:column>
 
-                </b:dataTable>
+                </p:dataTable>
             </b:panel>
 
         </b:form>
