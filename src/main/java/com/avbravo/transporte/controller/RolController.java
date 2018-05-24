@@ -17,10 +17,10 @@ import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.RolDataModel;
 import com.avbravo.transporteejb.entity.Rol;
-import com.avbravo.transporteejb.repository.AutoincrementableRepository;
-import com.avbravo.transporteejb.repository.RevisionHistoryRepository;
+import com.avbravo.transporteejb.repository.AutoincrementableTransporteejbRepository;
+import com.avbravo.transporteejb.repository.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.RolRepository;
-import com.avbravo.transporteejb.services.LookupServices;
+import com.avbravo.transporteejb.services.LookupTransporteejbServices;
 import com.avbravo.transporteejb.services.RolServices;
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -66,17 +66,17 @@ public class RolController implements Serializable, IController {
 
     //Repository
     @Inject
-    AutoincrementableRepository autoincrementableRepository;
+    AutoincrementableTransporteejbRepository autoincrementableRepository;
     @Inject
     RolRepository rolRepository;
 
     @Inject
-    RevisionHistoryRepository revisionHistoryRepository;
+    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
      //Atributos para busquedas
     @Inject
-    LookupServices lookupServices;
+    LookupTransporteejbServices lookupTransporteejbServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -103,12 +103,12 @@ public class RolController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupServices getLookupServices() {
-        return lookupServices;
+    public LookupTransporteejbServices getlookupTransporteejbServices() {
+        return lookupTransporteejbServices;
     }
 
-    public void setLookupServices(LookupServices lookupServices) {
-        this.lookupServices = lookupServices;
+    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+        this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
     
     
@@ -353,7 +353,7 @@ public class RolController implements Serializable, IController {
 
             rol.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (rolRepository.save(rol)) {
-                 revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(rol.getIdrol(), loginController.getUsername(),
+                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(rol.getIdrol(), loginController.getUsername(),
                     "create", "rol", rolRepository.toDocument(rol).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
@@ -378,7 +378,7 @@ public class RolController implements Serializable, IController {
            
 
             //guarda el contenido actualizado
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(rol.getIdrol(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(rol.getIdrol(), loginController.getUsername(),
                     "update", "rol", rolRepository.toDocument(rol).toString()));
 
             rolRepository.update(rol);
@@ -398,7 +398,7 @@ public class RolController implements Serializable, IController {
 
             rolSelected = rol;
             if (rolRepository.delete("idrol", rol.getIdrol())) {
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(rol.getIdrol(), loginController.getUsername(), "delete", "rol", rolRepository.toDocument(rol).toString()));
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(rol.getIdrol(), loginController.getUsername(), "delete", "rol", rolRepository.toDocument(rol).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {

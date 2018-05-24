@@ -16,8 +16,8 @@ import com.avbravo.ejbjmoordb.interfaces.IController;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
-import com.avbravo.transporteejb.repository.RevisionHistoryRepository;
-import com.avbravo.transporteejb.services.LookupServices;
+import com.avbravo.transporteejb.repository.RevisionHistoryTransporteejbRepository;
+import com.avbravo.transporteejb.services.LookupTransporteejbServices;
 
 
 import java.util.ArrayList;
@@ -71,12 +71,12 @@ public class CarreraController implements Serializable, IController {
     @Inject
     CarreraRepository carreraRepository;
     @Inject
-    RevisionHistoryRepository revisionHistoryRepository;
+    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
      //Atributos para busquedas
     @Inject
-    LookupServices lookupServices;
+    LookupTransporteejbServices lookupTransporteejbServices;
     
     @Inject
     RevisionHistoryServices revisionHistoryServices;
@@ -104,12 +104,12 @@ public class CarreraController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupServices getLookupServices() {
-        return lookupServices;
+    public LookupTransporteejbServices getlookupTransporteejbServices() {
+        return lookupTransporteejbServices;
     }
 
-    public void setLookupServices(LookupServices lookupServices) {
-        this.lookupServices = lookupServices;
+    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+        this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
     
@@ -355,7 +355,7 @@ String action = loginController.get("carrera");
             carrera.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (carreraRepository.save(carrera)) {
                   //guarda el contenido anterior
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
                     "create", "carrera", carreraRepository.toDocument(carrera).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -379,7 +379,7 @@ String action = loginController.get("carrera");
 
           
             //guarda el contenido actualizado
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
                     "update", "carrera", carreraRepository.toDocument(carrera).toString()));
 
             carreraRepository.update(carrera);
@@ -399,7 +399,7 @@ String action = loginController.get("carrera");
             
             carreraSelected = carrera;
             if (carreraRepository.delete("idcarrera", carrera.getIdcarrera())) {
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(), "delete", "carrera", carreraRepository.toDocument(carrera).toString()));
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(), "delete", "carrera", carreraRepository.toDocument(carrera).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {

@@ -16,8 +16,8 @@ import com.avbravo.ejbjmoordb.interfaces.IController;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
-import com.avbravo.transporteejb.repository.RevisionHistoryRepository;
-import com.avbravo.transporteejb.services.LookupServices;
+import com.avbravo.transporteejb.repository.RevisionHistoryTransporteejbRepository;
+import com.avbravo.transporteejb.services.LookupTransporteejbServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -70,12 +70,12 @@ public class FacultadController implements Serializable, IController {
     @Inject
     FacultadRepository facultadRepository;
     @Inject
-    RevisionHistoryRepository revisionHistoryRepository;
+    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
      //Atributos para busquedas
     @Inject
-    LookupServices lookupServices;
+    LookupTransporteejbServices lookupTransporteejbServices;
     
     @Inject
     RevisionHistoryServices revisionHistoryServices;
@@ -103,12 +103,12 @@ public class FacultadController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupServices getLookupServices() {
-        return lookupServices;
+    public LookupTransporteejbServices getlookupTransporteejbServices() {
+        return lookupTransporteejbServices;
     }
 
-    public void setLookupServices(LookupServices lookupServices) {
-        this.lookupServices = lookupServices;
+    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+        this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
     
@@ -355,7 +355,7 @@ String action = loginController.get("facultad");
             facultad.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (facultadRepository.save(facultad)) {
                   //guarda el contenido anterior
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
                     "create", "facultad", facultadRepository.toDocument(facultad).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -379,7 +379,7 @@ String action = loginController.get("facultad");
 
           
             //guarda el contenido actualizado
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
                     "update", "facultad", facultadRepository.toDocument(facultad).toString()));
 
             facultadRepository.update(facultad);
@@ -399,7 +399,7 @@ String action = loginController.get("facultad");
             
             facultadSelected = facultad;
             if (facultadRepository.delete("idfacultad", facultad.getIdfacultad())) {
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(), "delete", "facultad", facultadRepository.toDocument(facultad).toString()));
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(), "delete", "facultad", facultadRepository.toDocument(facultad).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {

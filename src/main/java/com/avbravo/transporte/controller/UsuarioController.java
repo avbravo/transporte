@@ -15,11 +15,11 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.UsuarioDataModel;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
-import com.avbravo.transporteejb.repository.AutoincrementableRepository;
-import com.avbravo.transporteejb.repository.RevisionHistoryRepository;
+import com.avbravo.transporteejb.repository.AutoincrementableTransporteejbRepository;
+import com.avbravo.transporteejb.repository.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
-import com.avbravo.transporteejb.services.LookupServices;
+import com.avbravo.transporteejb.services.LookupTransporteejbServices;
 import com.avbravo.transporteejb.services.RolServices;
 import com.avbravo.transporteejb.services.UnidadServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
@@ -76,9 +76,9 @@ public class UsuarioController implements Serializable, IController {
 
     //Repository
     @Inject
-    AutoincrementableRepository autoincrementableRepository;
+    AutoincrementableTransporteejbRepository autoincrementableRepository;
     @Inject
-    RevisionHistoryRepository revisionHistoryRepository;
+    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
     @Inject
     RolRepository rolRepository;
     @Inject
@@ -87,7 +87,7 @@ public class UsuarioController implements Serializable, IController {
     //Services
     //Atributos para busquedas
     @Inject
-    LookupServices lookupServices;
+    LookupTransporteejbServices lookupTransporteejbServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -115,8 +115,8 @@ public class UsuarioController implements Serializable, IController {
         return usuarioRepository.listOfPage(rowPage);
     }
 
-    public LookupServices getLookupServices() {
-        return lookupServices;
+    public LookupTransporteejbServices getlookupTransporteejbServices() {
+        return lookupTransporteejbServices;
     }
 
     public UnidadServices getUnidadServices() {
@@ -155,8 +155,8 @@ public class UsuarioController implements Serializable, IController {
         this.passwordnewrepeat = passwordnewrepeat;
     }
 
-    public void setLookupServices(LookupServices lookupServices) {
-        this.lookupServices = lookupServices;
+    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+        this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
     public void setPages(List<Integer> pages) {
@@ -418,7 +418,7 @@ public class UsuarioController implements Serializable, IController {
             usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
             usuario.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (usuarioRepository.save(usuario)) {
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(),
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(),
                         "create", "usuario", usuarioRepository.toDocument(usuario).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
@@ -442,7 +442,7 @@ public class UsuarioController implements Serializable, IController {
 
             //guarda el contenido anterior
             //guarda el contenido actualizado
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(),
                     "update", "usuario", usuarioRepository.toDocument(usuario).toString()));
 
             usuarioRepository.update(usuario);
@@ -462,7 +462,7 @@ public class UsuarioController implements Serializable, IController {
 
             usuarioSelected = usuario;
             if (usuarioRepository.delete("username", usuario.getUsername())) {
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(), "delete", "usuario", usuarioRepository.toDocument(usuario).toString()));
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(), "delete", "usuario", usuarioRepository.toDocument(usuario).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {

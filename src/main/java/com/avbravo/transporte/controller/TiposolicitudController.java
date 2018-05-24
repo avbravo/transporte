@@ -15,9 +15,9 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.TiposolicitudDataModel;
 import com.avbravo.transporteejb.entity.Tiposolicitud;
 import com.avbravo.transporteejb.repository.TiposolicitudRepository;
-import com.avbravo.transporteejb.repository.RevisionHistoryRepository;
+import com.avbravo.transporteejb.repository.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
-import com.avbravo.transporteejb.services.LookupServices;
+import com.avbravo.transporteejb.services.LookupTransporteejbServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -70,12 +70,12 @@ public class TiposolicitudController implements Serializable, IController {
     @Inject
     TiposolicitudRepository tiposolicitudRepository;
     @Inject
-    RevisionHistoryRepository revisionHistoryRepository;
+    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
      //Atributos para busquedas
     @Inject
-    LookupServices lookupServices;
+    LookupTransporteejbServices lookupTransporteejbServices;
     
     @Inject
     RevisionHistoryServices revisionHistoryServices;
@@ -103,12 +103,12 @@ public class TiposolicitudController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupServices getLookupServices() {
-        return lookupServices;
+    public LookupTransporteejbServices getlookupTransporteejbServices() {
+        return lookupTransporteejbServices;
     }
 
-    public void setLookupServices(LookupServices lookupServices) {
-        this.lookupServices = lookupServices;
+    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+        this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
     
@@ -354,7 +354,7 @@ String action = loginController.get("tiposolicitud");
             tiposolicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (tiposolicitudRepository.save(tiposolicitud)) {
                   //guarda el contenido anterior
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(tiposolicitud.getIdtiposolicitud(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tiposolicitud.getIdtiposolicitud(), loginController.getUsername(),
                     "create", "tiposolicitud", tiposolicitudRepository.toDocument(tiposolicitud).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -378,7 +378,7 @@ String action = loginController.get("tiposolicitud");
 
           
             //guarda el contenido actualizado
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(tiposolicitud.getIdtiposolicitud(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tiposolicitud.getIdtiposolicitud(), loginController.getUsername(),
                     "update", "tiposolicitud", tiposolicitudRepository.toDocument(tiposolicitud).toString()));
 
             tiposolicitudRepository.update(tiposolicitud);
@@ -398,7 +398,7 @@ String action = loginController.get("tiposolicitud");
             
             tiposolicitudSelected = tiposolicitud;
             if (tiposolicitudRepository.delete("idtiposolicitud", tiposolicitud.getIdtiposolicitud())) {
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(tiposolicitud.getIdtiposolicitud(), loginController.getUsername(), "delete", "tiposolicitud", tiposolicitudRepository.toDocument(tiposolicitud).toString()));
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tiposolicitud.getIdtiposolicitud(), loginController.getUsername(), "delete", "tiposolicitud", tiposolicitudRepository.toDocument(tiposolicitud).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {

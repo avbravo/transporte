@@ -15,7 +15,7 @@ import com.avbravo.transporte.roles.ValidadorRoles;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
-import com.avbravo.transporteejb.repository.AccessInfoRepository;
+import com.avbravo.transporteejb.repository.AccessInfoTransporteejbRepository;
 import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import java.util.logging.Logger;
@@ -51,7 +51,7 @@ public class LoginController implements Serializable, SecurityInterface {
     @Inject
     AccessInfoServices accessInfoServices;
     @Inject
-    AccessInfoRepository accessInfoRepository;
+    AccessInfoTransporteejbRepository accessInfoTransporteejbRepository;
     @Inject
     ResourcesFiles rf;
     @Inject
@@ -259,13 +259,13 @@ public class LoginController implements Serializable, SecurityInterface {
 
             }
             if (!isUserValid()) {
-                accessInfoRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.usernameorpasswordnotvalid")));
+                accessInfoTransporteejbRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.usernameorpasswordnotvalid")));
                 JsfUtil.warningMessage(rf.getAppMessage("login.usernameorpasswordnotvalid"));
                 return "";
 
             }
             saveUserInSession(username, 2100);
-            accessInfoRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.welcome")));
+            accessInfoTransporteejbRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.welcome")));
             loggedIn = true;
             foto = "img/me.jpg";
             JsfUtil.successMessage(rf.getAppMessage("login.welcome") + " " + usuario.getNombre());

@@ -15,9 +15,9 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ConductorDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.repository.ConductorRepository;
-import com.avbravo.transporteejb.repository.RevisionHistoryRepository;
+import com.avbravo.transporteejb.repository.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.services.ConductorServices;
-import com.avbravo.transporteejb.services.LookupServices;
+import com.avbravo.transporteejb.services.LookupTransporteejbServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -70,12 +70,12 @@ public class ConductorController implements Serializable, IController {
     @Inject
     ConductorRepository conductorRepository;
     @Inject
-    RevisionHistoryRepository revisionHistoryRepository;
+    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
      //Atributos para busquedas
     @Inject
-    LookupServices lookupServices;
+    LookupTransporteejbServices lookupTransporteejbServices;
     
     @Inject
     RevisionHistoryServices revisionHistoryServices;
@@ -103,12 +103,12 @@ public class ConductorController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupServices getLookupServices() {
-        return lookupServices;
+    public LookupTransporteejbServices getlookupTransporteejbServices() {
+        return lookupTransporteejbServices;
     }
 
-    public void setLookupServices(LookupServices lookupServices) {
-        this.lookupServices = lookupServices;
+    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+        this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
     
@@ -354,7 +354,7 @@ String action = loginController.get("conductor");
             conductor.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (conductorRepository.save(conductor)) {
                   //guarda el contenido anterior
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor(), loginController.getUsername(),
                     "create", "conductor", conductorRepository.toDocument(conductor).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -378,7 +378,7 @@ String action = loginController.get("conductor");
 
           
             //guarda el contenido actualizado
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor(), loginController.getUsername(),
                     "update", "conductor", conductorRepository.toDocument(conductor).toString()));
 
             conductorRepository.update(conductor);
@@ -398,7 +398,7 @@ String action = loginController.get("conductor");
             
             conductorSelected = conductor;
             if (conductorRepository.delete("idconductor", conductor.getIdconductor())) {
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor(), loginController.getUsername(), "delete", "conductor", conductorRepository.toDocument(conductor).toString()));
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor(), loginController.getUsername(), "delete", "conductor", conductorRepository.toDocument(conductor).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {

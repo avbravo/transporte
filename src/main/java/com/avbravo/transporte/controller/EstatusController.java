@@ -15,9 +15,9 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.EstatusDataModel;
 import com.avbravo.transporteejb.entity.Estatus;
 import com.avbravo.transporteejb.repository.EstatusRepository;
-import com.avbravo.transporteejb.repository.RevisionHistoryRepository;
+import com.avbravo.transporteejb.repository.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
-import com.avbravo.transporteejb.services.LookupServices;
+import com.avbravo.transporteejb.services.LookupTransporteejbServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -70,12 +70,12 @@ public class EstatusController implements Serializable, IController {
     @Inject
     EstatusRepository estatusRepository;
     @Inject
-    RevisionHistoryRepository revisionHistoryRepository;
+    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
      //Atributos para busquedas
     @Inject
-    LookupServices lookupServices;
+    LookupTransporteejbServices lookupTransporteejbServices;
     
     @Inject
     RevisionHistoryServices revisionHistoryServices;
@@ -103,12 +103,12 @@ public class EstatusController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupServices getLookupServices() {
-        return lookupServices;
+    public LookupTransporteejbServices getlookupTransporteejbServices() {
+        return lookupTransporteejbServices;
     }
 
-    public void setLookupServices(LookupServices lookupServices) {
-        this.lookupServices = lookupServices;
+    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+        this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
     
@@ -354,7 +354,7 @@ String action = loginController.get("estatus");
             estatus.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (estatusRepository.save(estatus)) {
                   //guarda el contenido anterior
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(),
                     "create", "estatus", estatusRepository.toDocument(estatus).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -378,7 +378,7 @@ String action = loginController.get("estatus");
 
           
             //guarda el contenido actualizado
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(),
                     "update", "estatus", estatusRepository.toDocument(estatus).toString()));
 
             estatusRepository.update(estatus);
@@ -398,7 +398,7 @@ String action = loginController.get("estatus");
             
             estatusSelected = estatus;
             if (estatusRepository.delete("idestatus", estatus.getIdestatus())) {
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(), "delete", "estatus", estatusRepository.toDocument(estatus).toString()));
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(), "delete", "estatus", estatusRepository.toDocument(estatus).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {

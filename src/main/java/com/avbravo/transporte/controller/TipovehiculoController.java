@@ -15,9 +15,9 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.TipovehiculoDataModel;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.repository.TipovehiculoRepository;
-import com.avbravo.transporteejb.repository.RevisionHistoryRepository;
+import com.avbravo.transporteejb.repository.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
-import com.avbravo.transporteejb.services.LookupServices;
+import com.avbravo.transporteejb.services.LookupTransporteejbServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -70,12 +70,12 @@ public class TipovehiculoController implements Serializable, IController {
     @Inject
     TipovehiculoRepository tipovehiculoRepository;
     @Inject
-    RevisionHistoryRepository revisionHistoryRepository;
+    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
      //Atributos para busquedas
     @Inject
-    LookupServices lookupServices;
+    LookupTransporteejbServices lookupTransporteejbServices;
     
     @Inject
     RevisionHistoryServices revisionHistoryServices;
@@ -103,12 +103,12 @@ public class TipovehiculoController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupServices getLookupServices() {
-        return lookupServices;
+    public LookupTransporteejbServices getlookupTransporteejbServices() {
+        return lookupTransporteejbServices;
     }
 
-    public void setLookupServices(LookupServices lookupServices) {
-        this.lookupServices = lookupServices;
+    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+        this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
     
@@ -354,7 +354,7 @@ String action = loginController.get("tipovehiculo");
             tipovehiculo.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (tipovehiculoRepository.save(tipovehiculo)) {
                   //guarda el contenido anterior
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(tipovehiculo.getIdtipovehiculo(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tipovehiculo.getIdtipovehiculo(), loginController.getUsername(),
                     "create", "tipovehiculo", tipovehiculoRepository.toDocument(tipovehiculo).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -378,7 +378,7 @@ String action = loginController.get("tipovehiculo");
 
           
             //guarda el contenido actualizado
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(tipovehiculo.getIdtipovehiculo(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tipovehiculo.getIdtipovehiculo(), loginController.getUsername(),
                     "update", "tipovehiculo", tipovehiculoRepository.toDocument(tipovehiculo).toString()));
 
             tipovehiculoRepository.update(tipovehiculo);
@@ -398,7 +398,7 @@ String action = loginController.get("tipovehiculo");
             
             tipovehiculoSelected = tipovehiculo;
             if (tipovehiculoRepository.delete("idtipovehiculo", tipovehiculo.getIdtipovehiculo())) {
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(tipovehiculo.getIdtipovehiculo(), loginController.getUsername(), "delete", "tipovehiculo", tipovehiculoRepository.toDocument(tipovehiculo).toString()));
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tipovehiculo.getIdtipovehiculo(), loginController.getUsername(), "delete", "tipovehiculo", tipovehiculoRepository.toDocument(tipovehiculo).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {

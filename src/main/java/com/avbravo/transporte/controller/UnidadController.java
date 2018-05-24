@@ -15,9 +15,9 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.UnidadDataModel;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.repository.UnidadRepository;
-import com.avbravo.transporteejb.repository.RevisionHistoryRepository;
+import com.avbravo.transporteejb.repository.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.services.UnidadServices;
-import com.avbravo.transporteejb.services.LookupServices;
+import com.avbravo.transporteejb.services.LookupTransporteejbServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -70,12 +70,12 @@ public class UnidadController implements Serializable, IController {
     @Inject
     UnidadRepository unidadRepository;
     @Inject
-    RevisionHistoryRepository revisionHistoryRepository;
+    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
      //Atributos para busquedas
     @Inject
-    LookupServices lookupServices;
+    LookupTransporteejbServices lookupTransporteejbServices;
     
     @Inject
     RevisionHistoryServices revisionHistoryServices;
@@ -103,12 +103,12 @@ public class UnidadController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupServices getLookupServices() {
-        return lookupServices;
+    public LookupTransporteejbServices getlookupTransporteejbServices() {
+        return lookupTransporteejbServices;
     }
 
-    public void setLookupServices(LookupServices lookupServices) {
-        this.lookupServices = lookupServices;
+    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+        this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
     
@@ -354,7 +354,7 @@ String action = loginController.get("unidad");
             unidad.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (unidadRepository.save(unidad)) {
                   //guarda el contenido anterior
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(),
                     "create", "unidad", unidadRepository.toDocument(unidad).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -378,7 +378,7 @@ String action = loginController.get("unidad");
 
           
             //guarda el contenido actualizado
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(),
                     "update", "unidad", unidadRepository.toDocument(unidad).toString()));
 
             unidadRepository.update(unidad);
@@ -398,7 +398,7 @@ String action = loginController.get("unidad");
             
             unidadSelected = unidad;
             if (unidadRepository.delete("idunidad", unidad.getIdunidad())) {
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(), "delete", "unidad", unidadRepository.toDocument(unidad).toString()));
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(), "delete", "unidad", unidadRepository.toDocument(unidad).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
