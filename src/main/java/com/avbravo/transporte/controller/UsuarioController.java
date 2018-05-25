@@ -329,9 +329,9 @@ public class UsuarioController implements Serializable, IController {
 
                 case "view":
                     if (item.length != 0) {
-                        usuarioSelected = (Usuario) item[0];
-                        rolList = usuario.getRol();
+                        usuarioSelected = (Usuario) item[0];                       
                         usuario = usuarioSelected;
+                         rolList = usuario.getRol();
                         loginController.put("username", usuario.getUsername());
                     }
 

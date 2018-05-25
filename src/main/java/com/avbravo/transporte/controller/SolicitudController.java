@@ -14,10 +14,13 @@ import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.entity.Solicitud;
+import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.RevisionHistoryTransporteejbRepository;
+import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.LookupTransporteejbServices;
+import com.avbravo.transporteejb.services.TiposolicitudServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -25,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.PostConstruct;
+import javax.faces.component.UIComponent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,7 +37,7 @@ import org.bson.Document;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
- 
+
 /**
  *
  * @authoravbravo
@@ -50,11 +54,10 @@ public class SolicitudController implements Serializable, IController {
     private Boolean writable = false;
     //DataModel
     private SolicitudDataModel solicitudDataModel;
-    
 
     Integer page = 1;
     Integer rowPage = 25;
- 
+
     List<Integer> pages = new ArrayList<>();
     //
 
@@ -65,24 +68,30 @@ public class SolicitudController implements Serializable, IController {
     //List
     List<Solicitud> solicitudList = new ArrayList<>();
     List<Solicitud> solicitudFiltered = new ArrayList<>();
+    List<Unidad> unidadList = new ArrayList<>();
 
     //Repository
+    @Inject
+    UnidadRepository unidadRepository;
     @Inject
     SolicitudRepository solicitudRepository;
     @Inject
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
-     //Atributos para busquedas
+    //Atributos para busquedas
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
-    
+
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
     UserInfoServices userInfoServices;
     @Inject
     SolicitudServices solicitudServices;
+    
+    @Inject
+    TiposolicitudServices tiposolicitudServices;
     @Inject
     ResourcesFiles rf;
     @Inject
@@ -103,6 +112,24 @@ public class SolicitudController implements Serializable, IController {
         this.pages = pages;
     }
 
+    public List<Unidad> getUnidadList() {
+        return unidadList;
+    }
+
+    public TiposolicitudServices getTiposolicitudServices() {
+        return tiposolicitudServices;
+    }
+
+    public void setTiposolicitudServices(TiposolicitudServices tiposolicitudServices) {
+        this.tiposolicitudServices = tiposolicitudServices;
+    }
+
+    
+    
+    public void setUnidadList(List<Unidad> unidadList) {
+        this.unidadList = unidadList;
+    }
+
     public LookupTransporteejbServices getlookupTransporteejbServices() {
         return lookupTransporteejbServices;
     }
@@ -111,8 +138,6 @@ public class SolicitudController implements Serializable, IController {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
-    
-    
     public Integer getPage() {
         return page;
     }
@@ -203,10 +228,10 @@ public class SolicitudController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-String action = loginController.get("solicitud");
+            String action = loginController.get("solicitud");
             String id = loginController.get("idsolicitud");
             String pageSession = loginController.get("pagesolicitud");
-                //Search
+            //Search
             loginController.put("searchsolicitud", "_init");
             writable = false;
 
@@ -214,25 +239,25 @@ String action = loginController.get("solicitud");
             solicitudFiltered = new ArrayList<>();
             solicitud = new Solicitud();
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-          
-            
+
             if (id != null) {
                 Optional<Solicitud> optional = solicitudRepository.find("idsolicitud", id);
-                 if (optional.isPresent()) {
+                if (optional.isPresent()) {
                     solicitud = optional.get();
+                    unidadList = solicitud.getUnidad();
+
                     solicitudSelected = solicitud;
                     writable = true;
-                      
+
                 }
-            } 
-           if (action != null && action.equals("gonew")) {
+            }
+            if (action != null && action.equals("gonew")) {
                 solicitud = new Solicitud();
                 solicitudSelected = solicitud;
-                writable =false;
+                writable = false;
 
             }
-            if (pageSession != null) 
-            {
+            if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = solicitudRepository.sizeOfPage(rowPage);
@@ -257,7 +282,7 @@ String action = loginController.get("solicitud");
     public String prepare(String action, Object... item) {
         String url = "";
         try {
-              loginController.put("pagesolicitud", page.toString());
+            loginController.put("pagesolicitud", page.toString());
             loginController.put("solicitud", action);
 
             switch (action) {
@@ -270,23 +295,23 @@ String action = loginController.get("solicitud");
 
                 case "view":
                     if (item.length != 0) {
-                        solicitudSelected = (Solicitud) item[0];
+                        solicitudSelected = (Solicitud) item[0];                  
                         solicitud = solicitudSelected;
+                               unidadList = solicitud.getUnidad();
                         loginController.put("idsolicitud", solicitud.getIdsolicitud().toString());
                     }
 
                     url = "/pages/solicitud/view.xhtml";
                     break;
-                    
+
                 case "golist":
                     url = "/pages/solicitud/list.xhtml";
                     break;
-                    
+
                 case "gonew":
                     url = "/pages/solicitud/new.xhtml";
                     break;
-                    
-                    
+
             }
 
         } catch (Exception e) {
@@ -328,9 +353,10 @@ String action = loginController.get("solicitud");
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return "";
             } else {
-                Integer  id = solicitud.getIdsolicitud();
+                Integer id = solicitud.getIdsolicitud();
                 solicitud = new Solicitud();
                 solicitud.setIdsolicitud(id);
+               unidadList = new ArrayList<>();
                 solicitudSelected = new Solicitud();
             }
 
@@ -346,16 +372,16 @@ String action = loginController.get("solicitud");
         try {
             Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
             if (optional.isPresent()) {
-               JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
-
+solicitud.setUnidad(unidadList);
             //Lo datos del usuario
             solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
-                  //guarda el contenido anterior
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
-                    "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+                //guarda el contenido anterior
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
+                        "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
@@ -373,10 +399,9 @@ String action = loginController.get("solicitud");
     @Override
     public String edit() {
         try {
-
+solicitud.setUnidad(unidadList);
             solicitud.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
-          
             //guarda el contenido actualizado
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
@@ -395,7 +420,7 @@ String action = loginController.get("solicitud");
         String path = "";
         try {
             solicitud = (Solicitud) item;
-            
+
             solicitudSelected = solicitud;
             if (solicitudRepository.delete("idsolicitud", solicitud.getIdsolicitud())) {
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(), "delete", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
@@ -420,8 +445,8 @@ String action = loginController.get("solicitud");
         } catch (Exception e) {
             JsfUtil.errorMessage("delete() " + e.getLocalizedMessage());
         }
-       // path = deleteonviewpage ? "/pages/solicitud/list.xhtml" : "";
-       path="";
+        // path = deleteonviewpage ? "/pages/solicitud/list.xhtml" : "";
+        path = "";
         return path;
     }// </editor-fold>
 
@@ -438,7 +463,7 @@ String action = loginController.get("solicitud");
     @Override
     public String print() {
         try {
-             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pagesolicitud", page.toString());
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pagesolicitud", page.toString());
             List<Solicitud> list = new ArrayList<>();
             list.add(solicitud);
             String ruta = "/resources/reportes/solicitud/details.jasper";
@@ -455,9 +480,9 @@ String action = loginController.get("solicitud");
     @Override
     public String printAll() {
         try {
-             List<Solicitud> list = new ArrayList<>();
-            list = solicitudRepository.findAll(new Document("idsolicitud",1));
-           
+            List<Solicitud> list = new ArrayList<>();
+            list = solicitudRepository.findAll(new Document("idsolicitud", 1));
+
             String ruta = "/resources/reportes/solicitud/all.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
@@ -475,7 +500,7 @@ String action = loginController.get("solicitud");
             solicitudList.add(solicitudSelected);
             solicitudFiltered = solicitudList;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-             loginController.put("searchsolicitud", "_autocomplete");
+            loginController.put("searchsolicitud", "_autocomplete");
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -548,32 +573,29 @@ String action = loginController.get("solicitud");
 
     @Override
     public void move() {
-     
 
-              try {
+        try {
 
-          
-                Document doc;
-                switch (loginController.get("searchsolicitud")) {
-                    case "_init":
-                         solicitudList = solicitudRepository.findPagination(page, rowPage);
+            Document doc;
+            switch (loginController.get("searchsolicitud")) {
+                case "_init":
+                    solicitudList = solicitudRepository.findPagination(page, rowPage);
 
-                        break;
-                    case "_autocomplete":
-                        //no se realiza ninguna accion 
-                        break;
-              
-                    case "idsolicitud":
-                        doc = new Document("idsolicitud", solicitud.getIdsolicitud());
-                        solicitudList = solicitudRepository.findFilterPagination(doc, page, rowPage, new Document("idsolicitud", -1));
-                        break;
-                  
-                    default:
+                    break;
+                case "_autocomplete":
+                    //no se realiza ninguna accion 
+                    break;
 
-                     solicitudList = solicitudRepository.findPagination(page, rowPage);
-                        break;
-                }
-            
+                case "idsolicitud":
+                    doc = new Document("idsolicitud", solicitud.getIdsolicitud());
+                    solicitudList = solicitudRepository.findFilterPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+                    break;
+
+                default:
+
+                    solicitudList = solicitudRepository.findPagination(page, rowPage);
+                    break;
+            }
 
             solicitudFiltered = solicitudList;
 
@@ -584,7 +606,7 @@ String action = loginController.get("solicitud");
         }
     }// </editor-fold>
 
-   // <editor-fold defaultstate="collapsed" desc="clear">
+    // <editor-fold defaultstate="collapsed" desc="clear">
     @Override
     public String clear() {
         try {
@@ -597,14 +619,13 @@ String action = loginController.get("solicitud");
         return "";
     }// </editor-fold>
 
-
-  // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
+    // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
     @Override
     public String searchBy(String string) {
         try {
 
-            loginController.put("searchsolicitud", string);      
-      
+            loginController.put("searchsolicitud", string);
+
             writable = true;
             move();
 
@@ -614,5 +635,46 @@ String action = loginController.get("solicitud");
         return "";
     }// </editor-fold>
 
+// <editor-fold defaultstate="collapsed" desc="complete(String query)">
+    public List<Unidad> completeFiltrado(String query) {
+        List<Unidad> suggestions = new ArrayList<>();
+        List<Unidad> temp = new ArrayList<>();
+        try {
+                Boolean found = false;
+            query = query.trim();
+            if (query.length() < 1) {
+                return suggestions;
+            }
+            
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            temp = unidadRepository.findRegex(field, query, true, new Document(field, 1));
+            if (unidadList.isEmpty()) {
+                if (!temp.isEmpty()) {
+                    suggestions = temp;
+                }
+            } else {
+                if (!temp.isEmpty()) {
+
+                    for (Unidad r : temp) {
+                        found = false;
+                        for (Unidad r2 : unidadList) {
+                            if (r.getIdunidad().equals(r2.getIdunidad())) {
+                                found = true;
+                            }
+                        }
+                        if (!found) {
+                            suggestions.add(r);
+                        }
+
+                    }
+                }
+
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("complete() " + e.getLocalizedMessage());
+        }
+        return suggestions;
+    }// </editor-fold>
 
 }
