@@ -10,6 +10,8 @@
 
         <composite:attribute name="value" />
         <composite:attribute name="itemLabel" />
+            <composite:attribute name="dropdown"  default="false"/>
+         <composite:attribute name="minQueryLength"  default="1"/>
         <composite:attribute name="multiple" default="false" />
         <composite:attribute name="update" />
         <composite:attribute name="rendered"/>
@@ -22,7 +24,7 @@
     </composite:interface>
     <composite:implementation>
 
-        <p:autoComplete     dropdown="false"    
+        <p:autoComplete     dropdown="#{cc.attrs.dropdown}"    
                             scrollHeight="250"  
                              size="#{cc.attrs.size}" 
                                 multiple="#{cc.attrs.multiple}" 
@@ -36,6 +38,8 @@
                             forceSelection="true"> 
             <f:converter binding="#{estatusConverter}"/>
             <f:attribute name="field" value="#{cc.attrs.field}"/>
+            <f:attribute name="fielddropdown" value="#{cc.attrs.dropdown}"/>
+            <f:attribute name="fieldquerylenth" value="#{cc.attrs.minQueryLength}"/>
             <p:ajax event="itemSelect" listener="#{cc.attrs.listener}"
                     update="#{cc.attrs.update}" />  
             <f:facet name="itemtip">
