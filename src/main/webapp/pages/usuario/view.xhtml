@@ -81,6 +81,8 @@
                                             itemValue="#{p}" forceSelection="true"> 
                             <f:converter binding="#{rolConverter}"/>
                             <f:attribute name="field" value="idrol"/>
+                              <f:attribute name="fielddropdown" value="false"/>
+                            <f:attribute name="fieldquerylenth" value="1"/>
                             <p:ajax event="itemSelect" listener="#{rolController.handleSelect}"
                                     />  
                             <f:facet name="itemtip">

@@ -52,31 +52,31 @@
                         <p:outputLabel  value="#{msg['field.passwordnuevorepetir']}" />
                         <a:password value="#{usuarioController.passwordnewrepeat}" id="passwordrepetido"  label="#{msg['field.passwordnuevorepetir']}" />
 
- <p:outputLabel  value="#{msg['field.cedula']}" />
+                        <p:outputLabel  value="#{msg['field.cedula']}" />
                         <a:inputText value="#{usuarioController.usuario.cedula}" id="cedula" span="4" label="#{msg['field.cedula']}" />
-                        
-                         <p:outputLabel  value="#{msg['field.celular']}" />
+
+                        <p:outputLabel  value="#{msg['field.celular']}" />
                         <a:inputText value="#{usuarioController.usuario.celular}" id="celular" span="4" label="#{msg['field.celular']}" />
 
                         <p:outputLabel  value="#{msg['field.email']}" />
                         <a:email value="#{usuarioController.usuario.email}" id="email"  label="#{msg['field.email']}" />
 
-                       
+
 
 
                         <p:outputLabel  value="#{msg['field.cargo']}" />
                         <a:inputText value="#{usuarioController.usuario.cargo}" id="cargo"  label="#{msg['field.cargo']}" />
 
-   <p:outputLabel  value="#{msg['field.unidad']}" />
-                           <a:selectOneMenu
+                        <p:outputLabel  value="#{msg['field.unidad']}" />
+                        <a:selectOneMenu
                             id="unidad"
                             value="#{usuarioController.usuario.unidad}" 
                             requiredMessage="#{msg['field.idunidad']}"
                             selectItemsValue="#{usuarioController.unidadServices.unidadList}"
                             selectItemsLabel="#{item.idunidad}"
-                            
+
                             />
-                        
+
                         <p:outputLabel  value="#{msg['field.rol']}" />
                         <p:autoComplete     dropdown="false"   
 
@@ -92,6 +92,8 @@
                                             itemValue="#{p}" forceSelection="true"> 
                             <f:converter binding="#{rolConverter}"/>
                             <f:attribute name="field" value="idrol"/>
+                            <f:attribute name="fielddropdown" value="false"/>
+                            <f:attribute name="fieldquerylenth" value="1"/>
                             <p:ajax event="itemSelect" listener="#{rolController.handleSelect}"
                                     />  
                             <f:facet name="itemtip">
