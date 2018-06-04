@@ -309,6 +309,10 @@ public class LoginController implements Serializable, SecurityInterface {
                     JsfUtil.successMessage(rf.getAppMessage("login.passwordnotvalid"));
                     return false;
                 }
+                if (usuario.getActivo().equals("no")) {
+                    JsfUtil.successMessage(rf.getAppMessage("login.usuarioinactivo"));
+                    return false;
+                }
                 //Valida los roles del usuario si coincide con el seleccionado
                 Boolean foundrol = false;
                 for (Rol r : usuario.getRol()) {
