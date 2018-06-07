@@ -249,12 +249,11 @@ String action = loginController.get("conductor");
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new");
+        prepare("new",conductor);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-    @Override
-    public String prepare(String action, Object... item) {
+    public String prepare(String action, Conductor item) {
         String url = "";
         try {
               loginController.put("pageconductor", page.toString());
@@ -269,11 +268,11 @@ String action = loginController.get("conductor");
                     break;
 
                 case "view":
-                    if (item.length != 0) {
-                        conductorSelected = (Conductor) item[0];
+                   
+                        conductorSelected = item;
                         conductor = conductorSelected;
                         loginController.put("idconductor", conductor.getIdconductor());
-                    }
+           
 
                     url = "/pages/conductor/view.xhtml";
                     break;

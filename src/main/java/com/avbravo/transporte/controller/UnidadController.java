@@ -249,12 +249,12 @@ String action = loginController.get("unidad");
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new");
+        prepare("new",unidad);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-    @Override
-    public String prepare(String action, Object... item) {
+
+    public String prepare(String action, Unidad item) {
         String url = "";
         try {
               loginController.put("pageunidad", page.toString());
@@ -269,11 +269,11 @@ String action = loginController.get("unidad");
                     break;
 
                 case "view":
-                    if (item.length != 0) {
-                        unidadSelected = (Unidad) item[0];
+                   
+                        unidadSelected = item;
                         unidad = unidadSelected;
                         loginController.put("idunidad", unidad.getIdunidad());
-                    }
+                 
 
                     url = "/pages/unidad/view.xhtml";
                     break;

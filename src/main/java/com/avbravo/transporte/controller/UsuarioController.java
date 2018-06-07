@@ -309,12 +309,12 @@ public class UsuarioController implements Serializable, IController {
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new");
+        prepare("new",usuario);
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
 
-    @Override
-    public String prepare(String action, Object... item) {
+    
+    public String prepare(String action, Usuario item) {
         String url = "";
         try {
             loginController.put("pageusuario", page.toString());
@@ -328,12 +328,12 @@ public class UsuarioController implements Serializable, IController {
                     break;
 
                 case "view":
-                    if (item.length != 0) {
-                        usuarioSelected = (Usuario) item[0];                       
+                  
+                        usuarioSelected = item;                       
                         usuario = usuarioSelected;
                          rolList = usuario.getRol();
                         loginController.put("username", usuario.getUsername());
-                    }
+                  
 
                     url = "/pages/usuario/view.xhtml";
                     break;

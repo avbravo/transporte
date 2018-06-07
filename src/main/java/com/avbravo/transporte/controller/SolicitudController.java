@@ -274,12 +274,12 @@ public class SolicitudController implements Serializable, IController {
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new");
+        prepare("new",solicitud);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-    @Override
-    public String prepare(String action, Object... item) {
+  
+    public String prepare(String action, Solicitud item) {
         String url = "";
         try {
             loginController.put("pagesolicitud", page.toString());
@@ -294,12 +294,12 @@ public class SolicitudController implements Serializable, IController {
                     break;
 
                 case "view":
-                    if (item.length != 0) {
-                        solicitudSelected = (Solicitud) item[0];                  
+                 
+                        solicitudSelected = item;                  
                         solicitud = solicitudSelected;
                                unidadList = solicitud.getUnidad();
                         loginController.put("idsolicitud", solicitud.getIdsolicitud().toString());
-                    }
+               
 
                     url = "/pages/solicitud/view.xhtml";
                     break;

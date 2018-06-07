@@ -249,12 +249,12 @@ String action = loginController.get("estatus");
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new");
+        prepare("new",estatus);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-    @Override
-    public String prepare(String action, Object... item) {
+
+    public String prepare(String action, Estatus item) {
         String url = "";
         try {
               loginController.put("pageestatus", page.toString());
@@ -269,11 +269,11 @@ String action = loginController.get("estatus");
                     break;
 
                 case "view":
-                    if (item.length != 0) {
-                        estatusSelected = (Estatus) item[0];
+               
+                        estatusSelected =  item;
                         estatus = estatusSelected;
                         loginController.put("idestatus", estatus.getIdestatus());
-                    }
+                  
 
                     url = "/pages/estatus/view.xhtml";
                     break;

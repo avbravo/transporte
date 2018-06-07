@@ -250,12 +250,12 @@ public class RolController implements Serializable, IController {
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new");
+        prepare("new",rol);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-    @Override
-    public String prepare(String action, Object... item) {
+
+    public String prepare(String action, Rol item) {
         String url = "";
         try {
             loginController.put("pagerol", page.toString());
@@ -269,11 +269,11 @@ public class RolController implements Serializable, IController {
                     break;
 
                 case "view":
-                    if (item.length != 0) {
-                        rolSelected = (Rol) item[0];
+                   
+                        rolSelected =  item;
                         rol = rolSelected;
                         loginController.put("idrol", rol.getIdrol());
-                    }
+                 
 
                     url = "/pages/rol/view.xhtml";
                     break;
