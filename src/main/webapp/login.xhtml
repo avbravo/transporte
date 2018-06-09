@@ -56,6 +56,8 @@
                 <b:commandButton look="primary btn-block" value="#{app['button.login']}" 
                                  action="#{loginController.doLogin()}" icon="log-in" size="lg"
                                  update=":form:growl"/>
+              
+              <p:outputLabel value="#{msg['application.version']}" style="color: white"/>
 
                 <p:confirmDialog widgetVar="sessionDialog" closable="false" global="true" showEffect="fade" hideEffect="fade" 
                                  message="#{app['session.procederacerrar']}">
