@@ -40,24 +40,26 @@
             <b:panelGrid  columns="#{cc.attrs.columns}" size="xs" colSpans="1,11"> 
 
                 <p:outputLabel value="#{cc.attrs.label}"/>
-                <b:inputText                              placeholder="#{app['info.ingresenuevodato']}"
-                             value="#{cc.attrs.value}" 
-                             disabled="#{cc.attrs.disabled}" 
-                             readonly="#{cc.attrs.readonly}" 
-                             required="false"
-                             requiredMessage="#{cc.attrs.label} #{app['info.required']}"
-                             immediate="true"
-                             onkeypress="if (event.keyCode == 13) {
+                <b:inputText          
+                    style="text-transform: uppercase"
+                    placeholder="#{app['info.ingresenuevodato']}"
+                    value="#{cc.attrs.value}" 
+                    disabled="#{cc.attrs.disabled}" 
+                    readonly="#{cc.attrs.readonly}" 
+                    required="false"
+                    requiredMessage="#{cc.attrs.label} #{app['info.required']}"
+                    immediate="true"
+                    onkeypress="if (event.keyCode == 13) {
                                          remoteid();
                                          return false;
                                      }">
                     <f:facet name="prepend">
                         <b:commandButton  iconAwesome="fa-plus"         
-                                         
+
                                           look="success"
                                           title="#{app['button.new']}"
                                           action="#{cc.attrs.new}"  update=":form:content" > 
-                                <f:ajax />
+                            <f:ajax />
                         </b:commandButton>
 
                     </f:facet>
@@ -75,8 +77,8 @@
                 </b:inputText>
 
                 <p:outputLabel  value="#{cc.attrs.label2}" />
-                    <p:outputLabel value="#{cc.attrs.value2}"/>
-                
+                <p:outputLabel value="#{cc.attrs.value2}"/>
+
 
 
             </b:panelGrid>
