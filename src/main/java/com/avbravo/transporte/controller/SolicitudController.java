@@ -301,15 +301,15 @@ public class SolicitudController implements Serializable, IController {
                         loginController.put("idsolicitud", solicitud.getIdsolicitud().toString());
                
 
-                    url = "/pages/solicitud/view.xhtml";
+                    url = "/pages/solicituddocente/view.xhtml";
                     break;
 
                 case "golist":
-                    url = "/pages/solicitud/list.xhtml";
+                    url = "/pages/solicituddocente/list.xhtml";
                     break;
 
                 case "gonew":
-                    url = "/pages/solicitud/new.xhtml";
+                    url = "/pages/solicituddocente/new.xhtml";
                     break;
 
             }
