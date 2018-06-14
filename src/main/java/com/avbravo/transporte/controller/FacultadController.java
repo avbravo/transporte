@@ -322,6 +322,8 @@ String action = loginController.get("facultad");
                 writable = false;
                 return "";
             }
+            
+            
             Optional<Facultad> optional = facultadRepository.findById(facultad);
             if (optional.isPresent()) {
                 writable = false;

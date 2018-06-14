@@ -335,6 +335,7 @@ String action = loginController.get("vehiculo");
                 writable = false;
                 return "";
             }
+            vehiculo.setIdvehiculo(vehiculo.getIdvehiculo().toUpperCase());
             Optional<Vehiculo> optional = vehiculoRepository.findById(vehiculo);
             if (optional.isPresent()) {
                 writable = false;
@@ -358,6 +359,7 @@ String action = loginController.get("vehiculo");
     @Override
     public String save() {
         try {
+            vehiculo.setIdvehiculo(vehiculo.getIdvehiculo().toUpperCase());
             Optional<Vehiculo> optional = vehiculoRepository.findById(vehiculo);
             if (optional.isPresent()) {
                JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));

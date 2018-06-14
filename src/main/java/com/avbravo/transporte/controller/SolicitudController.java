@@ -346,6 +346,7 @@ public class SolicitudController implements Serializable, IController {
                 writable = false;
                 return "";
             }
+            
             Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
             if (optional.isPresent()) {
                 writable = false;

@@ -320,6 +320,7 @@ String action = loginController.get("conductor");
                 writable = false;
                 return "";
             }
+            conductor.setIdconductor(conductor.getIdconductor().toUpperCase());
             Optional<Conductor> optional = conductorRepository.findById(conductor);
             if (optional.isPresent()) {
                 writable = false;
@@ -343,6 +344,7 @@ String action = loginController.get("conductor");
     @Override
     public String save() {
         try {
+            conductor.setIdconductor(conductor.getIdconductor().toUpperCase());
             Optional<Conductor> optional = conductorRepository.findById(conductor);
             if (optional.isPresent()) {
                JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));

@@ -321,6 +321,7 @@ String action = loginController.get("estatus");
                 writable = false;
                 return "";
             }
+            estatus.setIdestatus(estatus.getIdestatus().toUpperCase());
             Optional<Estatus> optional = estatusRepository.findById(estatus);
             if (optional.isPresent()) {
                 writable = false;
@@ -344,6 +345,7 @@ String action = loginController.get("estatus");
     @Override
     public String save() {
         try {
+            estatus.setIdestatus(estatus.getIdestatus().toUpperCase());
             Optional<Estatus> optional = estatusRepository.findById(estatus);
             if (optional.isPresent()) {
                JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));

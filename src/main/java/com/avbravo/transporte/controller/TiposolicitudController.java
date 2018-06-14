@@ -321,6 +321,7 @@ String action = loginController.get("tiposolicitud");
                 writable = false;
                 return "";
             }
+            tiposolicitud.setIdtiposolicitud(tiposolicitud.getIdtiposolicitud().toUpperCase());
             Optional<Tiposolicitud> optional = tiposolicitudRepository.findById(tiposolicitud);
             if (optional.isPresent()) {
                 writable = false;
@@ -344,6 +345,7 @@ String action = loginController.get("tiposolicitud");
     @Override
     public String save() {
         try {
+            tiposolicitud.setIdtiposolicitud(tiposolicitud.getIdtiposolicitud().toUpperCase());
             Optional<Tiposolicitud> optional = tiposolicitudRepository.findById(tiposolicitud);
             if (optional.isPresent()) {
                JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));

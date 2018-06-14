@@ -321,7 +321,7 @@ public class RolController implements Serializable, IController {
                 writable=false;
                 return "";
             }
-             
+             rol.setIdrol(rol.getIdrol().toUpperCase());
             Optional<Rol> optional = rolRepository.findById(rol);
             if (optional.isPresent()) {
                 writable = false;
@@ -345,6 +345,7 @@ public class RolController implements Serializable, IController {
     @Override
     public String save() {
         try {
+            rol.setIdrol(rol.getIdrol().toUpperCase());
             Optional<Rol> optional = rolRepository.findById(rol);
             if (optional.isPresent()) {
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));

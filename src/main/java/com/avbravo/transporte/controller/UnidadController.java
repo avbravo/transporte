@@ -321,6 +321,7 @@ String action = loginController.get("unidad");
                 writable = false;
                 return "";
             }
+            unidad.setIdunidad(unidad.getIdunidad().toUpperCase());
             Optional<Unidad> optional = unidadRepository.findById(unidad);
             if (optional.isPresent()) {
                 writable = false;
@@ -344,6 +345,7 @@ String action = loginController.get("unidad");
     @Override
     public String save() {
         try {
+            unidad.setIdunidad(unidad.getIdunidad().toUpperCase());
             Optional<Unidad> optional = unidadRepository.findById(unidad);
             if (optional.isPresent()) {
                JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));
