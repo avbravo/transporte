@@ -17,7 +17,7 @@
         <composite:attribute name="rendered"/>
          <composite:attribute name="required" default="false" />
         <composite:attribute name="field"/>
-        <composite:attribute name="typefield" default="String"/>
+        <composite:attribute name="fromstart" default="true"/>
          <composite:attribute name="size"  default="25"/>
         <composite:attribute name="listener"  
                              method-signature="void handleSelect(org.primefaces.event.SelectEvent)" />
@@ -39,7 +39,7 @@
                             forceSelection="true"> 
             <f:converter binding="#{vehiculoConverter}"/>
             <f:attribute name="field" value="#{cc.attrs.field}"/>
-               <f:attribute name="typefield" value="#{cc.attrs.typefield}"/>
+               <f:attribute name="typefield" value="#{cc.attrs.fromstart}"/>
                <f:attribute name="fielddropdown" value="#{cc.attrs.dropdown}"/>
             <f:attribute name="fieldquerylenth" value="#{cc.attrs.minQueryLength}"/>
             <p:ajax event="itemSelect" listener="#{cc.attrs.listener}"
