@@ -342,24 +342,24 @@ public class SolicitudController implements Serializable, IController {
     public String isNew() {
         try {
             writable = true;
-            if (JsfUtil.isVacio(solicitud.getIdsolicitud())) {
-                writable = false;
-                return "";
-            }
+//            if (JsfUtil.isVacio(solicitud.getIdsolicitud())) {
+//                writable = false;
+//                return "";
+//            }
             
-            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
-            if (optional.isPresent()) {
-                writable = false;
-
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return "";
-            } else {
+//            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
+//            if (optional.isPresent()) {
+//                writable = false;
+//
+//                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
+//                return "";
+//            } else {
                 Integer id = solicitud.getIdsolicitud();
                 solicitud = new Solicitud();
                 solicitud.setIdsolicitud(id);
                unidadList = new ArrayList<>();
                 solicitudSelected = new Solicitud();
-            }
+//            }
 
         } catch (Exception e) {
             JsfUtil.errorMessage("isNew()" + e.getLocalizedMessage());
