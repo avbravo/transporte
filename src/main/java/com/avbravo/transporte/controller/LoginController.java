@@ -15,7 +15,7 @@ import com.avbravo.transporte.roles.ValidadorRoles;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
-import com.avbravo.transporteejb.repository.AccessInfoTransporteejbRepository;
+import com.avbravo.transporteejb.producer.AccessInfoTransporteejbRepository;
 import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import java.util.logging.Logger;

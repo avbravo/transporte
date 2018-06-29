@@ -15,11 +15,11 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Unidad;
+import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
+import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
-import com.avbravo.transporteejb.repository.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.services.SolicitudServices;
-import com.avbravo.transporteejb.services.LookupTransporteejbServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 
 import java.util.ArrayList;

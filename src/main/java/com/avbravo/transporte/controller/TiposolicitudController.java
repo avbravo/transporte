@@ -14,10 +14,10 @@ import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.TiposolicitudDataModel;
 import com.avbravo.transporteejb.entity.Tiposolicitud;
+import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
+import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.TiposolicitudRepository;
-import com.avbravo.transporteejb.repository.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
-import com.avbravo.transporteejb.services.LookupTransporteejbServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
