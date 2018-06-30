@@ -14,7 +14,7 @@ import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.EstatusDataModel;
 import com.avbravo.transporteejb.entity.Estatus;
-import com.avbravo.transporteejb.producer.IntegerirdadreferencialTransporteejbServices;
+import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.EstatusRepository;
@@ -76,7 +76,7 @@ public class EstatusController implements Serializable, IController {
     //Services
      //Atributos para busquedas
     @Inject
-     IntegerirdadreferencialTransporteejbServices integerirdadreferencialTransporteejbServices;
+     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
     

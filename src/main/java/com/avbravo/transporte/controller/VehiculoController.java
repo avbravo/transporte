@@ -14,7 +14,7 @@ import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.VehiculoDataModel;
 import com.avbravo.transporteejb.entity.Vehiculo;
-import com.avbravo.transporteejb.producer.IntegerirdadreferencialTransporteejbServices;
+import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
@@ -77,7 +77,7 @@ public class VehiculoController implements Serializable, IController {
     //Services
      //Atributos para busquedas
      @Inject
-     IntegerirdadreferencialTransporteejbServices integerirdadreferencialTransporteejbServices;
+     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
     @Inject

@@ -15,7 +15,7 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Unidad;
-import com.avbravo.transporteejb.producer.IntegerirdadreferencialTransporteejbServices;
+import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
@@ -82,7 +82,7 @@ public class SolicitudController implements Serializable, IController {
     //Services
     //Atributos para busquedas
     @Inject
-     IntegerirdadreferencialTransporteejbServices integerirdadreferencialTransporteejbServices;
+     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
 
