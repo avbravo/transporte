@@ -16,6 +16,7 @@ import com.avbravo.ejbjmoordb.interfaces.IController;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.transporteejb.producer.IntegerirdadreferencialTransporteejbServices;
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 
@@ -33,7 +34,7 @@ import org.bson.Document;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
- 
+
 /**
  *
  * @authoravbravo
@@ -50,11 +51,10 @@ public class FacultadController implements Serializable, IController {
     private Boolean writable = false;
     //DataModel
     private FacultadDataModel facultadDataModel;
-    
 
     Integer page = 1;
     Integer rowPage = 25;
- 
+
     List<Integer> pages = new ArrayList<>();
     //
 
@@ -73,10 +73,12 @@ public class FacultadController implements Serializable, IController {
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
-     //Atributos para busquedas
+    //Atributos para busquedas
+    @Inject
+    IntegerirdadreferencialTransporteejbServices integerirdadreferencialTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
-    
+
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -111,8 +113,6 @@ public class FacultadController implements Serializable, IController {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
-    
-    
     public Integer getPage() {
         return page;
     }
@@ -203,10 +203,10 @@ public class FacultadController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-String action = loginController.get("facultad");
+            String action = loginController.get("facultad");
             String id = loginController.get("idfacultad");
             String pageSession = loginController.get("pagefacultad");
-                //Search
+            //Search
             loginController.put("searchfacultad", "_init");
             writable = false;
 
@@ -214,26 +214,24 @@ String action = loginController.get("facultad");
             facultadFiltered = new ArrayList<>();
             facultad = new Facultad();
             facultadDataModel = new FacultadDataModel(facultadList);
-          
-            
+
             if (id != null) {
-                
+
                 Optional<Facultad> optional = facultadRepository.find("idfacultad", Integer.parseInt(id));
-                 if (optional.isPresent()) {
+                if (optional.isPresent()) {
                     facultad = optional.get();
                     facultadSelected = facultad;
                     writable = true;
-                      
+
                 }
-            } 
-           if (action != null && action.equals("gonew")) {
+            }
+            if (action != null && action.equals("gonew")) {
                 facultad = new Facultad();
                 facultadSelected = facultad;
-                writable =false;
+                writable = false;
 
             }
-            if (pageSession != null) 
-            {
+            if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = facultadRepository.sizeOfPage(rowPage);
@@ -250,15 +248,14 @@ String action = loginController.get("facultad");
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new",facultad);
+        prepare("new", facultad);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-    
     public String prepare(String action, Facultad item) {
         String url = "";
         try {
-              loginController.put("pagefacultad", page.toString());
+            loginController.put("pagefacultad", page.toString());
             loginController.put("facultad", action);
 
             switch (action) {
@@ -270,24 +267,22 @@ String action = loginController.get("facultad");
                     break;
 
                 case "view":
-    
-                        facultadSelected = item;
-                        facultad = facultadSelected;
-                        loginController.put("idfacultad", facultad.getIdfacultad().toString());
-                   
+
+                    facultadSelected = item;
+                    facultad = facultadSelected;
+                    loginController.put("idfacultad", facultad.getIdfacultad().toString());
 
                     url = "/pages/facultad/view.xhtml";
                     break;
-                    
+
                 case "golist":
                     url = "/pages/facultad/list.xhtml";
                     break;
-                    
+
                 case "gonew":
                     url = "/pages/facultad/new.xhtml";
                     break;
-                    
-                    
+
             }
 
         } catch (Exception e) {
@@ -322,8 +317,7 @@ String action = loginController.get("facultad");
                 writable = false;
                 return "";
             }
-            
-            
+
             Optional<Facultad> optional = facultadRepository.findById(facultad);
             if (optional.isPresent()) {
                 writable = false;
@@ -349,16 +343,16 @@ String action = loginController.get("facultad");
         try {
             Optional<Facultad> optional = facultadRepository.findById(facultad);
             if (optional.isPresent()) {
-               JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
 
             //Lo datos del usuario
             facultad.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (facultadRepository.save(facultad)) {
-                  //guarda el contenido anterior
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
-                    "create", "facultad", facultadRepository.toDocument(facultad).toString()));
+                //guarda el contenido anterior
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
+                        "create", "facultad", facultadRepository.toDocument(facultad).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
@@ -379,7 +373,6 @@ String action = loginController.get("facultad");
 
             facultad.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
-          
             //guarda el contenido actualizado
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
                     "update", "facultad", facultadRepository.toDocument(facultad).toString()));
@@ -398,7 +391,7 @@ String action = loginController.get("facultad");
         String path = "";
         try {
             facultad = (Facultad) item;
-            
+
             facultadSelected = facultad;
             if (facultadRepository.delete("idfacultad", facultad.getIdfacultad())) {
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(), "delete", "facultad", facultadRepository.toDocument(facultad).toString()));
@@ -423,8 +416,8 @@ String action = loginController.get("facultad");
         } catch (Exception e) {
             JsfUtil.errorMessage("delete() " + e.getLocalizedMessage());
         }
-       // path = deleteonviewpage ? "/pages/facultad/list.xhtml" : "";
-       path="";
+        // path = deleteonviewpage ? "/pages/facultad/list.xhtml" : "";
+        path = "";
         return path;
     }// </editor-fold>
 
@@ -441,7 +434,7 @@ String action = loginController.get("facultad");
     @Override
     public String print() {
         try {
-             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pagefacultad", page.toString());
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pagefacultad", page.toString());
             List<Facultad> list = new ArrayList<>();
             list.add(facultad);
             String ruta = "/resources/reportes/facultad/details.jasper";
@@ -458,9 +451,9 @@ String action = loginController.get("facultad");
     @Override
     public String printAll() {
         try {
-             List<Facultad> list = new ArrayList<>();
-            list = facultadRepository.findAll(new Document("idfacultad",1));
-           
+            List<Facultad> list = new ArrayList<>();
+            list = facultadRepository.findAll(new Document("idfacultad", 1));
+
             String ruta = "/resources/reportes/facultad/all.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
@@ -478,7 +471,7 @@ String action = loginController.get("facultad");
             facultadList.add(facultadSelected);
             facultadFiltered = facultadList;
             facultadDataModel = new FacultadDataModel(facultadList);
-             loginController.put("searchfacultad", "_autocomplete");
+            loginController.put("searchfacultad", "_autocomplete");
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -551,32 +544,29 @@ String action = loginController.get("facultad");
 
     @Override
     public void move() {
-     
 
-              try {
+        try {
 
-          
-                Document doc;
-                switch (loginController.get("searchfacultad")) {
-                    case "_init":
-                         facultadList = facultadRepository.findPagination(page, rowPage);
+            Document doc;
+            switch (loginController.get("searchfacultad")) {
+                case "_init":
+                    facultadList = facultadRepository.findPagination(page, rowPage);
 
-                        break;
-                    case "_autocomplete":
-                        //no se realiza ninguna accion 
-                        break;
-              
-                    case "idfacultad":
-                        doc = new Document("idfacultad", facultad.getIdfacultad());
-                        facultadList = facultadRepository.findFilterPagination(doc, page, rowPage, new Document("idfacultad", -1));
-                        break;
-                  
-                    default:
+                    break;
+                case "_autocomplete":
+                    //no se realiza ninguna accion 
+                    break;
 
-                     facultadList = facultadRepository.findPagination(page, rowPage);
-                        break;
-                }
-            
+                case "idfacultad":
+                    doc = new Document("idfacultad", facultad.getIdfacultad());
+                    facultadList = facultadRepository.findFilterPagination(doc, page, rowPage, new Document("idfacultad", -1));
+                    break;
+
+                default:
+
+                    facultadList = facultadRepository.findPagination(page, rowPage);
+                    break;
+            }
 
             facultadFiltered = facultadList;
 
@@ -587,7 +577,7 @@ String action = loginController.get("facultad");
         }
     }// </editor-fold>
 
-   // <editor-fold defaultstate="collapsed" desc="clear">
+    // <editor-fold defaultstate="collapsed" desc="clear">
     @Override
     public String clear() {
         try {
@@ -600,14 +590,13 @@ String action = loginController.get("facultad");
         return "";
     }// </editor-fold>
 
-
-  // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
+    // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
     @Override
     public String searchBy(String string) {
         try {
 
-            loginController.put("searchfacultad", string);      
-      
+            loginController.put("searchfacultad", string);
+
             writable = true;
             move();
 
@@ -616,6 +605,5 @@ String action = loginController.get("facultad");
         }
         return "";
     }// </editor-fold>
-
 
 }

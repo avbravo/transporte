@@ -18,6 +18,7 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.RolDataModel;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbRepository;
+import com.avbravo.transporteejb.producer.IntegerirdadreferencialTransporteejbServices;
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.RolRepository;
@@ -75,6 +76,8 @@ public class RolController implements Serializable, IController {
 
     //Services
      //Atributos para busquedas
+    @Inject
+     IntegerirdadreferencialTransporteejbServices integerirdadreferencialTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
     @Inject
