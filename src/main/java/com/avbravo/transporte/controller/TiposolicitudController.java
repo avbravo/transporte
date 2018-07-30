@@ -18,6 +18,7 @@ import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServi
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.TiposolicitudRepository;
+import com.avbravo.transporteejb.rules.TiposolicitudRules;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 
 import java.util.ArrayList;
@@ -92,6 +93,9 @@ public class TiposolicitudController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
+    //Rules
+    @Inject
+    TiposolicitudRules tiposolicitudRules;
 
     //List of Relations
     //Repository of Relations
@@ -400,7 +404,10 @@ String action = loginController.get("tiposolicitud");
         String path = "";
         try {
             tiposolicitud = (Tiposolicitud) item;
-            
+                if (!tiposolicitudRules.isDeleted(tiposolicitud)) {
+                JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
+                return "";
+            }
             tiposolicitudSelected = tiposolicitud;
             if (tiposolicitudRepository.delete("idtiposolicitud", tiposolicitud.getIdtiposolicitud())) {
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tiposolicitud.getIdtiposolicitud(), loginController.getUsername(), "delete", "tiposolicitud", tiposolicitudRepository.toDocument(tiposolicitud).toString()));

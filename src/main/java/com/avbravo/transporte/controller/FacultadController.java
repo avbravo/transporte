@@ -11,6 +11,7 @@ import com.avbravo.avbravoutils.printer.Printer;
 import com.avbravo.commonejb.datamodel.FacultadDataModel;
 import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.FacultadRepository;
+import com.avbravo.commonejb.rules.FacultadRules;
 import com.avbravo.commonejb.services.FacultadServices;
 import com.avbravo.ejbjmoordb.interfaces.IController;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
@@ -91,6 +92,10 @@ public class FacultadController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
+    
+    //Rules
+    @Inject
+    FacultadRules facultadRules;
 
     //List of Relations
     //Repository of Relations
@@ -391,7 +396,10 @@ public class FacultadController implements Serializable, IController {
         String path = "";
         try {
             facultad = (Facultad) item;
-
+    if (!facultadRules.isDeleted(facultad)) {
+                JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
+                return "";
+            }
             facultadSelected = facultad;
             if (facultadRepository.delete("idfacultad", facultad.getIdfacultad())) {
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(), "delete", "facultad", facultadRepository.toDocument(facultad).toString()));

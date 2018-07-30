@@ -22,6 +22,7 @@ import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServi
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.RolRepository;
+import com.avbravo.transporteejb.rules.RolRules;
 import com.avbravo.transporteejb.services.RolServices;
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -92,6 +93,8 @@ public class RolController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
+    //Rules
+    RolRules rolRules;
 
     //List of Relations
     //Repository of Relations
@@ -399,7 +402,10 @@ public class RolController implements Serializable, IController {
         String path = "";
         try {
             rol = (Rol) item;
-
+    if (!rolRules.isDeleted(rol)) {
+                JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
+                return "";
+            }
             rolSelected = rol;
             if (rolRepository.delete("idrol", rol.getIdrol())) {
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(rol.getIdrol(), loginController.getUsername(), "delete", "rol", rolRepository.toDocument(rol).toString()));

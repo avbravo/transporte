@@ -20,6 +20,7 @@ import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
+import com.avbravo.transporteejb.rules.SolicitudRules;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 
@@ -101,6 +102,9 @@ public class SolicitudController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
+    //Rules
+      @Inject
+      SolicitudRules solicitudRules;
 
     //List of Relations
     //Repository of Relations
@@ -424,7 +428,10 @@ solicitud.setUnidad(unidadList);
         String path = "";
         try {
             solicitud = (Solicitud) item;
-
+    if (!solicitudRules.isDeleted(solicitud)) {
+                JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
+                return "";
+            }
             solicitudSelected = solicitud;
             if (solicitudRepository.delete("idsolicitud", solicitud.getIdsolicitud())) {
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(), "delete", "solicitud", solicitudRepository.toDocument(solicitud).toString()));

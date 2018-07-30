@@ -21,6 +21,7 @@ import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
+import com.avbravo.transporteejb.rules.UsuarioRules;
 import com.avbravo.transporteejb.services.RolServices;
 import com.avbravo.transporteejb.services.UnidadServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
@@ -108,7 +109,10 @@ public class UsuarioController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
-
+//Rules
+    @Inject
+    UsuarioRules usuarioRules;
+    
     //List of Relations
     //Repository of Relations
     // </editor-fold>
@@ -462,7 +466,10 @@ public class UsuarioController implements Serializable, IController {
         String path = "";
         try {
             usuario = (Usuario) item;
-
+   if (!usuarioRules.isDeleted(usuario)) {
+                JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
+                return "";
+            }
             usuarioSelected = usuario;
             if (usuarioRepository.delete("username", usuario.getUsername())) {
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(), "delete", "usuario", usuarioRepository.toDocument(usuario).toString()));

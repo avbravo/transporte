@@ -18,6 +18,7 @@ import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServi
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.TipovehiculoRepository;
+import com.avbravo.transporteejb.rules.TipovehiculoRules;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
 
 import java.util.ArrayList;
@@ -92,6 +93,9 @@ public class TipovehiculoController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
+    //Rules
+    @Inject
+    TipovehiculoRules tipovehiculoRules;
 
     //List of Relations
     //Repository of Relations
@@ -399,7 +403,10 @@ String action = loginController.get("tipovehiculo");
         String path = "";
         try {
             tipovehiculo = (Tipovehiculo) item;
-            
+           if (!tipovehiculoRules.isDeleted(tipovehiculo)) {
+                JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
+                return "";
+            }
             tipovehiculoSelected = tipovehiculo;
             if (tipovehiculoRepository.delete("idtipovehiculo", tipovehiculo.getIdtipovehiculo())) {
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tipovehiculo.getIdtipovehiculo(), loginController.getUsername(), "delete", "tipovehiculo", tipovehiculoRepository.toDocument(tipovehiculo).toString()));

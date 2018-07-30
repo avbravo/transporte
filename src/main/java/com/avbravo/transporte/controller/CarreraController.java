@@ -11,6 +11,7 @@ import com.avbravo.avbravoutils.printer.Printer;
 import com.avbravo.commonejb.datamodel.CarreraDataModel;
 import com.avbravo.commonejb.entity.Carrera;
 import com.avbravo.commonejb.repository.CarreraRepository;
+import com.avbravo.commonejb.rules.CarreraRules;
 import com.avbravo.commonejb.services.CarreraServices;
 import com.avbravo.ejbjmoordb.interfaces.IController;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
@@ -92,7 +93,10 @@ public class CarreraController implements Serializable, IController {
     @Inject
     Printer printer;
     @Inject
+    CarreraRules carreraRules;
     LoginController loginController;
+    //Rules
+   
 
     //List of Relations
     //Repository of Relations
@@ -401,6 +405,10 @@ String action = loginController.get("carrera");
         try {
             carrera = (Carrera) item;
             
+               if (!carreraRules.isDeleted(carrera)) {
+                JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
+                return "";
+            }
             carreraSelected = carrera;
             if (carreraRepository.delete("idcarrera", carrera.getIdcarrera())) {
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(), "delete", "carrera", carreraRepository.toDocument(carrera).toString()));
