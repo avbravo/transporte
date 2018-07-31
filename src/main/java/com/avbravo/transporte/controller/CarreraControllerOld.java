@@ -21,6 +21,7 @@ import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServi
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 
+
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -35,14 +36,14 @@ import org.bson.Document;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
-
+  
 /**
  *
  * @authoravbravo
  */
 @Named
 @ViewScoped
-public class CarreraController implements Serializable, IController {
+public class CarreraControllerOld implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -52,10 +53,11 @@ public class CarreraController implements Serializable, IController {
     private Boolean writable = false;
     //DataModel
     private CarreraDataModel carreraDataModel;
+    
 
     Integer page = 1;
     Integer rowPage = 25;
-
+ 
     List<Integer> pages = new ArrayList<>();
     //
 
@@ -74,12 +76,12 @@ public class CarreraController implements Serializable, IController {
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
-    //Atributos para busquedas
+     //Atributos para busquedas
     @Inject
-    ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
+     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
-
+    
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -91,11 +93,10 @@ public class CarreraController implements Serializable, IController {
     @Inject
     Printer printer;
     @Inject
-    LoginController loginController;
-    
-    //Rules
-    @Inject
     CarreraRules carreraRules;
+    LoginController loginController;
+    //Rules
+   
 
     //List of Relations
     //Repository of Relations
@@ -118,6 +119,8 @@ public class CarreraController implements Serializable, IController {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
+    
+    
     public Integer getPage() {
         return page;
     }
@@ -192,7 +195,7 @@ public class CarreraController implements Serializable, IController {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public CarreraController() {
+    public CarreraControllerOld() {
     }
 
     // </editor-fold>
@@ -208,10 +211,10 @@ public class CarreraController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-            String action = loginController.get("carrera");
+String action = loginController.get("carrera");
             String id = loginController.get("idcarrera");
             String pageSession = loginController.get("pagecarrera");
-            //Search
+                //Search
             loginController.put("searchcarrera", "_init");
             writable = false;
 
@@ -219,24 +222,25 @@ public class CarreraController implements Serializable, IController {
             carreraFiltered = new ArrayList<>();
             carrera = new Carrera();
             carreraDataModel = new CarreraDataModel(carreraList);
-
+          
+            
             if (id != null) {
-
                 Optional<Carrera> optional = carreraRepository.find("idcarrera", Integer.parseInt(id));
-                if (optional.isPresent()) {
+                 if (optional.isPresent()) {
                     carrera = optional.get();
                     carreraSelected = carrera;
                     writable = true;
-
+                      
                 }
-            }
-            if (action != null && action.equals("gonew")) {
+            } 
+           if (action != null && action.equals("gonew")) {
                 carrera = new Carrera();
                 carreraSelected = carrera;
-                writable = false;
+                writable =false;
 
             }
-            if (pageSession != null) {
+            if (pageSession != null) 
+            {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = carreraRepository.sizeOfPage(rowPage);
@@ -253,14 +257,15 @@ public class CarreraController implements Serializable, IController {
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new", carrera);
+        prepare("new",carrera);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
+   
     public String prepare(String action, Carrera item) {
         String url = "";
         try {
-            loginController.put("pagecarrera", page.toString());
+              loginController.put("pagecarrera", page.toString());
             loginController.put("carrera", action);
 
             switch (action) {
@@ -272,22 +277,24 @@ public class CarreraController implements Serializable, IController {
                     break;
 
                 case "view":
-
-                    carreraSelected = item;
-                    carrera = carreraSelected;
-                    loginController.put("idcarrera", carrera.getIdcarrera().toString());
+         
+                        carreraSelected = item;
+                        carrera = carreraSelected;
+                        loginController.put("idcarrera", carrera.getIdcarrera().toString());
+                 
 
                     url = "/pages/carrera/view.xhtml";
                     break;
-
+                    
                 case "golist":
                     url = "/pages/carrera/list.xhtml";
                     break;
-
+                    
                 case "gonew":
                     url = "/pages/carrera/new.xhtml";
                     break;
-
+                    
+                    
             }
 
         } catch (Exception e) {
@@ -318,19 +325,18 @@ public class CarreraController implements Serializable, IController {
     public String isNew() {
         try {
             writable = true;
-            if (JsfUtil.isVacio(carrera.getCarrera())) {
+            if (JsfUtil.isVacio(carrera.getIdcarrera())) {
                 writable = false;
                 return "";
             }
-
-                 carrera.setCarrera(carrera.getCarrera().toUpperCase());
-            List<Carrera> list =carreraRepository.findBy("carrera", carrera.getCarrera());
-            if (!list.isEmpty()) {
+            
+            Optional<Carrera> optional = carreraRepository.findById(carrera);
+            if (optional.isPresent()) {
                 writable = false;
 
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return "";
-            }  else {
+            } else {
                 Integer id = carrera.getIdcarrera();
                 carrera = new Carrera();
                 carrera.setIdcarrera(id);
@@ -349,23 +355,16 @@ public class CarreraController implements Serializable, IController {
         try {
             Optional<Carrera> optional = carreraRepository.findById(carrera);
             if (optional.isPresent()) {
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
+               JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));
                 return null;
             }
- almacen.setDescripcion(almacen.getDescripcion().toUpperCase());
-            List<Almacen> list = almacenRepository.findBy("descripcion", almacen.getDescripcion());
-            if (!list.isEmpty()) {
-                writable = false;
 
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return "";
-            }
             //Lo datos del usuario
             carrera.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (carreraRepository.save(carrera)) {
-                //guarda el contenido anterior
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
-                        "create", "carrera", carreraRepository.toDocument(carrera).toString()));
+                  //guarda el contenido anterior
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
+                    "create", "carrera", carreraRepository.toDocument(carrera).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
@@ -386,6 +385,7 @@ public class CarreraController implements Serializable, IController {
 
             carrera.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
+          
             //guarda el contenido actualizado
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
                     "update", "carrera", carreraRepository.toDocument(carrera).toString()));
@@ -404,7 +404,8 @@ public class CarreraController implements Serializable, IController {
         String path = "";
         try {
             carrera = (Carrera) item;
-    if (!carreraRules.isDeleted(carrera)) {
+            
+               if (!carreraRules.isDeleted(carrera)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
@@ -432,8 +433,8 @@ public class CarreraController implements Serializable, IController {
         } catch (Exception e) {
             JsfUtil.errorMessage("delete() " + e.getLocalizedMessage());
         }
-        // path = deleteonviewpage ? "/pages/carrera/list.xhtml" : "";
-        path = "";
+       // path = deleteonviewpage ? "/pages/carrera/list.xhtml" : "";
+       path="";
         return path;
     }// </editor-fold>
 
@@ -450,7 +451,7 @@ public class CarreraController implements Serializable, IController {
     @Override
     public String print() {
         try {
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pagecarrera", page.toString());
+             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pagecarrera", page.toString());
             List<Carrera> list = new ArrayList<>();
             list.add(carrera);
             String ruta = "/resources/reportes/carrera/details.jasper";
@@ -467,9 +468,9 @@ public class CarreraController implements Serializable, IController {
     @Override
     public String printAll() {
         try {
-            List<Carrera> list = new ArrayList<>();
-            list = carreraRepository.findAll(new Document("idcarrera", 1));
-
+             List<Carrera> list = new ArrayList<>();
+            list = carreraRepository.findAll(new Document("idcarrera",1));
+           
             String ruta = "/resources/reportes/carrera/all.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
@@ -487,7 +488,7 @@ public class CarreraController implements Serializable, IController {
             carreraList.add(carreraSelected);
             carreraFiltered = carreraList;
             carreraDataModel = new CarreraDataModel(carreraList);
-            loginController.put("searchcarrera", "_autocomplete");
+             loginController.put("searchcarrera", "_autocomplete");
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -560,29 +561,32 @@ public class CarreraController implements Serializable, IController {
 
     @Override
     public void move() {
+     
 
-        try {
+              try {
 
-            Document doc;
-            switch (loginController.get("searchcarrera")) {
-                case "_init":
-                    carreraList = carreraRepository.findPagination(page, rowPage);
+          
+                Document doc;
+                switch (loginController.get("searchcarrera")) {
+                    case "_init":
+                         carreraList = carreraRepository.findPagination(page, rowPage);
 
-                    break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
-                    break;
+                        break;
+                    case "_autocomplete":
+                        //no se realiza ninguna accion 
+                        break;
+              
+                    case "idcarrera":
+                        doc = new Document("idcarrera", carrera.getIdcarrera());
+                        carreraList = carreraRepository.findFilterPagination(doc, page, rowPage, new Document("idcarrera", -1));
+                        break;
+                  
+                    default:
 
-                case "idcarrera":
-                    doc = new Document("idcarrera", carrera.getIdcarrera());
-                    carreraList = carreraRepository.findFilterPagination(doc, page, rowPage, new Document("idcarrera", -1));
-                    break;
-
-                default:
-
-                    carreraList = carreraRepository.findPagination(page, rowPage);
-                    break;
-            }
+                     carreraList = carreraRepository.findPagination(page, rowPage);
+                        break;
+                }
+            
 
             carreraFiltered = carreraList;
 
@@ -593,7 +597,7 @@ public class CarreraController implements Serializable, IController {
         }
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="clear">
+   // <editor-fold defaultstate="collapsed" desc="clear">
     @Override
     public String clear() {
         try {
@@ -606,13 +610,14 @@ public class CarreraController implements Serializable, IController {
         return "";
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
+
+  // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
     @Override
     public String searchBy(String string) {
         try {
 
-            loginController.put("searchcarrera", string);
-
+            loginController.put("searchcarrera", string);      
+      
             writable = true;
             move();
 
@@ -621,5 +626,6 @@ public class CarreraController implements Serializable, IController {
         }
         return "";
     }// </editor-fold>
+
 
 }

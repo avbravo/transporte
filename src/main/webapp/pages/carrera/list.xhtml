@@ -34,8 +34,8 @@
 
 
                     <p:outputLabel value="#{msg['field.idcarrera']}"/>
-                    <e:autocompletecarrera listener="#{carreraController.handleSelect}"
-                                                  value="#{carreraController.carreraSelected}"
+                    <e:autocompletecarrera listener="#{carreraControllerOld.handleSelect}"
+                                                  value="#{carreraControllerOld.carreraSelected}"
                                                   itemLabel=" #{p.idcarrera}"
                                                   field="idcarrera"
                                                   update=" :form:dataTable"/>
@@ -48,19 +48,19 @@
             </b:panel>
             <b:panel id="dataTable">
                 <a:paginator 
-                    rowPage="#{carreraController.rowPage}"
-                    clear="#{carreraController.clear()}"
-                    first="#{carreraController.first()}"
-                    back="#{carreraController.back()}"
-                    next="#{carreraController.next()}"
-                    last="#{carreraController.last()}"
-                    page="#{carreraController.page}"
-                    pages="#{carreraController.pages}"
+                    rowPage="#{carreraControllerOld.rowPage}"
+                    clear="#{carreraControllerOld.clear()}"
+                    first="#{carreraControllerOld.first()}"
+                    back="#{carreraControllerOld.back()}"
+                    next="#{carreraControllerOld.next()}"
+                    last="#{carreraControllerOld.last()}"
+                    page="#{carreraControllerOld.page}"
+                    pages="#{carreraControllerOld.pages}"
                  skip="ajax:carreraController.skip(carreraController.page)" 
-                    new="#{carreraController.prepare('gonew',carreraController.carrera)}"
-                    printAll="#{carreraController.printAll()}"
+                    new="#{carreraControllerOld.prepare('gonew',carreraControllerOld.carrera)}"
+                    printAll="#{carreraControllerOld.printAll()}"
                     />
-                <b:dataTable value="#{carreraController.carreraDataModel}"
+                <b:dataTable value="#{carreraControllerOld.carreraDataModel}"
                              var="item"
                              id="dataTable2"
                              paginated="false"
@@ -74,8 +74,8 @@
 
                         <a:column
 
-                            edit="#{carreraController.prepare('view',item)}"
-                            delete="#{carreraController.delete(item,false)}"
+                            edit="#{carreraControllerOld.prepare('view',item)}"
+                            delete="#{carreraControllerOld.delete(item,false)}"
                             rendered="#{applicationMenu.carrera.delete}"
                             />
                     </b:dataTableColumn>

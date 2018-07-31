@@ -23,12 +23,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>transporteejb</artifactId>
-            <version>0.4.3</version>
+            <version>0.4.4</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>commonejb</artifactId>
-            <version>0.1.3</version>
+            <version>0.1.4</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
