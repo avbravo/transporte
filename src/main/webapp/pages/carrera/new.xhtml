@@ -3,11 +3,11 @@
 <ui:composition template="/layout/template.xhtml" 
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"> 
+         xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"                
+                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo" > 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -26,8 +26,9 @@
             <h:panelGroup id="content" layout="block"> 
 
                 <a:messages id="msg"/>
-                <a:new label="#{msg['field.idcarrera']}"
-                       value="#{carreraController.carrera.idcarrera}"
+                <a:new label="#{msg['field.descripcion']}"
+                       value="#{carreraController.carrera.descripcion}"
+                      
                        isnew="#{carreraController.isNew()}"
                        new="#{carreraController.prepare('new',carreraController.carrera)}"
                        rendererList="#{applicationMenu.carrera.list}"
@@ -40,9 +41,22 @@
 
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{carreraController.writable}"> 
 
+                            <p:outputLabel  value="#{msg['field.facultad']}" />
+                            <e:autocompletefacultad  listener="#{carreraController.handleSelect}"
+                                                value="#{carreraController.carrera.facultad}"
+                                               itemLabel="#{p.descripcion}"
+                                               dropdown="true"
+                                               required="true"
+                                                minQueryLength="0"
+                                               field="descripcion"
+                                               />
+                          
+                          
+
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <a:yesno value="#{carreraController.carrera.activo}" id="activo"  required="true"/>
+
 
                         <a:save rendered="#{carreraController.writable and applicationMenu.carrera.create}"
                                       save="#{carreraController.save()}" />

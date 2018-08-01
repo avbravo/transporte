@@ -33,49 +33,65 @@
 
 
 
-                    <p:outputLabel value="#{msg['field.idcarrera']}"/>
-                    <e:autocompletecarrera listener="#{carreraControllerOld.handleSelect}"
-                                                  value="#{carreraControllerOld.carreraSelected}"
-                                                  itemLabel=" #{p.idcarrera}"
-                                                  field="idcarrera"
-                                                  update=" :form:dataTable"/>
-
-               
+                
+                    <p:outputLabel value="#{msg['field.descripcion']}"/>
+                      <e:autocompletecarrera listener="#{carreraController.handleSelect}"
+                                                value="#{carreraController.carreraSelected}"
+                                                itemLabel=" #{p.descripcion}"
+                                                field="descripcion"
+                                                update=" :form:dataTable"/>
+                  
                       
                       
 
                 </b:panelGrid>
+                   <b:row>
+                    <b:column medium-screen="4">
+                        <a:search label="#{msg['field.idcarrera']}"
+                                  value="#{carreraController.lookupTransporteejbServices.idcarrera}"
+                                  renderedList="#{applicationMenu.carrera.list}"  
+                                  search="#{carreraController.searchBy('idcarrera')}"
+                                  />
+                    </b:column>
+                    <b:column medium-screen="8">
+                         <a:search label="#{msg['field.descripcion']}"
+                                  value="#{carreraController.lookupTransporteejbServices.descripcion}"
+                                  renderedList="#{applicationMenu.carrera.list}"  
+                                  search="#{carreraController.searchBy('descripcion')}"
+                                  />
+                    </b:column>
+                </b:row>
             </b:panel>
             <b:panel id="dataTable">
                 <a:paginator 
-                    rowPage="#{carreraControllerOld.rowPage}"
-                    clear="#{carreraControllerOld.clear()}"
-                    first="#{carreraControllerOld.first()}"
-                    back="#{carreraControllerOld.back()}"
-                    next="#{carreraControllerOld.next()}"
-                    last="#{carreraControllerOld.last()}"
-                    page="#{carreraControllerOld.page}"
-                    pages="#{carreraControllerOld.pages}"
-                 skip="ajax:carreraController.skip(carreraController.page)" 
-                    new="#{carreraControllerOld.prepare('gonew',carreraControllerOld.carrera)}"
-                    printAll="#{carreraControllerOld.printAll()}"
+                    rowPage="#{carreraController.rowPage}"
+                    clear="#{carreraController.clear()}"
+                    first="#{carreraController.first()}"
+                    back="#{carreraController.back()}"
+                    next="#{carreraController.next()}"
+                    last="#{carreraController.last()}"
+                    page="#{carreraController.page}"
+                    pages="#{carreraController.pages}"
+                    skip="ajax:carreraController.skip(carreraController.page)" 
+                    new="#{carreraController.prepare('gonew',carreraController.carrera)}"
+                    printAll="#{carreraController.printAll()}"
                     />
-                <b:dataTable value="#{carreraControllerOld.carreraDataModel}"
+                <b:dataTable value="#{carreraController.carreraDataModel}"
                              var="item"
                              id="dataTable2"
                              paginated="false"
                              onpage="console.log('page');">
 
                     <b:dataTableColumn value="#{item.idcarrera}" label="#{msg['field.idcarrera']}"/>
-
+                    <b:dataTableColumn value="#{item.descripcion}" label="#{msg['field.descripcion']}" />
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
                   
                     <b:dataTableColumn label="">
 
                         <a:column
 
-                            edit="#{carreraControllerOld.prepare('view',item)}"
-                            delete="#{carreraControllerOld.delete(item,false)}"
+                            edit="#{carreraController.prepare('view',item)}"
+                            delete="#{carreraController.delete(item,false)}"
                             rendered="#{applicationMenu.carrera.delete}"
                             />
                     </b:dataTableColumn>

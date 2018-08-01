@@ -35,8 +35,8 @@
                     <p:outputLabel value="#{msg['field.facultad']}"/>
                     <e:autocompletefacultad  listener="#{facultadController.handleSelect}"
                                              value="#{facultadController.facultadSelected}"
-                                             itemLabel=" #{p.facultad}"
-                                             field="facultad"
+                                             itemLabel=" #{p.descripcion}"
+                                             field="descripcion"
                                              update=" :form:dataTable"/>
 
                     <p:outputLabel value="#{msg['field.idfacultad']}"/>
@@ -78,7 +78,7 @@
                     
 
                     <b:dataTableColumn value="#{item.idfacultad}" label="#{msg['field.idfacultad']}"/>
-                    <b:dataTableColumn value="#{item.facultad}" label="#{msg['field.facultad']}"/>
+                    <b:dataTableColumn value="#{item.descripcion}" label="#{msg['field.facultad']}"/>
 
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
 

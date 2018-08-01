@@ -11,15 +11,16 @@ import com.avbravo.avbravoutils.printer.Printer;
 import com.avbravo.commonejb.datamodel.FacultadDataModel;
 import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.FacultadRepository;
+import com.avbravo.commonejb.repository.RevisionHistoryCommonejbRepository;
 import com.avbravo.commonejb.rules.FacultadRules;
+import com.avbravo.commonejb.services.AutoincrementableCommonejbServices;
 import com.avbravo.commonejb.services.FacultadServices;
+import com.avbravo.commonejb.services.LookupCommonejbServices;
 import com.avbravo.ejbjmoordb.interfaces.IController;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
+
 import com.avbravo.transporte.util.ResourcesFiles;
-import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
-import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
-import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -52,7 +53,7 @@ public class FacultadController implements Serializable, IController {
     private Boolean writable = false;
     //DataModel
     private FacultadDataModel facultadDataModel;
-
+    private String _old = "";
     Integer page = 1;
     Integer rowPage = 25;
 
@@ -71,15 +72,16 @@ public class FacultadController implements Serializable, IController {
     @Inject
     FacultadRepository facultadRepository;
     @Inject
-    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
+    RevisionHistoryCommonejbRepository revisionHistoryCommonejbRepository;
 
     //Services
     //Atributos para busquedas
-    @Inject
-    ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
-    @Inject
-    LookupTransporteejbServices lookupTransporteejbServices;
+ 
 
+    @Inject
+    AutoincrementableCommonejbServices autoincrementableCommonejbServices;
+    @Inject
+    LookupCommonejbServices lookupCommonejbServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -92,7 +94,6 @@ public class FacultadController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
-    
     //Rules
     @Inject
     FacultadRules facultadRules;
@@ -110,12 +111,12 @@ public class FacultadController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupTransporteejbServices getlookupTransporteejbServices() {
-        return lookupTransporteejbServices;
+    public LookupCommonejbServices getLookupCommonejbServices() {
+        return lookupCommonejbServices;
     }
 
-    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    public void setLookupCommonejbServices(LookupCommonejbServices lookupCommonejbServices) {
+        this.lookupCommonejbServices = lookupCommonejbServices;
     }
 
     public Integer getPage() {
@@ -208,6 +209,7 @@ public class FacultadController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
+
             String action = loginController.get("facultad");
             String id = loginController.get("idfacultad");
             String pageSession = loginController.get("pagefacultad");
@@ -218,6 +220,8 @@ public class FacultadController implements Serializable, IController {
             facultadList = new ArrayList<>();
             facultadFiltered = new ArrayList<>();
             facultad = new Facultad();
+            facultadSelected = new Facultad();
+
             facultadDataModel = new FacultadDataModel(facultadList);
 
             if (id != null) {
@@ -225,7 +229,8 @@ public class FacultadController implements Serializable, IController {
                 Optional<Facultad> optional = facultadRepository.find("idfacultad", Integer.parseInt(id));
                 if (optional.isPresent()) {
                     facultad = optional.get();
-                    facultadSelected = facultad;
+                    facultadSelected = optional.get();
+                    _old = facultad.getDescripcion();
                     writable = true;
 
                 }
@@ -242,7 +247,6 @@ public class FacultadController implements Serializable, IController {
             Integer c = facultadRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
             move();
-
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());
         }
@@ -262,7 +266,6 @@ public class FacultadController implements Serializable, IController {
         try {
             loginController.put("pagefacultad", page.toString());
             loginController.put("facultad", action);
-
             switch (action) {
                 case "new":
                     facultad = new Facultad();
@@ -318,21 +321,21 @@ public class FacultadController implements Serializable, IController {
     public String isNew() {
         try {
             writable = true;
-            if (JsfUtil.isVacio(facultad.getIdfacultad())) {
+            if (JsfUtil.isVacio(facultad.getDescripcion())) {
                 writable = false;
                 return "";
             }
-
-            Optional<Facultad> optional = facultadRepository.findById(facultad);
-            if (optional.isPresent()) {
+            facultad.setDescripcion(facultad.getDescripcion().toUpperCase());
+            List<Facultad> list = facultadRepository.findBy("descripcion", facultad.getDescripcion());
+            if (!list.isEmpty()) {
                 writable = false;
 
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return "";
             } else {
-                Integer id = facultad.getIdfacultad();
+                String idsecond = facultad.getDescripcion();
                 facultad = new Facultad();
-                facultad.setIdfacultad(id);
+                facultad.setDescripcion(idsecond);
                 facultadSelected = new Facultad();
             }
 
@@ -341,24 +344,27 @@ public class FacultadController implements Serializable, IController {
         }
         return "";
     }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="save">
 
+// <editor-fold defaultstate="collapsed" desc="save">
     @Override
     public String save() {
         try {
-            Optional<Facultad> optional = facultadRepository.findById(facultad);
-            if (optional.isPresent()) {
+            facultad.setDescripcion(facultad.getDescripcion().toUpperCase());
+            List<Facultad> list = facultadRepository.findBy("descripcion", facultad.getDescripcion());
+            if (!list.isEmpty()) {
+                writable = false;
+
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return null;
+                return "";
             }
+            Integer identity = autoincrementableCommonejbServices.getContador("facultad");
+            facultad.setIdfacultad(identity);
 
-            //Lo datos del usuario
             facultad.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
-            if (facultadRepository.save(facultad)) {
-                //guarda el contenido anterior
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
-                        "create", "facultad", facultadRepository.toDocument(facultad).toString()));
 
+            if (facultadRepository.save(facultad)) {
+                revisionHistoryCommonejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
+                        "create", "facultad", facultadRepository.toDocument(facultad).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
             } else {
@@ -376,13 +382,25 @@ public class FacultadController implements Serializable, IController {
     public String edit() {
         try {
 
+            if (!facultad.getDescripcion().equals(_old)) {
+
+                List<Facultad> list = facultadRepository.findBy("descripcion", facultad.getDescripcion());
+                if (!list.isEmpty()) {
+                    writable = false;
+
+                    JsfUtil.warningMessage(rf.getAppMessage("warning.noeditableproduceduplicado"));
+                    return "";
+                }
+
+            }
+
             facultad.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
-            //guarda el contenido actualizado
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
+            revisionHistoryCommonejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
                     "update", "facultad", facultadRepository.toDocument(facultad).toString()));
 
             facultadRepository.update(facultad);
+           
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
             JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
@@ -396,13 +414,13 @@ public class FacultadController implements Serializable, IController {
         String path = "";
         try {
             facultad = (Facultad) item;
-    if (!facultadRules.isDeleted(facultad)) {
+            if (!facultadRules.isDeleted(facultad)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
             facultadSelected = facultad;
             if (facultadRepository.delete("idfacultad", facultad.getIdfacultad())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(), "delete", "facultad", facultadRepository.toDocument(facultad).toString()));
+                revisionHistoryCommonejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(), "delete", "facultad", facultadRepository.toDocument(facultad).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -424,7 +442,7 @@ public class FacultadController implements Serializable, IController {
         } catch (Exception e) {
             JsfUtil.errorMessage("delete() " + e.getLocalizedMessage());
         }
-        // path = deleteonviewpage ? "/pages/facultad/list.xhtml" : "";
+        //  path = deleteonviewpage ? "/pages/facultad/list.xhtml" : "";
         path = "";
         return path;
     }// </editor-fold>
@@ -447,7 +465,8 @@ public class FacultadController implements Serializable, IController {
             list.add(facultad);
             String ruta = "/resources/reportes/facultad/details.jasper";
             HashMap parameters = new HashMap();
-            // parameters.put("P_parametro", "valor");
+
+//            parameters.put("P_EMPRESA", loginController.getUsuario().getEmpresa().getDescripcion());
             printer.imprimir(list, ruta, parameters);
         } catch (Exception ex) {
             JsfUtil.errorMessage("imprimir() " + ex.getLocalizedMessage());
@@ -464,7 +483,7 @@ public class FacultadController implements Serializable, IController {
 
             String ruta = "/resources/reportes/facultad/all.jasper";
             HashMap parameters = new HashMap();
-            // parameters.put("P_parametro", "valor");
+//            parameters.put("P_EMPRESA", loginController.getUsuario().getEmpresa().getDescripcion());
             printer.imprimir(list, ruta, parameters);
         } catch (Exception ex) {
             JsfUtil.errorMessage("imprimir() " + ex.getLocalizedMessage());
@@ -565,9 +584,17 @@ public class FacultadController implements Serializable, IController {
                     //no se realiza ninguna accion 
                     break;
 
+//                case "idfacultad":
+//                    doc = new Document("idfacultad", facultad.getIdfacultad());
+//                    facultadList = facultadRepository.findFilterPagination(doc, page, rowPage, new Document("idfacultad", -1));
+//                    break;
                 case "idfacultad":
-                    doc = new Document("idfacultad", facultad.getIdfacultad());
-                    facultadList = facultadRepository.findFilterPagination(doc, page, rowPage, new Document("idfacultad", -1));
+                    doc = new Document("idfacultad", lookupCommonejbServices.getIdfacultad());
+
+                    facultadList = facultadRepository.findBy(doc);
+                    break;
+                case "descripcion":
+                    facultadList = facultadRepository.findRegexInTextPagination("descripcion", lookupCommonejbServices.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
                     break;
 
                 default:
@@ -584,8 +611,8 @@ public class FacultadController implements Serializable, IController {
             JsfUtil.errorMessage("move() " + e.getLocalizedMessage());
         }
     }// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="facultad()">
 
-    // <editor-fold defaultstate="collapsed" desc="clear">
     @Override
     public String clear() {
         try {

@@ -20,7 +20,7 @@
         </style>
         <h1>#{msg['titleview.facultad']}</h1>
         <hr/>
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.facultad.query}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.facultad.query}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -30,8 +30,8 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{facultadController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idfacultad']}" />
                         <p:outputLabel  value="#{facultadController.facultad.idfacultad}" id="idfacultad"   />
- <p:outputLabel  value="#{msg['field.facultad']}" />
-                        <a:inputText value="#{facultadController.facultad.facultad}" id="facultad"  label="#{msg['field.facultad']}" />
+                        <p:outputLabel  value="#{msg['field.facultad']}" />
+                        <a:inputText value="#{facultadController.facultad.descripcion}" id="facultad"  label="#{msg['field.facultad']}" />
 
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
