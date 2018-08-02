@@ -109,14 +109,15 @@ public class UnidadController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupTransporteejbServices getlookupTransporteejbServices() {
+    public LookupTransporteejbServices getLookupTransporteejbServices() {
         return lookupTransporteejbServices;
     }
 
-    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
+    
     
     
     public Integer getPage() {
@@ -573,11 +574,15 @@ String action = loginController.get("unidad");
                     case "_autocomplete":
                         //no se realiza ninguna accion 
                         break;
-              
-                    case "idunidad":
-                        doc = new Document("idunidad", unidad.getIdunidad());
-                        unidadList = unidadRepository.findFilterPagination(doc, page, rowPage, new Document("idunidad", -1));
-                        break;
+//              
+//                    case "idunidad":
+//                        doc = new Document("idunidad", lookupTransporteejbServices.getIdunidad());
+//                        unidadList = unidadRepository.findFilterPagination(doc, page, rowPage, new Document("idunidad", -1));
+//                        break;
+                        
+                               case "idunidad":
+                    unidadList = unidadRepository.findRegexInTextPagination("idunidad", lookupTransporteejbServices.getIdunidad(), true, page, rowPage, new Document("descripcion", -1));
+                    break;
                   
                     default:
 
@@ -585,10 +590,9 @@ String action = loginController.get("unidad");
                         break;
                 }
             
+                  unidadFiltered = unidadList;
 
-            unidadFiltered = unidadList;
-
-            unidadDataModel = new UnidadDataModel(unidadList);
+                  unidadDataModel = new UnidadDataModel(unidadList);
 
         } catch (Exception e) {
             JsfUtil.errorMessage("move() " + e.getLocalizedMessage());

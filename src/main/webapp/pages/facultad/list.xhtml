@@ -39,21 +39,25 @@
                                              field="descripcion"
                                              update=" :form:dataTable"/>
 
-                    <p:outputLabel value="#{msg['field.idfacultad']}"/>
-                    <e:autocompletefacultad  listener="#{facultadController.handleSelect}"
-                                             value="#{facultadController.facultadSelected}"
-                                             itemLabel=" #{p.idfacultad}"
-                                             field="idfacultad"
-                                             update=" :form:dataTable"/>
-
-
-
-
-
-
-
+                  
 
                 </b:panelGrid>
+                 <b:row>
+                    <b:column medium-screen="4">
+                        <a:search label="#{msg['field.idfacultad']}"
+                                  value="#{facultadController.lookupCommonejbServices.idfacultad}"
+                                  renderedList="#{applicationMenu.facultad.list}"  
+                                  search="#{facultadController.searchBy('idfacultad')}"
+                                  />
+                    </b:column>
+                    <b:column medium-screen="8">
+                        <a:search label="#{msg['field.descripcion']}"
+                                  value="#{facultadController.lookupCommonejbServices.descripcion}"
+                                  renderedList="#{applicationMenu.facultad.list}"  
+                                  search="#{facultadController.searchBy('descripcion')}"
+                                  />
+                    </b:column>
+                </b:row>
             </b:panel>
             <b:panel id="dataTable">
                 <a:paginator 

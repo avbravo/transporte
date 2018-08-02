@@ -38,6 +38,7 @@
                                                   value="#{unidadController.unidadSelected}"
                                                   itemLabel=" #{p.idunidad}"
                                                   field="idunidad"
+                                                  size="35"
                                                   update=" :form:dataTable"/>
 
                
@@ -45,6 +46,17 @@
                       
 
                 </b:panelGrid>
+                
+                <b:row>
+                  
+                    <b:column medium-screen="6">
+                        <a:search label="#{msg['field.idunidad']}"
+                                  value="#{unidadController.lookupTransporteejbServices.idunidad}"
+                                  renderedList="#{applicationMenu.unidad.list}"  
+                                  search="#{unidadController.searchBy('idunidad')}"
+                                  />
+                    </b:column>
+                </b:row>
             </b:panel>
             <b:panel id="dataTable">
                 <a:paginator 

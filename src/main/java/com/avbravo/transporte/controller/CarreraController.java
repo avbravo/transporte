@@ -12,7 +12,8 @@ import com.avbravo.commonejb.datamodel.CarreraDataModel;
 import com.avbravo.commonejb.entity.Carrera;
 import com.avbravo.commonejb.repository.CarreraRepository;
 import com.avbravo.commonejb.rules.CarreraRules;
-import com.avbravo.commonejb.services.AutoincrementableCommonejbServices;
+import com.avbravo.commonejb.producer.AutoincrementableCommonejbServices;
+import com.avbravo.commonejb.producer.RevisionHistoryCommonejbRepository;
 import com.avbravo.commonejb.services.CarreraServices;
 import com.avbravo.commonejb.services.FacultadServices;
 import com.avbravo.ejbjmoordb.interfaces.IController;
@@ -20,7 +21,6 @@ import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
-import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -72,7 +72,7 @@ public class CarreraController implements Serializable, IController {
     @Inject
     CarreraRepository carreraRepository;
     @Inject
-    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
+    RevisionHistoryCommonejbRepository revisionHistoryCommonejbRepository;
 
     //Services
     //Atributos para busquedas
@@ -366,7 +366,7 @@ public class CarreraController implements Serializable, IController {
             carrera.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
 
             if (carreraRepository.save(carrera)) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
+                revisionHistoryCommonejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
                         "create", "carrera", carreraRepository.toDocument(carrera).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
@@ -399,7 +399,7 @@ public class CarreraController implements Serializable, IController {
 
             carrera.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
+            revisionHistoryCommonejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
                     "update", "carrera", carreraRepository.toDocument(carrera).toString()));
 
             carreraRepository.update(carrera);
@@ -423,7 +423,7 @@ public class CarreraController implements Serializable, IController {
             }
             carreraSelected = carrera;
             if (carreraRepository.delete("idcarrera", carrera.getIdcarrera())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(), "delete", "carrera", carreraRepository.toDocument(carrera).toString()));
+                revisionHistoryCommonejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(), "delete", "carrera", carreraRepository.toDocument(carrera).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -586,10 +586,7 @@ public class CarreraController implements Serializable, IController {
                     //no se realiza ninguna accion 
                     break;
 
-//                case "idcarrera":
-//                    doc = new Document("idcarrera", carrera.getIdcarrera());
-//                    carreraList = carreraRepository.findFilterPagination(doc, page, rowPage, new Document("idcarrera", -1));
-//                    break;
+
                 case "idcarrera":
                     doc = new Document("idcarrera", lookupTransporteejbServices.getIdcarrera());
 

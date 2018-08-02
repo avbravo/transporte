@@ -11,11 +11,11 @@ import com.avbravo.avbravoutils.printer.Printer;
 import com.avbravo.commonejb.datamodel.FacultadDataModel;
 import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.FacultadRepository;
-import com.avbravo.commonejb.repository.RevisionHistoryCommonejbRepository;
+import com.avbravo.commonejb.producer.RevisionHistoryCommonejbRepository;
 import com.avbravo.commonejb.rules.FacultadRules;
-import com.avbravo.commonejb.services.AutoincrementableCommonejbServices;
+import com.avbravo.commonejb.producer.AutoincrementableCommonejbServices;
 import com.avbravo.commonejb.services.FacultadServices;
-import com.avbravo.commonejb.services.LookupCommonejbServices;
+import com.avbravo.commonejb.producer.LookupCommonejbServices;
 import com.avbravo.ejbjmoordb.interfaces.IController;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
@@ -584,10 +584,7 @@ public class FacultadController implements Serializable, IController {
                     //no se realiza ninguna accion 
                     break;
 
-//                case "idfacultad":
-//                    doc = new Document("idfacultad", facultad.getIdfacultad());
-//                    facultadList = facultadRepository.findFilterPagination(doc, page, rowPage, new Document("idfacultad", -1));
-//                    break;
+
                 case "idfacultad":
                     doc = new Document("idfacultad", lookupCommonejbServices.getIdfacultad());
 

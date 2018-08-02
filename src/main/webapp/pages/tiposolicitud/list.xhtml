@@ -38,6 +38,7 @@
                                                   value="#{tiposolicitudController.tiposolicitudSelected}"
                                                   itemLabel=" #{p.idtiposolicitud}"
                                                   field="idtiposolicitud"
+                                                  size="35"
                                                   update=" :form:dataTable"/>
 
                
@@ -45,6 +46,16 @@
                       
 
                 </b:panelGrid>
+                  <b:row>
+                  
+                    <b:column medium-screen="6">
+                        <a:search label="#{msg['field.idunidad']}"
+                                  value="#{tiposolicitudController.lookupTransporteejbServices.idtiposolicitud}"
+                                  renderedList="#{applicationMenu.tiposolicitud.list}"  
+                                  search="#{tiposolicitudController.searchBy('idtiposolicitud')}"
+                                  />
+                    </b:column>
+                </b:row>
             </b:panel>
             <b:panel id="dataTable">
                 <a:paginator 
