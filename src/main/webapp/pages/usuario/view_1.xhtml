@@ -67,16 +67,32 @@
                         <p:outputLabel  value="#{msg['field.rol']}" />
                         
                         
-                       <e:autocompleterol listener="#{usuarioController.handleSelect}"
-                                                      value="#{usuarioController.rolList}"
-                                               itemLabel="#{p.idrol}"
-                                               dropdown="false"
-                                               multiple="true"
-                                               required="true"
-                                               minQueryLength="0"
-                                               field="idrol"
-                                               />
-                        
+                        <p:autoComplete     dropdown="false"   
+
+                                            multiple="true" 
+                                            scrollHeight="250"  
+                                            size="25" 
+                                            emptyMessage="#{app['info.nohayregistros']}" 
+                                            value="#{usuarioController.rolList}"  
+                                            completeMethod="#{usuarioController.completeFiltrado}"    
+                                            var="p"
+                                            required="true"
+                                            itemLabel="#{p.idrol}"
+                                            itemValue="#{p}" forceSelection="true"> 
+                            <f:converter binding="#{rolConverter}"/>
+                            <f:attribute name="field" value="idrol"/>
+                              <f:attribute name="fielddropdown" value="false"/>
+                            <f:attribute name="fieldquerylenth" value="1"/>
+                            <p:ajax event="itemSelect" listener="#{rolController.handleSelect}"
+                                    />  
+                            <f:facet name="itemtip">
+                                <h:panelGrid columns="1" cellpadding="5">
+                                    <h:outputText value="#{msg['field.idrol']} #{p.idrol}" />
+                                    <h:outputText value="#{msg['field.rol']} #{p.rol}" />
+
+                                </h:panelGrid>
+                            </f:facet>
+                        </p:autoComplete>  
 
 
 
