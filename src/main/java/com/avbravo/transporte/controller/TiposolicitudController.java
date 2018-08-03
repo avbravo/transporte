@@ -81,6 +81,7 @@ public class TiposolicitudController implements Serializable, IController {
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
     
+    
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -576,9 +577,7 @@ String action = loginController.get("tiposolicitud");
                         break;
               
                     case "idtiposolicitud":
-//                        doc = new Document("idtiposolicitud", tiposolicitud.getIdtiposolicitud());
-//                        tiposolicitudList = tiposolicitudRepository.findFilterPagination(doc, page, rowPage, new Document("idtiposolicitud", -1));
-                        tiposolicitudList = tiposolicitudRepository.findRegexInTextPagination("idtiposolicitud", lookupTransporteejbServices.getIdtiposolicitud(), true, page, rowPage, new Document("descripcion", -1));
+                        tiposolicitudList = tiposolicitudRepository.findRegexInTextPagination("idtiposolicitud", lookupTransporteejbServices.getIdtiposolicitud(), true, page, rowPage, new Document("idtiposolicitud", -1));
                         break;
                   
                     default:

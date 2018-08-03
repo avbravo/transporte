@@ -23,13 +23,14 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>transporteejb</artifactId>
-            <version>0.4.5</version>
+            <version>0.4.5.1</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>commonejb</artifactId>
-            <version>0.1.6</version>
+            <version>0.1.7</version>
         </dependency>
+      
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>

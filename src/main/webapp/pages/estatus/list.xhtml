@@ -45,6 +45,16 @@
                       
 
                 </b:panelGrid>
+                  <b:row>
+                  
+                    <b:column medium-screen="6">
+                        <a:search label="#{msg['field.estatus']}"
+                                  value="#{estatusController.lookupTransporteejbServices.idestatus}"
+                                  renderedList="#{applicationMenu.estatus.list}"  
+                                  search="#{estatusController.searchBy('idestatus')}"
+                                  />
+                    </b:column>
+                </b:row>
             </b:panel>
             <b:panel id="dataTable">
                 <a:paginator 

@@ -35,7 +35,7 @@ import org.bson.Document;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
- 
+
 /**
  *
  * @authoravbravo
@@ -52,11 +52,10 @@ public class TipovehiculoController implements Serializable, IController {
     private Boolean writable = false;
     //DataModel
     private TipovehiculoDataModel tipovehiculoDataModel;
-    
 
     Integer page = 1;
     Integer rowPage = 25;
- 
+
     List<Integer> pages = new ArrayList<>();
     //
 
@@ -75,12 +74,12 @@ public class TipovehiculoController implements Serializable, IController {
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
-     //Atributos para busquedas
+    //Atributos para busquedas
     @Inject
-     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
+    ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
-    
+
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -110,16 +109,16 @@ public class TipovehiculoController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupTransporteejbServices getlookupTransporteejbServices() {
+    public LookupTransporteejbServices getLookupTransporteejbServices() {
         return lookupTransporteejbServices;
     }
 
-    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
-    
-    
+  
+
     public Integer getPage() {
         return page;
     }
@@ -210,10 +209,10 @@ public class TipovehiculoController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-String action = loginController.get("tipovehiculo");
+            String action = loginController.get("tipovehiculo");
             String id = loginController.get("idtipovehiculo");
             String pageSession = loginController.get("pagetipovehiculo");
-                //Search
+            //Search
             loginController.put("searchtipovehiculo", "_init");
             writable = false;
 
@@ -221,25 +220,23 @@ String action = loginController.get("tipovehiculo");
             tipovehiculoFiltered = new ArrayList<>();
             tipovehiculo = new Tipovehiculo();
             tipovehiculoDataModel = new TipovehiculoDataModel(tipovehiculoList);
-          
-            
+
             if (id != null) {
                 Optional<Tipovehiculo> optional = tipovehiculoRepository.find("idtipovehiculo", id);
-                 if (optional.isPresent()) {
+                if (optional.isPresent()) {
                     tipovehiculo = optional.get();
                     tipovehiculoSelected = tipovehiculo;
                     writable = true;
-                      
+
                 }
-            } 
-           if (action != null && action.equals("gonew")) {
+            }
+            if (action != null && action.equals("gonew")) {
                 tipovehiculo = new Tipovehiculo();
                 tipovehiculoSelected = tipovehiculo;
-                writable =false;
+                writable = false;
 
             }
-            if (pageSession != null) 
-            {
+            if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = tipovehiculoRepository.sizeOfPage(rowPage);
@@ -256,15 +253,14 @@ String action = loginController.get("tipovehiculo");
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new",tipovehiculo);
+        prepare("new", tipovehiculo);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-
     public String prepare(String action, Tipovehiculo item) {
         String url = "";
         try {
-              loginController.put("pagetipovehiculo", page.toString());
+            loginController.put("pagetipovehiculo", page.toString());
             loginController.put("tipovehiculo", action);
 
             switch (action) {
@@ -276,23 +272,22 @@ String action = loginController.get("tipovehiculo");
                     break;
 
                 case "view":
-                    
-                        tipovehiculoSelected =  item;
-                        tipovehiculo = tipovehiculoSelected;
-                        loginController.put("idtipovehiculo", tipovehiculo.getIdtipovehiculo());
-                
+
+                    tipovehiculoSelected = item;
+                    tipovehiculo = tipovehiculoSelected;
+                    loginController.put("idtipovehiculo", tipovehiculo.getIdtipovehiculo());
+
                     url = "/pages/tipovehiculo/view.xhtml";
                     break;
-                    
+
                 case "golist":
                     url = "/pages/tipovehiculo/list.xhtml";
                     break;
-                    
+
                 case "gonew":
                     url = "/pages/tipovehiculo/new.xhtml";
                     break;
-                    
-                    
+
             }
 
         } catch (Exception e) {
@@ -354,16 +349,16 @@ String action = loginController.get("tipovehiculo");
             tipovehiculo.setIdtipovehiculo(tipovehiculo.getIdtipovehiculo().toUpperCase());
             Optional<Tipovehiculo> optional = tipovehiculoRepository.findById(tipovehiculo);
             if (optional.isPresent()) {
-               JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
 
             //Lo datos del usuario
             tipovehiculo.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (tipovehiculoRepository.save(tipovehiculo)) {
-                  //guarda el contenido anterior
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tipovehiculo.getIdtipovehiculo(), loginController.getUsername(),
-                    "create", "tipovehiculo", tipovehiculoRepository.toDocument(tipovehiculo).toString()));
+                //guarda el contenido anterior
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tipovehiculo.getIdtipovehiculo(), loginController.getUsername(),
+                        "create", "tipovehiculo", tipovehiculoRepository.toDocument(tipovehiculo).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
@@ -384,7 +379,6 @@ String action = loginController.get("tipovehiculo");
 
             tipovehiculo.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
-          
             //guarda el contenido actualizado
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tipovehiculo.getIdtipovehiculo(), loginController.getUsername(),
                     "update", "tipovehiculo", tipovehiculoRepository.toDocument(tipovehiculo).toString()));
@@ -403,7 +397,7 @@ String action = loginController.get("tipovehiculo");
         String path = "";
         try {
             tipovehiculo = (Tipovehiculo) item;
-           if (!tipovehiculoRules.isDeleted(tipovehiculo)) {
+            if (!tipovehiculoRules.isDeleted(tipovehiculo)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
@@ -431,8 +425,8 @@ String action = loginController.get("tipovehiculo");
         } catch (Exception e) {
             JsfUtil.errorMessage("delete() " + e.getLocalizedMessage());
         }
-       // path = deleteonviewpage ? "/pages/tipovehiculo/list.xhtml" : "";
-       path="";
+        // path = deleteonviewpage ? "/pages/tipovehiculo/list.xhtml" : "";
+        path = "";
         return path;
     }// </editor-fold>
 
@@ -449,7 +443,7 @@ String action = loginController.get("tipovehiculo");
     @Override
     public String print() {
         try {
-             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pagetipovehiculo", page.toString());
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pagetipovehiculo", page.toString());
             List<Tipovehiculo> list = new ArrayList<>();
             list.add(tipovehiculo);
             String ruta = "/resources/reportes/tipovehiculo/details.jasper";
@@ -466,9 +460,9 @@ String action = loginController.get("tipovehiculo");
     @Override
     public String printAll() {
         try {
-             List<Tipovehiculo> list = new ArrayList<>();
-            list = tipovehiculoRepository.findAll(new Document("idtipovehiculo",1));
-           
+            List<Tipovehiculo> list = new ArrayList<>();
+            list = tipovehiculoRepository.findAll(new Document("idtipovehiculo", 1));
+
             String ruta = "/resources/reportes/tipovehiculo/all.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
@@ -486,7 +480,7 @@ String action = loginController.get("tipovehiculo");
             tipovehiculoList.add(tipovehiculoSelected);
             tipovehiculoFiltered = tipovehiculoList;
             tipovehiculoDataModel = new TipovehiculoDataModel(tipovehiculoList);
-             loginController.put("searchtipovehiculo", "_autocomplete");
+            loginController.put("searchtipovehiculo", "_autocomplete");
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -559,32 +553,28 @@ String action = loginController.get("tipovehiculo");
 
     @Override
     public void move() {
-     
 
-              try {
+        try {
 
-          
-                Document doc;
-                switch (loginController.get("searchtipovehiculo")) {
-                    case "_init":
-                         tipovehiculoList = tipovehiculoRepository.findPagination(page, rowPage);
+            Document doc;
+            switch (loginController.get("searchtipovehiculo")) {
+                case "_init":
+                    tipovehiculoList = tipovehiculoRepository.findPagination(page, rowPage);
 
-                        break;
-                    case "_autocomplete":
-                        //no se realiza ninguna accion 
-                        break;
-              
-                    case "idtipovehiculo":
-                        doc = new Document("idtipovehiculo", tipovehiculo.getIdtipovehiculo());
-                        tipovehiculoList = tipovehiculoRepository.findFilterPagination(doc, page, rowPage, new Document("idtipovehiculo", -1));
-                        break;
-                  
-                    default:
+                    break;
+                case "_autocomplete":
+                    //no se realiza ninguna accion 
+                    break;
 
-                     tipovehiculoList = tipovehiculoRepository.findPagination(page, rowPage);
-                        break;
-                }
-            
+                case "idtipovehiculo":
+                    tipovehiculoList = tipovehiculoRepository.findRegexInTextPagination("idtipovehiculo", lookupTransporteejbServices.getIdtipovehiculo(), true, page, rowPage, new Document("idtipovehiculo", -1));
+                    break;
+
+                default:
+
+                    tipovehiculoList = tipovehiculoRepository.findPagination(page, rowPage);
+                    break;
+            }
 
             tipovehiculoFiltered = tipovehiculoList;
 
@@ -595,7 +585,7 @@ String action = loginController.get("tipovehiculo");
         }
     }// </editor-fold>
 
-   // <editor-fold defaultstate="collapsed" desc="clear">
+    // <editor-fold defaultstate="collapsed" desc="clear">
     @Override
     public String clear() {
         try {
@@ -608,14 +598,13 @@ String action = loginController.get("tipovehiculo");
         return "";
     }// </editor-fold>
 
-
-  // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
+    // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
     @Override
     public String searchBy(String string) {
         try {
 
-            loginController.put("searchtipovehiculo", string);      
-      
+            loginController.put("searchtipovehiculo", string);
+
             writable = true;
             move();
 
@@ -624,6 +613,5 @@ String action = loginController.get("tipovehiculo");
         }
         return "";
     }// </editor-fold>
-
 
 }

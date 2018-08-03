@@ -36,6 +36,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
  
+
 /**
  *
  * @authoravbravo
@@ -576,8 +577,9 @@ String action = loginController.get("estatus");
                         break;
               
                     case "idestatus":
-                        doc = new Document("idestatus", estatus.getIdestatus());
-                        estatusList = estatusRepository.findFilterPagination(doc, page, rowPage, new Document("idestatus", -1));
+//                        doc = new Document("idestatus", estatus.getIdestatus());
+//                        estatusList = estatusRepository.findFilterPagination(doc, page, rowPage, new Document("idestatus", -1));
+                             estatusList = estatusRepository.findRegexInTextPagination("idestatus", lookupTransporteejbServices.getIdestatus(), true, page, rowPage, new Document("idestatus", -1));
                         break;
                   
                     default:
