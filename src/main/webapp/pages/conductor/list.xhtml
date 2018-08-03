@@ -52,6 +52,16 @@
                       
 
                 </b:panelGrid>
+                  <b:row>
+                  
+                    <b:column medium-screen="6">
+                        <a:search label="#{msg['field.nombre']}"
+                                  value="#{conductorController.lookupTransporteejbServices.nombre}"
+                                  renderedList="#{applicationMenu.conductor.list}"  
+                                  search="#{conductorController.searchBy('nombre')}"
+                                  />
+                    </b:column>
+                </b:row>
             </b:panel>
             <b:panel id="dataTable">
                 <a:paginator 

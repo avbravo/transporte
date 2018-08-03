@@ -7,6 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
                 xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -58,14 +59,17 @@
                         <a:inputText value="#{vehiculoController.vehiculo.pasajeros}" id="pasajeros" span="4" label="#{msg['field.pasajeros']}" />
 
                         <p:outputLabel  value="#{msg['field.tipovehiculo']}" />
-                        <a:selectOneMenu
-                            id="tipovehiculo"
-                            value="#{vehiculoController.vehiculo.tipovehiculo}" 
-                            requiredMessage="#{msg['field.idtipovehiculo']}"
-                            selectItemsValue="#{vehiculoController.tipovehiculoServices.tipovehiculoList}"
-                            selectItemsLabel="#{item.idtipovehiculo}"
-
-                            />
+                     
+                        
+                         <e:autocompletetipovehiculo  listener="#{vehiculoController.handleSelect}"
+                                                      value="#{vehiculoController.vehiculo.tipovehiculo}"
+                                               itemLabel="#{p.idtipovehiculo}"
+                                               dropdown="true"
+                                               required="true"
+                                               minQueryLength="0"
+                                               field="idtipovehiculo"
+                                               />
+                                        
 
                         <p:outputLabel  value="#{msg['field.combustible']}" />
                         <b:selectOneMenu value="#{vehiculoController.vehiculo.combustible}"

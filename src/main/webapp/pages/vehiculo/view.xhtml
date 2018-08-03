@@ -52,18 +52,15 @@
                         <p:outputLabel  value="#{msg['field.tipovehiculo']}" />
 
 
-                        <a:selectOneMenu
-                            id="tipovehiculo"
-                            value="#{vehiculoController.vehiculo.tipovehiculo}" 
-                            requiredMessage="#{msg['field.idtipovehiculo']}"
-                            selectLabel="#{vehiculoController.vehiculo.tipovehiculo.idtipovehiculo}"
-                            selectValue="#{vehiculoController.vehiculo.tipovehiculo}"
-
-                            selectItemsValue="#{vehiculoController.tipovehiculoServices.tipovehiculoList}"
-                            selectItemsLabel="#{item.idtipovehiculo}"
-
-
-                            />
+                         
+                         <e:autocompletetipovehiculo  listener="#{vehiculoController.handleSelect}"
+                                                      value="#{vehiculoController.vehiculo.tipovehiculo}"
+                                               itemLabel="#{p.idtipovehiculo}"
+                                               dropdown="true"
+                                               required="true"
+                                               minQueryLength="0"
+                                               field="idtipovehiculo"
+                                               />
 
 
                         <p:outputLabel  value="#{msg['field.combustible']}" />

@@ -35,7 +35,7 @@ import org.bson.Document;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
- 
+
 /**
  *
  * @authoravbravo
@@ -52,11 +52,10 @@ public class ConductorController implements Serializable, IController {
     private Boolean writable = false;
     //DataModel
     private ConductorDataModel conductorDataModel;
-    
 
     Integer page = 1;
     Integer rowPage = 25;
- 
+
     List<Integer> pages = new ArrayList<>();
     //
 
@@ -75,12 +74,12 @@ public class ConductorController implements Serializable, IController {
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
-     //Atributos para busquedas
+    //Atributos para busquedas
     @Inject
-     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
+    ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
-    
+
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -94,7 +93,7 @@ public class ConductorController implements Serializable, IController {
     @Inject
     LoginController loginController;
     //Rules
-    @Inject 
+    @Inject
     ConductorRules conductorRules;
 
     //List of Relations
@@ -118,8 +117,6 @@ public class ConductorController implements Serializable, IController {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
-    
-    
     public Integer getPage() {
         return page;
     }
@@ -210,10 +207,10 @@ public class ConductorController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-String action = loginController.get("conductor");
+            String action = loginController.get("conductor");
             String id = loginController.get("idconductor");
             String pageSession = loginController.get("pageconductor");
-                //Search
+            //Search
             loginController.put("searchconductor", "_init");
             writable = false;
 
@@ -221,25 +218,23 @@ String action = loginController.get("conductor");
             conductorFiltered = new ArrayList<>();
             conductor = new Conductor();
             conductorDataModel = new ConductorDataModel(conductorList);
-          
-            
+
             if (id != null) {
                 Optional<Conductor> optional = conductorRepository.find("idconductor", id);
-                 if (optional.isPresent()) {
+                if (optional.isPresent()) {
                     conductor = optional.get();
                     conductorSelected = conductor;
                     writable = true;
-                      
+
                 }
-            } 
-           if (action != null && action.equals("gonew")) {
+            }
+            if (action != null && action.equals("gonew")) {
                 conductor = new Conductor();
                 conductorSelected = conductor;
-                writable =false;
+                writable = false;
 
             }
-            if (pageSession != null) 
-            {
+            if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = conductorRepository.sizeOfPage(rowPage);
@@ -256,14 +251,14 @@ String action = loginController.get("conductor");
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new",conductor);
+        prepare("new", conductor);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
     public String prepare(String action, Conductor item) {
         String url = "";
         try {
-              loginController.put("pageconductor", page.toString());
+            loginController.put("pageconductor", page.toString());
             loginController.put("conductor", action);
 
             switch (action) {
@@ -275,24 +270,22 @@ String action = loginController.get("conductor");
                     break;
 
                 case "view":
-                   
-                        conductorSelected = item;
-                        conductor = conductorSelected;
-                        loginController.put("idconductor", conductor.getIdconductor());
-           
+
+                    conductorSelected = item;
+                    conductor = conductorSelected;
+                    loginController.put("idconductor", conductor.getIdconductor());
 
                     url = "/pages/conductor/view.xhtml";
                     break;
-                    
+
                 case "golist":
                     url = "/pages/conductor/list.xhtml";
                     break;
-                    
+
                 case "gonew":
                     url = "/pages/conductor/new.xhtml";
                     break;
-                    
-                    
+
             }
 
         } catch (Exception e) {
@@ -354,16 +347,16 @@ String action = loginController.get("conductor");
             conductor.setIdconductor(conductor.getIdconductor().toUpperCase());
             Optional<Conductor> optional = conductorRepository.findById(conductor);
             if (optional.isPresent()) {
-               JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
 
             //Lo datos del usuario
             conductor.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (conductorRepository.save(conductor)) {
-                  //guarda el contenido anterior
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor(), loginController.getUsername(),
-                    "create", "conductor", conductorRepository.toDocument(conductor).toString()));
+                //guarda el contenido anterior
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor(), loginController.getUsername(),
+                        "create", "conductor", conductorRepository.toDocument(conductor).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
@@ -384,7 +377,6 @@ String action = loginController.get("conductor");
 
             conductor.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
-          
             //guarda el contenido actualizado
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor(), loginController.getUsername(),
                     "update", "conductor", conductorRepository.toDocument(conductor).toString()));
@@ -403,8 +395,8 @@ String action = loginController.get("conductor");
         String path = "";
         try {
             conductor = (Conductor) item;
-            
-               if (!conductorRules.isDeleted(conductor)) {
+
+            if (!conductorRules.isDeleted(conductor)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
@@ -432,8 +424,8 @@ String action = loginController.get("conductor");
         } catch (Exception e) {
             JsfUtil.errorMessage("delete() " + e.getLocalizedMessage());
         }
-       // path = deleteonviewpage ? "/pages/conductor/list.xhtml" : "";
-       path="";
+        // path = deleteonviewpage ? "/pages/conductor/list.xhtml" : "";
+        path = "";
         return path;
     }// </editor-fold>
 
@@ -450,7 +442,7 @@ String action = loginController.get("conductor");
     @Override
     public String print() {
         try {
-             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageconductor", page.toString());
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageconductor", page.toString());
             List<Conductor> list = new ArrayList<>();
             list.add(conductor);
             String ruta = "/resources/reportes/conductor/details.jasper";
@@ -467,9 +459,9 @@ String action = loginController.get("conductor");
     @Override
     public String printAll() {
         try {
-             List<Conductor> list = new ArrayList<>();
-            list = conductorRepository.findAll(new Document("idconductor",1));
-           
+            List<Conductor> list = new ArrayList<>();
+            list = conductorRepository.findAll(new Document("idconductor", 1));
+
             String ruta = "/resources/reportes/conductor/all.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
@@ -487,7 +479,7 @@ String action = loginController.get("conductor");
             conductorList.add(conductorSelected);
             conductorFiltered = conductorList;
             conductorDataModel = new ConductorDataModel(conductorList);
-             loginController.put("searchconductor", "_autocomplete");
+            loginController.put("searchconductor", "_autocomplete");
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -560,32 +552,33 @@ String action = loginController.get("conductor");
 
     @Override
     public void move() {
-     
 
-              try {
+        try {
 
-          
-                Document doc;
-                switch (loginController.get("searchconductor")) {
-                    case "_init":
-                         conductorList = conductorRepository.findPagination(page, rowPage);
+            Document doc;
+            switch (loginController.get("searchconductor")) {
+                case "_init":
+                    conductorList = conductorRepository.findPagination(page, rowPage);
 
-                        break;
-                    case "_autocomplete":
-                        //no se realiza ninguna accion 
-                        break;
-              
-                    case "idconductor":
-                        doc = new Document("idconductor", conductor.getIdconductor());
-                        conductorList = conductorRepository.findFilterPagination(doc, page, rowPage, new Document("idconductor", -1));
-                        break;
-                  
-                    default:
+                    break;
+                case "_autocomplete":
+                    //no se realiza ninguna accion 
+                    break;
 
-                     conductorList = conductorRepository.findPagination(page, rowPage);
-                        break;
-                }
-            
+                case "idconductor":
+
+                    conductorList = conductorRepository.findRegexInTextPagination("idconductor", lookupTransporteejbServices.getIdconductor(), true, page, rowPage, new Document("idconductor", -1));
+                    break;
+                case "nombre":
+
+                    conductorList = conductorRepository.findRegexInTextPagination("nombre", lookupTransporteejbServices.getNombre(), true, page, rowPage, new Document("nombre", -1));
+                    break;
+
+                default:
+
+                    conductorList = conductorRepository.findPagination(page, rowPage);
+                    break;
+            }
 
             conductorFiltered = conductorList;
 
@@ -596,7 +589,7 @@ String action = loginController.get("conductor");
         }
     }// </editor-fold>
 
-   // <editor-fold defaultstate="collapsed" desc="clear">
+    // <editor-fold defaultstate="collapsed" desc="clear">
     @Override
     public String clear() {
         try {
@@ -609,14 +602,13 @@ String action = loginController.get("conductor");
         return "";
     }// </editor-fold>
 
-
-  // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
+    // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
     @Override
     public String searchBy(String string) {
         try {
 
-            loginController.put("searchconductor", string);      
-      
+            loginController.put("searchconductor", string);
+
             writable = true;
             move();
 
@@ -625,6 +617,5 @@ String action = loginController.get("conductor");
         }
         return "";
     }// </editor-fold>
-
 
 }

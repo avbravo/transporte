@@ -54,19 +54,19 @@
 
                         
                          <p:outputLabel  value="#{msg['field.unidad']}" />
-                           <a:selectOneMenu
-                            id="rol"
-                            value="#{usuarioController.usuario.unidad}" 
-                            requiredMessage="#{msg['field.idunidad']}"
-                            selectLabel="#{usuarioController.usuario.unidad.idunidad}"
-                            selectValue="#{usuarioController.usuario.unidad}"
-                            selectItemsValue="#{usuarioController.unidadServices.unidadList}"
-                            selectItemsLabel="#{item.idunidad}"
-                            
-                            />
+               <e:autocompleteunidad  listener="#{usuarioController.handleSelect}"
+                                                      value="#{usuarioController.usuario.unidad}"
+                                               itemLabel="#{p.idunidad}"
+                                               dropdown="true"
+                                               required="true"
+                                               minQueryLength="0"
+                                               field="idunidad"
+                                               />
                            
 
                         <p:outputLabel  value="#{msg['field.rol']}" />
+                        
+                        
                         <p:autoComplete     dropdown="false"   
 
                                             multiple="true" 

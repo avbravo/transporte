@@ -395,7 +395,7 @@ String action = loginController.get("vehiculo");
     @Override
     public String edit() {
         try {
-JsfUtil.testMessage(" tipo "+vehiculo.getTipovehiculo().getIdtipovehiculo());
+
             vehiculo.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
           
@@ -589,8 +589,8 @@ JsfUtil.testMessage(" tipo "+vehiculo.getTipovehiculo().getIdtipovehiculo());
                         break;
               
                     case "idvehiculo":
-                        doc = new Document("idvehiculo", vehiculo.getIdvehiculo());
-                        vehiculoList = vehiculoRepository.findFilterPagination(doc, page, rowPage, new Document("idvehiculo", -1));
+                        
+                         vehiculoList = vehiculoRepository.findRegexInTextPagination("idvehiculo", lookupTransporteejbServices.getIdvehiculo(), true, page, rowPage, new Document("idvehiculo", -1));
                         break;
                   
                     default:
