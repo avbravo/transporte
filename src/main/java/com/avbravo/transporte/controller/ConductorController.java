@@ -18,7 +18,6 @@ import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServi
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.ConductorRepository;
-import com.avbravo.transporteejb.rules.ConductorRules;
 import com.avbravo.transporteejb.services.ConductorServices;
 
 import java.util.ArrayList;
@@ -92,9 +91,7 @@ public class ConductorController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
-    //Rules
-    @Inject
-    ConductorRules conductorRules;
+  
 
     //List of Relations
     //Repository of Relations
@@ -396,7 +393,7 @@ public class ConductorController implements Serializable, IController {
         try {
             conductor = (Conductor) item;
 
-            if (!conductorRules.isDeleted(conductor)) {
+            if (!conductorServices.isDeleted(conductor)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
