@@ -18,7 +18,6 @@ import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServi
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.EstatusRepository;
-import com.avbravo.transporteejb.rules.EstatusRules;
 import com.avbravo.transporteejb.services.EstatusServices;
 
 import java.util.ArrayList;
@@ -94,9 +93,7 @@ public class EstatusController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
-//Rules
-    @Inject
-    EstatusRules estatusRules;
+
     //List of Relations
     //Repository of Relations
     // </editor-fold>
@@ -405,7 +402,7 @@ String action = loginController.get("estatus");
         try {
             estatus = (Estatus) item;
               
-               if (!estatusRules.isDeleted(estatus)) {
+               if (!estatusServices.isDeleted(estatus)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
