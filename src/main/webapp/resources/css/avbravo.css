@@ -92,3 +92,14 @@ and open the template in the editor.
     background-color: #720e9e;
     color: #FFFFFF;
 }    */
+
+/*
+Dialogo
+*/
+.customDialog {
+    color : white;
+}
+
+.customDialog .ui-dialog-titlebar.ui-widget-header {
+    background: white !important;
+}
