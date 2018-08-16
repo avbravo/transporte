@@ -18,7 +18,6 @@ import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServi
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
-import com.avbravo.transporteejb.rules.VehiculoRules;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
 
@@ -96,9 +95,7 @@ public class VehiculoController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
-//Rules
-    @Inject
-    VehiculoRules vehiculoRules;
+
     //List of Relations
     //Repository of Relations
     // </editor-fold>
@@ -417,7 +414,7 @@ String action = loginController.get("vehiculo");
         String path = "";
         try {
             vehiculo = (Vehiculo) item;
-               if (!vehiculoRules.isDeleted(vehiculo)) {
+               if (!vehiculoServices.isDeleted(vehiculo)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }

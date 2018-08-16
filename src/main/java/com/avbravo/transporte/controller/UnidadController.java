@@ -18,7 +18,6 @@ import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServi
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
-import com.avbravo.transporteejb.rules.UnidadRules;
 import com.avbravo.transporteejb.services.UnidadServices;
 
 import java.util.ArrayList;
@@ -93,9 +92,7 @@ public class UnidadController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
-//Rules
-    @Inject
-    UnidadRules unidadRules;
+
     //List of Relations
     //Repository of Relations
     // </editor-fold>
@@ -404,7 +401,7 @@ String action = loginController.get("unidad");
         String path = "";
         try {
             unidad = (Unidad) item;
-               if (!unidadRules.isDeleted(unidad)) {
+               if (!unidadServices.isDeleted(unidad)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
