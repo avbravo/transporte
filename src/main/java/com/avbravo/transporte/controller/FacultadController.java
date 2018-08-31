@@ -12,7 +12,6 @@ import com.avbravo.commonejb.datamodel.FacultadDataModel;
 import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.FacultadRepository;
 import com.avbravo.commonejb.producer.RevisionHistoryCommonejbRepository;
-import com.avbravo.commonejb.rules.FacultadRules;
 import com.avbravo.commonejb.producer.AutoincrementableCommonejbServices;
 import com.avbravo.commonejb.services.FacultadServices;
 import com.avbravo.commonejb.producer.LookupCommonejbServices;
@@ -94,9 +93,7 @@ public class FacultadController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
-    //Rules
-    @Inject
-    FacultadRules facultadRules;
+
 
     //List of Relations
     //Repository of Relations
@@ -414,7 +411,7 @@ public class FacultadController implements Serializable, IController {
         String path = "";
         try {
             facultad = (Facultad) item;
-            if (!facultadRules.isDeleted(facultad)) {
+            if (!facultadServices.isDeleted(facultad)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
