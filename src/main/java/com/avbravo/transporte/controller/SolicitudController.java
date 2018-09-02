@@ -596,7 +596,7 @@ solicitud.setUnidad(unidadList);
 
                 case "idsolicitud":
                     doc = new Document("idsolicitud", solicitud.getIdsolicitud());
-                    solicitudList = solicitudRepository.findFilterPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
                     break;
 
                 default:

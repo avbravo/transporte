@@ -596,7 +596,7 @@ public class RolController implements Serializable, IController {
 
                 case "idrol":
                     doc = new Document("idrol", rol.getIdrol());
-                    rolList = rolRepository.findFilterPagination(doc, page, rowPage, new Document("idrol", -1));
+                    rolList = rolRepository.findPagination(doc, page, rowPage, new Document("idrol", -1));
                     break;
 
                 default:

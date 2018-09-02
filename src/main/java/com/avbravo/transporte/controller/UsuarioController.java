@@ -634,7 +634,7 @@ public class UsuarioController implements Serializable, IController {
 
                 case "username":
                     doc = new Document("username", usuario.getUsername());
-                    usuarioList = usuarioRepository.findFilterPagination(doc, page, rowPage, new Document("username", -1));
+                    usuarioList = usuarioRepository.findPagination(doc, page, rowPage, new Document("username", -1));
                     break;
 
                 default:

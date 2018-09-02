@@ -574,7 +574,7 @@ String action = loginController.get("unidad");
 //              
 //                    case "idunidad":
 //                        doc = new Document("idunidad", lookupTransporteejbServices.getIdunidad());
-//                        unidadList = unidadRepository.findFilterPagination(doc, page, rowPage, new Document("idunidad", -1));
+//                        unidadList = unidadRepository.findPagination(doc, page, rowPage, new Document("idunidad", -1));
 //                        break;
                         
                                case "idunidad":

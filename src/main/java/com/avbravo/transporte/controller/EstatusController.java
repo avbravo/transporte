@@ -575,7 +575,7 @@ String action = loginController.get("estatus");
               
                     case "idestatus":
 //                        doc = new Document("idestatus", estatus.getIdestatus());
-//                        estatusList = estatusRepository.findFilterPagination(doc, page, rowPage, new Document("idestatus", -1));
+//                        estatusList = estatusRepository.findPagination(doc, page, rowPage, new Document("idestatus", -1));
                              estatusList = estatusRepository.findRegexInTextPagination("idestatus", lookupTransporteejbServices.getIdestatus(), true, page, rowPage, new Document("idestatus", -1));
                         break;
                   
