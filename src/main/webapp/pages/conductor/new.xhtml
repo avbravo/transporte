@@ -26,8 +26,8 @@
             <h:panelGroup id="content" layout="block"> 
 
                 <a:messages id="msg"/>
-                <a:new label="#{msg['field.idconductor']}"
-                       value="#{conductorController.conductor.idconductor}"
+                <a:new label="#{msg['field.cedula']}"
+                       value="#{conductorController.conductor.cedula}"
                        isnew="#{conductorController.isNew()}"
                        new="#{conductorController.prepare('new',conductorController.conductor)}"
                        rendererList="#{applicationMenu.conductor.list}"

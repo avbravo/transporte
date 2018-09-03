@@ -30,6 +30,8 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{conductorController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idconductor']}" />
                         <p:outputLabel  value="#{conductorController.conductor.idconductor}" id="idconductor"   />
+                        <p:outputLabel  value="#{msg['field.cedula']}" />
+                        <p:outputLabel  value="#{conductorController.conductor.cedula}" id="cedula"   />
 
                          <p:outputLabel  value="#{msg['field.nombre']}" />
                         <a:inputText value="#{conductorController.conductor.nombre}" id="nombre"  label="#{msg['field.nombre']}" />

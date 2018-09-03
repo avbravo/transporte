@@ -33,11 +33,11 @@
 
 
 
-                    <p:outputLabel value="#{msg['field.idvehiculo']}"/>
+                    <p:outputLabel value="#{msg['field.placa']}"/>
                     <e:autocompletevehiculo listener="#{vehiculoController.handleSelect}"
                                                   value="#{vehiculoController.vehiculoSelected}"
-                                                  itemLabel=" #{p.idvehiculo}"
-                                                  field="idvehiculo"
+                                                  itemLabel=" #{p.placa}"
+                                                  field="placa"
                                                   update=" :form:dataTable"/>
                     
                     <p:outputLabel value="#{msg['field.marca']}"/>
@@ -92,6 +92,7 @@
                              onpage="console.log('page');">
 
                     <b:dataTableColumn value="#{item.idvehiculo}" label="#{msg['field.idvehiculo']}"/>
+                    <b:dataTableColumn value="#{item.placa}" label="#{msg['field.placa']}"/>
                     <b:dataTableColumn value="#{item.marca}" label="#{msg['field.marca']}"/>
                     <b:dataTableColumn value="#{item.modelo}" label="#{msg['field.modelo']}"/>
                     <b:dataTableColumn value="#{item.anio}" label="#{msg['field.anio']}"/>

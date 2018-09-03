@@ -33,11 +33,11 @@
 
 
 
-                    <p:outputLabel value="#{msg['field.idconductor']}"/>
+                    <p:outputLabel value="#{msg['field.cedula']}"/>
                     <e:autocompleteconductor listener="#{conductorController.handleSelect}"
                                                   value="#{conductorController.conductorSelected}"
-                                                  itemLabel=" #{p.idconductor}"
-                                                  field="idconductor"
+                                                  itemLabel=" #{p.cedula}"
+                                                  field="cedula"
                                                   update=" :form:dataTable"/>
                     
                     <p:outputLabel value="#{msg['field.nombre']}"/>
@@ -84,6 +84,7 @@
                              onpage="console.log('page');">
 
                     <b:dataTableColumn value="#{item.idconductor}" label="#{msg['field.idconductor']}"/>
+                    <b:dataTableColumn value="#{item.cedula}" label="#{msg['field.cedula']}"/>
                     <b:dataTableColumn value="#{item.nombre}" label="#{msg['field.nombre']}"/>
                     <b:dataTableColumn value="#{item.celular}" label="#{msg['field.celular']}"/>
                     <b:dataTableColumn value="#{item.email}" label="#{msg['field.email']}"/>

@@ -13,7 +13,9 @@ import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.VehiculoDataModel;
+import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Vehiculo;
+import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
@@ -50,6 +52,7 @@ public class VehiculoController implements Serializable, IController {
 //    @Inject
 //private transient ExternalContext externalContext;
     private Boolean writable = false;
+    private String placanueva;
     //DataModel
     private VehiculoDataModel vehiculoDataModel;
     
@@ -95,6 +98,8 @@ public class VehiculoController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
+    @Inject
+    AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
 
     //List of Relations
     //Repository of Relations
@@ -109,6 +114,18 @@ public class VehiculoController implements Serializable, IController {
         this.pages = pages;
     }
 
+    public String getPlacanueva() {
+        return placanueva;
+    }
+
+    public void setPlacanueva(String placanueva) {
+        this.placanueva = placanueva;
+    }
+
+    
+    
+    
+    
     public TipovehiculoServices getTipovehiculoServices() {
         return tipovehiculoServices;
     }
@@ -202,6 +219,16 @@ public class VehiculoController implements Serializable, IController {
         this.writable = writable;
     }
 
+    public LookupTransporteejbServices getLookupTransporteejbServices() {
+        return lookupTransporteejbServices;
+    }
+
+    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    }
+
+    
+    
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
     public VehiculoController() {
@@ -234,7 +261,7 @@ String action = loginController.get("vehiculo");
           
             
             if (id != null) {
-                Optional<Vehiculo> optional = vehiculoRepository.find("idvehiculo", id);
+                Optional<Vehiculo> optional = vehiculoRepository.find("idvehiculo", Integer.parseInt(id));
                  if (optional.isPresent()) {
                     vehiculo = optional.get();
                     vehiculoSelected = vehiculo;
@@ -289,7 +316,7 @@ String action = loginController.get("vehiculo");
                  
                         vehiculoSelected = item;
                         vehiculo = vehiculoSelected;
-                        loginController.put("idvehiculo", vehiculo.getIdvehiculo());
+                        loginController.put("idvehiculo", vehiculo.getIdvehiculo().toString());
                
 
                     url = "/pages/vehiculo/view.xhtml";
@@ -334,21 +361,21 @@ String action = loginController.get("vehiculo");
     public String isNew() {
         try {
             writable = true;
-            if (JsfUtil.isVacio(vehiculo.getIdvehiculo())) {
+            if (JsfUtil.isVacio(vehiculo.getPlaca())) {
                 writable = false;
                 return "";
             }
-            vehiculo.setIdvehiculo(vehiculo.getIdvehiculo().toUpperCase());
-            Optional<Vehiculo> optional = vehiculoRepository.findById(vehiculo);
-            if (optional.isPresent()) {
+            vehiculo.setPlaca(vehiculo.getPlaca().toUpperCase());
+               List<Vehiculo> list = vehiculoRepository.findBy(new Document("placa", vehiculo.getPlaca()));
+            if (!list.isEmpty()) {    
                 writable = false;
 
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return "";
             } else {
-                String id = vehiculo.getIdvehiculo();
+                String id = vehiculo.getPlaca();
                 vehiculo = new Vehiculo();
-                vehiculo.setIdvehiculo(id);
+                vehiculo.setPlaca(id);
                 vehiculoSelected = new Vehiculo();
             }
 
@@ -362,18 +389,19 @@ String action = loginController.get("vehiculo");
     @Override
     public String save() {
         try {
-            vehiculo.setIdvehiculo(vehiculo.getIdvehiculo().toUpperCase());
-            Optional<Vehiculo> optional = vehiculoRepository.findById(vehiculo);
-            if (optional.isPresent()) {
+            vehiculo.setPlaca(vehiculo.getPlaca().toUpperCase());
+               List<Vehiculo> list = vehiculoRepository.findBy(new Document("placa", vehiculo.getPlaca()));
+            if (!list.isEmpty()) {    
                JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));
                 return null;
             }
-
+  Integer id = autoincrementableTransporteejbServices.getContador("vehiculo");
+           vehiculo.setIdvehiculo(id);
             //Lo datos del usuario
             vehiculo.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (vehiculoRepository.save(vehiculo)) {
                   //guarda el contenido anterior
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), loginController.getUsername(),
                     "create", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -397,7 +425,7 @@ String action = loginController.get("vehiculo");
 
           
             //guarda el contenido actualizado
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), loginController.getUsername(),
                     "update", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
 
             vehiculoRepository.update(vehiculo);
@@ -420,7 +448,7 @@ String action = loginController.get("vehiculo");
             }
             vehiculoSelected = vehiculo;
             if (vehiculoRepository.delete("idvehiculo", vehiculo.getIdvehiculo())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo(), loginController.getUsername(), "delete", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), loginController.getUsername(), "delete", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -636,5 +664,78 @@ String action = loginController.get("vehiculo");
         return "";
     }// </editor-fold>
 
+    
+    // <editor-fold defaultstate="collapsed" desc="clearPlaca()">
+ 
+    public String clearPlaca(){
+        try {
+            vehiculo = new Vehiculo();
+            vehiculo.setPlaca("");
+            writable=false;
+        } catch (Exception e) {
+            JsfUtil.errorMessage("clearPlaca() "+e.getLocalizedMessage() );
+        }
+        return "";
+    }   
+// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="findByCedula()">
+    public String findByPlaca() {
+        try {
+            if (JsfUtil.isVacio(vehiculo.getPlaca())) {
+                writable = false;
+                return "";
+            }
+            vehiculo.setPlaca(vehiculo.getPlaca().toUpperCase());
+            writable = true;
+            List<Vehiculo> list = vehiculoRepository.findBy(new Document("placa", vehiculo.getPlaca()));
+            if (list.isEmpty()) {
+                writable = false;
+
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idnotexist"));
+                return "";
+            } else {
+                writable = true;
+               vehiculo= list.get(0);
+           
+                vehiculoSelected = vehiculo;
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("findByPlaca()" + e.getLocalizedMessage());
+        }
+
+        return "";
+    }
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="editPlaca()">
+    public String editPlaca() {
+        try {
+            
+            if(vehiculo.getPlaca().equals(placanueva )){
+                JsfUtil.warningMessage(rf.getMessage("warning.placasiguales")); 
+                return "";
+            }
+
+            Integer c = vehiculoRepository.count(new Document("placa", placanueva));
+            if (c >= 1) {
+                JsfUtil.warningMessage(rf.getMessage("0"));
+                return "";
+            }
+            
+            
+            vehiculo.setPlaca(placanueva);
+
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), loginController.getUsername(),
+                    "update", "conductor", vehiculoRepository.toDocument(vehiculo).toString()));
+
+           vehiculoRepository.update(vehiculo);
+            JsfUtil.successMessage(rf.getAppMessage("info.update"));
+        } catch (Exception e) {
+            JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
 
 }

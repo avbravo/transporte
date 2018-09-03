@@ -36,6 +36,7 @@ public class ApplicationMenu implements Serializable {
      elementos
      */
     MenuElement conductor = new MenuElement();
+    MenuElement conductorcambiarcedula = new MenuElement();
     MenuElement carrera = new MenuElement();
     MenuElement estatus = new MenuElement();
     MenuElement facultad = new MenuElement();
@@ -48,6 +49,7 @@ public class ApplicationMenu implements Serializable {
     MenuElement solicitudAdministrativo = new MenuElement();
     MenuElement solicitudAdministrativoManual = new MenuElement();
     MenuElement vehiculo = new MenuElement();
+    MenuElement vehiculocambiarplaca = new MenuElement();
     MenuElement viajes = new MenuElement();
     MenuElement usuario = new MenuElement();
     MenuElement unidad = new MenuElement();
@@ -59,6 +61,7 @@ public class ApplicationMenu implements Serializable {
         menuBarAdministracion = activo;
         carrera.initialize(activo);
         conductor.initialize(activo);
+        conductorcambiarcedula.initialize(activo);
         estatus.initialize(activo);
         facultad.initialize(activo);
         tiposolicitud.initialize(activo);
@@ -70,12 +73,32 @@ public class ApplicationMenu implements Serializable {
         solicitudAdministrativo.initialize(activo);
         solicitudAdministrativoManual.initialize(activo);
         vehiculo.initialize(activo);
+        vehiculocambiarplaca.initialize(activo);
         viajes.initialize(activo);
         unidad.initialize(activo);
         usuario.initialize(activo);
 
     }
 
+    public MenuElement getConductorcambiarcedula() {
+        return conductorcambiarcedula;
+    }
+
+    public void setConductorcambiarcedula(MenuElement conductorcambiarcedula) {
+        this.conductorcambiarcedula = conductorcambiarcedula;
+    }
+
+    public MenuElement getVehiculocambiarplaca() {
+        return vehiculocambiarplaca;
+    }
+
+    public void setVehiculocambiarplaca(MenuElement vehiculocambiarplaca) {
+        this.vehiculocambiarplaca = vehiculocambiarplaca;
+    }
+
+    
+    
+    
     public MenuElement getCarrera() {
         return carrera;
     }

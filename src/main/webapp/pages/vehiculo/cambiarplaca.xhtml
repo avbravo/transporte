@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+    <ui:define name="content">
+        <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            }
+        </style>
+        <h1>#{msg['titleview.changeplaca']}</h1>
+        <hr/>
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.vehiculocambiarplaca.edit}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+            <h:panelGroup id="content" layout="block"> 
+                <p:remoteCommand  update=":form:content :form:panel"
+                                  name="remoteid" 
+                                  actionListener="#{vehiculoController.findByPlaca()}"/>
+                <a:messages id="msg"/>
+                <b:panel title="#{msg['titleview.changeplaca']}">
+                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{loginController.loggedIn}"> 
+                        <p:outputLabel  value="#{msg['field.placa']}" />
+                        <b:inputText       
+                            style="text-transform: uppercase"
+                            placeholder="#{app['info.ingresenuevodato']}"
+                            value="#{vehiculoController.vehiculo.placa}" 
+
+                            required="false"
+                            requiredMessage="#{msg['field.placa']} #{app['info.required']}"
+                            immediate="true"
+                            onkeypress="if (event.keyCode == 13) {
+                                        remoteid();
+                                        return false;
+                                    }">
+
+                            <f:facet name="prepend">
+                                <b:commandButton  iconAwesome="fa-plus"         
+
+                                                  look="success"
+                                                  title="#{app['button.new']}"
+                                                  action="#{vehiculoController.clearPlaca()}"  update=":form:content" > 
+                                    <f:ajax />
+                                </b:commandButton>
+
+                            </f:facet>
+
+                            <f:facet name="append">
+                                <b:commandButton immediate="true"
+                                                 look="primary"
+                                                 iconAwesome="fa-search" 
+                                                 update=":form:content "
+                                                 title="#{app['button.search']}" 
+                                                 action="#{vehiculoController.findByPlaca()}"/>
+
+                            </f:facet>
+                        </b:inputText>
+
+
+
+
+                        <p:outputLabel  value="#{msg['field.marca']}" rendered="#{vehiculoController.writable}"/>
+                        <p:outputLabel  value="#{vehiculoController.vehiculo.marca}" id="marca" rendered="#{vehiculoController.writable}" />
+
+                        <p:outputLabel  value="#{msg['field.modelo']}" rendered="#{vehiculoController.writable}"/>
+                        <p:outputLabel  value="#{vehiculoController.vehiculo.modelo}" id="modelo" rendered="#{vehiculoController.writable}" />
+                        <p:outputLabel  value="#{msg['field.placanueva']}" rendered="#{vehiculoController.writable}"/>
+                        <a:inputText  value="#{vehiculoController.placanueva}" id="placanueva" required="true" rendered="#{vehiculoController.writable}"  />
+
+                        <b:commandButton 
+                            look="primary" 
+                            iconAwesome="fa-edit"
+                            title="#{app['button.edit']}"
+                            rendered="#{vehiculoController.writable}"
+                            action="#{vehiculoController.editPlaca()}" 
+                            update=":form:content" /> 
+
+                    </b:panelGrid>
+
+                </b:panel>
+            </h:panelGroup>
+        </b:form>
+        <a:denegado renderedcondition="#{!loginController.loggedIn or ! applicationMenu.vehiculocambiarplaca.edit}" />
+        <br/><br/><br/>
+    </ui:define>
+</ui:composition>

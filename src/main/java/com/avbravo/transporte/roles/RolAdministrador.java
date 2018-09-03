@@ -42,6 +42,7 @@ private static final long serialVersionUID = 1L;
      
       applicationMenu.getCarrera().initialize(Boolean.TRUE);
       applicationMenu.getConductor().initialize(Boolean.TRUE);
+      applicationMenu.getConductorcambiarcedula().initialize(Boolean.TRUE);
       applicationMenu.getEstatus().initialize(Boolean.TRUE);
       applicationMenu.getFacultad().initialize(Boolean.TRUE);
       applicationMenu.getRol().initialize(Boolean.TRUE);
@@ -53,6 +54,7 @@ private static final long serialVersionUID = 1L;
       applicationMenu.getSolicitudAdministrativo().initialize(Boolean.TRUE);
       applicationMenu.getSolicitudAdministrativoManual().initialize(Boolean.TRUE);
       applicationMenu.getVehiculo().initialize(Boolean.TRUE);
+      applicationMenu.getVehiculocambiarplaca().initialize(Boolean.TRUE);
       applicationMenu.getViajes().initialize(Boolean.TRUE);
      applicationMenu.getUnidad().initialize(Boolean.TRUE);
      applicationMenu.getUsuario().initialize(Boolean.TRUE);

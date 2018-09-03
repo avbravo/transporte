@@ -14,6 +14,7 @@ import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ConductorDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
+import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
@@ -49,6 +50,7 @@ public class ConductorController implements Serializable, IController {
 //    @Inject
 //private transient ExternalContext externalContext;
     private Boolean writable = false;
+        private String cedulanueva;
     //DataModel
     private ConductorDataModel conductorDataModel;
 
@@ -75,6 +77,8 @@ public class ConductorController implements Serializable, IController {
     //Services
     //Atributos para busquedas
     @Inject
+    AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
+    @Inject
     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
@@ -91,7 +95,7 @@ public class ConductorController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
-  
+
 
     //List of Relations
     //Repository of Relations
@@ -106,6 +110,27 @@ public class ConductorController implements Serializable, IController {
         this.pages = pages;
     }
 
+    public String getCedulanueva() {
+        return cedulanueva;
+    }
+
+    public void setCedulanueva(String cedulanueva) {
+        this.cedulanueva = cedulanueva;
+    }
+    
+    
+    
+
+    public LookupTransporteejbServices getLookupTransporteejbServices() {
+        return lookupTransporteejbServices;
+    }
+
+    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    }
+
+    
+    
     public LookupTransporteejbServices getlookupTransporteejbServices() {
         return lookupTransporteejbServices;
     }
@@ -217,7 +242,7 @@ public class ConductorController implements Serializable, IController {
             conductorDataModel = new ConductorDataModel(conductorList);
 
             if (id != null) {
-                Optional<Conductor> optional = conductorRepository.find("idconductor", id);
+                Optional<Conductor> optional = conductorRepository.find("idconductor", Integer.parseInt(id));
                 if (optional.isPresent()) {
                     conductor = optional.get();
                     conductorSelected = conductor;
@@ -270,7 +295,7 @@ public class ConductorController implements Serializable, IController {
 
                     conductorSelected = item;
                     conductor = conductorSelected;
-                    loginController.put("idconductor", conductor.getIdconductor());
+                    loginController.put("idconductor", conductor.getIdconductor().toString());
 
                     url = "/pages/conductor/view.xhtml";
                     break;
@@ -313,21 +338,22 @@ public class ConductorController implements Serializable, IController {
     public String isNew() {
         try {
             writable = true;
-            if (JsfUtil.isVacio(conductor.getIdconductor())) {
+            if (JsfUtil.isVacio(conductor.getCedula())) {
                 writable = false;
                 return "";
             }
-            conductor.setIdconductor(conductor.getIdconductor().toUpperCase());
-            Optional<Conductor> optional = conductorRepository.findById(conductor);
-            if (optional.isPresent()) {
+            conductor.setCedula(conductor.getCedula().toUpperCase());
+            
+             List<Conductor> list = conductorRepository.findBy(new Document("cedula", conductor.getCedula()));
+            if (!list.isEmpty()) {         
                 writable = false;
 
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return "";
             } else {
-                String id = conductor.getIdconductor();
+                String id = conductor.getCedula();
                 conductor = new Conductor();
-                conductor.setIdconductor(id);
+                conductor.setCedula(id);
                 conductorSelected = new Conductor();
             }
 
@@ -341,18 +367,19 @@ public class ConductorController implements Serializable, IController {
     @Override
     public String save() {
         try {
-            conductor.setIdconductor(conductor.getIdconductor().toUpperCase());
-            Optional<Conductor> optional = conductorRepository.findById(conductor);
-            if (optional.isPresent()) {
+            conductor.setCedula(conductor.getCedula().toUpperCase());
+           List<Conductor> list = conductorRepository.findBy(new Document("cedula", conductor.getCedula()));
+            if (!list.isEmpty()) {   
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
-
+            Integer id = autoincrementableTransporteejbServices.getContador("conductor");
+            conductor.setIdconductor(id);
             //Lo datos del usuario
             conductor.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (conductorRepository.save(conductor)) {
                 //guarda el contenido anterior
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor(), loginController.getUsername(),
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(),
                         "create", "conductor", conductorRepository.toDocument(conductor).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -375,7 +402,7 @@ public class ConductorController implements Serializable, IController {
             conductor.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
             //guarda el contenido actualizado
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor(), loginController.getUsername(),
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(),
                     "update", "conductor", conductorRepository.toDocument(conductor).toString()));
 
             conductorRepository.update(conductor);
@@ -399,7 +426,7 @@ public class ConductorController implements Serializable, IController {
             }
             conductorSelected = conductor;
             if (conductorRepository.delete("idconductor", conductor.getIdconductor())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor(), loginController.getUsername(), "delete", "conductor", conductorRepository.toDocument(conductor).toString()));
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(), "delete", "conductor", conductorRepository.toDocument(conductor).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -611,6 +638,79 @@ public class ConductorController implements Serializable, IController {
 
         } catch (Exception e) {
             JsfUtil.errorMessage("searchBy()" + e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+
+         // <editor-fold defaultstate="collapsed" desc="clearCedula()">
+ 
+    public String clearCedula(){
+        try {
+            conductor = new Conductor();
+            conductor.setCedula("");
+            writable=false;
+        } catch (Exception e) {
+            JsfUtil.errorMessage("clearCedula() "+e.getLocalizedMessage() );
+        }
+        return "";
+    }   
+// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="findByCedula()">
+    public String findByCedula() {
+        try {
+            if (JsfUtil.isVacio(conductor.getCedula())) {
+                writable = false;
+                return "";
+            }
+            conductor.setCedula(conductor.getCedula().toUpperCase());
+            writable = true;
+            List<Conductor> list = conductorRepository.findBy(new Document("cedula", conductor.getCedula()));
+            if (list.isEmpty()) {
+                writable = false;
+
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idnotexist"));
+                return "";
+            } else {
+                writable = true;
+                conductor = list.get(0);
+           
+                conductorSelected = conductor;
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("findByCedula()" + e.getLocalizedMessage());
+        }
+
+        return "";
+    }
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="editCedula">
+    public String editCedula() {
+        try {
+            
+            if(conductor.getCedula().equals(cedulanueva)){
+                JsfUtil.warningMessage(rf.getMessage("warning.cedulasiguales")); 
+                return "";
+            }
+
+            Integer c = conductorRepository.count(new Document("cedula", cedulanueva));
+            if (c >= 1) {
+                JsfUtil.warningMessage(rf.getMessage("warning.conductorceduladuplicada"));
+                return "";
+            }
+            
+            
+            conductor.setCedula(cedulanueva);
+
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(),
+                    "update", "conductor", conductorRepository.toDocument(conductor).toString()));
+
+            conductorRepository.update(conductor);
+            JsfUtil.successMessage(rf.getAppMessage("info.update"));
+        } catch (Exception e) {
+            JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>

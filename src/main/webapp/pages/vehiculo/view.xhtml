@@ -31,6 +31,8 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{vehiculoController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idvehiculo']}" />
                         <p:outputLabel  value="#{vehiculoController.vehiculo.idvehiculo}" id="idvehiculo"   />
+                        <p:outputLabel  value="#{msg['field.placa']}" />
+                        <p:outputLabel  value="#{vehiculoController.vehiculo.placa}" id="placa"   />
 
                         <p:outputLabel  value="#{msg['field.marca']}" />
                         <a:inputText value="#{vehiculoController.vehiculo.marca}" id="marca"  label="#{msg['field.marca']}" />
