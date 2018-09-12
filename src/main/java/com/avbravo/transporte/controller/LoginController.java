@@ -269,7 +269,15 @@ public class LoginController implements Serializable, SecurityInterface {
             loggedIn = true;
             foto = "img/me.jpg";
             JsfUtil.successMessage(rf.getAppMessage("login.welcome") + " " + usuario.getNombre());
-            return "/faces/index.xhtml?faces-redirect=true";
+            if (rol.getIdrol().equals("DOCENTE")) {
+                return "/faces/pages/solicituddocente/list.xhtml?faces-redirect=true";
+            } else {
+                if (rol.getIdrol().equals("ADMINISTRATIVO")) {
+                    return "/faces/index.xhtml?faces-redirect=true";
+                } else {
+                    return "/faces/index.xhtml?faces-redirect=true";
+                }
+            }
 
             //              return "/dashboard.xhtml?faces-redirect=true";
         } catch (Exception e) {

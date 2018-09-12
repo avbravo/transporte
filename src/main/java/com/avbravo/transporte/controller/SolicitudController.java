@@ -8,6 +8,10 @@ package com.avbravo.transporte.controller;
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.avbravoutils.JsfUtil;
 import com.avbravo.avbravoutils.printer.Printer;
+import com.avbravo.commonejb.entity.Carrera;
+import com.avbravo.commonejb.entity.Facultad;
+import com.avbravo.commonejb.repository.CarreraRepository;
+import com.avbravo.commonejb.repository.FacultadRepository;
 import com.avbravo.ejbjmoordb.interfaces.IController;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
@@ -15,16 +19,19 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Unidad;
+import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
+import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -50,8 +57,7 @@ public class SolicitudController implements Serializable, IController {
 
     private static final long serialVersionUID = 1L;
 
-//    @Inject
-//private transient ExternalContext externalContext;
+    private Date _old;
     private Boolean writable = false;
     //DataModel
     private SolicitudDataModel solicitudDataModel;
@@ -60,7 +66,6 @@ public class SolicitudController implements Serializable, IController {
     Integer rowPage = 25;
 
     List<Integer> pages = new ArrayList<>();
-    //
 
     //Entity
     Solicitud solicitud;
@@ -70,8 +75,14 @@ public class SolicitudController implements Serializable, IController {
     List<Solicitud> solicitudList = new ArrayList<>();
     List<Solicitud> solicitudFiltered = new ArrayList<>();
     List<Unidad> unidadList = new ArrayList<>();
+    List<Facultad> facultadList = new ArrayList<>();
+    List<Carrera> carreraList = new ArrayList<>();
 
     //Repository
+    @Inject
+    FacultadRepository facultadRepository;
+    @Inject
+    CarreraRepository carreraRepository;
     @Inject
     UnidadRepository unidadRepository;
     @Inject
@@ -82,7 +93,10 @@ public class SolicitudController implements Serializable, IController {
     //Services
     //Atributos para busquedas
     @Inject
-     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
+    AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
+
+    @Inject
+    ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
 
@@ -92,7 +106,9 @@ public class SolicitudController implements Serializable, IController {
     UserInfoServices userInfoServices;
     @Inject
     SolicitudServices solicitudServices;
-    
+    @Inject
+    EstatusServices estatusServices;
+
     @Inject
     TiposolicitudServices tiposolicitudServices;
     @Inject
@@ -101,7 +117,6 @@ public class SolicitudController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
-  
 
     //List of Relations
     //Repository of Relations
@@ -116,6 +131,33 @@ public class SolicitudController implements Serializable, IController {
         this.pages = pages;
     }
 
+    public List<Facultad> getFacultadList() {
+        return facultadList;
+    }
+
+    public void setFacultadList(List<Facultad> facultadList) {
+        this.facultadList = facultadList;
+    }
+
+    public List<Carrera> getCarreraList() {
+        return carreraList;
+    }
+
+    public void setCarreraList(List<Carrera> carreraList) {
+        this.carreraList = carreraList;
+    }
+    
+    
+    
+
+    public Date getOld() {
+        return _old;
+    }
+
+    public void setOld(Date _old) {
+        this._old = _old;
+    }
+
     public List<Unidad> getUnidadList() {
         return unidadList;
     }
@@ -128,8 +170,6 @@ public class SolicitudController implements Serializable, IController {
         this.tiposolicitudServices = tiposolicitudServices;
     }
 
-    
-    
     public void setUnidadList(List<Unidad> unidadList) {
         this.unidadList = unidadList;
     }
@@ -245,12 +285,13 @@ public class SolicitudController implements Serializable, IController {
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
             if (id != null) {
-                Optional<Solicitud> optional = solicitudRepository.find("idsolicitud", id);
+                Optional<Solicitud> optional = solicitudRepository.find("idsolicitud", Integer.parseInt(id));
                 if (optional.isPresent()) {
                     solicitud = optional.get();
                     unidadList = solicitud.getUnidad();
 
                     solicitudSelected = solicitud;
+                    _old = solicitud.getFecha();
                     writable = true;
 
                 }
@@ -278,11 +319,10 @@ public class SolicitudController implements Serializable, IController {
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new",solicitud);
+        prepare("new", solicitud);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-  
     public String prepare(String action, Solicitud item) {
         String url = "";
         try {
@@ -298,12 +338,11 @@ public class SolicitudController implements Serializable, IController {
                     break;
 
                 case "view":
-                 
-                        solicitudSelected = item;                  
-                        solicitud = solicitudSelected;
-                               unidadList = solicitud.getUnidad();
-                        loginController.put("idsolicitud", solicitud.getIdsolicitud().toString());
-               
+
+                    solicitudSelected = item;
+                    solicitud = solicitudSelected;
+                    unidadList = solicitud.getUnidad();
+                    loginController.put("idsolicitud", solicitud.getIdsolicitud().toString());
 
                     url = "/pages/solicituddocente/view.xhtml";
                     break;
@@ -346,24 +385,31 @@ public class SolicitudController implements Serializable, IController {
     public String isNew() {
         try {
             writable = true;
-//            if (JsfUtil.isVacio(solicitud.getIdsolicitud())) {
-//                writable = false;
-//                return "";
-//            }
-            
-//            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
-//            if (optional.isPresent()) {
-//                writable = false;
-//
-//                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-//                return "";
-//            } else {
-                Integer id = solicitud.getIdsolicitud();
-                solicitud = new Solicitud();
-                solicitud.setIdsolicitud(id);
-               unidadList = new ArrayList<>();
+
+            Date idsecond = solicitud.getFecha();
+            Integer id = solicitud.getIdsolicitud();
+            solicitud = new Solicitud();
                 solicitudSelected = new Solicitud();
-//            }
+            solicitud.setIdsolicitud(id);
+            solicitud.setFecha(idsecond);
+            solicitud.setResponsable(loginController.getUsuario().getNombre());
+            solicitud.setEmail(loginController.getUsuario().getEmail());
+            solicitud.setTelefono(loginController.getUsuario().getCelular());
+            solicitud.setPeriodoacademico(JsfUtil.getAnioActual().toString());
+            solicitud.setFechahorapartida(solicitud.getFecha());
+            solicitud.setFechahoraregreso(solicitud.getFecha());
+            unidadList = new ArrayList<>();
+            unidadList.add(loginController.getUsuario().getUnidad());
+       
+            solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
+
+            String textsearch = "ADMINISTRATIVO";
+            if (loginController.getRol().getIdrol().toUpperCase().equals("DOCENTE")) {
+                textsearch = "DOCENTE";
+            }
+            solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
+            solicitudSelected = solicitud;
+
 
         } catch (Exception e) {
             JsfUtil.errorMessage("isNew()" + e.getLocalizedMessage());
@@ -375,12 +421,14 @@ public class SolicitudController implements Serializable, IController {
     @Override
     public String save() {
         try {
+            Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
+            solicitud.setIdsolicitud(idsolicitud);
             Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
             if (optional.isPresent()) {
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
-solicitud.setUnidad(unidadList);
+            solicitud.setUnidad(unidadList);
             //Lo datos del usuario
             solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
@@ -404,7 +452,7 @@ solicitud.setUnidad(unidadList);
     @Override
     public String edit() {
         try {
-solicitud.setUnidad(unidadList);
+            solicitud.setUnidad(unidadList);
             solicitud.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
             //guarda el contenido actualizado
@@ -425,7 +473,7 @@ solicitud.setUnidad(unidadList);
         String path = "";
         try {
             solicitud = (Solicitud) item;
-    if (!solicitudServices.isDeleted(solicitud)) {
+            if (!solicitudServices.isDeleted(solicitud)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
@@ -648,14 +696,14 @@ solicitud.setUnidad(unidadList);
         List<Unidad> suggestions = new ArrayList<>();
         List<Unidad> temp = new ArrayList<>();
         try {
-                Boolean found = false;
+            Boolean found = false;
             query = query.trim();
             if (query.length() < 1) {
                 return suggestions;
             }
-            
+
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
-            temp = unidadRepository.findRegex(field, query, true, new Document(field, 1));
+            temp = unidadRepository.findRegexInText(field, query, true, new Document(field, 1));
             if (unidadList.isEmpty()) {
                 if (!temp.isEmpty()) {
                     suggestions = temp;
@@ -680,7 +728,89 @@ solicitud.setUnidad(unidadList);
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("complete() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage("completeFiltrado() " + e.getLocalizedMessage());
+        }
+        return suggestions;
+    }// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="completeFiltradoFacultad(String query)">
+    public List<Facultad> completeFiltradoFacultad(String query) {
+        List<Facultad> suggestions = new ArrayList<>();
+        List<Facultad> temp = new ArrayList<>();
+        try {
+            Boolean found = false;
+            query = query.trim();
+            if (query.length() < 1) {
+                return suggestions;
+            }
+
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            temp = facultadRepository.findRegexInText(field, query, true, new Document(field, 1));
+            if (facultadList.isEmpty()) {
+                if (!temp.isEmpty()) {
+                    suggestions = temp;
+                }
+            } else {
+                if (!temp.isEmpty()) {
+
+                    for (Facultad r : temp) {
+                        found = false;
+                        for (Facultad r2 : facultadList) {
+                            if (r.getIdfacultad().equals(r2.getIdfacultad())) {
+                                found = true;
+                            }
+                        }
+                        if (!found) {
+                            suggestions.add(r);
+                        }
+
+                    }
+                }
+
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("completeFiltradoFacultad() " + e.getLocalizedMessage());
+        }
+        return suggestions;
+    }// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="completeFiltradoCarrer(String query)">
+    public List<Carrera> completeFiltradoCarrera(String query) {
+        List<Carrera> suggestions = new ArrayList<>();
+        List<Carrera> temp = new ArrayList<>();
+        try {
+            Boolean found = false;
+            query = query.trim();
+            if (query.length() < 1) {
+                return suggestions;
+            }
+
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            temp = carreraRepository.findRegexInText(field, query, true, new Document(field, 1));
+            if (facultadList.isEmpty()) {
+                if (!temp.isEmpty()) {
+                    suggestions = temp;
+                }
+            } else {
+                if (!temp.isEmpty()) {
+
+                    for (Carrera r : temp) {
+                        found = false;
+                        for (Carrera r2 : carreraList) {
+                            if (r.getIdcarrera().equals(r2.getIdcarrera())) {
+                                found = true;
+                            }
+                        }
+                        if (!found) {
+                            suggestions.add(r);
+                        }
+
+                    }
+                }
+
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("completeFiltradoCarrera() " + e.getLocalizedMessage());
         }
         return suggestions;
     }// </editor-fold>

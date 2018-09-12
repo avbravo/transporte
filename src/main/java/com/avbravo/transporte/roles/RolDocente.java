@@ -2,7 +2,7 @@
 * To change this license header, choose License Headers in Project Properties.
 * To change this template file, choose Tools | Templates
  * and open the template in the editor.
-*/
+ */
 package com.avbravo.transporte.roles;
 
 import javax.inject.Inject;
@@ -16,53 +16,51 @@ import java.io.Serializable;
  */
 @Named
 @RequestScoped
-public class RolDocente implements Serializable{
-private static final long serialVersionUID = 1L;
+public class RolDocente implements Serializable {
 
- @Inject
- ApplicationMenu applicationMenu;
+    private static final long serialVersionUID = 1L;
+
+    @Inject
+    ApplicationMenu applicationMenu;
+
     /**
      * Creates a new instance of RolSecretaria
      */
     public RolDocente() {
     }
- public void enabled() {
+
+    public void enabled() {
         /*
          *barra
          */
-        
-      applicationMenu.setMenuBarSolicitud(Boolean.TRUE);
-      applicationMenu.setMenuBarRegistros(Boolean.TRUE);
-      applicationMenu.setMenuBarReportes(Boolean.TRUE);
-      applicationMenu.setMenuBarAdministracion(Boolean.TRUE);
+
+        applicationMenu.setMenuBarSolicitud(Boolean.TRUE);
+        applicationMenu.setMenuBarRegistros(Boolean.FALSE);
+        applicationMenu.setMenuBarReportes(Boolean.FALSE);
+        applicationMenu.setMenuBarAdministracion(Boolean.FALSE);
         /*
          *menu
          */
-        
-    
-    applicationMenu.getCarrera().initialize(Boolean.TRUE);
-      applicationMenu.getConductor().initialize(Boolean.TRUE);
-      applicationMenu.getConductorcambiarcedula().initialize(Boolean.FALSE);
-      applicationMenu.getEstatus().initialize(Boolean.TRUE);
-      applicationMenu.getFacultad().initialize(Boolean.TRUE);
-      applicationMenu.getRol().initialize(Boolean.TRUE);
-      applicationMenu.getTiposolicitud().initialize(Boolean.TRUE);
-      applicationMenu.getTipovehiculo().initialize(Boolean.TRUE);
-      applicationMenu.getSolicitud().initialize(Boolean.TRUE);
-      applicationMenu.getSolicitudDocente().initialize(Boolean.TRUE);
-      applicationMenu.getSolicitudDocenteManual().initialize(Boolean.TRUE);
-      applicationMenu.getSolicitudAdministrativo().initialize(Boolean.TRUE);
-      applicationMenu.getSolicitudAdministrativoManual().initialize(Boolean.TRUE);
-      applicationMenu.getVehiculo().initialize(Boolean.TRUE);
-      applicationMenu.getVehiculocambiarplaca().initialize(Boolean.FALSE);
-      applicationMenu.getViajes().initialize(Boolean.TRUE);
-      applicationMenu.getUnidad().initialize(Boolean.TRUE);
-     applicationMenu.getUsuario().initialize(Boolean.TRUE);
-    
-     
+
+        applicationMenu.getCarrera().initialize(Boolean.FALSE);
+        applicationMenu.getConductor().initialize(Boolean.FALSE);
+        applicationMenu.getConductorcambiarcedula().initialize(Boolean.FALSE);
+        applicationMenu.getEstatus().initialize(Boolean.FALSE);
+        applicationMenu.getFacultad().initialize(Boolean.FALSE);
+        applicationMenu.getRol().initialize(Boolean.FALSE);
+        applicationMenu.getTiposolicitud().initialize(Boolean.FALSE);
+        applicationMenu.getTipovehiculo().initialize(Boolean.FALSE);
+        applicationMenu.getSolicitud().initialize(Boolean.TRUE);
+        applicationMenu.getSolicitudDocente().initialize(Boolean.TRUE);
+        applicationMenu.getSolicitudDocenteManual().initialize(Boolean.FALSE);
+        applicationMenu.getSolicitudAdministrativo().initialize(Boolean.FALSE);
+        applicationMenu.getSolicitudAdministrativoManual().initialize(Boolean.FALSE);
+        applicationMenu.getVehiculo().initialize(Boolean.FALSE);
+        applicationMenu.getVehiculocambiarplaca().initialize(Boolean.FALSE);
+        applicationMenu.getViajes().initialize(Boolean.FALSE);
+        applicationMenu.getUnidad().initialize(Boolean.FALSE);
+        applicationMenu.getUsuario().initialize(Boolean.FALSE);
+
     }
-
-
-
 
 }

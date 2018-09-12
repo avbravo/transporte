@@ -41,12 +41,10 @@ private static final long serialVersionUID = 1L;
             case "administrador": 
                 rolAdministrador.enabled();
                  break;
-            case "profesor": 
+            case "docente": 
                 rolDocente.enabled();
                  break;
-           
-                 
-                 
+                                             
            
             case "secretaria": 
                 rolSecretaria.enabled();

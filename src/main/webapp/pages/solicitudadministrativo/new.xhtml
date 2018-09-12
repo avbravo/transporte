@@ -43,11 +43,8 @@
 
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{solicitudController.writable}"> 
 
-                        <p:outputLabel  value="#{msg['field.semestre']}" />
-                        <a:inputText span="2" value="#{solicitudController.solicitud.periodoacademico}" id="semestre"  label="#{msg['field.semestre']}" />
-                        
                         <p:outputLabel  value="#{msg['field.periodoacademico']}" />
-                        <a:inputText span="2" value="#{solicitudController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
+                        <a:inputText value="#{solicitudController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
 
 
 
@@ -78,74 +75,21 @@
                                 </h:panelGrid>
                             </f:facet>
                         </p:autoComplete>
-                        
-                        
 
                         <p:outputLabel  value="#{msg['field.facultad']}" />
-                       <p:autoComplete dropdown="false"
-                                        multiple="true"
-                                        scrollHeight="250"
-                                        size="15"
-                                        emptyMessage="#{app['info.nohayregistros']}"
-                                        value="#{solicitudController.facultadList}"
-                                        completeMethod="#{solicitudController.completeFiltradoFacultad}"
-                                        var="p"
-                                        required="true"
-                                        itemLabel="#{p.descripcion}"
-                                        itemValue="#{p}" forceSelection="true">
-                            <f:converter binding="#{facultadConverter}"/>
-                            <f:attribute name="field" value="descripcion"/>
-                            <f:attribute name="fielddropdown" value="false"/>
-                            <f:attribute name="fieldquerylenth" value="1"/>
-                            <p:ajax event="itemSelect" listener="#{solictudController.handleSelect}"
-                                    />
-                            <f:facet name="itemtip">
-                                <h:panelGrid columns="1" cellpadding="5">
-                                    <h:outputText value="#{msg['field.descripcion']} #{p.descripcion}" />
-
-
-                                </h:panelGrid>
-                            </f:facet>
-                            
-                        </p:autoComplete>
+                        <a:inputText value="#{solicitudController.solicitud.facultad}" id="facultad"  label="#{msg['field.facultad']}" />
                         
                         <p:outputLabel  value="#{msg['field.carrera']}" />
-                        <p:autoComplete dropdown="false"
-                                        multiple="true"
-                                        scrollHeight="250"
-                                        size="15"
-                                        emptyMessage="#{app['info.nohayregistros']}"
-                                        value="#{solicitudController.carreraList}"
-                                        completeMethod="#{solicitudController.completeFiltradoCarrera}"
-                                        var="p"
-                                        required="true"
-                                        itemLabel="#{p.descripcion}"
-                                        itemValue="#{p}" forceSelection="true">
-                            <f:converter binding="#{carreraConverter}"/>
-                            <f:attribute name="field" value="descripcion"/>
-                            <f:attribute name="fielddropdown" value="false"/>
-                            <f:attribute name="fieldquerylenth" value="1"/>
-                            <p:ajax event="itemSelect" listener="#{solictudController.handleSelect}"
-                                    />
-                            <f:facet name="itemtip">
-                                <h:panelGrid columns="1" cellpadding="5">
-                                    <h:outputText value="#{msg['field.descripcion']} #{p.descripcion}" />
-
-
-                                </h:panelGrid>
-                            </f:facet>
-                            
-                        </p:autoComplete>
-                        
+                        <a:inputText value="#{solicitudController.solicitud.carrera}" id="carrera"  label="#{msg['field.carrera']}" />
 
                         <p:outputLabel  value="#{msg['field.numerogrupo']}" />
-                        <a:inputText span="4" value="#{solicitudController.solicitud.numerogrupo}" id="numerogrupo"  label="#{msg['field.numerogrupo']}" />
+                        <a:inputText value="#{solicitudController.solicitud.numerogrupo}" id="numerogrupo"  label="#{msg['field.numerogrupo']}" />
 
                         <p:outputLabel  value="#{msg['field.responsable']}" />
                         <a:inputText value="#{solicitudController.solicitud.responsable}" id="responsable"  label="#{msg['field.responsable']}" />
 
                         <p:outputLabel  value="#{msg['field.telefono']}" />
-                        <a:inputText span="4" value="#{solicitudController.solicitud.telefono}" id="telefono"  label="#{msg['field.telefono']}" />
+                        <a:inputText value="#{solicitudController.solicitud.telefono}" id="telefono"  label="#{msg['field.telefono']}" />
 
                         <p:outputLabel  value="#{msg['field.email']}" />
                         <a:email value="#{solicitudController.solicitud.email}" id="email"  label="#{msg['field.email']}" />
@@ -160,7 +104,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.pasajeros']}" />
-                        <a:inputText span="2" value="#{solicitudController.solicitud.pasajeros}" id="pasajeros"  label="#{msg['field.pasajeros']}" />
+                        <a:inputText value="#{solicitudController.solicitud.pasajeros}" id="pasajeros"  label="#{msg['field.pasajeros']}" />
 
 
                         <p:outputLabel  value="#{msg['field.lugares']}" />
