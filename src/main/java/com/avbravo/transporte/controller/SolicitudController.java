@@ -35,6 +35,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.faces.component.UIComponent;
 import javax.faces.view.ViewScoped;
@@ -44,6 +46,7 @@ import javax.faces.context.FacesContext;
 import org.bson.Document;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 // </editor-fold>
 
 /**
@@ -56,7 +59,7 @@ public class SolicitudController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
-
+ List<Facultad> facultadListTemp = new ArrayList<>();
     private Date _old;
     private Boolean writable = false;
     //DataModel
@@ -146,9 +149,6 @@ public class SolicitudController implements Serializable, IController {
     public void setCarreraList(List<Carrera> carreraList) {
         this.carreraList = carreraList;
     }
-    
-    
-    
 
     public Date getOld() {
         return _old;
@@ -389,7 +389,7 @@ public class SolicitudController implements Serializable, IController {
             Date idsecond = solicitud.getFecha();
             Integer id = solicitud.getIdsolicitud();
             solicitud = new Solicitud();
-                solicitudSelected = new Solicitud();
+            solicitudSelected = new Solicitud();
             solicitud.setIdsolicitud(id);
             solicitud.setFecha(idsecond);
             solicitud.setResponsable(loginController.getUsuario().getNombre());
@@ -400,7 +400,7 @@ public class SolicitudController implements Serializable, IController {
             solicitud.setFechahoraregreso(solicitud.getFecha());
             unidadList = new ArrayList<>();
             unidadList.add(loginController.getUsuario().getUnidad());
-       
+
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
 
             String textsearch = "ADMINISTRATIVO";
@@ -409,7 +409,6 @@ public class SolicitudController implements Serializable, IController {
             }
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
             solicitudSelected = solicitud;
-
 
         } catch (Exception e) {
             JsfUtil.errorMessage("isNew()" + e.getLocalizedMessage());
@@ -552,6 +551,12 @@ public class SolicitudController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
+            JsfUtil.testMessage("======================handle Selected");
+            System.out.println("Factultad");
+            facultadList.forEach(f-> System.out.println(f.getDescripcion()));
+            System.out.println("Carrera");
+            carreraList.forEach(c-> System.out.println(c.getDescripcion()));
+            
             solicitudList.removeAll(solicitudList);
             solicitudList.add(solicitudSelected);
             solicitudFiltered = solicitudList;
@@ -733,10 +738,12 @@ public class SolicitudController implements Serializable, IController {
         return suggestions;
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="completeFiltradoFacultad(String query)">
+
     public List<Facultad> completeFiltradoFacultad(String query) {
         List<Facultad> suggestions = new ArrayList<>();
         List<Facultad> temp = new ArrayList<>();
         try {
+            facultadListTemp = new ArrayList<>();
             Boolean found = false;
             query = query.trim();
             if (query.length() < 1) {
@@ -752,6 +759,19 @@ public class SolicitudController implements Serializable, IController {
             } else {
                 if (!temp.isEmpty()) {
 
+                    
+                    
+//                    facultadList.forEach((f) -> {
+//                List<Facultad> temp2 = facultadListTemp.stream()
+//                        .parallel()
+//                        .filter(p -> !p.getIdfacultad().equals(f.getIdfacultad()))                       
+//                        .collect(Collectors.toCollection(ArrayList::new)); 
+//                 temp2.forEach((c) -> {
+//                    suggestions.add(c);
+//                });
+//            });
+                   
+                    
                     for (Facultad r : temp) {
                         found = false;
                         for (Facultad r2 : facultadList) {
@@ -773,7 +793,8 @@ public class SolicitudController implements Serializable, IController {
         }
         return suggestions;
     }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="completeFiltradoCarrer(String query)">
+// <editor-fold defaultstate="collapsed" desc="completeFiltradoCarrera(String query)">
+
     public List<Carrera> completeFiltradoCarrera(String query) {
         List<Carrera> suggestions = new ArrayList<>();
         List<Carrera> temp = new ArrayList<>();
@@ -786,13 +807,15 @@ public class SolicitudController implements Serializable, IController {
 
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = carreraRepository.findRegexInText(field, query, true, new Document(field, 1));
-            if (facultadList.isEmpty()) {
+            temp = removeByNotFoundFacultad(temp);
+            if (carreraList.isEmpty()) {
                 if (!temp.isEmpty()) {
+               
                     suggestions = temp;
                 }
             } else {
-                if (!temp.isEmpty()) {
-
+                if (!temp.isEmpty()) {                                      
+                    
                     for (Carrera r : temp) {
                         found = false;
                         for (Carrera r2 : carreraList) {
@@ -813,6 +836,69 @@ public class SolicitudController implements Serializable, IController {
             JsfUtil.errorMessage("completeFiltradoCarrera() " + e.getLocalizedMessage());
         }
         return suggestions;
+    }// </editor-fold>
+
+// <editor-fold defaultstate="collapsed" desc="removeByNotFoundFacultad(List<Carrera> carreraList)">
+    private List<Carrera> removeByNotFoundFacultad(List<Carrera> carreraList) {
+        List<Carrera> list = new ArrayList<>();
+        try {
+            //1.recorre las facultades
+            //2.filtra las carreras de esa facultad
+            //3.crea una lista
+            //4. luego va agregando esa lista a la otra por cada facultad
+            facultadList.forEach((f) -> {
+                List<Carrera> temp = carreraList.stream()
+                        .parallel()
+                        .filter(p -> p.getFacultad().getIdfacultad().equals(f.getIdfacultad()))                       
+                        .collect(Collectors.toCollection(ArrayList::new));
+                
+                temp.forEach((c) -> {
+                    list.add(c);
+                });
+            });
+            
+            
+        
+        } catch (Exception e) {
+            JsfUtil.errorMessage("removeByNotFoundFacultad() " + e.getLocalizedMessage());
+        }
+        return list;
+    }
+// </editor-fold>
+
+// <editor-fold defaultstate="collapsed" desc="itemUnselect">
+
+    public void itemUnselect(UnselectEvent event) {
+        try {
+            JsfUtil.testMessage("======================handle itemUnselect");
+            System.out.println("Factultad");
+            facultadList.forEach(f-> System.out.println(f.getDescripcion()));
+            System.out.println("-------------------------------------------------------");
+            System.out.println("Carrera antes");
+            carreraList.forEach(c-> System.out.println(c.getDescripcion()));
+            
+            carreraList = removeByNotFoundFacultad(carreraList);
+            System.out.println("-------------------------------------------------------");
+            System.out.println("Carrera despues");
+            carreraList.forEach(c-> System.out.println(c.getDescripcion()));
+                    
+//     facultadList.forEach((f) -> {
+//                    carreraList.removeIf(c -> c.getFacultad().getIdfacultad().equals(f.getIdfacultad()));
+//     });
+//     
+//     
+//            carreraList.stream()
+//                        .filter(producer -> producer.getIdcarrera().equals(pod))
+//                        .findFirst()
+//                        .map(p -> {
+//                            producersProcedureActive.remove(p);
+//                            return p;
+//                        });
+//            
+          
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("itemUnselec() " + ex.getLocalizedMessage());
+        }
     }// </editor-fold>
 
 }
