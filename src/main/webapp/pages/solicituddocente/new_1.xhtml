@@ -102,7 +102,9 @@
                             <f:attribute name="fieldquerylenth" value="1"/>
                             <p:ajax event="itemSelect" listener="#{solicitudController.handleSelect}"
                                update=":form:content"     />
-                         
+                              <p:ajax event="itemUnselect" listener="#{solicitudController.itemUnselect}"
+                                    update=":form:content"
+                                    />
                             <f:facet name="itemtip">
                                 <h:panelGrid columns="1" cellpadding="5">
                                     <h:outputText value="#{msg['field.descripcion']} #{p.descripcion}" />
@@ -135,7 +137,9 @@
                             <p:ajax event="itemSelect" listener="#{solicitudController.handleSelect}"
                                     update=":form:content"
                                     />
-                           
+                            <p:ajax event="itemUnselect" listener="#{solicitudController.itemUnselect}"
+                                    update=":form:content"
+                                    />
                             <f:facet name="itemtip">
                                 <h:panelGrid columns="1" cellpadding="5">
                                     <h:outputText value="#{msg['field.descripcion']} #{p.descripcion}" />

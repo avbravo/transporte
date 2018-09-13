@@ -59,7 +59,7 @@ public class SolicitudController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
- List<Facultad> facultadListTemp = new ArrayList<>();
+    List<Facultad> facultadListTemp = new ArrayList<>();
     private Date _old;
     private Boolean writable = false;
     //DataModel
@@ -553,10 +553,10 @@ public class SolicitudController implements Serializable, IController {
         try {
             JsfUtil.testMessage("======================handle Selected");
             System.out.println("Factultad");
-            facultadList.forEach(f-> System.out.println(f.getDescripcion()));
+            facultadList.forEach(f -> System.out.println(f.getDescripcion()));
             System.out.println("Carrera");
-            carreraList.forEach(c-> System.out.println(c.getDescripcion()));
-            
+            carreraList.forEach(c -> System.out.println(c.getDescripcion()));
+
             solicitudList.removeAll(solicitudList);
             solicitudList.add(solicitudSelected);
             solicitudFiltered = solicitudList;
@@ -759,8 +759,6 @@ public class SolicitudController implements Serializable, IController {
             } else {
                 if (!temp.isEmpty()) {
 
-                    
-                    
 //                    facultadList.forEach((f) -> {
 //                List<Facultad> temp2 = facultadListTemp.stream()
 //                        .parallel()
@@ -770,8 +768,6 @@ public class SolicitudController implements Serializable, IController {
 //                    suggestions.add(c);
 //                });
 //            });
-                   
-                    
                     for (Facultad r : temp) {
                         found = false;
                         for (Facultad r2 : facultadList) {
@@ -784,6 +780,16 @@ public class SolicitudController implements Serializable, IController {
                         }
 
                     }
+
+                    temp.forEach((t) -> {
+                        Facultad facultad = facultadList.stream() 
+                                .filter(x -> x.getIdfacultad() == t.getIdfacultad()) 
+                                .findAny() 
+                                .orElse(null);
+                        if (facultad == null) {
+                            suggestions.add(t);
+                        }
+                    });
                 }
 
             }
@@ -793,6 +799,22 @@ public class SolicitudController implements Serializable, IController {
         }
         return suggestions;
     }// </editor-fold>
+
+    private Boolean found(Integer idfacultad) {
+        Boolean _found = true;
+        try {
+            Facultad facultad = facultadList.stream() // Convert to steam
+                    .filter(x -> x.getIdfacultad() == idfacultad) // we want "jack" only
+                    .findAny() // If 'findAny' then return found
+                    .orElse(null);
+            if (facultad == null) {
+                _found = false;
+            }
+        } catch (Exception e) {
+            JsfUtil.errorMessage("foundFacultad() " + e.getLocalizedMessage());
+        }
+        return _found;
+    }
 // <editor-fold defaultstate="collapsed" desc="completeFiltradoCarrera(String query)">
 
     public List<Carrera> completeFiltradoCarrera(String query) {
@@ -810,12 +832,12 @@ public class SolicitudController implements Serializable, IController {
             temp = removeByNotFoundFacultad(temp);
             if (carreraList.isEmpty()) {
                 if (!temp.isEmpty()) {
-               
+
                     suggestions = temp;
                 }
             } else {
-                if (!temp.isEmpty()) {                                      
-                    
+                if (!temp.isEmpty()) {
+
                     for (Carrera r : temp) {
                         found = false;
                         for (Carrera r2 : carreraList) {
@@ -849,16 +871,14 @@ public class SolicitudController implements Serializable, IController {
             facultadList.forEach((f) -> {
                 List<Carrera> temp = carreraList.stream()
                         .parallel()
-                        .filter(p -> p.getFacultad().getIdfacultad().equals(f.getIdfacultad()))                       
+                        .filter(p -> p.getFacultad().getIdfacultad().equals(f.getIdfacultad()))
                         .collect(Collectors.toCollection(ArrayList::new));
-                
+
                 temp.forEach((c) -> {
                     list.add(c);
                 });
             });
-            
-            
-        
+
         } catch (Exception e) {
             JsfUtil.errorMessage("removeByNotFoundFacultad() " + e.getLocalizedMessage());
         }
@@ -867,21 +887,20 @@ public class SolicitudController implements Serializable, IController {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="itemUnselect">
-
     public void itemUnselect(UnselectEvent event) {
         try {
             JsfUtil.testMessage("======================handle itemUnselect");
             System.out.println("Factultad");
-            facultadList.forEach(f-> System.out.println(f.getDescripcion()));
+            facultadList.forEach(f -> System.out.println(f.getDescripcion()));
             System.out.println("-------------------------------------------------------");
             System.out.println("Carrera antes");
-            carreraList.forEach(c-> System.out.println(c.getDescripcion()));
-            
+            carreraList.forEach(c -> System.out.println(c.getDescripcion()));
+
             carreraList = removeByNotFoundFacultad(carreraList);
             System.out.println("-------------------------------------------------------");
             System.out.println("Carrera despues");
-            carreraList.forEach(c-> System.out.println(c.getDescripcion()));
-                    
+            carreraList.forEach(c -> System.out.println(c.getDescripcion()));
+
 //     facultadList.forEach((f) -> {
 //                    carreraList.removeIf(c -> c.getFacultad().getIdfacultad().equals(f.getIdfacultad()));
 //     });
@@ -895,7 +914,6 @@ public class SolicitudController implements Serializable, IController {
 //                            return p;
 //                        });
 //            
-          
         } catch (Exception ex) {
             JsfUtil.errorMessage("itemUnselec() " + ex.getLocalizedMessage());
         }
