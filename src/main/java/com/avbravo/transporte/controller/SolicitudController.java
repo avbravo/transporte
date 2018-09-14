@@ -59,7 +59,9 @@ public class SolicitudController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
-    List<Facultad> facultadListTemp = new ArrayList<>();
+    List<Facultad> suggestionsFacultad = new ArrayList<>();
+    List<Carrera> suggestionsCarrera = new ArrayList<>();
+    List<Unidad> suggestionsUnidad = new ArrayList<>();
     private Date _old;
     private Boolean writable = false;
     //DataModel
@@ -551,11 +553,11 @@ public class SolicitudController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
-            JsfUtil.testMessage("======================handle Selected");
-            System.out.println("Factultad");
-            facultadList.forEach(f -> System.out.println(f.getDescripcion()));
-            System.out.println("Carrera");
-            carreraList.forEach(c -> System.out.println(c.getDescripcion()));
+//            JsfUtil.testMessage("======================handle Selected");
+//            System.out.println("Factultad");
+//            facultadList.forEach(f -> System.out.println(f.getDescripcion()));
+//            System.out.println("Carrera");
+//            carreraList.forEach(c -> System.out.println(c.getDescripcion()));
 
             solicitudList.removeAll(solicitudList);
             solicitudList.add(solicitudSelected);
@@ -697,99 +699,63 @@ public class SolicitudController implements Serializable, IController {
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="complete(String query)">
-    public List<Unidad> completeFiltrado(String query) {
-        List<Unidad> suggestions = new ArrayList<>();
+    public List<Unidad> completeFiltradoUnidad(String query) {
+        suggestionsUnidad = new ArrayList<>();
         List<Unidad> temp = new ArrayList<>();
         try {
             Boolean found = false;
             query = query.trim();
             if (query.length() < 1) {
-                return suggestions;
+                return suggestionsUnidad;
             }
 
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = unidadRepository.findRegexInText(field, query, true, new Document(field, 1));
             if (unidadList.isEmpty()) {
                 if (!temp.isEmpty()) {
-                    suggestions = temp;
+                    suggestionsUnidad = temp;
                 }
             } else {
                 if (!temp.isEmpty()) {
+                    temp.forEach((u) -> {
+                        addUnidad(u);
+                    });
 
-                    for (Unidad r : temp) {
-                        found = false;
-                        for (Unidad r2 : unidadList) {
-                            if (r.getIdunidad().equals(r2.getIdunidad())) {
-                                found = true;
-                            }
-                        }
-                        if (!found) {
-                            suggestions.add(r);
-                        }
-
-                    }
                 }
 
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("completeFiltrado() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage("completeFiltradoUnidad() " + e.getLocalizedMessage());
         }
-        return suggestions;
+        return suggestionsUnidad;
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="completeFiltradoFacultad(String query)">
 
     public List<Facultad> completeFiltradoFacultad(String query) {
-        List<Facultad> suggestions = new ArrayList<>();
+
+        suggestionsFacultad = new ArrayList<>();
         List<Facultad> temp = new ArrayList<>();
         try {
-            facultadListTemp = new ArrayList<>();
+
             Boolean found = false;
             query = query.trim();
             if (query.length() < 1) {
-                return suggestions;
+
+                return suggestionsFacultad;
             }
 
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = facultadRepository.findRegexInText(field, query, true, new Document(field, 1));
-            if (facultadList.isEmpty()) {
+            if (facultadList == null || facultadList.isEmpty()) {
+
                 if (!temp.isEmpty()) {
-                    suggestions = temp;
+                    suggestionsFacultad = temp;
                 }
             } else {
+
                 if (!temp.isEmpty()) {
-
-//                    facultadList.forEach((f) -> {
-//                List<Facultad> temp2 = facultadListTemp.stream()
-//                        .parallel()
-//                        .filter(p -> !p.getIdfacultad().equals(f.getIdfacultad()))                       
-//                        .collect(Collectors.toCollection(ArrayList::new)); 
-//                 temp2.forEach((c) -> {
-//                    suggestions.add(c);
-//                });
-//            });
-                    for (Facultad r : temp) {
-                        found = false;
-                        for (Facultad r2 : facultadList) {
-                            if (r.getIdfacultad().equals(r2.getIdfacultad())) {
-                                found = true;
-                            }
-                        }
-                        if (!found) {
-                            suggestions.add(r);
-                        }
-
-                    }
-
-                    temp.forEach((t) -> {
-                        Facultad facultad = facultadList.stream() 
-                                .filter(x -> x.getIdfacultad() == t.getIdfacultad()) 
-                                .findAny() 
-                                .orElse(null);
-                        if (facultad == null) {
-                            suggestions.add(t);
-                        }
-                    });
+                    temp.stream().forEach(f -> addFacultad(f));
                 }
 
             }
@@ -797,59 +763,32 @@ public class SolicitudController implements Serializable, IController {
         } catch (Exception e) {
             JsfUtil.errorMessage("completeFiltradoFacultad() " + e.getLocalizedMessage());
         }
-        return suggestions;
+        return suggestionsFacultad;
     }// </editor-fold>
 
-    private Boolean found(Integer idfacultad) {
-        Boolean _found = true;
-        try {
-            Facultad facultad = facultadList.stream() // Convert to steam
-                    .filter(x -> x.getIdfacultad() == idfacultad) // we want "jack" only
-                    .findAny() // If 'findAny' then return found
-                    .orElse(null);
-            if (facultad == null) {
-                _found = false;
-            }
-        } catch (Exception e) {
-            JsfUtil.errorMessage("foundFacultad() " + e.getLocalizedMessage());
-        }
-        return _found;
-    }
 // <editor-fold defaultstate="collapsed" desc="completeFiltradoCarrera(String query)">
-
     public List<Carrera> completeFiltradoCarrera(String query) {
-        List<Carrera> suggestions = new ArrayList<>();
+        suggestionsCarrera = new ArrayList<>();
         List<Carrera> temp = new ArrayList<>();
         try {
             Boolean found = false;
             query = query.trim();
             if (query.length() < 1) {
-                return suggestions;
+                return suggestionsCarrera;
             }
 
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = carreraRepository.findRegexInText(field, query, true, new Document(field, 1));
             temp = removeByNotFoundFacultad(temp);
-            if (carreraList.isEmpty()) {
+            if (carreraList == null || carreraList.isEmpty()) {
                 if (!temp.isEmpty()) {
-
-                    suggestions = temp;
+                    suggestionsCarrera = temp;
                 }
             } else {
                 if (!temp.isEmpty()) {
 
-                    for (Carrera r : temp) {
-                        found = false;
-                        for (Carrera r2 : carreraList) {
-                            if (r.getIdcarrera().equals(r2.getIdcarrera())) {
-                                found = true;
-                            }
-                        }
-                        if (!found) {
-                            suggestions.add(r);
-                        }
+                    temp.stream().forEach(c -> addCarrera(c));
 
-                    }
                 }
 
             }
@@ -857,7 +796,7 @@ public class SolicitudController implements Serializable, IController {
         } catch (Exception e) {
             JsfUtil.errorMessage("completeFiltradoCarrera() " + e.getLocalizedMessage());
         }
-        return suggestions;
+        return suggestionsCarrera;
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="removeByNotFoundFacultad(List<Carrera> carreraList)">
@@ -868,6 +807,9 @@ public class SolicitudController implements Serializable, IController {
             //2.filtra las carreras de esa facultad
             //3.crea una lista
             //4. luego va agregando esa lista a la otra por cada facultad
+            if (facultadList == null || facultadList.isEmpty()) {
+                return list;
+            }
             facultadList.forEach((f) -> {
                 List<Carrera> temp = carreraList.stream()
                         .parallel()
@@ -889,34 +831,108 @@ public class SolicitudController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="itemUnselect">
     public void itemUnselect(UnselectEvent event) {
         try {
-            JsfUtil.testMessage("======================handle itemUnselect");
-            System.out.println("Factultad");
-            facultadList.forEach(f -> System.out.println(f.getDescripcion()));
-            System.out.println("-------------------------------------------------------");
-            System.out.println("Carrera antes");
-            carreraList.forEach(c -> System.out.println(c.getDescripcion()));
+            if (carreraList != null && !carreraList.isEmpty()) {
+                carreraList = removeByNotFoundFacultad(carreraList);
+            }
 
-            carreraList = removeByNotFoundFacultad(carreraList);
-            System.out.println("-------------------------------------------------------");
-            System.out.println("Carrera despues");
-            carreraList.forEach(c -> System.out.println(c.getDescripcion()));
-
-//     facultadList.forEach((f) -> {
-//                    carreraList.removeIf(c -> c.getFacultad().getIdfacultad().equals(f.getIdfacultad()));
-//     });
-//     
-//     
-//            carreraList.stream()
-//                        .filter(producer -> producer.getIdcarrera().equals(pod))
-//                        .findFirst()
-//                        .map(p -> {
-//                            producersProcedureActive.remove(p);
-//                            return p;
-//                        });
-//            
         } catch (Exception ex) {
             JsfUtil.errorMessage("itemUnselec() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="foundFacultad(Integer idfacultad)">
+    private Boolean foundFacultad(Integer idfacultad) {
+        Boolean _found = true;
+        try {
+            Facultad facultad = facultadList.stream() // Convert to steam
+                    .filter(x -> x.getIdfacultad() == idfacultad) // we want "jack" only
+                    .findAny() // If 'findAny' then return found
+                    .orElse(null);
+            if (facultad == null) {
+
+                _found = false;
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("foundFacultad() " + e.getLocalizedMessage());
+        }
+        return _found;
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="foundCarrera(Integer idcarrera)">
+
+    private Boolean foundCarrera(Integer idcarrera) {
+        Boolean _found = true;
+        try {
+            Carrera carrera = carreraList.stream()
+                    .filter(x -> x.getIdcarrera() == idcarrera)
+                    .findAny()
+                    .orElse(null);
+            if (carrera == null) {
+                _found = false;
+            }
+        } catch (Exception e) {
+            JsfUtil.errorMessage("foundCarrera() " + e.getLocalizedMessage());
+        }
+        return _found;
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="foundUnidad(Integer idunidad)">
+    private Boolean foundUnidad(String idunidad) {
+        Boolean _found = true;
+        try {
+            Unidad unidad = unidadList.stream()
+                    .filter(x -> x.getIdunidad() == idunidad)
+                    .findAny() // If 'findAny' then return found
+                    .orElse(null);
+            if (unidad == null) {
+                _found = false;
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("foundUnidad() " + e.getLocalizedMessage());
+        }
+        return _found;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="addFacultad(Facultad facultad)">
+    private Boolean addFacultad(Facultad facultad) {
+        try {
+            if (!foundFacultad(facultad.getIdfacultad())) {
+                suggestionsFacultad.add(facultad);
+            }
+        } catch (Exception e) {
+            JsfUtil.errorMessage("addFacultad()" + e.getLocalizedMessage());
+        }
+        return false;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="addFacultad(Facultad facultad)">
+    private Boolean addCarrera(Carrera carrera) {
+        try {
+            if (!foundCarrera(carrera.getIdcarrera())) {
+                suggestionsCarrera.add(carrera);
+            }
+        } catch (Exception e) {
+            JsfUtil.errorMessage("addCarrera()" + e.getLocalizedMessage());
+        }
+        return false;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="addFacultad(Facultad facultad)">
+    private Boolean addUnidad(Unidad unidad) {
+        try {
+            if (!foundUnidad(unidad.getIdunidad())) {
+                suggestionsUnidad.add(unidad);
+            }
+        } catch (Exception e) {
+            JsfUtil.errorMessage("addUnidad()" + e.getLocalizedMessage());
+        }
+        return false;
+    }
+    // </editor-fold>
 
 }

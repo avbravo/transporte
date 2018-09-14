@@ -59,7 +59,7 @@
                                         size="15"
                                         emptyMessage="#{app['info.nohayregistros']}"
                                         value="#{solicitudController.unidadList}"
-                                        completeMethod="#{solicitudController.completeFiltrado}"
+                                        completeMethod="#{solicitudController.completeFiltradoUnidad}"
                                         var="p"
                                         required="true"
                                         itemLabel="#{p.idunidad}"
@@ -91,7 +91,7 @@
                                         value="#{solicitudController.facultadList}"
                                         completeMethod="#{solicitudController.completeFiltradoFacultad}"
                                         var="p"
-                                        required="true"
+                                        required="false"
                                     
                                   
                                         itemLabel="#{p.descripcion}"
@@ -102,7 +102,9 @@
                             <f:attribute name="fieldquerylenth" value="1"/>
                             <p:ajax event="itemSelect" listener="#{solicitudController.handleSelect}"
                                update=":form:content"     />
-                         
+                              <p:ajax event="itemUnselect" listener="#{solicitudController.itemUnselect}"
+                                    update=":form:content"
+                                    />
                             <f:facet name="itemtip">
                                 <h:panelGrid columns="1" cellpadding="5">
                                     <h:outputText value="#{msg['field.descripcion']} #{p.descripcion}" />
@@ -125,7 +127,7 @@
                                         value="#{solicitudController.carreraList}"
                                         completeMethod="#{solicitudController.completeFiltradoCarrera}"
                                         var="p"
-                                        required="true"
+                                        required="false"
                                         itemLabel="#{p.descripcion}"
                                         itemValue="#{p}" forceSelection="true">
                             <f:converter binding="#{carreraConverter}"/>
@@ -135,7 +137,9 @@
                             <p:ajax event="itemSelect" listener="#{solicitudController.handleSelect}"
                                     update=":form:content"
                                     />
-                           
+                            <p:ajax event="itemUnselect" listener="#{solicitudController.itemUnselect}"
+                                    update=":form:content"
+                                    />
                             <f:facet name="itemtip">
                                 <h:panelGrid columns="1" cellpadding="5">
                                     <h:outputText value="#{msg['field.descripcion']} #{p.descripcion}" />
