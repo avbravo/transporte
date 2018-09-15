@@ -698,7 +698,7 @@ public class SolicitudController implements Serializable, IController {
         return "";
     }// </editor-fold>
 
-// <editor-fold defaultstate="collapsed" desc="complete(String query)">
+// <editor-fold defaultstate="collapsed" desc="completeFiltradoUnidad">
     public List<Unidad> completeFiltradoUnidad(String query) {
         suggestionsUnidad = new ArrayList<>();
         List<Unidad> temp = new ArrayList<>();
@@ -741,7 +741,6 @@ public class SolicitudController implements Serializable, IController {
             Boolean found = false;
             query = query.trim();
             if (query.length() < 1) {
-
                 return suggestionsFacultad;
             }
 
@@ -776,7 +775,6 @@ public class SolicitudController implements Serializable, IController {
             if (query.length() < 1) {
                 return suggestionsCarrera;
             }
-
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = carreraRepository.findRegexInText(field, query, true, new Document(field, 1));
             temp = removeByNotFoundFacultad(temp);
@@ -786,13 +784,10 @@ public class SolicitudController implements Serializable, IController {
                 }
             } else {
                 if (!temp.isEmpty()) {
-
                     temp.stream().forEach(c -> addCarrera(c));
 
                 }
-
             }
-
         } catch (Exception e) {
             JsfUtil.errorMessage("completeFiltradoCarrera() " + e.getLocalizedMessage());
         }
@@ -909,7 +904,7 @@ public class SolicitudController implements Serializable, IController {
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="addFacultad(Facultad facultad)">
+    // <editor-fold defaultstate="collapsed" desc="addCarrera(Carrera carrera)">
     private Boolean addCarrera(Carrera carrera) {
         try {
             if (!foundCarrera(carrera.getIdcarrera())) {
@@ -922,7 +917,7 @@ public class SolicitudController implements Serializable, IController {
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="addFacultad(Facultad facultad)">
+    // <editor-fold defaultstate="collapsed" desc="addUnidad(Unidad unidad)">
     private Boolean addUnidad(Unidad unidad) {
         try {
             if (!foundUnidad(unidad.getIdunidad())) {
