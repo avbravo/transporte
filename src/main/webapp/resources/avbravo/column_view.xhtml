@@ -11,8 +11,7 @@
         <composite:attribute name="rendered" default="true"/>
         <composite:attribute name="edit" 
                              method-signature="java.lang.String action()" />
-        <composite:attribute name="delete" 
-                             method-signature="java.lang.String action()" />
+      
 
     </composite:interface>
     <composite:implementation>
@@ -25,6 +24,7 @@
                     <b:commandButton                 
                         style="margin-bottom:10px;"
                         iconAwesome="fa-edit" 
+                        rendered="#{cc.attrs.rendered}" 
                         title="#{app['button.edit']}"
                         immediate="true"
                         oncomplete="remoteid()"
@@ -33,30 +33,6 @@
                     </b:commandButton>
                 </p:column>
             </p:row>
-
-            <p:row>
-                <p:column>
-                    <b:dropMenu styleClass="danger"  value="" tooltip="#{app['button.delete']}" iconAwesome="fa-trash-o">
-                        <b:panel title="#{app['info.doyouwantdelete']}" >
-
-                            <b:button value="#{app['button.no']}" look="success" />
-                            <b:commandButton rendered="#{cc.attrs.rendered}" 
-                                             look="danger"
-                                             iconAwesome="fa-trash-o" 
-                                             value="#{app['button.yes']}" 
-                                             title="#{app['button.delete']}" 
-                                             oncomplete="remoteshowall();"
-                                             process=":form:dataTable" 
-                                             action="#{cc.attrs.delete}" 
-                                             update=":form:dataTable" > 
-
-                            </b:commandButton>
-                        </b:panel>
-                    </b:dropMenu>
-                </p:column>
-            </p:row>
-
-
 
 
         </p:panelGrid>
