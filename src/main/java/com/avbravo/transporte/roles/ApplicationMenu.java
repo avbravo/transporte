@@ -43,6 +43,7 @@ public class ApplicationMenu implements Serializable {
     MenuElement tiposolicitud = new MenuElement();
     MenuElement tipovehiculo = new MenuElement();
     MenuElement rol = new MenuElement();
+    MenuElement semestre = new MenuElement();
     MenuElement solicitud = new MenuElement();
     MenuElement solicitudDocente = new MenuElement();
     MenuElement solicitudDocenteManual = new MenuElement();
@@ -67,6 +68,7 @@ public class ApplicationMenu implements Serializable {
         tiposolicitud.initialize(activo);
         tipovehiculo.initialize(activo);
         rol.initialize(activo);
+        semestre.initialize(activo);
         solicitud.initialize(activo);
         solicitudDocente.initialize(activo);
         solicitudDocenteManual.initialize(activo);
@@ -80,6 +82,17 @@ public class ApplicationMenu implements Serializable {
 
     }
 
+    public MenuElement getSemestre() {
+        return semestre;
+    }
+
+    public void setSemestre(MenuElement semestre) {
+        this.semestre = semestre;
+    }
+
+    
+    
+    
     public MenuElement getConductorcambiarcedula() {
         return conductorcambiarcedula;
     }

@@ -48,13 +48,15 @@ public class RolDocente implements Serializable {
         applicationMenu.getEstatus().initialize(Boolean.FALSE);
         applicationMenu.getFacultad().initialize(Boolean.FALSE);
         applicationMenu.getRol().initialize(Boolean.FALSE);
-        applicationMenu.getTiposolicitud().initialize(Boolean.FALSE);
-        applicationMenu.getTipovehiculo().initialize(Boolean.FALSE);
+        applicationMenu.getSemestre().initialize(Boolean.TRUE);
+       
         applicationMenu.getSolicitud().initialize(Boolean.TRUE);
         applicationMenu.getSolicitudDocente().initialize(Boolean.TRUE);
         applicationMenu.getSolicitudDocenteManual().initialize(Boolean.FALSE);
         applicationMenu.getSolicitudAdministrativo().initialize(Boolean.FALSE);
         applicationMenu.getSolicitudAdministrativoManual().initialize(Boolean.FALSE);
+         applicationMenu.getTiposolicitud().initialize(Boolean.FALSE);
+        applicationMenu.getTipovehiculo().initialize(Boolean.FALSE);
         applicationMenu.getVehiculo().initialize(Boolean.FALSE);
         applicationMenu.getVehiculocambiarplaca().initialize(Boolean.FALSE);
         applicationMenu.getViajes().initialize(Boolean.FALSE);

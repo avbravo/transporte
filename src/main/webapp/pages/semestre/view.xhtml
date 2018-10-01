@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+    <ui:define name="content">
+        <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            }
+        </style>
+        <h1>#{msg['titleview.semestre']}</h1>
+        <hr/>
+         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.semestre.query}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+            <h:panelGroup id="content" layout="block"> 
+
+                <a:messages id="msg"/>
+                <b:panel title="#{app['title.data']}">
+                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{semestreController.writable}"> 
+
+                        <p:outputLabel  value="#{msg['field.idsemestre']}" />
+                        <p:outputLabel value="#{semestreController.semestre.idsemestre}" id="idsemestre"  />
+                       
+                         <p:outputLabel  value="#{msg['field.descripcion']}" />
+                        <a:inputText value="#{semestreController.semestre.descripcion}" id="descripcion"  />
+
+              
+
+                    </b:panelGrid>
+                    <a:view 
+                        renderedDelete="#{applicationMenu.semestre.delete and semestreController.writable }"
+                        renderedEdit="#{applicationMenu.semestre.edit and semestreController.writable}" 
+                        renderedList="#{applicationMenu.semestre.list and semestreController.writable}"                    
+                        edit="#{semestreController.edit()}"
+                        delete="#{semestreController.delete(semestreController.semestre,true)}"
+                        print="#{semestreController.print()}"
+                        url="#{semestreController.prepare('golist',semestreController.rol)}"
+                        />
+                </b:panel>
+            </h:panelGroup>
+        </b:form>
+ <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.semestre.query}" />
+        <br/><br/><br/>
+    </ui:define>
+</ui:composition>
