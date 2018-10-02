@@ -283,17 +283,17 @@ public class SemestreController implements Serializable, IController {
                         loginController.put("idsemestre", semestre.getIdsemestre());
                  
 
-                    url = "/pages/rol/view.xhtml";
+                    url = "/pages/semestre/view.xhtml";
                     break;
                 case "golist":
 
-                    url = "/pages/rol/list.xhtml";
+                    url = "/pages/semestre/list.xhtml";
                     break;
 
                 case "gonew":
                     semestre = new Semestre();
                     semestreSelected = new Semestre();
-                    url = "/pages/rol/new.xhtml";
+                    url = "/pages/semestre/new.xhtml";
                     break;
             }
 
@@ -432,7 +432,7 @@ public class SemestreController implements Serializable, IController {
         } catch (Exception e) {
             JsfUtil.errorMessage("delete() " + e.getLocalizedMessage());
         }
-        //path = deleteonviewpage ? "/pages/rol/list.xhtml" : "";
+        //path = deleteonviewpage ? "/pages/semestre/list.xhtml" : "";
         path = "";
         return path;
     }// </editor-fold>
@@ -453,7 +453,7 @@ public class SemestreController implements Serializable, IController {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pagerol", page.toString());
             List<Semestre> list = new ArrayList<>();
             list.add(semestre);
-            String ruta = "/resources/reportes/rol/details.jasper";
+            String ruta = "/resources/reportes/semestre/details.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
@@ -470,7 +470,7 @@ public class SemestreController implements Serializable, IController {
             List<Semestre> list = new ArrayList<>();
             list = semestreRepository.findAll(new Document("idsemestre", 1));
 
-            String ruta = "/resources/reportes/rol/all.jasper";
+            String ruta = "/resources/reportes/semestre/all.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);

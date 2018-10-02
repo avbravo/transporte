@@ -38,7 +38,7 @@
                                                   field="idsemestre"
                                                   update=":form:dataTable"/>
 
-                    <p:outputLabel value="#{msg['field.rol']}"/>
+                    <p:outputLabel value="#{msg['field.descripcion']}"/>
                       <e:autocompletesemestre listener="#{semestreController.handleSelect}"
                                                 value="#{semestreController.semestreSelected}"
                                                 itemLabel=" #{p.descripcion}"
@@ -58,7 +58,7 @@
                     page="#{semestreController.page}"
                     pages="#{semestreController.pages}"
                     skip="ajax:semestreController.skip(semestreController.page)"  
-                    new="#{semestreController.prepare('gonew',semestreController.rol)}"
+                    new="#{semestreController.prepare('gonew',semestreController.semestre)}"
                     printAll="#{semestreController.printAll()}"
                     />
                 <b:dataTable value="#{semestreController.semestreDataModel}"
