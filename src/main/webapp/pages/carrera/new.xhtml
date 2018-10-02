@@ -28,7 +28,7 @@
                 <a:messages id="msg"/>
                 <a:new label="#{msg['field.descripcion']}"
                        value="#{carreraController.carrera.descripcion}"
-                      
+                       disabled="#{carreraController.writable}"
                        isnew="#{carreraController.isNew()}"
                        new="#{carreraController.prepare('new',carreraController.carrera)}"
                        rendererList="#{applicationMenu.carrera.list}"

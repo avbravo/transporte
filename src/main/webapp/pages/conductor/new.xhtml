@@ -28,6 +28,7 @@
                 <a:messages id="msg"/>
                 <a:new label="#{msg['field.cedula']}"
                        value="#{conductorController.conductor.cedula}"
+                        disabled="#{conductorController.writable}"
                        isnew="#{conductorController.isNew()}"
                        new="#{conductorController.prepare('new',conductorController.conductor)}"
                        rendererList="#{applicationMenu.conductor.list}"

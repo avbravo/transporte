@@ -30,6 +30,7 @@
                 <a:new label="#{msg['field.username']}"
                        value="#{usuarioController.usuario.username}"
                        isnew="#{usuarioController.isNew()}"
+                          disabled="#{usuarioController.writable}"
                        new="#{usuarioController.prepare('new',usuarioController.usuario)}"
                        rendererList="#{applicationMenu.usuario.list}"
                        list="#{usuarioController.prepare('golist',usuarioController.usuario)}"

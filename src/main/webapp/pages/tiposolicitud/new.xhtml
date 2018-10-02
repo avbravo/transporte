@@ -29,6 +29,7 @@
                 <a:new label="#{msg['field.idtiposolicitud']}"
                        value="#{tiposolicitudController.tiposolicitud.idtiposolicitud}"
                        isnew="#{tiposolicitudController.isNew()}"
+                          disabled="#{solicitudController.writable}"
                        new="#{tiposolicitudController.prepare('new',tiposolicitudController.tiposolicitud)}"
                        rendererList="#{applicationMenu.tiposolicitud.list}"
                        list="#{tiposolicitudController.prepare('golist',tiposolicitudController.tiposolicitud)}"

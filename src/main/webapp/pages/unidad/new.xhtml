@@ -29,6 +29,7 @@
                 <a:new label="#{msg['field.idunidad']}"
                        value="#{unidadController.unidad.idunidad}"
                        isnew="#{unidadController.isNew()}"
+                          disabled="#{unidadController.writable}"
                        new="#{unidadController.prepare('new',unidadController.unidad)}"
                        rendererList="#{applicationMenu.unidad.list}"
                        list="#{unidadController.prepare('golist',unidadController.unidad)}"

@@ -30,6 +30,7 @@
                 <a:new label="#{msg['field.placa']}"
                        value="#{vehiculoController.vehiculo.placa}"
                        isnew="#{vehiculoController.isNew()}"
+                          disabled="#{vehiculoController.writable}"
                        new="#{vehiculoController.prepare('new',vehiculoController.vehiculo)}"
                        rendererList="#{applicationMenu.vehiculo.list}"
                        list="#{vehiculoController.prepare('golist',vehiculoController.vehiculo)}"

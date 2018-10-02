@@ -29,6 +29,7 @@
                  <a:new label="#{msg['field.idrol']}"
                                   value="#{rolController.rol.idrol}"
                                   isnew="#{rolController.isNew()}"
+                                   disabled="#{rolController.writable}"
                                   new="#{rolController.prepare('new',rolController.rol)}"
                                   rendererList="#{applicationMenu.rol.list}"
                                   list="#{rolController.prepare('golist',rolController.rol)}"

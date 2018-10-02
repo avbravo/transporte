@@ -29,6 +29,7 @@
                 <a:new label="#{msg['field.idtipovehiculo']}"
                        value="#{tipovehiculoController.tipovehiculo.idtipovehiculo}"
                        isnew="#{tipovehiculoController.isNew()}"
+                          disabled="#{tipovehiculoController.writable}"
                        new="#{tipovehiculoController.prepare('new',tipovehiculoController.tipovehiculo)}"
                        rendererList="#{applicationMenu.tipovehiculo.list}"
                        list="#{tipovehiculoController.prepare('golist',tipovehiculoController.tipovehiculo)}"

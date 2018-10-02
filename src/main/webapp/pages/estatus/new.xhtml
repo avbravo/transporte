@@ -29,6 +29,7 @@
                 <a:new label="#{msg['field.idestatus']}"
                        value="#{estatusController.estatus.idestatus}"
                        isnew="#{estatusController.isNew()}"
+                        disabled="#{estatusController.writable}"
                        new="#{estatusController.prepare('new',estatusController.estatus)}"
                        rendererList="#{applicationMenu.estatus.list}"
                        list="#{estatusController.prepare('golist',estatusController.estatus)}"

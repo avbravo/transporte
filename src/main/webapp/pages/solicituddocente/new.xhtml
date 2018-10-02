@@ -31,6 +31,7 @@
                 <a:newDate label="#{msg['field.fecha']}"
                            value="#{solicitudController.solicitud.fecha}"
                            isnew="#{solicitudController.isNew()}"
+                              disabled="#{solicitudController.writable}"
                            new="#{solicitudController.prepare('new',solicitudController.solicitud)}"
                            rendererList="#{applicationMenu.solicitud.list}"
                            list="#{solicitudController.prepare('golist',solicitudController.solicitud)}"
