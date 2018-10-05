@@ -45,7 +45,14 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{solicitudController.writable}"> 
 
                         <p:outputLabel  value="#{msg['field.semestre']}" />
-                        <a:inputText span="2" value="#{solicitudController.solicitud.periodoacademico}" id="semestre"  label="#{msg['field.semestre']}" />
+                                                     <e:autocompleteunidad  listener="#{solicitudController.handleSelect}"
+                                                      value="#{solicitudController.solicitud.semestre}"
+                                               itemLabel="#{p.idsemestre}"
+                                               dropdown="true"
+                                               required="true"
+                                               minQueryLength="0"
+                                               field="descripcion"
+                                               />
                         
                         <p:outputLabel  value="#{msg['field.periodoacademico']}" />
                         <a:inputText span="2" value="#{solicitudController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
