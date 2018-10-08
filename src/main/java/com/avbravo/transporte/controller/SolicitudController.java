@@ -8,6 +8,7 @@ package com.avbravo.transporte.controller;
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.avbravoutils.JsfUtil;
 import com.avbravo.avbravoutils.printer.Printer;
+import com.avbravo.avbravoutils.validator.EmailValidator;
 import com.avbravo.commonejb.entity.Carrera;
 import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.CarreraRepository;
@@ -19,12 +20,14 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Unidad;
+import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
+import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
@@ -35,14 +38,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.faces.component.UIComponent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import org.bson.Document;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -59,6 +68,9 @@ public class SolicitudController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
+    
+    //    private String stmpPort="80";
+    private String stmpPort = "25";
     List<Facultad> suggestionsFacultad = new ArrayList<>();
     List<Carrera> suggestionsCarrera = new ArrayList<>();
     List<Unidad> suggestionsUnidad = new ArrayList<>();
@@ -84,6 +96,7 @@ public class SolicitudController implements Serializable, IController {
     List<Carrera> carreraList = new ArrayList<>();
 
     //Repository
+
     @Inject
     FacultadRepository facultadRepository;
     @Inject
@@ -94,6 +107,8 @@ public class SolicitudController implements Serializable, IController {
     SolicitudRepository solicitudRepository;
     @Inject
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
+    @Inject 
+    UsuarioRepository  usuarioRepository;
 
     //Services
     //Atributos para busquedas
@@ -292,6 +307,9 @@ public class SolicitudController implements Serializable, IController {
                     solicitud = optional.get();
                     unidadList = solicitud.getUnidad();
 
+                    facultadList = solicitud.getFacultad();
+                    carreraList = solicitud.getCarrera();
+
                     solicitudSelected = solicitud;
                     _old = solicitud.getFecha();
                     writable = true;
@@ -429,14 +447,17 @@ public class SolicitudController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
+            solicitud.setActivo("si");
             solicitud.setUnidad(unidadList);
+            solicitud.setFacultad(facultadList);
+            solicitud.setCarrera(carreraList);
             //Lo datos del usuario
             solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
                 //guarda el contenido anterior
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                         "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
-
+//enviarEmails();
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
             } else {
@@ -455,7 +476,9 @@ public class SolicitudController implements Serializable, IController {
         try {
             solicitud.setUnidad(unidadList);
             solicitud.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
-
+            solicitud.setUnidad(unidadList);
+            solicitud.setFacultad(facultadList);
+            solicitud.setCarrera(carreraList);
             //guarda el contenido actualizado
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
@@ -871,6 +894,7 @@ public class SolicitudController implements Serializable, IController {
         }
         return _found;
     }
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="foundUnidad(Integer idunidad)">
     private Boolean foundUnidad(String idunidad) {
@@ -930,4 +954,63 @@ public class SolicitudController implements Serializable, IController {
     }
     // </editor-fold>
 
+    
+    
+     public String enviarEmails() {
+        try {
+            Boolean enviados = false;
+
+            final String username = "avbravo@gmail.com";
+            final String password = "javnet180denver$";
+
+            Properties props = new Properties();
+            props.put("mail.transport.protocol", "smtp");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "false");
+            props.put("mail.smtp.host", "smtpout.secureserver.net");
+            props.put("mail.smtp.port", stmpPort);
+            Session session = Session.getInstance(props,
+                    new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password);
+                }
+            });
+            Integer c = 0;
+List<Usuario> list = usuarioRepository.findBy(new Document("activo","si"));
+            if(!list.isEmpty()){
+                for(Usuario u:list){
+                  if (u.getEmail().contains("@") == true && JsfUtil.emailValidate(u.getEmail())) {
+                        Message message = new MimeMessage(session);
+                        message.setFrom(new InternetAddress("avbravo@gmail.com"));
+
+                        c++;
+
+                        message.setRecipients(Message.RecipientType.TO,
+                                InternetAddress.parse(u.getEmail()));
+
+                        message.setSubject("Solicitud de Viaje Docente");
+                        String texto = "";
+                        texto = " <h1> Solicitud #:" + solicitud.getIdsolicitud()+ "  </h1>";
+                        texto = " <h1> Solicitadi por: " + solicitud.getResponsable()+ "  </h1>";
+                        texto += " <b>";
+                        texto += "<br> Fecha de partidad " + solicitud.getFechahorapartida() + " lugar de salida: " + solicitud.getLugarpartida() +
+                                "   <FONT COLOR=\"red\">Pendiente de aprobaciòn </FONT>  ";
+                        texto += "</b>";
+                        message.setContent(texto, "text/html");
+
+                        Transport.send(message);
+                  }
+                }
+            }
+         
+                      
+                
+         
+        } catch (Exception e) {
+            JsfUtil.errorMessage("enviarEmails() " + e.getLocalizedMessage());
+        }
+        return "";
+    }
+
+            
 }
