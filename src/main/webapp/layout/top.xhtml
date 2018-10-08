@@ -26,12 +26,12 @@
 
 
                     <b:navLink value="#{msg['menu.solicituddocente']}" rendered="#{applicationMenu.solicitudDocente.menu}" outcome="/pages/solicituddocente/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{applicationMenu.solicitudDocenteManual.menu}" outcome="/pages/estatus/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="/pages/solicituddocenteporadministrador/list" iconAwesome= "fa-calendar-o" />
 
 
                     <b:navLink />
                     <b:navLink value="#{msg['menu.solicitudadministrativo']}" rendered="#{applicationMenu.solicitudAdministrativo.menu}" outcome="/pages/estatus/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{applicationMenu.solicitudAdministrativoManual.menu}" outcome="/pages/estatus/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="/pages/estatus/list" iconAwesome= "fa-calendar-o" />
                     <b:navLink />
                     <b:navLink value="#{msg['menu.viajes']}" rendered="#{applicationMenu.viajes.menu}" outcome="/pages/estatus/list" iconAwesome= "fa-calendar-o" />
 

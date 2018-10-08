@@ -16,7 +16,7 @@ import java.io.Serializable;
  */
 @Named
 @RequestScoped
-public class RolDocente implements Serializable {
+public class RolAdministrativo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,7 +26,7 @@ public class RolDocente implements Serializable {
     /**
      * Creates a new instance of RolSecretaria
      */
-    public RolDocente() {
+    public RolAdministrativo() {
     }
 
     public void enabled() {
@@ -51,9 +51,9 @@ public class RolDocente implements Serializable {
         applicationMenu.getSemestre().initialize(Boolean.TRUE);
        
         applicationMenu.getSolicitud().initialize(Boolean.TRUE);
-        applicationMenu.getSolicitudDocente().initialize(Boolean.TRUE);
+        applicationMenu.getSolicitudDocente().initialize(Boolean.FALSE);
         applicationMenu.getSolicitudDocentePorAdministrador().initialize(Boolean.FALSE);
-        applicationMenu.getSolicitudAdministrativo().initialize(Boolean.FALSE);
+        applicationMenu.getSolicitudAdministrativo().initialize(Boolean.TRUE);
         applicationMenu.getSolicitudAdministrativoPorAdministrador().initialize(Boolean.FALSE);
          applicationMenu.getTiposolicitud().initialize(Boolean.FALSE);
         applicationMenu.getTipovehiculo().initialize(Boolean.FALSE);

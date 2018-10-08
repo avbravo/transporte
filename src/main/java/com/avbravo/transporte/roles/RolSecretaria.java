@@ -50,10 +50,10 @@ public class RolSecretaria implements Serializable {
         applicationMenu.getSemestre().initialize(Boolean.TRUE);
         
         applicationMenu.getSolicitud().initialize(Boolean.TRUE);
-        applicationMenu.getSolicitudDocente().initialize(Boolean.TRUE);
-      applicationMenu.getSolicitudDocenteManual().initialize(Boolean.TRUE);
-      applicationMenu.getSolicitudAdministrativo().initialize(Boolean.TRUE);
-      applicationMenu.getSolicitudAdministrativoManual().initialize(Boolean.TRUE);
+        applicationMenu.getSolicitudDocente().initialize(Boolean.FALSE);
+      applicationMenu.getSolicitudDocentePorAdministrador().initialize(Boolean.TRUE);
+      applicationMenu.getSolicitudAdministrativo().initialize(Boolean.FALSE);
+      applicationMenu.getSolicitudAdministrativoPorAdministrador().initialize(Boolean.TRUE);
       applicationMenu.getTiposolicitud().initialize(Boolean.TRUE);
         applicationMenu.getTipovehiculo().initialize(Boolean.TRUE);
         applicationMenu.getVehiculo().initialize(Boolean.TRUE);

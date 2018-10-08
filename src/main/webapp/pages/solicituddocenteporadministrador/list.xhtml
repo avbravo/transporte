@@ -21,12 +21,12 @@
         </style>
         <h1>#{msg['titlelist.solicitud']}</h1>
         <hr/>
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudDocente.list}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudDocentePorAdministrador.list}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
 
-          <b:growl  id="msgs"/>
-         
+            <b:growl  id="msgs"/>
+
             <b:panel title="#{app['label.search']}" id="content"> 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
@@ -34,27 +34,27 @@
 
 
                     <p:outputLabel value="#{msg['field.idsolicitud']}"/>
-                    
-                      
-                      
+
+
+
 
                 </b:panelGrid>
             </b:panel>
             <b:panel id="dataTable">
                 <a:paginator 
-                    rowPage="#{solicitudDocenteController.rowPage}"
-                    clear="#{solicitudDocenteController.clear()}"
-                    first="#{solicitudDocenteController.first()}"
-                    back="#{solicitudDocenteController.back()}"
-                    next="#{solicitudDocenteController.next()}"
-                    last="#{solicitudDocenteController.last()}"
-                    page="#{solicitudDocenteController.page}"
-                    pages="#{solicitudDocenteController.pages}"
-                 skip="ajax:solicitudDocenteController.skip(solicitudDocenteController.page)" 
-                    new="#{solicitudDocenteController.prepare('gonew',solicitudDocenteController.solicitud)}"
-                    printAll="#{solicitudDocenteController.printAll()}"
+                    rowPage="#{solicitudDocentePorAdministradorController.rowPage}"
+                    clear="#{solicitudDocentePorAdministradorController.clear()}"
+                    first="#{solicitudDocentePorAdministradorController.first()}"
+                    back="#{solicitudDocentePorAdministradorController.back()}"
+                    next="#{solicitudDocentePorAdministradorController.next()}"
+                    last="#{solicitudDocentePorAdministradorController.last()}"
+                    page="#{solicitudDocentePorAdministradorController.page}"
+                    pages="#{solicitudDocentePorAdministradorController.pages}"
+                    skip="ajax:solicitudDocentePorAdministradorController.skip(solicitudDocentePorAdministradorController.page)" 
+                    new="#{solicitudDocentePorAdministradorController.prepare('gonew',solicitudDocentePorAdministradorController.solicitud)}"
+                    printAll="#{solicitudDocentePorAdministradorController.printAll()}"
                     />
-                <b:dataTable value="#{solicitudDocenteController.solicitudDataModel}"
+                <b:dataTable value="#{solicitudDocentePorAdministradorController.solicitudDataModel}"
                              var="item"
                              id="dataTable2"
                              paginated="false"
@@ -63,20 +63,20 @@
                     <b:dataTableColumn value="#{item.idsolicitud}" label="#{msg['field.idsolicitud']}"/>
 
                     <b:dataTableColumn label="#{msg['field.fecha']}" >
-  
+
                         <a:labelDate value="#{item.fecha}"/>
                     </b:dataTableColumn> 
-                    
+
                     <b:dataTableColumn value="#{item.mision}" label="#{msg['field.mision']}" />
                     <b:dataTableColumn value="#{item.estatus.idestatus}" label="#{msg['field.estatus']}" />
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
-                  
+
                     <b:dataTableColumn label="">
 
                         <a:column
 
-                            edit="#{solicitudDocenteController.prepare('view',item)}"
-                            delete="#{solicitudDocenteController.delete(item,false)}"
+                            edit="#{solicitudDocentePorAdministradorController.prepare('view',item)}"
+                            delete="#{solicitudDocentePorAdministradorController.delete(item,false)}"
                             rendered="#{applicationMenu.solicitud.delete}"
                             />
                     </b:dataTableColumn>
@@ -86,6 +86,6 @@
 
         </b:form>
 
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudDocente.list}" />
+        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudDocentePorAdministrador.list}" />
     </ui:define>
 </ui:composition>

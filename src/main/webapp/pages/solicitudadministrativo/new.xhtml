@@ -29,12 +29,12 @@
                 <a:messages id="msg"/>
 
                 <a:newDate label="#{msg['field.fecha']}"
-                           value="#{solicitudController.solicitud.fecha}"
-                           isnew="#{solicitudController.isNew()}"
-                              disabled="#{solicitudController.writable}"
-                           new="#{solicitudController.prepare('new',solicitudController.solicitud)}"
+                           value="#{solicitudDocenteController.solicitud.fecha}"
+                           issolicitudDocenteControllertroller.isNew()}"
+                            solicitudDocenteControlleritudController.writable}"
+             solicitudDocenteController#{solicitudContsolicitudDocenteController',solicitudController.solicitud)}"
                            rendererList="#{applicationMenu.solicitud.list}"
-                           list="#{solicitudController.prepare('golist',solicitudController.solicitud)}"
+solicitudDocenteController        list="#{sosolicitudDocenteControllerrepare('golist',solicitudController.solicitud)}"
 
                            />
 
@@ -42,10 +42,9 @@
 
 
 
-                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{solicitudController.writable}"> 
+                    <b:panelGrid id="panel" colSpans="2,10" ssolicitudDocenteController#{solicitudController.writable}"> 
 
-                        <p:outputLabel  value="#{msg['field.periodoacademico']}" />
-                        <a:inputText value="#{solicitudController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
+                        <p:outputLabel  value="#{msg['field.periodoacademisolicitudDocenteController               <a:inputText value="#{solicitudController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
 
 
 
@@ -55,9 +54,7 @@
                                         multiple="true"
                                         scrollHeight="250"
                                         size="15"
-                                        emptyMessage="#{app['info.nohayregistros']}"
-                                        value="#{solicitudController.unidadList}"
-                                        completeMethod="#{solicitudController.completeFiltrado}"
+                                        emptyMessage="#{app['info.nohaysolicitudDocenteController                                   value="#{solicitudController.usolicitudDocenteController                                 completeMethod="#{solicitudController.completeFiltrado}"
                                         var="p"
                                         required="true"
                                         itemLabel="#{p.idunidad}"
@@ -77,64 +74,55 @@
                             </f:facet>
                         </p:autoComplete>
 
-                        <p:outputLabel  value="#{msg['field.facultad']}" />
+                        <p:outputLabel  valuesolicitudDocenteControllerltad']}" />
                         <a:inputText value="#{solicitudController.solicitud.facultad}" id="facultad"  label="#{msg['field.facultad']}" />
                         
-                        <p:outputLabel  value="#{msg['field.carrera']}" />
+                        <p:outputLabesolicitudDocenteControllereld.carrera']}" />
                         <a:inputText value="#{solicitudController.solicitud.carrera}" id="carrera"  label="#{msg['field.carrera']}" />
 
-                        <p:outputLabel  value="#{msg['field.numerogrupo']}" />
+                        <p:outputLsolicitudDocenteController'field.numerogrupo']}" />
                         <a:inputText value="#{solicitudController.solicitud.numerogrupo}" id="numerogrupo"  label="#{msg['field.numerogrupo']}" />
 
-                        <p:outputLabel  value="#{msg['field.responsable']}" />
+                        <p:solicitudDocenteController"#{msg['field.responsable']}" />
                         <a:inputText value="#{solicitudController.solicitud.responsable}" id="responsable"  label="#{msg['field.responsable']}" />
 
-                        <p:outputLabel  value="#{msg['field.telefono']}" />
+                 solicitudDocenteControllerel  value="#{msg['field.telefono']}" />
                         <a:inputText value="#{solicitudController.solicitud.telefono}" id="telefono"  label="#{msg['field.telefono']}" />
 
-                        <p:outputLabel  value="#{msg['field.email']}" />
+   solicitudDocenteController  <p:outputLabel  value="#{msg['field.email']}" />
                         <a:email value="#{solicitudController.solicitud.email}" id="email"  label="#{msg['field.email']}" />
 
                         <p:spacer/>
                         <p:spacer/>
-                        <p:outputLabel  value="#{msg['field.mision']}" />
+     solicitudDocenteController<p:outputLabel  value="#{msg['field.mision']}" />
                         <b:inputTextarea value="#{solicitudController.solicitud.mision}" id="mision"  label="#{msg['field.mision']}" />
 
-                        <p:outputLabel  value="#{msg['field.objetivo']}" />
-                        <b:inputTextarea value="#{solicitudController.solicitud.objetivo}" id="objetivo"  label="#{msg['field.objetivo']}" />
-
-
-                        <p:outputLabel  value="#{msg['field.pasajeros']}" />
-                        <a:inputText value="#{solicitudController.solicitud.pasajeros}" id="pasajeros"  label="#{msg['field.pasajeros']}" />
-
-
-                        <p:outputLabel  value="#{msg['field.lugares']}" />
+solicitudDocenteController     <p:outputLabel  value="#{msg['field.objetivo']}" />
+                        <b:inputTextarea value="#{solicitudController.solicitud.objetivo}" id="objetivo"  label="#{msg['field.objetivosolicitudDocenteController               <p:outputLabel  value="#{msg['field.pasajeros']}" />
+                        <a:inputText value="#{solicitudController.solicitud.pasajeros}" id="pasajeros"  label="#{msg['field.pasasolicitudDocenteController                    <p:outputLabel  value="#{msg['field.lugares']}" />
                         <b:inputTextarea value="#{solicitudController.solicitud.lugares}" id="lugares"  label="#{msg['field.lugares']}" />
 
 
-                        <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
-                        <a:calendar pattern="dd/MM/yyyy HH:mm:ss" value="#{solicitudController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" />
+            solicitudDocenteControllerutLabel  value="#{msg['field.fechahorapartida']}" />
+                        <a:calendar pattern="dd/MM/yyyy HH:mm:ss" value="#{solicitudController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['fiesolicitudDocenteController']}" />
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <a:inputText value="#{solicitudController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
-
-                        <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
-                        <a:calendar pattern="dd/MM/yyyy HH:mm:ss" value="#{solicitudController.solicitud.fechahoraregreso}" id="fechahoraregreso"  label="#{msg['field.fechahoraregreso']}" />
+                        <a:inputText value="#{solicitudController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />solicitudDocenteController       <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
+                        <a:calendar pattern="dd/MM/yyyy HH:mm:ss" value="#{solicitudController.solicitud.fechahoraregreso}" id="fechahoraregreso"  labsolicitudDocenteControllerchahoraregreso']}" />
 
                         <p:outputLabel  value="#{msg['field.lugarllegada']}" />
-                        <a:inputText value="#{solicitudController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
+                        <a:inputText value="#{solicitudController.solicitud.lugarllegada}" id="lugarllegada"  labesolicitudDocenteControllerarllegada']}" />
 
 
                         <p:outputLabel  value="#{msg['field.recursossolicitados']}" />
-                        <b:inputTextarea value="#{solicitudController.solicitud.recursossolicitados}" id="recursossolicitados"  label="#{msg['field.recursossolicitados']}" />
+                        <b:inputTextarea value="#{solicitudController.solicitud.recursossolicitados}" id="recursossolicitadossolicitudDocenteControllereld.recursossolicitados']}" />
 
                         <p:outputLabel  value="#{msg['field.observaciones']}" />
                         <b:inputTextarea value="#{solicitudController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
 
 
-                        <p:outputLabel  value="#{msg['field.tiposolicitud']}" />
-                     
-                        
+      solicitudDocenteControllerp:outputLabel  value="#{msg['field.tiposolicitud']}" />
+            solicitudDocenteController               
                           <e:autocompletetiposolicitud listener="#{solicitudController.handleSelect}"
                                                   value="#{solicitudController.solicitud.tiposolicitud}"
                                                   itemLabel=" #{p.idtiposolicitud}"
@@ -144,10 +132,9 @@
                                                   field="idestatus"
                                                   disabled="true"/>
 
-               
+  solicitudDocenteController                   
                         
-                        
-                          <p:outputLabel value="#{msg['field.idestatus']}"/>
+                solicitudDocenteControllerLabel value="#{msg['field.idestatus']}"/>
                     <e:autocompleteestatus listener="#{solicitudController.handleSelect}"
                                                   value="#{solicitudController.solicitud.estatus}"
                                                   itemLabel=" #{p.idestatus}" 
@@ -157,14 +144,13 @@
                                                   field="idestatus"
                                                   disabled="true"
                                                 />
-                    
-                    
+              solicitudDocenteController        
                
                       
                       
 
-                        <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno colMd="4" value="#{solicitudController.solicitud.activo}" id="activo"  required="true"/>
+                 solicitudDocenteControllerel  value="#{msg['field.activo']}" />
+                        <a:yesno colMd="4" vsolicitudDocenteControllerntroller.solicitud.activo}" id="activo"  required="true"/>
 
                         <a:save rendered="#{solicitudController.writable and applicationMenu.solicitud.create}"
                                 save="#{solicitudController.save()}" />

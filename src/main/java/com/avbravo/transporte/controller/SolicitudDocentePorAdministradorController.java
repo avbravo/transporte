@@ -64,7 +64,7 @@ import org.primefaces.event.UnselectEvent;
  */
 @Named
 @ViewScoped
-public class SolicitudController implements Serializable, IController {
+public class SolicitudDocentePorAdministradorController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -273,7 +273,7 @@ public class SolicitudController implements Serializable, IController {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public SolicitudController() {
+    public SolicitudDocentePorAdministradorController() {
     }
 
     // </editor-fold>
@@ -665,6 +665,9 @@ public class SolicitudController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchsolicitud")) {
                 case "_init":
+                    if(loginController.getRol().getIdrol().equals("DOCENTE")){
+                        
+                    }
                     solicitudList = solicitudRepository.findPagination(page, rowPage);
 
                     break;

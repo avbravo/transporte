@@ -46,9 +46,9 @@ public class ApplicationMenu implements Serializable {
     MenuElement semestre = new MenuElement();
     MenuElement solicitud = new MenuElement();
     MenuElement solicitudDocente = new MenuElement();
-    MenuElement solicitudDocenteManual = new MenuElement();
+    MenuElement solicitudDocentePorAdministrador= new MenuElement();
     MenuElement solicitudAdministrativo = new MenuElement();
-    MenuElement solicitudAdministrativoManual = new MenuElement();
+    MenuElement solicitudAdministrativoPorAdministrador = new MenuElement();
     MenuElement vehiculo = new MenuElement();
     MenuElement vehiculocambiarplaca = new MenuElement();
     MenuElement viajes = new MenuElement();
@@ -71,9 +71,9 @@ public class ApplicationMenu implements Serializable {
         semestre.initialize(activo);
         solicitud.initialize(activo);
         solicitudDocente.initialize(activo);
-        solicitudDocenteManual.initialize(activo);
+        solicitudDocentePorAdministrador.initialize(activo);
         solicitudAdministrativo.initialize(activo);
-        solicitudAdministrativoManual.initialize(activo);
+        solicitudAdministrativoPorAdministrador.initialize(activo);
         vehiculo.initialize(activo);
         vehiculocambiarplaca.initialize(activo);
         viajes.initialize(activo);
@@ -147,14 +147,7 @@ public class ApplicationMenu implements Serializable {
         this.solicitudDocente = solicitudDocente;
     }
 
-    public MenuElement getSolicitudDocenteManual() {
-        return solicitudDocenteManual;
-    }
-
-    public void setSolicitudDocenteManual(MenuElement solicitudDocenteManual) {
-        this.solicitudDocenteManual = solicitudDocenteManual;
-    }
-
+  
     public MenuElement getSolicitudAdministrativo() {
         return solicitudAdministrativo;
     }
@@ -163,16 +156,23 @@ public class ApplicationMenu implements Serializable {
         this.solicitudAdministrativo = solicitudAdministrativo;
     }
 
-    public MenuElement getSolicitudAdministrativoManual() {
-        return solicitudAdministrativoManual;
+    public MenuElement getSolicitudDocentePorAdministrador() {
+        return solicitudDocentePorAdministrador;
     }
 
-    public void setSolicitudAdministrativoManual(MenuElement solicitudAdministrativoManual) {
-        this.solicitudAdministrativoManual = solicitudAdministrativoManual;
+    public void setSolicitudDocentePorAdministrador(MenuElement solicitudDocentePorAdministrador) {
+        this.solicitudDocentePorAdministrador = solicitudDocentePorAdministrador;
     }
-    
-    
 
+    public MenuElement getSolicitudAdministrativoPorAdministrador() {
+        return solicitudAdministrativoPorAdministrador;
+    }
+
+    public void setSolicitudAdministrativoPorAdministrador(MenuElement solicitudAdministrativoPorAdministrador) {
+        this.solicitudAdministrativoPorAdministrador = solicitudAdministrativoPorAdministrador;
+    }
+
+   
     public MenuElement getTiposolicitud() {
         return tiposolicitud;
     }
