@@ -11,8 +11,11 @@
         <composite:attribute name="id" />
         <composite:attribute name="value" />
         <composite:attribute name="label"/>
+        <composite:attribute name="update"/>
         <composite:attribute name="required"/>
         <composite:attribute name="pattern" default="dd/MM/yyyy" />
+   <composite:attribute name="listener" 
+                             method-signature="java.lang.String action()" />
     </composite:interface>
     <composite:implementation>
 
@@ -28,7 +31,8 @@
             pattern="#{cc.attrs.pattern}"
             selectOtherMonths="true"
             navigator="true">
-   
+            <p:ajax event="dateSelect" process="form" 
+                    listener="#{cc.attrs.listener}" update="#{cc.attrs.update}" />
         </p:calendar>
 
     </composite:implementation>

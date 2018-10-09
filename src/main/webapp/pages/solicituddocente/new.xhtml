@@ -189,7 +189,9 @@
 
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
-                        <a:calendar pattern="dd/MM/yyyy HH:mm:ss" value="#{solicitudDocenteController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" />
+                        <a:calendar pattern="dd/MM/yyyy HH:mm:ss" value="#{solicitudDocenteController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}"
+                                   
+                                        />
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <a:inputText value="#{solicitudDocenteController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
@@ -200,7 +202,10 @@
 
                         
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
-                        <a:calendar pattern="dd/MM/yyyy HH:mm:ss" value="#{solicitudDocenteController.solicitud.fechahoraregreso}" id="fechahoraregreso"  label="#{msg['field.fechahoraregreso']}" />
+                        <a:calendar pattern="dd/MM/yyyy HH:mm:ss" value="#{solicitudDocenteController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                                    
+                                    label="#{msg['field.fechahoraregreso']}" />
+                        
    <p:outputLabel  value="#{msg['field.lugaregreso']}" />
                         <a:inputText value="#{solicitudDocenteController.solicitud.lugarregreso}" id="lugarregreso"  label="#{msg['field.lugaregreso']}" />
 

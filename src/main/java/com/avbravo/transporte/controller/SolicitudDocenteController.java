@@ -452,6 +452,12 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud.setFacultad(facultadList);
             solicitud.setCarrera(carreraList);
             solicitud.setUsuario(loginController.getUsuario());
+
+            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
+                return "";
+            }
             //Lo datos del usuario
             solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
@@ -481,6 +487,12 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud.setFacultad(facultadList);
             solicitud.setCarrera(carreraList);
             //guarda el contenido actualizado
+            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
+                return "";
+            }
+
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
@@ -1032,26 +1044,40 @@ public class SolicitudDocenteController implements Serializable, IController {
         }
         return color;
     } // </editor-fold>
-    
-    
+
     // <editor-fold defaultstate="collapsed" desc="verificarEditable(Solicitud item)">
     /**
      * verifica si es editable
+     *
      * @param item
-     * @return 
+     * @return
      */
-    public Boolean  verificarEditable(Solicitud item) {
-        Boolean editable= false;
+    public Boolean verificarEditable(Solicitud item) {
+        Boolean editable = false;
         try {
             if (item.getEstatus().getIdestatus().equals("SOLICITADO")) {
-                editable=true;
+                editable = true;
             }
-                
-            
+
         } catch (Exception e) {
             JsfUtil.errorMessage("verificarEditable() " + e.getLocalizedMessage());
         }
         return editable;
     } // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="onDateSelect(SelectEvent event)">
+    public String onDateSelect(SelectEvent event) {
+        try {
+  if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
+                return "";
+            }
+ 
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("onDateSelect() " + ex.getLocalizedMessage());
+        }
+        return "";
+        // </editor-fold>
+    }
 }
