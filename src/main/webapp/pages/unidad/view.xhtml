@@ -20,7 +20,7 @@
         </style>
         <h1>#{msg['titleview.unidad']}</h1>
         <hr/>
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.unidad.query}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.unidad.query}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -31,7 +31,7 @@
                         <p:outputLabel  value="#{msg['field.idunidad']}" />
                         <p:outputLabel  value="#{unidadController.unidad.idunidad}" id="idunidad"   />
 
-                     <p:outputLabel  value="#{msg['field.activo']}" />
+                        <p:outputLabel  value="#{msg['field.activo']}" />
                         <a:yesno value="#{unidadController.unidad.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>

@@ -18,6 +18,7 @@ import javax.enterprise.context.ApplicationScoped;
 public class Application {
 
     Configuracion configuracion = new Configuracion();
+
     /**
      * Creates a new instance of Application
      */
@@ -31,7 +32,5 @@ public class Application {
     public void setConfiguracion(Configuracion configuracion) {
         this.configuracion = configuracion;
     }
-    
-    
-    
+
 }

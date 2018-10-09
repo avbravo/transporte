@@ -204,21 +204,39 @@
 
 
                         <p:outputLabel  value="#{msg['field.tiposolicitud']}" />
-                        <p:outputLabel  value="#{solicitudDocenteController.solicitud.tiposolicitud.idtiposolicitud}" />
 
-                      
+
+                        <e:autocompletetiposolicitud listener="#{solicitudDocenteController.handleSelect}"
+                                                     value="#{solicitudDocenteController.solicitud.tiposolicitud}"
+                                                     itemLabel=" #{p.idtiposolicitud}"
+                                                     dropdown="true"
+                                                     required="true"
+                                                     minQueryLength="0"
+                                                     field="idestatus"
+                                                     disabled="true"/>
+
+
+
+
                         <p:outputLabel value="#{msg['field.idestatus']}"/>
-                         <p:outputLabel  value="#{solicitudDocenteController.solicitud.estatus.idestatus}" />
+                        <e:autocompleteestatus listener="#{solicitudDocenteController.handleSelect}"
+                                               value="#{solicitudDocenteController.solicitud.estatus}"
+                                               itemLabel=" #{p.idestatus}" 
+                                               dropdown="true"
+                                               required="true"
+                                               minQueryLength="0"
+                                               field="idestatus"
+                                               disabled="true"
+                                               />
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <p:outputLabel  value="#{solicitudDocenteController.solicitud.activo}" />
-                        
+                        <a:yesno colMd="4" value="#{solicitudDocenteController.solicitud.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
                     <a:view 
-                        renderedDelete="false"
-                        renderedEdit="#{solicitudDocenteController.verificarEditable(solicitudDocenteController.solicitud) and applicationMenu.solicitud.edit and solicitudDocenteController.writable}" 
-                        renderedList="false"
+                        renderedDelete="#{applicationMenu.solicitud.delete and solicitudDocenteController.writable }"
+                        renderedEdit="#{applicationMenu.solicitud.edit and solicitudDocenteController.writable}" 
+                        renderedList="#{applicationMenu.solicitud.list and solicitudDocenteController.writable}"
                         edit="#{solicitudDocenteController.edit()}"
                         delete="#{solicitudDocenteController.delete(solicitudDocenteController.solicitud,true)}"
                         print="#{solicitudDocenteController.print()}"

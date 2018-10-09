@@ -34,7 +34,7 @@ import org.bson.Document;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
- 
+
 /**
  *
  * @authoravbravo
@@ -51,11 +51,10 @@ public class TiposolicitudController implements Serializable, IController {
     private Boolean writable = false;
     //DataModel
     private TiposolicitudDataModel tiposolicitudDataModel;
-    
 
     Integer page = 1;
     Integer rowPage = 25;
- 
+
     List<Integer> pages = new ArrayList<>();
     //
 
@@ -74,13 +73,12 @@ public class TiposolicitudController implements Serializable, IController {
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
-     //Atributos para busquedas
+    //Atributos para busquedas
     @Inject
-     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
+    ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
-    
-    
+
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -93,7 +91,6 @@ public class TiposolicitudController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
-
 
     //List of Relations
     //Repository of Relations
@@ -116,8 +113,6 @@ public class TiposolicitudController implements Serializable, IController {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
-    
-    
     public Integer getPage() {
         return page;
     }
@@ -208,10 +203,10 @@ public class TiposolicitudController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-String action = loginController.get("tiposolicitud");
+            String action = loginController.get("tiposolicitud");
             String id = loginController.get("idtiposolicitud");
             String pageSession = loginController.get("pagetiposolicitud");
-                //Search
+            //Search
             loginController.put("searchtiposolicitud", "_init");
             writable = false;
 
@@ -219,25 +214,23 @@ String action = loginController.get("tiposolicitud");
             tiposolicitudFiltered = new ArrayList<>();
             tiposolicitud = new Tiposolicitud();
             tiposolicitudDataModel = new TiposolicitudDataModel(tiposolicitudList);
-          
-            
+
             if (id != null) {
                 Optional<Tiposolicitud> optional = tiposolicitudRepository.find("idtiposolicitud", id);
-                 if (optional.isPresent()) {
+                if (optional.isPresent()) {
                     tiposolicitud = optional.get();
                     tiposolicitudSelected = tiposolicitud;
                     writable = true;
-                      
+
                 }
-            } 
-           if (action != null && action.equals("gonew")) {
+            }
+            if (action != null && action.equals("gonew")) {
                 tiposolicitud = new Tiposolicitud();
                 tiposolicitudSelected = tiposolicitud;
-                writable =false;
+                writable = false;
 
             }
-            if (pageSession != null) 
-            {
+            if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = tiposolicitudRepository.sizeOfPage(rowPage);
@@ -254,15 +247,14 @@ String action = loginController.get("tiposolicitud");
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new",tiposolicitud);
+        prepare("new", tiposolicitud);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-  
     public String prepare(String action, Tiposolicitud item) {
         String url = "";
         try {
-              loginController.put("pagetiposolicitud", page.toString());
+            loginController.put("pagetiposolicitud", page.toString());
             loginController.put("tiposolicitud", action);
 
             switch (action) {
@@ -274,24 +266,22 @@ String action = loginController.get("tiposolicitud");
                     break;
 
                 case "view":
-                
-                        tiposolicitudSelected =item;
-                        tiposolicitud = tiposolicitudSelected;
-                        loginController.put("idtiposolicitud", tiposolicitud.getIdtiposolicitud());
-                
+
+                    tiposolicitudSelected = item;
+                    tiposolicitud = tiposolicitudSelected;
+                    loginController.put("idtiposolicitud", tiposolicitud.getIdtiposolicitud());
 
                     url = "/pages/tiposolicitud/view.xhtml";
                     break;
-                    
+
                 case "golist":
                     url = "/pages/tiposolicitud/list.xhtml";
                     break;
-                    
+
                 case "gonew":
                     url = "/pages/tiposolicitud/new.xhtml";
                     break;
-                    
-                    
+
             }
 
         } catch (Exception e) {
@@ -353,16 +343,16 @@ String action = loginController.get("tiposolicitud");
             tiposolicitud.setIdtiposolicitud(tiposolicitud.getIdtiposolicitud().toUpperCase());
             Optional<Tiposolicitud> optional = tiposolicitudRepository.findById(tiposolicitud);
             if (optional.isPresent()) {
-               JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
 
             //Lo datos del usuario
             tiposolicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (tiposolicitudRepository.save(tiposolicitud)) {
-                  //guarda el contenido anterior
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tiposolicitud.getIdtiposolicitud(), loginController.getUsername(),
-                    "create", "tiposolicitud", tiposolicitudRepository.toDocument(tiposolicitud).toString()));
+                //guarda el contenido anterior
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tiposolicitud.getIdtiposolicitud(), loginController.getUsername(),
+                        "create", "tiposolicitud", tiposolicitudRepository.toDocument(tiposolicitud).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
@@ -383,7 +373,6 @@ String action = loginController.get("tiposolicitud");
 
             tiposolicitud.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
-          
             //guarda el contenido actualizado
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tiposolicitud.getIdtiposolicitud(), loginController.getUsername(),
                     "update", "tiposolicitud", tiposolicitudRepository.toDocument(tiposolicitud).toString()));
@@ -402,7 +391,7 @@ String action = loginController.get("tiposolicitud");
         String path = "";
         try {
             tiposolicitud = (Tiposolicitud) item;
-                if (!tiposolicitudServices.isDeleted(tiposolicitud)) {
+            if (!tiposolicitudServices.isDeleted(tiposolicitud)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
@@ -430,8 +419,8 @@ String action = loginController.get("tiposolicitud");
         } catch (Exception e) {
             JsfUtil.errorMessage("delete() " + e.getLocalizedMessage());
         }
-       // path = deleteonviewpage ? "/pages/tiposolicitud/list.xhtml" : "";
-       path="";
+        // path = deleteonviewpage ? "/pages/tiposolicitud/list.xhtml" : "";
+        path = "";
         return path;
     }// </editor-fold>
 
@@ -448,7 +437,7 @@ String action = loginController.get("tiposolicitud");
     @Override
     public String print() {
         try {
-             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pagetiposolicitud", page.toString());
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pagetiposolicitud", page.toString());
             List<Tiposolicitud> list = new ArrayList<>();
             list.add(tiposolicitud);
             String ruta = "/resources/reportes/tiposolicitud/details.jasper";
@@ -465,9 +454,9 @@ String action = loginController.get("tiposolicitud");
     @Override
     public String printAll() {
         try {
-             List<Tiposolicitud> list = new ArrayList<>();
-            list = tiposolicitudRepository.findAll(new Document("idtiposolicitud",1));
-           
+            List<Tiposolicitud> list = new ArrayList<>();
+            list = tiposolicitudRepository.findAll(new Document("idtiposolicitud", 1));
+
             String ruta = "/resources/reportes/tiposolicitud/all.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
@@ -485,7 +474,7 @@ String action = loginController.get("tiposolicitud");
             tiposolicitudList.add(tiposolicitudSelected);
             tiposolicitudFiltered = tiposolicitudList;
             tiposolicitudDataModel = new TiposolicitudDataModel(tiposolicitudList);
-             loginController.put("searchtiposolicitud", "_autocomplete");
+            loginController.put("searchtiposolicitud", "_autocomplete");
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -558,31 +547,28 @@ String action = loginController.get("tiposolicitud");
 
     @Override
     public void move() {
-     
 
-              try {
+        try {
 
-          
-                Document doc;
-                switch (loginController.get("searchtiposolicitud")) {
-                    case "_init":
-                         tiposolicitudList = tiposolicitudRepository.findPagination(page, rowPage);
+            Document doc;
+            switch (loginController.get("searchtiposolicitud")) {
+                case "_init":
+                    tiposolicitudList = tiposolicitudRepository.findPagination(page, rowPage);
 
-                        break;
-                    case "_autocomplete":
-                        //no se realiza ninguna accion 
-                        break;
-              
-                    case "idtiposolicitud":
-                        tiposolicitudList = tiposolicitudRepository.findRegexInTextPagination("idtiposolicitud", lookupTransporteejbServices.getIdtiposolicitud(), true, page, rowPage, new Document("idtiposolicitud", -1));
-                        break;
-                  
-                    default:
+                    break;
+                case "_autocomplete":
+                    //no se realiza ninguna accion 
+                    break;
 
-                     tiposolicitudList = tiposolicitudRepository.findPagination(page, rowPage);
-                        break;
-                }
-            
+                case "idtiposolicitud":
+                    tiposolicitudList = tiposolicitudRepository.findRegexInTextPagination("idtiposolicitud", lookupTransporteejbServices.getIdtiposolicitud(), true, page, rowPage, new Document("idtiposolicitud", -1));
+                    break;
+
+                default:
+
+                    tiposolicitudList = tiposolicitudRepository.findPagination(page, rowPage);
+                    break;
+            }
 
             tiposolicitudFiltered = tiposolicitudList;
 
@@ -593,7 +579,7 @@ String action = loginController.get("tiposolicitud");
         }
     }// </editor-fold>
 
-   // <editor-fold defaultstate="collapsed" desc="clear">
+    // <editor-fold defaultstate="collapsed" desc="clear">
     @Override
     public String clear() {
         try {
@@ -606,14 +592,13 @@ String action = loginController.get("tiposolicitud");
         return "";
     }// </editor-fold>
 
-
-  // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
+    // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
     @Override
     public String searchBy(String string) {
         try {
 
-            loginController.put("searchtiposolicitud", string);      
-      
+            loginController.put("searchtiposolicitud", string);
+
             writable = true;
             move();
 
@@ -622,6 +607,5 @@ String action = loginController.get("tiposolicitud");
         }
         return "";
     }// </editor-fold>
-
 
 }

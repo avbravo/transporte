@@ -75,8 +75,6 @@ public class FacultadController implements Serializable, IController {
 
     //Services
     //Atributos para busquedas
- 
-
     @Inject
     AutoincrementableCommonejbServices autoincrementableCommonejbServices;
     @Inject
@@ -93,7 +91,6 @@ public class FacultadController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
-
 
     //List of Relations
     //Repository of Relations
@@ -397,7 +394,7 @@ public class FacultadController implements Serializable, IController {
                     "update", "facultad", facultadRepository.toDocument(facultad).toString()));
 
             facultadRepository.update(facultad);
-           
+
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
             JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
@@ -580,7 +577,6 @@ public class FacultadController implements Serializable, IController {
                 case "_autocomplete":
                     //no se realiza ninguna accion 
                     break;
-
 
                 case "idfacultad":
                     doc = new Document("idfacultad", lookupCommonejbServices.getIdfacultad());

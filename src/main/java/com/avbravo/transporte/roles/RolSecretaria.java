@@ -41,20 +41,20 @@ public class RolSecretaria implements Serializable {
          *menu
          */
 
-   applicationMenu.getCarrera().initialize(Boolean.TRUE);
-      applicationMenu.getConductor().initialize(Boolean.TRUE);
-      applicationMenu.getConductorcambiarcedula().initialize(Boolean.FALSE);
-      applicationMenu.getEstatus().initialize(Boolean.TRUE);
-      applicationMenu.getFacultad().initialize(Boolean.TRUE);
+        applicationMenu.getCarrera().initialize(Boolean.TRUE);
+        applicationMenu.getConductor().initialize(Boolean.TRUE);
+        applicationMenu.getConductorcambiarcedula().initialize(Boolean.FALSE);
+        applicationMenu.getEstatus().initialize(Boolean.TRUE);
+        applicationMenu.getFacultad().initialize(Boolean.TRUE);
         applicationMenu.getRol().initialize(Boolean.TRUE);
         applicationMenu.getSemestre().initialize(Boolean.TRUE);
-        
+
         applicationMenu.getSolicitud().initialize(Boolean.TRUE);
         applicationMenu.getSolicitudDocente().initialize(Boolean.FALSE);
-      applicationMenu.getSolicitudDocentePorAdministrador().initialize(Boolean.TRUE);
-      applicationMenu.getSolicitudAdministrativo().initialize(Boolean.FALSE);
-      applicationMenu.getSolicitudAdministrativoPorAdministrador().initialize(Boolean.TRUE);
-      applicationMenu.getTiposolicitud().initialize(Boolean.TRUE);
+        applicationMenu.getSolicitudDocentePorAdministrador().initialize(Boolean.TRUE);
+        applicationMenu.getSolicitudAdministrativo().initialize(Boolean.FALSE);
+        applicationMenu.getSolicitudAdministrativoPorAdministrador().initialize(Boolean.TRUE);
+        applicationMenu.getTiposolicitud().initialize(Boolean.TRUE);
         applicationMenu.getTipovehiculo().initialize(Boolean.TRUE);
         applicationMenu.getVehiculo().initialize(Boolean.TRUE);
         applicationMenu.getVehiculocambiarplaca().initialize(Boolean.TRUE);

@@ -34,7 +34,7 @@ import org.bson.Document;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
- 
+
 /**
  *
  * @authoravbravo
@@ -51,11 +51,10 @@ public class UnidadController implements Serializable, IController {
     private Boolean writable = false;
     //DataModel
     private UnidadDataModel unidadDataModel;
-    
 
     Integer page = 1;
     Integer rowPage = 25;
- 
+
     List<Integer> pages = new ArrayList<>();
     //
 
@@ -74,12 +73,12 @@ public class UnidadController implements Serializable, IController {
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
-     //Atributos para busquedas
+    //Atributos para busquedas
     @Inject
-     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
+    ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
-    
+
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -114,9 +113,6 @@ public class UnidadController implements Serializable, IController {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
-    
-    
-    
     public Integer getPage() {
         return page;
     }
@@ -207,10 +203,10 @@ public class UnidadController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-String action = loginController.get("unidad");
+            String action = loginController.get("unidad");
             String id = loginController.get("idunidad");
             String pageSession = loginController.get("pageunidad");
-                //Search
+            //Search
             loginController.put("searchunidad", "_init");
             writable = false;
 
@@ -218,25 +214,23 @@ String action = loginController.get("unidad");
             unidadFiltered = new ArrayList<>();
             unidad = new Unidad();
             unidadDataModel = new UnidadDataModel(unidadList);
-          
-            
+
             if (id != null) {
                 Optional<Unidad> optional = unidadRepository.find("idunidad", id);
-                 if (optional.isPresent()) {
+                if (optional.isPresent()) {
                     unidad = optional.get();
                     unidadSelected = unidad;
                     writable = true;
-                      
+
                 }
-            } 
-           if (action != null && action.equals("gonew")) {
+            }
+            if (action != null && action.equals("gonew")) {
                 unidad = new Unidad();
                 unidadSelected = unidad;
-                writable =false;
+                writable = false;
 
             }
-            if (pageSession != null) 
-            {
+            if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = unidadRepository.sizeOfPage(rowPage);
@@ -253,15 +247,14 @@ String action = loginController.get("unidad");
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new",unidad);
+        prepare("new", unidad);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-
     public String prepare(String action, Unidad item) {
         String url = "";
         try {
-              loginController.put("pageunidad", page.toString());
+            loginController.put("pageunidad", page.toString());
             loginController.put("unidad", action);
 
             switch (action) {
@@ -273,24 +266,22 @@ String action = loginController.get("unidad");
                     break;
 
                 case "view":
-                   
-                        unidadSelected = item;
-                        unidad = unidadSelected;
-                        loginController.put("idunidad", unidad.getIdunidad());
-                 
+
+                    unidadSelected = item;
+                    unidad = unidadSelected;
+                    loginController.put("idunidad", unidad.getIdunidad());
 
                     url = "/pages/unidad/view.xhtml";
                     break;
-                    
+
                 case "golist":
                     url = "/pages/unidad/list.xhtml";
                     break;
-                    
+
                 case "gonew":
                     url = "/pages/unidad/new.xhtml";
                     break;
-                    
-                    
+
             }
 
         } catch (Exception e) {
@@ -352,16 +343,16 @@ String action = loginController.get("unidad");
             unidad.setIdunidad(unidad.getIdunidad().toUpperCase());
             Optional<Unidad> optional = unidadRepository.findById(unidad);
             if (optional.isPresent()) {
-               JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
 
             //Lo datos del usuario
             unidad.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (unidadRepository.save(unidad)) {
-                  //guarda el contenido anterior
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(),
-                    "create", "unidad", unidadRepository.toDocument(unidad).toString()));
+                //guarda el contenido anterior
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(),
+                        "create", "unidad", unidadRepository.toDocument(unidad).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
@@ -382,7 +373,6 @@ String action = loginController.get("unidad");
 
             unidad.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
-          
             //guarda el contenido actualizado
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(),
                     "update", "unidad", unidadRepository.toDocument(unidad).toString()));
@@ -401,7 +391,7 @@ String action = loginController.get("unidad");
         String path = "";
         try {
             unidad = (Unidad) item;
-               if (!unidadServices.isDeleted(unidad)) {
+            if (!unidadServices.isDeleted(unidad)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
@@ -429,8 +419,8 @@ String action = loginController.get("unidad");
         } catch (Exception e) {
             JsfUtil.errorMessage("delete() " + e.getLocalizedMessage());
         }
-       // path = deleteonviewpage ? "/pages/unidad/list.xhtml" : "";
-       path="";
+        // path = deleteonviewpage ? "/pages/unidad/list.xhtml" : "";
+        path = "";
         return path;
     }// </editor-fold>
 
@@ -447,7 +437,7 @@ String action = loginController.get("unidad");
     @Override
     public String print() {
         try {
-             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageunidad", page.toString());
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageunidad", page.toString());
             List<Unidad> list = new ArrayList<>();
             list.add(unidad);
             String ruta = "/resources/reportes/unidad/details.jasper";
@@ -464,9 +454,9 @@ String action = loginController.get("unidad");
     @Override
     public String printAll() {
         try {
-             List<Unidad> list = new ArrayList<>();
-            list = unidadRepository.findAll(new Document("idunidad",1));
-           
+            List<Unidad> list = new ArrayList<>();
+            list = unidadRepository.findAll(new Document("idunidad", 1));
+
             String ruta = "/resources/reportes/unidad/all.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
@@ -484,7 +474,7 @@ String action = loginController.get("unidad");
             unidadList.add(unidadSelected);
             unidadFiltered = unidadList;
             unidadDataModel = new UnidadDataModel(unidadList);
-             loginController.put("searchunidad", "_autocomplete");
+            loginController.put("searchunidad", "_autocomplete");
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -557,46 +547,44 @@ String action = loginController.get("unidad");
 
     @Override
     public void move() {
-     
 
-              try {
+        try {
 
-          
-                Document doc;
-                switch (loginController.get("searchunidad")) {
-                    case "_init":
-                         unidadList = unidadRepository.findPagination(page, rowPage);
+            Document doc;
+            switch (loginController.get("searchunidad")) {
+                case "_init":
+                    unidadList = unidadRepository.findPagination(page, rowPage);
 
-                        break;
-                    case "_autocomplete":
-                        //no se realiza ninguna accion 
-                        break;
+                    break;
+                case "_autocomplete":
+                    //no se realiza ninguna accion 
+                    break;
 //              
 //                    case "idunidad":
 //                        doc = new Document("idunidad", lookupTransporteejbServices.getIdunidad());
 //                        unidadList = unidadRepository.findPagination(doc, page, rowPage, new Document("idunidad", -1));
 //                        break;
-                        
-                               case "idunidad":
+
+                case "idunidad":
                     unidadList = unidadRepository.findRegexInTextPagination("idunidad", lookupTransporteejbServices.getIdunidad(), true, page, rowPage, new Document("descripcion", -1));
                     break;
-                  
-                    default:
 
-                     unidadList = unidadRepository.findPagination(page, rowPage);
-                        break;
-                }
-            
-                  unidadFiltered = unidadList;
+                default:
 
-                  unidadDataModel = new UnidadDataModel(unidadList);
+                    unidadList = unidadRepository.findPagination(page, rowPage);
+                    break;
+            }
+
+            unidadFiltered = unidadList;
+
+            unidadDataModel = new UnidadDataModel(unidadList);
 
         } catch (Exception e) {
             JsfUtil.errorMessage("move() " + e.getLocalizedMessage());
         }
     }// </editor-fold>
 
-   // <editor-fold defaultstate="collapsed" desc="clear">
+    // <editor-fold defaultstate="collapsed" desc="clear">
     @Override
     public String clear() {
         try {
@@ -609,14 +597,13 @@ String action = loginController.get("unidad");
         return "";
     }// </editor-fold>
 
-
-  // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
+    // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
     @Override
     public String searchBy(String string) {
         try {
 
-            loginController.put("searchunidad", string);      
-      
+            loginController.put("searchunidad", string);
+
             writable = true;
             move();
 
@@ -625,6 +612,5 @@ String action = loginController.get("unidad");
         }
         return "";
     }// </editor-fold>
-
 
 }

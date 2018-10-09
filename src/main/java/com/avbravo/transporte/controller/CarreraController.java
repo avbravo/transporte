@@ -75,7 +75,6 @@ public class CarreraController implements Serializable, IController {
 
     //Services
     //Atributos para busquedas
- 
     @Inject
     FacultadServices facultadServices;
     @Inject
@@ -94,7 +93,6 @@ public class CarreraController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
-
 
     //List of Relations
     //Repository of Relations
@@ -582,7 +580,6 @@ public class CarreraController implements Serializable, IController {
                 case "_autocomplete":
                     //no se realiza ninguna accion 
                     break;
-
 
                 case "idcarrera":
                     doc = new Document("idcarrera", lookupTransporteejbServices.getIdcarrera());

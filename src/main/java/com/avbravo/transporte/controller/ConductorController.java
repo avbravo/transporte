@@ -50,7 +50,7 @@ public class ConductorController implements Serializable, IController {
 //    @Inject
 //private transient ExternalContext externalContext;
     private Boolean writable = false;
-        private String cedulanueva;
+    private String cedulanueva;
     //DataModel
     private ConductorDataModel conductorDataModel;
 
@@ -96,7 +96,6 @@ public class ConductorController implements Serializable, IController {
     @Inject
     LoginController loginController;
 
-
     //List of Relations
     //Repository of Relations
     // </editor-fold>
@@ -117,9 +116,6 @@ public class ConductorController implements Serializable, IController {
     public void setCedulanueva(String cedulanueva) {
         this.cedulanueva = cedulanueva;
     }
-    
-    
-    
 
     public LookupTransporteejbServices getLookupTransporteejbServices() {
         return lookupTransporteejbServices;
@@ -129,8 +125,6 @@ public class ConductorController implements Serializable, IController {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
-    
-    
     public LookupTransporteejbServices getlookupTransporteejbServices() {
         return lookupTransporteejbServices;
     }
@@ -343,9 +337,9 @@ public class ConductorController implements Serializable, IController {
                 return "";
             }
             conductor.setCedula(conductor.getCedula().toUpperCase());
-            
-             List<Conductor> list = conductorRepository.findBy(new Document("cedula", conductor.getCedula()));
-            if (!list.isEmpty()) {         
+
+            List<Conductor> list = conductorRepository.findBy(new Document("cedula", conductor.getCedula()));
+            if (!list.isEmpty()) {
                 writable = false;
 
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
@@ -368,8 +362,8 @@ public class ConductorController implements Serializable, IController {
     public String save() {
         try {
             conductor.setCedula(conductor.getCedula().toUpperCase());
-           List<Conductor> list = conductorRepository.findBy(new Document("cedula", conductor.getCedula()));
-            if (!list.isEmpty()) {   
+            List<Conductor> list = conductorRepository.findBy(new Document("cedula", conductor.getCedula()));
+            if (!list.isEmpty()) {
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
@@ -642,20 +636,19 @@ public class ConductorController implements Serializable, IController {
         return "";
     }// </editor-fold>
 
-         // <editor-fold defaultstate="collapsed" desc="clearCedula()">
- 
-    public String clearCedula(){
+    // <editor-fold defaultstate="collapsed" desc="clearCedula()">
+    public String clearCedula() {
         try {
             conductor = new Conductor();
             conductor.setCedula("");
-            writable=false;
+            writable = false;
         } catch (Exception e) {
-            JsfUtil.errorMessage("clearCedula() "+e.getLocalizedMessage() );
+            JsfUtil.errorMessage("clearCedula() " + e.getLocalizedMessage());
         }
         return "";
-    }   
+    }
 // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="findByCedula()">
     public String findByCedula() {
         try {
@@ -674,7 +667,7 @@ public class ConductorController implements Serializable, IController {
             } else {
                 writable = true;
                 conductor = list.get(0);
-           
+
                 conductorSelected = conductor;
             }
 
@@ -685,13 +678,13 @@ public class ConductorController implements Serializable, IController {
         return "";
     }
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="editCedula">
     public String editCedula() {
         try {
-            
-            if(conductor.getCedula().equals(cedulanueva)){
-                JsfUtil.warningMessage(rf.getMessage("warning.cedulasiguales")); 
+
+            if (conductor.getCedula().equals(cedulanueva)) {
+                JsfUtil.warningMessage(rf.getMessage("warning.cedulasiguales"));
                 return "";
             }
 
@@ -700,8 +693,7 @@ public class ConductorController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getMessage("warning.conductorceduladuplicada"));
                 return "";
             }
-            
-            
+
             conductor.setCedula(cedulanueva);
 
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(),

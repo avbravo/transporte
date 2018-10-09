@@ -21,12 +21,12 @@
         </style>
         <h1>#{msg['titlelist.unidad']}</h1>
         <hr/>
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.unidad.list}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.unidad.list}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
-          <b:growl  id="msgs"/>
-         
+            <b:growl  id="msgs"/>
+
             <b:panel title="#{app['label.search']}" id="content"> 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
@@ -35,20 +35,20 @@
 
                     <p:outputLabel value="#{msg['field.idunidad']}"/>
                     <e:autocompleteunidad listener="#{unidadController.handleSelect}"
-                                                  value="#{unidadController.unidadSelected}"
-                                                  itemLabel=" #{p.idunidad}"
-                                                  field="idunidad"
-                                                  size="35"
-                                                  update=" :form:dataTable"/>
+                                          value="#{unidadController.unidadSelected}"
+                                          itemLabel=" #{p.idunidad}"
+                                          field="idunidad"
+                                          size="35"
+                                          update=" :form:dataTable"/>
 
-               
-                      
-                      
+
+
+
 
                 </b:panelGrid>
-                
+
                 <b:row>
-                  
+
                     <b:column medium-screen="6">
                         <a:search label="#{msg['field.idunidad']}"
                                   value="#{unidadController.lookupTransporteejbServices.idunidad}"
@@ -68,7 +68,7 @@
                     last="#{unidadController.last()}"
                     page="#{unidadController.page}"
                     pages="#{unidadController.pages}"
-                 skip="ajax:unidadController.skip(unidadController.page)" 
+                    skip="ajax:unidadController.skip(unidadController.page)" 
                     new="#{unidadController.prepare('gonew',unidadController.unidad)}"
                     printAll="#{unidadController.printAll()}"
                     />
@@ -81,7 +81,7 @@
                     <b:dataTableColumn value="#{item.idunidad}" label="#{msg['field.idunidad']}"/>
 
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
-                  
+
                     <b:dataTableColumn label="">
 
                         <a:column

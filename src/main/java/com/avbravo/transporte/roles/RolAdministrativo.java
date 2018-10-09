@@ -49,13 +49,13 @@ public class RolAdministrativo implements Serializable {
         applicationMenu.getFacultad().initialize(Boolean.FALSE);
         applicationMenu.getRol().initialize(Boolean.FALSE);
         applicationMenu.getSemestre().initialize(Boolean.TRUE);
-       
+
         applicationMenu.getSolicitud().initialize(Boolean.TRUE);
         applicationMenu.getSolicitudDocente().initialize(Boolean.FALSE);
         applicationMenu.getSolicitudDocentePorAdministrador().initialize(Boolean.FALSE);
         applicationMenu.getSolicitudAdministrativo().initialize(Boolean.TRUE);
         applicationMenu.getSolicitudAdministrativoPorAdministrador().initialize(Boolean.FALSE);
-         applicationMenu.getTiposolicitud().initialize(Boolean.FALSE);
+        applicationMenu.getTiposolicitud().initialize(Boolean.FALSE);
         applicationMenu.getTipovehiculo().initialize(Boolean.FALSE);
         applicationMenu.getVehiculo().initialize(Boolean.FALSE);
         applicationMenu.getVehiculocambiarplaca().initialize(Boolean.FALSE);

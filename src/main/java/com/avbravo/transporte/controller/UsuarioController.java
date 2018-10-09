@@ -88,7 +88,7 @@ public class UsuarioController implements Serializable, IController {
     //Services
     //Atributos para busquedas
     @Inject
-     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
+    ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
     @Inject
@@ -109,7 +109,6 @@ public class UsuarioController implements Serializable, IController {
     @Inject
     LoginController loginController;
 
-    
     //List of Relations
     //Repository of Relations
     // </editor-fold>
@@ -131,10 +130,6 @@ public class UsuarioController implements Serializable, IController {
         this.unidadServices = unidadServices;
     }
 
-    
-    
-    
-    
     public RolRepository getRolRepository() {
         return rolRepository;
     }
@@ -313,11 +308,10 @@ public class UsuarioController implements Serializable, IController {
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new",usuario);
+        prepare("new", usuario);
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
 
-    
     public String prepare(String action, Usuario item) {
         String url = "";
         try {
@@ -332,12 +326,11 @@ public class UsuarioController implements Serializable, IController {
                     break;
 
                 case "view":
-                  
-                        usuarioSelected = item;                       
-                        usuario = usuarioSelected;
-                         rolList = usuario.getRol();
-                        loginController.put("username", usuario.getUsername());
-                  
+
+                    usuarioSelected = item;
+                    usuario = usuarioSelected;
+                    rolList = usuario.getRol();
+                    loginController.put("username", usuario.getUsername());
 
                     url = "/pages/usuario/view.xhtml";
                     break;
@@ -463,7 +456,7 @@ public class UsuarioController implements Serializable, IController {
         String path = "";
         try {
             usuario = (Usuario) item;
-   if (!usuarioServices.isDeleted(usuario)) {
+            if (!usuarioServices.isDeleted(usuario)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
@@ -706,15 +699,15 @@ public class UsuarioController implements Serializable, IController {
                 }
             } else {
                 if (!temp.isEmpty()) {
-                    
+
                     for (Rol r : temp) {
                         found = false;
-                        for(Rol r2:rolList){
-                            if(r.getIdrol().equals(r2.getIdrol())){
-                                found=true;
+                        for (Rol r2 : rolList) {
+                            if (r.getIdrol().equals(r2.getIdrol())) {
+                                found = true;
                             }
                         }
-                        if(!found){
+                        if (!found) {
                             suggestions.add(r);
                         }
 

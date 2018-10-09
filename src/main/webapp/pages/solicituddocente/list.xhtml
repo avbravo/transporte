@@ -21,12 +21,12 @@
         </style>
         <h1>#{msg['titlelist.solicitud']}</h1>
         <hr/>
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudDocente.list}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudDocente.list}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
-          <b:growl  id="msgs"/>
-         
+            <b:growl  id="msgs"/>
+
             <b:panel title="#{app['label.search']}" id="content"> 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
@@ -34,9 +34,9 @@
 
 
                     <p:outputLabel value="#{msg['field.idsolicitud']}"/>
-                    
-                      
-                      
+
+
+
 
                 </b:panelGrid>
             </b:panel>
@@ -50,7 +50,7 @@
                     last="#{solicitudDocenteController.last()}"
                     page="#{solicitudDocenteController.page}"
                     pages="#{solicitudDocenteController.pages}"
-                 skip="ajax:solicitudDocenteController.skip(solicitudDocenteController.page)" 
+                    skip="ajax:solicitudDocenteController.skip(solicitudDocenteController.page)" 
                     new="#{solicitudDocenteController.prepare('gonew',solicitudDocenteController.solicitud)}"
                     printAll="#{solicitudDocenteController.printAll()}"
                     />
@@ -63,20 +63,19 @@
                     <b:dataTableColumn value="#{item.idsolicitud}" label="#{msg['field.idsolicitud']}"/>
 
                     <b:dataTableColumn label="#{msg['field.fecha']}" >
-  
+
                         <a:labelDate value="#{item.fecha}"/>
                     </b:dataTableColumn> 
-                    
-                    <b:dataTableColumn value="#{item.mision}" label="#{msg['field.mision']}" />
-                    <b:dataTableColumn value="#{item.estatus.idestatus}" label="#{msg['field.estatus']}" />
-                    <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
-                  
+
+                    <b:dataTableColumn value="#{item.mision}" label="#{msg['field.mision']}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
+                    <b:dataTableColumn value="#{item.estatus.idestatus}" label="#{msg['field.estatus']}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
+                    <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
+
                     <b:dataTableColumn label="">
 
-                        <a:column
+                        <a:column_view
 
                             edit="#{solicitudDocenteController.prepare('view',item)}"
-                            delete="#{solicitudDocenteController.delete(item,false)}"
                             rendered="#{applicationMenu.solicitud.delete}"
                             />
                     </b:dataTableColumn>

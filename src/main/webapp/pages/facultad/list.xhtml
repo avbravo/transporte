@@ -22,8 +22,8 @@
         <h1>#{msg['titlelist.facultad']}</h1>
         <hr/>
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.facultad.list}" onkeypress="if (event.keyCode == 13) {
-                     return false;
-                 }">
+                    return false;
+                }">
 
             <b:growl  id="msgs"/>
 
@@ -39,10 +39,10 @@
                                              field="descripcion"
                                              update=" :form:dataTable"/>
 
-                  
+
 
                 </b:panelGrid>
-                 <b:row>
+                <b:row>
                     <b:column medium-screen="4">
                         <a:search label="#{msg['field.idfacultad']}"
                                   value="#{facultadController.lookupCommonejbServices.idfacultad}"
@@ -73,13 +73,13 @@
                     new="#{facultadController.prepare('gonew',facultadController.facultad)}"
                     printAll="#{facultadController.printAll()}"
                     />
-                
+
                 <b:dataTable value="#{facultadController.facultadDataModel}"
                              var="item"
                              id="dataTable2"
                              paginated="false"
                              onpage="console.log('page');">
-                    
+
 
                     <b:dataTableColumn value="#{item.idfacultad}" label="#{msg['field.idfacultad']}"/>
                     <b:dataTableColumn value="#{item.descripcion}" label="#{msg['field.facultad']}"/>

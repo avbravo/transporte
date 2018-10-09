@@ -92,7 +92,6 @@ public class TipovehiculoController implements Serializable, IController {
     @Inject
     LoginController loginController;
 
-
     //List of Relations
     //Repository of Relations
     // </editor-fold>
@@ -113,8 +112,6 @@ public class TipovehiculoController implements Serializable, IController {
     public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
-
-  
 
     public Integer getPage() {
         return page;

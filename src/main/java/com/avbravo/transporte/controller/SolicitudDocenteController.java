@@ -68,7 +68,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
-    
+
     //    private String stmpPort="80";
     private String stmpPort = "25";
     List<Facultad> suggestionsFacultad = new ArrayList<>();
@@ -96,7 +96,6 @@ public class SolicitudDocenteController implements Serializable, IController {
     List<Carrera> carreraList = new ArrayList<>();
 
     //Repository
-
     @Inject
     FacultadRepository facultadRepository;
     @Inject
@@ -107,8 +106,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     SolicitudRepository solicitudRepository;
     @Inject
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
-    @Inject 
-    UsuarioRepository  usuarioRepository;
+    @Inject
+    UsuarioRepository usuarioRepository;
 
     //Services
     //Atributos para busquedas
@@ -667,9 +666,9 @@ public class SolicitudDocenteController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchsolicitud")) {
                 case "_init":
-                   doc = new Document("usuario.username", loginController.getUsuario().getUsername());
+                    doc = new Document("usuario.username", loginController.getUsuario().getUsername());
 //                    solicitudList = solicitudRepository.findPagination(page, rowPage);
-                    solicitudList = solicitudRepository.findPagination(doc,page, rowPage);
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage);
 
                     break;
                 case "_autocomplete":
@@ -682,9 +681,9 @@ public class SolicitudDocenteController implements Serializable, IController {
                     break;
 
                 default:
- doc = new Document("usuario.username", loginController.getUsuario().getUsername());
+                    doc = new Document("usuario.username", loginController.getUsuario().getUsername());
 //                    solicitudList = solicitudRepository.findPagination(page, rowPage);
-                    solicitudList = solicitudRepository.findPagination(doc,page, rowPage);
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage);
 
 //                    solicitudList = solicitudRepository.findPagination(page, rowPage);
                     break;
@@ -961,9 +960,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     }
     // </editor-fold>
 
-    
-    
-     public String enviarEmails() {
+    public String enviarEmails() {
         try {
             Boolean enviados = false;
 
@@ -983,10 +980,10 @@ public class SolicitudDocenteController implements Serializable, IController {
                 }
             });
             Integer c = 0;
-List<Usuario> list = usuarioRepository.findBy(new Document("activo","si"));
-            if(!list.isEmpty()){
-                for(Usuario u:list){
-                  if (u.getEmail().contains("@") == true && JsfUtil.emailValidate(u.getEmail())) {
+            List<Usuario> list = usuarioRepository.findBy(new Document("activo", "si"));
+            if (!list.isEmpty()) {
+                for (Usuario u : list) {
+                    if (u.getEmail().contains("@") == true && JsfUtil.emailValidate(u.getEmail())) {
                         Message message = new MimeMessage(session);
                         message.setFrom(new InternetAddress("avbravo@gmail.com"));
 
@@ -997,27 +994,64 @@ List<Usuario> list = usuarioRepository.findBy(new Document("activo","si"));
 
                         message.setSubject("Solicitud de Viaje Docente");
                         String texto = "";
-                        texto = " <h1> Solicitud #:" + solicitud.getIdsolicitud()+ "  </h1>";
-                        texto = " <h1> Solicitadi por: " + solicitud.getResponsable()+ "  </h1>";
+                        texto = " <h1> Solicitud #:" + solicitud.getIdsolicitud() + "  </h1>";
+                        texto = " <h1> Solicitadi por: " + solicitud.getResponsable() + "  </h1>";
                         texto += " <b>";
-                        texto += "<br> Fecha de partidad " + solicitud.getFechahorapartida() + " lugar de salida: " + solicitud.getLugarpartida() +
-                                "   <FONT COLOR=\"red\">Pendiente de aprobaciòn </FONT>  ";
+                        texto += "<br> Fecha de partidad " + solicitud.getFechahorapartida() + " lugar de salida: " + solicitud.getLugarpartida()
+                                + "   <FONT COLOR=\"red\">Pendiente de aprobaciòn </FONT>  ";
                         texto += "</b>";
                         message.setContent(texto, "text/html");
 
                         Transport.send(message);
-                  }
+                    }
                 }
             }
-         
-                      
-                
-         
+
         } catch (Exception e) {
             JsfUtil.errorMessage("enviarEmails() " + e.getLocalizedMessage());
         }
         return "";
     }
 
+    // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
+    public String columnColor(String estatus) {
+        String color = "";
+        try {
+            switch (estatus) {
+                case "RECHAZADO":
+                    color = "red";
+                    break;
+                case "APROBADO":
+                    color = "green";
+                    break;
+                default:
+                    color = "black";
+            }
+        } catch (Exception e) {
+            JsfUtil.errorMessage("color() " + e.getLocalizedMessage());
+        }
+        return color;
+    } // </editor-fold>
+    
+    
+    // <editor-fold defaultstate="collapsed" desc="verificarEditable(Solicitud item)">
+    /**
+     * verifica si es editable
+     * @param item
+     * @return 
+     */
+    public Boolean  verificarEditable(Solicitud item) {
+        Boolean editable= false;
+        try {
+            if (item.getEstatus().getIdestatus().equals("SOLICITADO")) {
+                editable=true;
+            }
+                
             
+        } catch (Exception e) {
+            JsfUtil.errorMessage("verificarEditable() " + e.getLocalizedMessage());
+        }
+        return editable;
+    } // </editor-fold>
+
 }

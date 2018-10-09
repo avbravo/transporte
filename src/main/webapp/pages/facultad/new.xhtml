@@ -29,7 +29,7 @@
                 <a:new label="#{msg['field.descripcion']}"
                        value="#{facultadController.facultad.descripcion}"
                        isnew="#{facultadController.isNew()}"
-                        disabled="#{facultadController.writable}"
+                       disabled="#{facultadController.writable}"
                        new="#{facultadController.prepare('new',facultadController.facultad)}"
                        rendererList="#{applicationMenu.facultad.list}"
                        list="#{facultadController.prepare('golist',facultadController.facultad)}"

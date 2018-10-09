@@ -1,62 +1,9 @@
- <p:outputLabel  value="#{msg['field.facultad']}" />
-<p:autoComplete dropdown="false"
-           multiple="true"
-           scrollHeight="250"
-           size="15"
-           emptyMessage="#{app['info.nohayregistros']}"
-           value="#{solicitudController.facultadList}"
-           completeMethod="#{solicitudController.completeFiltradoFacultad}"
-           var="p"
-           required="true"
-           itemLabel="#{p.descripcion}"
-           itemValue="#{p}" forceSelection="true">
-    <f:converter binding="#{facultadConverter}"/>
-    <f:attribute name="field" value="descripcion"/>
-    <f:attribute name="fielddropdown" value="false"/>
-    <f:attribute name="fieldquerylenth" value="1"/>
-    <p:ajax event="itemSelect" listener="#{solicitudController.handleSelect}"
-            update=":form:content"     />
-    <p:ajax event="itemUnselect" listener="#{solicitudController.itemUnselect}"
-            update=":form:content"    />
-    <f:facet name="itemtip">
-        <h:panelGrid columns="1" cellpadding="5">
-            <h:outputText value="#{msg['field.descripcion']} #{p.descripcion}" />
+<a:newlowercase label="#{msg['field.username']}"
+   value="#{usuarioController.usuario.username}"
+   isnew="#{usuarioController.isNew()}"
+      disabled="#{usuarioController.writable}"
+   new="#{usuarioController.prepare('new',usuarioController.usuario)}"
+   rendererList="#{applicationMenu.usuario.list}"
+   list="#{usuarioController.prepare('golist',usuarioController.usuario)}"
 
-
-        </h:panelGrid>
-    </f:facet>
-                            
-</p:autoComplete>
-                        
-                
-                        
-<p:outputLabel  value="#{msg['field.carrera']}" />
-<p:autoComplete dropdown="false"
-        id="carrera"
-        multiple="true"
-        scrollHeight="250"
-        size="15"
-        emptyMessage="#{app['info.nohayregistros']}"
-        value="#{solicitudController.carreraList}"
-        completeMethod="#{solicitudController.completeFiltradoCarrera}"
-        var="p"
-        required="true"
-        itemLabel="#{p.descripcion}"
-        itemValue="#{p}" forceSelection="true">
-    <f:converter binding="#{carreraConverter}"/>
-    <f:attribute name="field" value="descripcion"/>
-    <f:attribute name="fielddropdown" value="false"/>
-    <f:attribute name="fieldquerylenth" value="1"/>
-    <p:ajax event="itemSelect" listener="#{solicitudController.handleSelect}"
-            update=":form:content"    />
-    <p:ajax event="itemUnselect" listener="#{solicitudController.itemUnselect}"
-            update=":form:content"    />
-    <f:facet name="itemtip">
-        <h:panelGrid columns="1" cellpadding="5">
-            <h:outputText value="#{msg['field.descripcion']} #{p.descripcion}" />
-
-
-        </h:panelGrid>
-    </f:facet>
-                            
-</p:autoComplete>
+   />

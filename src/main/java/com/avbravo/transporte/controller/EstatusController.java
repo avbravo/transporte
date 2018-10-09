@@ -34,7 +34,6 @@ import org.bson.Document;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
- 
 
 /**
  *
@@ -52,11 +51,10 @@ public class EstatusController implements Serializable, IController {
     private Boolean writable = false;
     //DataModel
     private EstatusDataModel estatusDataModel;
-    
 
     Integer page = 1;
     Integer rowPage = 25;
- 
+
     List<Integer> pages = new ArrayList<>();
     //
 
@@ -75,12 +73,12 @@ public class EstatusController implements Serializable, IController {
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
-     //Atributos para busquedas
+    //Atributos para busquedas
     @Inject
-     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
+    ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
-    
+
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -115,8 +113,6 @@ public class EstatusController implements Serializable, IController {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
-    
-    
     public Integer getPage() {
         return page;
     }
@@ -207,10 +203,10 @@ public class EstatusController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-String action = loginController.get("estatus");
+            String action = loginController.get("estatus");
             String id = loginController.get("idestatus");
             String pageSession = loginController.get("pageestatus");
-                //Search
+            //Search
             loginController.put("searchestatus", "_init");
             writable = false;
 
@@ -218,25 +214,23 @@ String action = loginController.get("estatus");
             estatusFiltered = new ArrayList<>();
             estatus = new Estatus();
             estatusDataModel = new EstatusDataModel(estatusList);
-          
-            
+
             if (id != null) {
                 Optional<Estatus> optional = estatusRepository.find("idestatus", id);
-                 if (optional.isPresent()) {
+                if (optional.isPresent()) {
                     estatus = optional.get();
                     estatusSelected = estatus;
                     writable = true;
-                      
+
                 }
-            } 
-           if (action != null && action.equals("gonew")) {
+            }
+            if (action != null && action.equals("gonew")) {
                 estatus = new Estatus();
                 estatusSelected = estatus;
-                writable =false;
+                writable = false;
 
             }
-            if (pageSession != null) 
-            {
+            if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = estatusRepository.sizeOfPage(rowPage);
@@ -253,15 +247,14 @@ String action = loginController.get("estatus");
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new",estatus);
+        prepare("new", estatus);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-
     public String prepare(String action, Estatus item) {
         String url = "";
         try {
-              loginController.put("pageestatus", page.toString());
+            loginController.put("pageestatus", page.toString());
             loginController.put("estatus", action);
 
             switch (action) {
@@ -273,24 +266,22 @@ String action = loginController.get("estatus");
                     break;
 
                 case "view":
-               
-                        estatusSelected =  item;
-                        estatus = estatusSelected;
-                        loginController.put("idestatus", estatus.getIdestatus());
-                  
+
+                    estatusSelected = item;
+                    estatus = estatusSelected;
+                    loginController.put("idestatus", estatus.getIdestatus());
 
                     url = "/pages/estatus/view.xhtml";
                     break;
-                    
+
                 case "golist":
                     url = "/pages/estatus/list.xhtml";
                     break;
-                    
+
                 case "gonew":
                     url = "/pages/estatus/new.xhtml";
                     break;
-                    
-                    
+
             }
 
         } catch (Exception e) {
@@ -352,16 +343,16 @@ String action = loginController.get("estatus");
             estatus.setIdestatus(estatus.getIdestatus().toUpperCase());
             Optional<Estatus> optional = estatusRepository.findById(estatus);
             if (optional.isPresent()) {
-               JsfUtil.warningMessage(  rf.getAppMessage("warning.idexist"));
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
 
             //Lo datos del usuario
             estatus.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (estatusRepository.save(estatus)) {
-                  //guarda el contenido anterior
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(),
-                    "create", "estatus", estatusRepository.toDocument(estatus).toString()));
+                //guarda el contenido anterior
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(),
+                        "create", "estatus", estatusRepository.toDocument(estatus).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
@@ -382,7 +373,6 @@ String action = loginController.get("estatus");
 
             estatus.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
-          
             //guarda el contenido actualizado
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(),
                     "update", "estatus", estatusRepository.toDocument(estatus).toString()));
@@ -401,8 +391,8 @@ String action = loginController.get("estatus");
         String path = "";
         try {
             estatus = (Estatus) item;
-              
-               if (!estatusServices.isDeleted(estatus)) {
+
+            if (!estatusServices.isDeleted(estatus)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
@@ -430,8 +420,8 @@ String action = loginController.get("estatus");
         } catch (Exception e) {
             JsfUtil.errorMessage("delete() " + e.getLocalizedMessage());
         }
-       // path = deleteonviewpage ? "/pages/estatus/list.xhtml" : "";
-       path="";
+        // path = deleteonviewpage ? "/pages/estatus/list.xhtml" : "";
+        path = "";
         return path;
     }// </editor-fold>
 
@@ -448,7 +438,7 @@ String action = loginController.get("estatus");
     @Override
     public String print() {
         try {
-             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageestatus", page.toString());
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageestatus", page.toString());
             List<Estatus> list = new ArrayList<>();
             list.add(estatus);
             String ruta = "/resources/reportes/estatus/details.jasper";
@@ -465,9 +455,9 @@ String action = loginController.get("estatus");
     @Override
     public String printAll() {
         try {
-             List<Estatus> list = new ArrayList<>();
-            list = estatusRepository.findAll(new Document("idestatus",1));
-           
+            List<Estatus> list = new ArrayList<>();
+            list = estatusRepository.findAll(new Document("idestatus", 1));
+
             String ruta = "/resources/reportes/estatus/all.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
@@ -485,7 +475,7 @@ String action = loginController.get("estatus");
             estatusList.add(estatusSelected);
             estatusFiltered = estatusList;
             estatusDataModel = new EstatusDataModel(estatusList);
-             loginController.put("searchestatus", "_autocomplete");
+            loginController.put("searchestatus", "_autocomplete");
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -558,33 +548,30 @@ String action = loginController.get("estatus");
 
     @Override
     public void move() {
-     
 
-              try {
+        try {
 
-          
-                Document doc;
-                switch (loginController.get("searchestatus")) {
-                    case "_init":
-                         estatusList = estatusRepository.findPagination(page, rowPage);
+            Document doc;
+            switch (loginController.get("searchestatus")) {
+                case "_init":
+                    estatusList = estatusRepository.findPagination(page, rowPage);
 
-                        break;
-                    case "_autocomplete":
-                        //no se realiza ninguna accion 
-                        break;
-              
-                    case "idestatus":
+                    break;
+                case "_autocomplete":
+                    //no se realiza ninguna accion 
+                    break;
+
+                case "idestatus":
 //                        doc = new Document("idestatus", estatus.getIdestatus());
 //                        estatusList = estatusRepository.findPagination(doc, page, rowPage, new Document("idestatus", -1));
-                             estatusList = estatusRepository.findRegexInTextPagination("idestatus", lookupTransporteejbServices.getIdestatus(), true, page, rowPage, new Document("idestatus", -1));
-                        break;
-                  
-                    default:
+                    estatusList = estatusRepository.findRegexInTextPagination("idestatus", lookupTransporteejbServices.getIdestatus(), true, page, rowPage, new Document("idestatus", -1));
+                    break;
 
-                     estatusList = estatusRepository.findPagination(page, rowPage);
-                        break;
-                }
-            
+                default:
+
+                    estatusList = estatusRepository.findPagination(page, rowPage);
+                    break;
+            }
 
             estatusFiltered = estatusList;
 
@@ -595,7 +582,7 @@ String action = loginController.get("estatus");
         }
     }// </editor-fold>
 
-   // <editor-fold defaultstate="collapsed" desc="clear">
+    // <editor-fold defaultstate="collapsed" desc="clear">
     @Override
     public String clear() {
         try {
@@ -608,14 +595,13 @@ String action = loginController.get("estatus");
         return "";
     }// </editor-fold>
 
-
-  // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
+    // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
     @Override
     public String searchBy(String string) {
         try {
 
-            loginController.put("searchestatus", string);      
-      
+            loginController.put("searchestatus", string);
+
             writable = true;
             move();
 
@@ -624,6 +610,5 @@ String action = loginController.get("estatus");
         }
         return "";
     }// </editor-fold>
-
 
 }

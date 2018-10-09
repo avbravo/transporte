@@ -6,8 +6,6 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
-
-
 import com.avbravo.avbravoutils.JsfUtil;
 import com.avbravo.avbravoutils.printer.Printer;
 import com.avbravo.ejbjmoordb.interfaces.IController;
@@ -75,9 +73,9 @@ public class RolController implements Serializable, IController {
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
-     //Atributos para busquedas
+    //Atributos para busquedas
     @Inject
-     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
+    ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
     @Inject
@@ -113,9 +111,6 @@ public class RolController implements Serializable, IController {
     public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
-    
-    
-    
 
     public Integer getPage() {
         return page;
@@ -253,11 +248,10 @@ public class RolController implements Serializable, IController {
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new",rol);
+        prepare("new", rol);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-
     public String prepare(String action, Rol item) {
         String url = "";
         try {
@@ -272,11 +266,10 @@ public class RolController implements Serializable, IController {
                     break;
 
                 case "view":
-                   
-                        rolSelected =  item;
-                        rol = rolSelected;
-                        loginController.put("idrol", rol.getIdrol());
-                 
+
+                    rolSelected = item;
+                    rol = rolSelected;
+                    loginController.put("idrol", rol.getIdrol());
 
                     url = "/pages/rol/view.xhtml";
                     break;
@@ -320,11 +313,11 @@ public class RolController implements Serializable, IController {
     public String isNew() {
         try {
             writable = true;
-          if(JsfUtil.isVacio(rol.getIdrol())){
-                writable=false;
+            if (JsfUtil.isVacio(rol.getIdrol())) {
+                writable = false;
                 return "";
             }
-             rol.setIdrol(rol.getIdrol().toUpperCase());
+            rol.setIdrol(rol.getIdrol().toUpperCase());
             Optional<Rol> optional = rolRepository.findById(rol);
             if (optional.isPresent()) {
                 writable = false;
@@ -357,8 +350,8 @@ public class RolController implements Serializable, IController {
 
             rol.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (rolRepository.save(rol)) {
-                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(rol.getIdrol(), loginController.getUsername(),
-                    "create", "rol", rolRepository.toDocument(rol).toString()));
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(rol.getIdrol(), loginController.getUsername(),
+                        "create", "rol", rolRepository.toDocument(rol).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
             } else {
@@ -379,8 +372,6 @@ public class RolController implements Serializable, IController {
             rol.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
             //guarda el contenido anterior
-           
-
             //guarda el contenido actualizado
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(rol.getIdrol(), loginController.getUsername(),
                     "update", "rol", rolRepository.toDocument(rol).toString()));
@@ -399,7 +390,7 @@ public class RolController implements Serializable, IController {
         String path = "";
         try {
             rol = (Rol) item;
-    if (!rolServices.isDeleted(rol)) {
+            if (!rolServices.isDeleted(rol)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
@@ -552,7 +543,6 @@ public class RolController implements Serializable, IController {
         return "";
     }// </editor-fold>
 
-
     // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
     @Override
     public String searchBy(String string) {
@@ -568,6 +558,7 @@ public class RolController implements Serializable, IController {
         return "";
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="clear">
+
     @Override
     public String clear() {
         try {
@@ -580,6 +571,7 @@ public class RolController implements Serializable, IController {
         return "";
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="move">
+
     @Override
     public void move() {
         try {

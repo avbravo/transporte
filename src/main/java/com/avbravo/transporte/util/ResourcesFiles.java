@@ -2,7 +2,7 @@
 * To change this license header, choose License Headers in Project Properties.
 * To change this template file, choose Tools | Templates
  * and open the template in the editor.
-*/
+ */
 package com.avbravo.transporte.util;
 
 import java.io.Serializable;
@@ -42,7 +42,6 @@ public class ResourcesFiles implements Serializable {
                 currentLocale);
     }
 
-
     public Locale getCurrentLocale() {
         return currentLocale;
     }
@@ -66,6 +65,7 @@ public class ResourcesFiles implements Serializable {
     public void setArb(ResourceBundle arb) {
         this.arb = arb;
     }
+
     /*
      *Devuelve el mensaje Mrb
      */
@@ -73,6 +73,7 @@ public class ResourcesFiles implements Serializable {
     public String getMessage(String mensaje) {
         return mrb.getString(mensaje);
     }
+
     /*
      *Devuelve el mensaje Arb
      */
@@ -80,6 +81,5 @@ public class ResourcesFiles implements Serializable {
     public String getAppMessage(String mensaje) {
         return arb.getString(mensaje);
     }
-
 
 }

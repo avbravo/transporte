@@ -6,8 +6,6 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
-
-
 import com.avbravo.avbravoutils.JsfUtil;
 import com.avbravo.avbravoutils.printer.Printer;
 import com.avbravo.commonejb.datamodel.SemestreDataModel;
@@ -77,9 +75,9 @@ public class SemestreController implements Serializable, IController {
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
-     //Atributos para busquedas
+    //Atributos para busquedas
     @Inject
-     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
+    ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
     @Inject
@@ -115,9 +113,6 @@ public class SemestreController implements Serializable, IController {
     public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
-    
-    
-    
 
     public Integer getPage() {
         return page;
@@ -143,7 +138,6 @@ public class SemestreController implements Serializable, IController {
         this.semestreServices = semestreServices;
     }
 
-    
     public List<Semestre> getRolList() {
         return semestreList;
     }
@@ -175,8 +169,6 @@ public class SemestreController implements Serializable, IController {
     public void setSemestreSelected(Semestre semestreSelected) {
         this.semestreSelected = semestreSelected;
     }
-
-   
 
     public SemestreDataModel getSemestreDataModel() {
         return semestreDataModel;
@@ -258,11 +250,10 @@ public class SemestreController implements Serializable, IController {
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new",semestre);
+        prepare("new", semestre);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-
     public String prepare(String action, Semestre item) {
         String url = "";
         try {
@@ -270,18 +261,17 @@ public class SemestreController implements Serializable, IController {
             loginController.put("semestre", action);
             switch (action) {
                 case "new":
-                   semestre= new Semestre();
+                    semestre = new Semestre();
                     semestreSelected = new Semestre();
 
                     writable = false;
                     break;
 
                 case "view":
-                   
-                        semestreSelected =  item;
-                        semestre = semestreSelected;
-                        loginController.put("idsemestre", semestre.getIdsemestre());
-                 
+
+                    semestreSelected = item;
+                    semestre = semestreSelected;
+                    loginController.put("idsemestre", semestre.getIdsemestre());
 
                     url = "/pages/semestre/view.xhtml";
                     break;
@@ -325,11 +315,11 @@ public class SemestreController implements Serializable, IController {
     public String isNew() {
         try {
             writable = true;
-            if(JsfUtil.isVacio(semestre.getIdsemestre())){
-                writable=false;
+            if (JsfUtil.isVacio(semestre.getIdsemestre())) {
+                writable = false;
                 return "";
             }
-             semestre.setIdsemestre(semestre.getIdsemestre().toUpperCase());
+            semestre.setIdsemestre(semestre.getIdsemestre().toUpperCase());
             Optional<Semestre> optional = semestreRepository.findById(semestre);
             if (optional.isPresent()) {
                 writable = false;
@@ -362,8 +352,8 @@ public class SemestreController implements Serializable, IController {
 
             semestre.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (semestreRepository.save(semestre)) {
-                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(semestre.getIdsemestre(), loginController.getUsername(),
-                    "create", "semestre", semestreRepository.toDocument(semestre).toString()));
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(semestre.getIdsemestre(), loginController.getUsername(),
+                        "create", "semestre", semestreRepository.toDocument(semestre).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
             } else {
@@ -384,8 +374,6 @@ public class SemestreController implements Serializable, IController {
             semestre.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
             //guarda el contenido anterior
-           
-
             //guarda el contenido actualizado
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(semestre.getIdsemestre(), loginController.getUsername(),
                     "update", "semestre", semestreRepository.toDocument(semestre).toString()));
@@ -404,7 +392,7 @@ public class SemestreController implements Serializable, IController {
         String path = "";
         try {
             semestre = (Semestre) item;
-    if (!semestreServices.isDeleted(semestre)) {
+            if (!semestreServices.isDeleted(semestre)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
@@ -557,7 +545,6 @@ public class SemestreController implements Serializable, IController {
         return "";
     }// </editor-fold>
 
-
     // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
     @Override
     public String searchBy(String string) {
@@ -573,6 +560,7 @@ public class SemestreController implements Serializable, IController {
         return "";
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="clear">
+
     @Override
     public String clear() {
         try {
@@ -585,6 +573,7 @@ public class SemestreController implements Serializable, IController {
         return "";
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="move">
+
     @Override
     public void move() {
         try {

@@ -10,7 +10,7 @@ import com.avbravo.avbravoutils.menu.MenuElement;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
- 
+
 /**
  *
  * @authoravbravo
@@ -46,7 +46,7 @@ public class ApplicationMenu implements Serializable {
     MenuElement semestre = new MenuElement();
     MenuElement solicitud = new MenuElement();
     MenuElement solicitudDocente = new MenuElement();
-    MenuElement solicitudDocentePorAdministrador= new MenuElement();
+    MenuElement solicitudDocentePorAdministrador = new MenuElement();
     MenuElement solicitudAdministrativo = new MenuElement();
     MenuElement solicitudAdministrativoPorAdministrador = new MenuElement();
     MenuElement vehiculo = new MenuElement();
@@ -90,9 +90,6 @@ public class ApplicationMenu implements Serializable {
         this.semestre = semestre;
     }
 
-    
-    
-    
     public MenuElement getConductorcambiarcedula() {
         return conductorcambiarcedula;
     }
@@ -109,9 +106,6 @@ public class ApplicationMenu implements Serializable {
         this.vehiculocambiarplaca = vehiculocambiarplaca;
     }
 
-    
-    
-    
     public MenuElement getCarrera() {
         return carrera;
     }
@@ -128,9 +122,6 @@ public class ApplicationMenu implements Serializable {
         this.facultad = facultad;
     }
 
-    
-    
-    
     public Boolean getMenuBarViajes() {
         return menuBarViajes;
     }
@@ -147,7 +138,6 @@ public class ApplicationMenu implements Serializable {
         this.solicitudDocente = solicitudDocente;
     }
 
-  
     public MenuElement getSolicitudAdministrativo() {
         return solicitudAdministrativo;
     }
@@ -172,7 +162,6 @@ public class ApplicationMenu implements Serializable {
         this.solicitudAdministrativoPorAdministrador = solicitudAdministrativoPorAdministrador;
     }
 
-   
     public MenuElement getTiposolicitud() {
         return tiposolicitud;
     }
@@ -189,10 +178,6 @@ public class ApplicationMenu implements Serializable {
         this.unidad = unidad;
     }
 
-    
-    
-    
-    
     public MenuElement getConductor() {
         return conductor;
     }
@@ -233,8 +218,6 @@ public class ApplicationMenu implements Serializable {
         this.viajes = viajes;
     }
 
-    
-    
     public Boolean getMenuBarSolicitud() {
         return menuBarSolicitud;
     }
@@ -242,8 +225,6 @@ public class ApplicationMenu implements Serializable {
     public void setMenuBarSolicitud(Boolean menuBarSolicitud) {
         this.menuBarSolicitud = menuBarSolicitud;
     }
-
-   
 
     public Boolean getMenuBarRegistros() {
         return menuBarRegistros;
