@@ -27,7 +27,7 @@
             <h:panelGroup id="content" layout="block"> 
 
                 <a:messages id="msg"/>
-                <a:new label="#{msg['field.username']}"
+                <a:newlowercase label="#{msg['field.username']}"
                        value="#{usuarioController.usuario.username}"
                        isnew="#{usuarioController.isNew()}"
                           disabled="#{usuarioController.writable}"
