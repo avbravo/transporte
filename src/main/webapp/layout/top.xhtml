@@ -25,15 +25,21 @@
                 <b:dropMenu value="#{msg['menubar.solicitud']}" rendered="#{applicationMenu.menuBarSolicitud}">
 
 
-                    <b:navLink value="#{msg['menu.solicituddocente']}" rendered="#{applicationMenu.solicitudDocente.menu}" outcome="/pages/solicituddocente/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="/pages/solicituddocenteporadministrador/list" iconAwesome= "fa-calendar-o" />
+                    <b:dropMenu value="#{msg['menu.aprobar']}" rendered="#{applicationMenu.solicitudManual.menu}">
+                        <b:navLink value="#{msg['menu.aprobarsolicituddocente']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="/pages/solicituddocenteporadministrador/list" iconAwesome= "fa-calendar-o" />
+                        <b:navLink value="#{msg['menu.administrativo']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="/pages/estatus/list" iconAwesome= "fa-calendar-o" />
+                    </b:dropMenu>
+                    <b:dropMenu value="#{msg['menu.solicitudmanual']}" rendered="#{applicationMenu.solicitudManual.menu}">
+                        <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="/pages/solicituddocenteporadministrador/list" iconAwesome= "fa-calendar-o" />
+                        <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="/pages/estatus/list" iconAwesome= "fa-calendar-o" />
+                    </b:dropMenu>
 
-
-                    <b:navLink />
+                    <b:navLink value="#{msg['menu.solicituddocente']}" rendered="#{applicationMenu.solicitudDocente.menu}" outcome="/pages/solicituddocente/list" iconAwesome= "fa-calendar-o" />                   
                     <b:navLink value="#{msg['menu.solicitudadministrativo']}" rendered="#{applicationMenu.solicitudAdministrativo.menu}" outcome="/pages/estatus/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="/pages/estatus/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink />
+
+
                     <b:navLink value="#{msg['menu.viajes']}" rendered="#{applicationMenu.viajes.menu}" outcome="/pages/estatus/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.calendario']}" rendered="#{applicationMenu.viajes.menu}" outcome="/pages/estatus/list" iconAwesome= "fa-calendar-o" />
 
 
                 </b:dropMenu>

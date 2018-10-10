@@ -51,6 +51,7 @@ public class RolAdministrador implements Serializable {
         applicationMenu.getSemestre().initialize(Boolean.TRUE);
 
         applicationMenu.getSolicitud().initialize(Boolean.TRUE);
+        applicationMenu.getSolicitudManual().initialize(Boolean.TRUE);
         applicationMenu.getSolicitudDocente().initialize(Boolean.FALSE);
         applicationMenu.getSolicitudDocentePorAdministrador().initialize(Boolean.TRUE);
         applicationMenu.getSolicitudAdministrativo().initialize(Boolean.FALSE);

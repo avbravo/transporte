@@ -218,31 +218,9 @@
                         <b:inputTextarea rows="2" value="#{solicitudDocenteController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
 
 
-                        <p:outputLabel  value="#{msg['field.tiposolicitud']}" />
+                    
 
 
-                        <e:autocompletetiposolicitud listener="#{solicitudDocenteController.handleSelect}"
-                                                     value="#{solicitudDocenteController.solicitud.tiposolicitud}"
-                                                     itemLabel=" #{p.idtiposolicitud}"
-                                                     dropdown="true"
-                                                     required="true"
-                                                     minQueryLength="0"
-                                                     field="idtiposolicitud"
-                                                     disabled="true"/>
-
-
-
-
-                        <p:outputLabel value="#{msg['field.idestatus']}"/>
-                        <e:autocompleteestatus listener="#{solicitudDocenteController.handleSelect}"
-                                               value="#{solicitudDocenteController.solicitud.estatus}"
-                                               itemLabel=" #{p.idestatus}" 
-                                               dropdown="true"
-                                               required="true"
-                                               minQueryLength="0"
-                                               field="idestatus"
-                                               disabled="true"
-                                               />
 
 
 

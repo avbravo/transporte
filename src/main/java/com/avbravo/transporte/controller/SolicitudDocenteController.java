@@ -8,7 +8,6 @@ package com.avbravo.transporte.controller;
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.avbravoutils.JsfUtil;
 import com.avbravo.avbravoutils.printer.Printer;
-import com.avbravo.avbravoutils.validator.EmailValidator;
 import com.avbravo.commonejb.entity.Carrera;
 import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.CarreraRepository;
@@ -32,6 +31,7 @@ import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
+import com.mongodb.client.model.Filters;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -54,6 +54,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -410,6 +411,11 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             Date idsecond = solicitud.getFecha();
             Integer id = solicitud.getIdsolicitud();
+
+            List<Solicitud> list = solicitudRepository.findBy(new Document("fecha", solicitud.getFecha()));
+            if (!list.isEmpty()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yasolicitoviajeenestafecha"));
+            }
             solicitud = new Solicitud();
             solicitudSelected = new Solicitud();
             solicitud.setIdsolicitud(id);
@@ -423,25 +429,24 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud.setFechahoraregreso(solicitud.getFecha());
             unidadList = new ArrayList<>();
             unidadList.add(loginController.getUsuario().getUnidad());
-            
-            
+
             Integer mes = JsfUtil.getMesDeUnaFecha(solicitud.getFecha());
-            
-            String idsemestre="V";
-            if(mes <=3){
+
+            String idsemestre = "V";
+            if (mes <= 3) {
                 //verano
-              idsemestre="V";
-               
-            }else{
-                if(mes <= 7){
+                idsemestre = "V";
+
+            } else {
+                if (mes <= 7) {
                     //primer
-                    idsemestre="I";
-                }else{
+                    idsemestre = "I";
+                } else {
                     //segundo
-                    idsemestre="II";
+                    idsemestre = "II";
                 }
             }
-             solicitud.setSemestre(semestreServices.findById(idsemestre));
+            solicitud.setSemestre(semestreServices.findById(idsemestre));
 
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
 
@@ -480,6 +485,20 @@ public class SolicitudDocenteController implements Serializable, IController {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
                 return "";
             }
+            //Verificar si tiene un viaje en esas fechas
+
+            Bson filter = Filters.and(Filters.eq("usuario.username", solicitud.getUsuario().getUsername()), Filters.gte("fechahorapartida", solicitud.getFechahorapartida()), Filters.lte("fechahoraregreso", solicitud.getFechahoraregreso()));
+            List<Solicitud> list = solicitudRepository.filters(filter, new Document("idpermiso", -1));
+            if (!list.isEmpty()) {
+                for (Solicitud s : list) {
+                    if (JsfUtil.dateBetween(solicitud.getFechahorapartida(), s.getFechahorapartida(), s.getFechahoraregreso())) {
+
+                        JsfUtil.warningDialog("esta entre las fechas", "# " + solicitud.getIdsolicitud().toString());
+
+                    }
+                }
+            }
+
             //Lo datos del usuario
             solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
@@ -702,7 +721,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 case "_init":
                     doc = new Document("usuario.username", loginController.getUsuario().getUsername());
 //                    solicitudList = solicitudRepository.findPagination(page, rowPage);
-                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage);
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage,new Document("idsolicitud",-1));
 
                     break;
                 case "_autocomplete":
@@ -717,7 +736,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 default:
                     doc = new Document("usuario.username", loginController.getUsuario().getUsername());
 //                    solicitudList = solicitudRepository.findPagination(page, rowPage);
-                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage);
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage,new Document("idsolicitud",-1));
 
 //                    solicitudList = solicitudRepository.findPagination(page, rowPage);
                     break;
@@ -1090,12 +1109,12 @@ public class SolicitudDocenteController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="onDateSelect(SelectEvent event)">
     public String onDateSelect(SelectEvent event) {
         try {
-  if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
                 return "";
             }
- 
+
         } catch (Exception ex) {
             JsfUtil.errorMessage("onDateSelect() " + ex.getLocalizedMessage());
         }
