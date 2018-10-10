@@ -13,6 +13,7 @@ import com.avbravo.commonejb.entity.Carrera;
 import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.CarreraRepository;
 import com.avbravo.commonejb.repository.FacultadRepository;
+import com.avbravo.commonejb.services.SemestreServices;
 import com.avbravo.ejbjmoordb.interfaces.IController;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
@@ -127,6 +128,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     SolicitudServices solicitudServices;
     @Inject
     EstatusServices estatusServices;
+    @Inject
+    SemestreServices semestreServices;
 
     @Inject
     TiposolicitudServices tiposolicitudServices;
@@ -420,6 +423,25 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud.setFechahoraregreso(solicitud.getFecha());
             unidadList = new ArrayList<>();
             unidadList.add(loginController.getUsuario().getUnidad());
+            
+            
+            Integer mes = JsfUtil.getMesDeUnaFecha(solicitud.getFecha());
+            
+            String idsemestre="V";
+            if(mes <=3){
+                //verano
+              idsemestre="V";
+               
+            }else{
+                if(mes <= 7){
+                    //primer
+                    idsemestre="I";
+                }else{
+                    //segundo
+                    idsemestre="II";
+                }
+            }
+             solicitud.setSemestre(semestreServices.findById(idsemestre));
 
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
 
