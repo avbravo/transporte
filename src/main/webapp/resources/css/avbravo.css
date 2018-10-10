@@ -104,3 +104,12 @@ Dialogo
     background: white !important;
 }
 
+
+.ui-state-disabled {
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)" ; 
+	filter: Alpha(Opacity=100) !important;	
+	opacity: 100 !important;
+	box-shadow:none !important;
+	color: #000000 !important;
+	font-weight: bolder !important; 
+}

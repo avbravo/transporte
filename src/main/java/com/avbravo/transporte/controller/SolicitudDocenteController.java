@@ -31,7 +31,7 @@ import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
-import com.mongodb.client.model.Filters;
+import com.avbravo.transporteejb.services.TipovehiculoServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -54,7 +54,6 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -134,6 +133,8 @@ public class SolicitudDocenteController implements Serializable, IController {
 
     @Inject
     TiposolicitudServices tiposolicitudServices;
+    @Inject
+    TipovehiculoServices tipovehiculoServices;
     @Inject
     ResourcesFiles rf;
     @Inject
@@ -447,6 +448,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 }
             }
             solicitud.setSemestre(semestreServices.findById(idsemestre));
+            solicitud.setTipovehiculo(tipovehiculoServices.findById("BUS"));
 
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
 
@@ -487,17 +489,13 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
             //Verificar si tiene un viaje en esas fechas
 
-            Bson filter = Filters.and(Filters.eq("usuario.username", solicitud.getUsuario().getUsername()), Filters.gte("fechahorapartida", solicitud.getFechahorapartida()), Filters.lte("fechahoraregreso", solicitud.getFechahoraregreso()));
-            List<Solicitud> list = solicitudRepository.filters(filter, new Document("idpermiso", -1));
-            if (!list.isEmpty()) {
-                for (Solicitud s : list) {
-                    if (JsfUtil.dateBetween(solicitud.getFechahorapartida(), s.getFechahorapartida(), s.getFechahoraregreso())) {
 
-                        JsfUtil.warningDialog("esta entre las fechas", "# " + solicitud.getIdsolicitud().toString());
+Optional<Solicitud> optionalRango = solicitudServices.coincidenciaEnRango(solicitud);
+if(optionalRango.isPresent()){
+       JsfUtil.warningDialog(rf.getAppMessage("warning.view"),rf.getMessage("warning.solicitudnumero")+ " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
+                        return ""; 
+}
 
-                    }
-                }
-            }
 
             //Lo datos del usuario
             solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
@@ -721,7 +719,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 case "_init":
                     doc = new Document("usuario.username", loginController.getUsuario().getUsername());
 //                    solicitudList = solicitudRepository.findPagination(page, rowPage);
-                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage,new Document("idsolicitud",-1));
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
                 case "_autocomplete":
@@ -736,7 +734,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 default:
                     doc = new Document("usuario.username", loginController.getUsuario().getUsername());
 //                    solicitudList = solicitudRepository.findPagination(page, rowPage);
-                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage,new Document("idsolicitud",-1));
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
 //                    solicitudList = solicitudRepository.findPagination(page, rowPage);
                     break;

@@ -66,15 +66,21 @@
 
                         <a:labelDate value="#{item.fecha}"/>
                     </b:dataTableColumn> 
+                  
+                    
                     <b:dataTableColumn label="#{msg['field.fechahorapartida']}" >
-
-                        <a:labelDate pattern="dd/MM/YYYY hh:mm:ss" value="#{item.fechahorapartida}"/>
+                        <p:calendar  
+                            disabled="true"
+                                    
+                                    pattern="dd/MM/yyyy HH:mm:ss" value="#{item.fechahorapartida}"  />
+                      
                     </b:dataTableColumn> 
                     <b:dataTableColumn label="#{msg['field.fechahoraregreso']}" >
-
-                        <a:labelDate pattern="dd/MM/YYYY hh:mm:ss" value="#{item.fechahoraregreso}"/>
+                        <p:calendar  disabled="true" pattern="dd/MM/yyyy HH:mm:ss" value="#{item.fechahoraregreso}"  />
+                      
                     </b:dataTableColumn> 
 
+                    
                     <b:dataTableColumn value="#{item.lugarllegada}" label="#{msg['field.lugarllegada']}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
                     <b:dataTableColumn value="#{item.mision}" label="#{msg['field.mision']}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
                     <b:dataTableColumn value="#{item.estatus.idestatus}" label="#{msg['field.estatus']}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
