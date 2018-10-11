@@ -273,7 +273,7 @@ public class LoginController implements Serializable, SecurityInterface {
                 return "/faces/pages/solicituddocente/list.xhtml?faces-redirect=true";
             } else {
                 if (rol.getIdrol().equals("ADMINISTRATIVO")) {
-                    return "/faces/index.xhtml?faces-redirect=true";
+                 return "/faces/pages/solicitudadministrativo/list.xhtml?faces-redirect=true";
                 } else {
                     return "/faces/index.xhtml?faces-redirect=true";
                 }

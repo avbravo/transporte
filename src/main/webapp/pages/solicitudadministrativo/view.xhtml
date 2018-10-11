@@ -21,42 +21,67 @@
         </style>
         <h1>#{msg['titleview.solicitud']}</h1>
         <hr/>
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitud.query}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudAdministrativo.query}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <a:messages id="msg"/>
                 <b:panel title="#{app['title.data']}">
-                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{solicitudController.writable}"> 
+                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{solicitudAdministrativoController.writable}"> 
                         <p:outputLabel  value="#{msg['field.fecha']}" />
-                        <a:labelDate  value="#{solicitudController.solicitud.fecha}" id="fecha"   />
+                        <a:labelDate  value="#{solicitudAdministrativoController.solicitud.fecha}" id="fecha"   />
                         <p:outputLabel  value="#{msg['field.idsolicitud']}" />
-                        <p:outputLabel  value="#{solicitudController.solicitud.idsolicitud}" id="idsolicitud"   />
+                        <p:outputLabel  value="#{solicitudAdministrativoController.solicitud.idsolicitud}" id="idsolicitud"   />
 
-                        <p:outputLabel  value="#{msg['field.periodoacademico']}" />
-                        <a:inputText value="#{solicitudController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
+                        <p:outputLabel  value="#{msg['field.solicitadopor']}" />
+                         <e:autocompleteusuario listener="#{solicitudAdministrativoController.handleSelect}"
+                                             value="#{solicitudAdministrativoController.solicita}"
+                                                itemLabel=" #{p.nombre}"
+                                                field="nombre"
+                                                dropdown="true"
+                                                minQueryLength="0"
+                                                update=":form:celular :form:email"
+                                                disabled="true"
+                                                />
+                        
+                        
+                       <p:outputLabel value="#{msg['field.responsable']}"/>
+                      <e:autocompleteusuario listener="#{solicitudAdministrativoController.handleSelect}"
+                                             value="#{solicitudAdministrativoController.responsable}"
+                                                itemLabel=" #{p.nombre}"
+                                                field="nombre"
+                                                dropdown="true"
+                                                minQueryLength="0"
+                                                update=":form:panel"
+                                                />
+                        
+                        
+                         <p:outputLabel  value="#{msg['field.telefono']}" />
+                       <a:inputText span="4"  value="#{solicitudAdministrativoController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
 
+                        <p:outputLabel  value="#{msg['field.email']}" />
+                        <a:email  value="#{solicitudAdministrativoController.responsable.email}" id="email"  label="#{msg['field.email']}" />
 
-
-
-                        <p:outputLabel value="#{msg['field.idunidad']}"/>
+                        
+                       <p:outputLabel value="#{msg['field.idunidad']}"/>
                         <p:autoComplete dropdown="false"
                                         multiple="true"
                                         scrollHeight="250"
                                         size="15"
                                         emptyMessage="#{app['info.nohayregistros']}"
-                                        value="#{solicitudController.unidadList}"
-                                        completeMethod="#{solicitudController.completeFiltrado}"
+                                        value="#{solicitudAdministrativoController.unidadList}"
+                                        completeMethod="#{solicitudAdministrativoController.completeFiltradoUnidad}"
                                         var="p"
                                         required="true"
                                         itemLabel="#{p.idunidad}"
+
                                         itemValue="#{p}" forceSelection="true">
                             <f:converter binding="#{unidadConverter}"/>
                             <f:attribute name="field" value="idunidad"/>
                             <f:attribute name="fielddropdown" value="false"/>
                             <f:attribute name="fieldquerylenth" value="1"/>
-                            <p:ajax event="itemSelect" listener="#{solictudController.handleSelect}"
+                            <p:ajax event="itemSelect" listener="#{solicitudAdministrativoController.handleSelect}"
                                     />
                             <f:facet name="itemtip">
                                 <h:panelGrid columns="1" cellpadding="5">
@@ -66,106 +91,88 @@
                                 </h:panelGrid>
                             </f:facet>
                         </p:autoComplete>
-  <p:outputLabel  value="#{msg['field.facultad']}" />
-                        <a:inputText value="#{solicitudController.solicitud.facultad}" id="facultad"  label="#{msg['field.facultad']}" />
-                        
-                        
-                        <p:outputLabel  value="#{msg['field.carrera']}" />
-                        <a:inputText value="#{solicitudController.solicitud.carrera}" id="carrera"  label="#{msg['field.carrera']}" />
 
-                        <p:outputLabel  value="#{msg['field.numerogrupo']}" />
-                        <a:inputText value="#{solicitudController.solicitud.numerogrupo}" id="numerogrupo"  label="#{msg['field.numerogrupo']}" />
-
-                        <p:outputLabel  value="#{msg['field.responsable']}" />
-                        <a:inputText value="#{solicitudController.solicitud.responsable}" id="responsable"  label="#{msg['field.responsable']}" />
-
-                        <p:outputLabel  value="#{msg['field.telefono']}" />
-                        <a:inputText value="#{solicitudController.solicitud.telefono}" id="telefono"  label="#{msg['field.telefono']}" />
-
-                        <p:outputLabel  value="#{msg['field.email']}" />
-                        <a:email value="#{solicitudController.solicitud.email}" id="email"  label="#{msg['field.email']}" />
-
+                          
                         <p:spacer/>
                         <p:spacer/>
-                        <p:outputLabel  value="#{msg['field.mision']}" />
-                        <b:inputTextarea value="#{solicitudController.solicitud.mision}" id="mision"  label="#{msg['field.mision']}" />
 
                         <p:outputLabel  value="#{msg['field.objetivo']}" />
-                        <b:inputTextarea value="#{solicitudController.solicitud.objetivo}" id="objetivo"  label="#{msg['field.objetivo']}" />
+                        <b:inputTextarea rows="2"  value="#{solicitudAdministrativoController.solicitud.objetivo}" id="objetivo"  label="#{msg['field.objetivo']}" />
 
 
-                        <p:outputLabel  value="#{msg['field.pasajeros']}" />
-                        <a:inputText value="#{solicitudController.solicitud.pasajeros}" id="pasajeros"  label="#{msg['field.pasajeros']}" />
-
-
+                      
                         <p:outputLabel  value="#{msg['field.lugares']}" />
-                        <b:inputTextarea value="#{solicitudController.solicitud.lugares}" id="lugares"  label="#{msg['field.lugares']}" />
+                        <b:inputTextarea rows="2" value="#{solicitudAdministrativoController.solicitud.lugares}" id="lugares"  label="#{msg['field.lugares']}" />
+
+
+                          <p:outputLabel  value="#{msg['field.pasajeros']}" />
+                        <a:inputText span="4" value="#{solicitudAdministrativoController.solicitud.pasajeros}" id="pasajeros"  label="#{msg['field.pasajeros']}" />
 
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
-                        <a:calendar pattern="dd/MM/yyyy HH:mm:ss" value="#{solicitudController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" />
+                        <a:calendar 
+                                    pattern="dd/MM/yyyy HH:mm a" value="#{solicitudAdministrativoController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" />
+
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <a:inputText value="#{solicitudController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
+                        <a:inputText value="#{solicitudAdministrativoController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
+
+
 
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
-                        <a:calendar pattern="dd/MM/yyyy HH:mm:ss" value="#{solicitudController.solicitud.fechahoraregreso}" id="fechahoraregreso"  label="#{msg['field.fechahoraregreso']}" />
+                        <a:calendar pattern="dd/MM/yyyy HH:mm a" value="#{solicitudAdministrativoController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                                   
+
+                                    label="#{msg['field.fechahoraregreso']}" />
+
+                        <p:outputLabel  value="#{msg['field.lugaregreso']}" />
+                        <a:inputText value="#{solicitudAdministrativoController.solicitud.lugarregreso}" id="lugarregreso"  label="#{msg['field.lugaregreso']}" />
+
 
                         <p:outputLabel  value="#{msg['field.lugarllegada']}" />
-                        <a:inputText value="#{solicitudController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
+                        <a:inputText value="#{solicitudAdministrativoController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
+
 
 
                         <p:outputLabel  value="#{msg['field.recursossolicitados']}" />
-                        <b:inputTextarea value="#{solicitudController.solicitud.recursossolicitados}" id="recursossolicitados"  label="#{msg['field.recursossolicitados']}" />
+                        <b:inputTextarea rows="2" value="#{solicitudAdministrativoController.solicitud.recursossolicitados}" id="recursossolicitados"  label="#{msg['field.recursossolicitados']}" />
 
                         <p:outputLabel  value="#{msg['field.observaciones']}" />
-                        <b:inputTextarea value="#{solicitudController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
+                        <b:inputTextarea rows="2" value="#{solicitudAdministrativoController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
 
 
-                        <p:outputLabel  value="#{msg['field.tiposolicitud']}" />
-                  <e:autocompletetiposolicitud listener="#{solicitudController.handleSelect}"
-                                                  value="#{solicitudController.solicitud.tiposolicitud}"
-                                                  itemLabel=" #{p.idtiposolicitud}"
-                                                   dropdown="true"
-                                               required="true"
-                                               minQueryLength="0"
-                                                  field="idestatus"
-                                                  disabled="true"/>
-                        
-                        
-                          <p:outputLabel value="#{msg['field.idestatus']}"/>
-                    <e:autocompleteestatus listener="#{solicitudController.handleSelect}"
-                                                  value="#{solicitudController.solicitud.estatus}"
-                                                  itemLabel=" #{p.idestatus}" 
-                                                   dropdown="true"
-                                               required="true"
-                                               minQueryLength="0"
-                                                  field="idestatus"
-                                                  disabled="true"
-                                                />
-                    
-                    
-               
+
+                    <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
+                    <e:autocompletetipovehiculo listener="#{solicitudAdministrativoController.handleSelect}"
+                                                  value="#{solicitudAdministrativoController.solicitud.tipovehiculo}"
+                                                  itemLabel=" #{p.idtipovehiculo}"
+                                                  field="idtipovehiculo"
+                                                    dropdown="true"
+                                                minQueryLength="0"
+                                                  />
+
                       
-                      
+                        <p:outputLabel value="#{msg['field.idestatus']}"/>
+                         <p:outputLabel  value="#{solicitudAdministrativoController.solicitud.estatus.idestatus}" />
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno colMd="4" value="#{solicitudController.solicitud.activo}" id="activo"  required="true"/>
-
+                        <p:outputLabel  value="#{solicitudAdministrativoController.solicitud.activo}" />
+                        
+ 
                     </b:panelGrid>
                     <a:view 
-                        renderedDelete="#{applicationMenu.solicitud.delete and solicitudController.writable }"
-                        renderedEdit="#{applicationMenu.solicitud.edit and solicitudController.writable}" 
-                        renderedList="#{applicationMenu.solicitud.list and solicitudController.writable}"
-                        edit="#{solicitudController.edit()}"
-                        delete="#{solicitudController.delete(solicitudController.solicitud,true)}"
-                        print="#{solicitudController.print()}"
-                        url="#{solicitudController.prepare('golist',solicitudController.solicitud)}"
+                        renderedDelete="false"
+                        renderedEdit="#{solicitudAdministrativoController.verificarEditable(solicitudAdministrativoController.solicitud) and applicationMenu.solicitud.edit and solicitudAdministrativoController.writable}" 
+                        renderedList="false"
+                        edit="#{solicitudAdministrativoController.edit()}"
+                        delete="#{solicitudAdministrativoController.delete(solicitudAdministrativoController.solicitud,true)}"
+                        print="#{solicitudAdministrativoController.print()}"
+                        url="#{solicitudAdministrativoController.prepare('golist',solicitudAdministrativoController.solicitud)}"
                         />
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitud.query}" />
+        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudAdministrativo.query}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

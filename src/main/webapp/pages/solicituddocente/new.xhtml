@@ -44,6 +44,36 @@
 
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{solicitudDocenteController.writable}"> 
 
+                        
+                                     <p:outputLabel  value="#{msg['field.solicitadopor']}" />
+                        <e:autocompleteusuario listener="#{solicitudDocenteController.handleSelect}"
+                                             value="#{solicitudDocenteController.solicita}"
+                                                itemLabel=" #{p.nombre}"
+                                                field="nombre"
+                                                dropdown="true"
+                                                minQueryLength="0"
+                                                disabled="true"
+                                                />
+                        
+                       
+                      <p:outputLabel value="#{msg['field.responsable']}"/>
+                      <e:autocompleteusuario listener="#{solicitudDocenteController.handleSelect}"
+                                             value="#{solicitudDocenteController.responsable}"
+                                                itemLabel=" #{p.nombre}"
+                                                field="nombre"
+                                                dropdown="true"
+                                                minQueryLength="0"
+                                                update=":form:panel"
+                                                />
+                        
+                        
+                         <p:outputLabel  value="#{msg['field.telefono']}" />
+                       <a:inputText span="4"  value="#{solicitudDocenteController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
+
+                        <p:outputLabel  value="#{msg['field.email']}" />
+                        <a:email  value="#{solicitudDocenteController.responsable.email}" id="email"  label="#{msg['field.email']}" />
+
+                        
                         <p:outputLabel  value="#{msg['field.semestre']}" />
                         <e:autocompletesemestre  listener="#{solicitudDocenteController.handleSelect}"
                                                  value="#{solicitudDocenteController.solicitud.semestre}"
@@ -133,18 +163,13 @@
                         </p:autoComplete>
 
 
+                     
+                     
                         <p:outputLabel  value="#{msg['field.numerogrupo']}" />
                         <a:inputText span="4" value="#{solicitudDocenteController.solicitud.numerogrupo}" id="numerogrupo"  label="#{msg['field.numerogrupo']}" />
 
-                        <p:outputLabel  value="#{msg['field.responsable']}" />
-                        <p:outputLabel value="#{solicitudDocenteController.solicitud.usuario.nombre}" id="responsable"  />
-
-                        <p:outputLabel  value="#{msg['field.telefono']}" />
-                        <a:inputText span="4" value="#{solicitudDocenteController.solicitud.telefono}" id="telefono"  label="#{msg['field.telefono']}" />
-
-                        <p:outputLabel  value="#{msg['field.email']}" />
-                        <a:email value="#{solicitudDocenteController.solicitud.email}" id="email"  label="#{msg['field.email']}" />
-
+                         
+              
                         <p:spacer/>
                         <p:spacer/>
 
@@ -162,7 +187,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
-                        <a:calendar mode="inline"
+                        <a:calendar 
                                     pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" />
 
 
@@ -173,7 +198,7 @@
 
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
                         <a:calendar pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
-                                    mode="inline"
+                                    
 
                                     label="#{msg['field.fechahoraregreso']}" />
 

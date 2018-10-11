@@ -21,12 +21,12 @@
         </style>
         <h1>#{msg['titlelist.solicitud']}</h1>
         <hr/>
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitud.list}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudAdministrativo.list}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
-          <b:growl  id="msgs"/>
-         
+            <b:growl  id="msgs"/>
+
             <b:panel title="#{app['label.search']}" id="content"> 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
@@ -34,27 +34,27 @@
 
 
                     <p:outputLabel value="#{msg['field.idsolicitud']}"/>
-                    
-                      
-                      
+
+
+
 
                 </b:panelGrid>
             </b:panel>
             <b:panel id="dataTable">
                 <a:paginator 
-                    rowPage="#{solicitudController.rowPage}"
-                    clear="#{solicitudController.clear()}"
-                    first="#{solicitudController.first()}"
-                    back="#{solicitudController.back()}"
-                    next="#{solicitudController.next()}"
-                    last="#{solicitudController.last()}"
-                    page="#{solicitudController.page}"
-                    pages="#{solicitudController.pages}"
-                 skip="ajax:solicitudController.skip(solicitudController.page)" 
-                    new="#{solicitudController.prepare('gonew',solicitudController.solicitud)}"
-                    printAll="#{solicitudController.printAll()}"
+                    rowPage="#{solicitudAdministrativoController.rowPage}"
+                    clear="#{solicitudAdministrativoController.clear()}"
+                    first="#{solicitudAdministrativoController.first()}"
+                    back="#{solicitudAdministrativoController.back()}"
+                    next="#{solicitudAdministrativoController.next()}"
+                    last="#{solicitudAdministrativoController.last()}"
+                    page="#{solicitudAdministrativoController.page}"
+                    pages="#{solicitudAdministrativoController.pages}"
+                    skip="ajax:solicitudAdministrativoController.skip(solicitudAdministrativoController.page)" 
+                    new="#{solicitudAdministrativoController.prepare('gonew',solicitudAdministrativoController.solicitud)}"
+                    printAll="#{solicitudAdministrativoController.printAll()}"
                     />
-                <b:dataTable value="#{solicitudController.solicitudDataModel}"
+                <b:dataTable value="#{solicitudAdministrativoController.solicitudDataModel}"
                              var="item"
                              id="dataTable2"
                              paginated="false"
@@ -63,20 +63,34 @@
                     <b:dataTableColumn value="#{item.idsolicitud}" label="#{msg['field.idsolicitud']}"/>
 
                     <b:dataTableColumn label="#{msg['field.fecha']}" >
-  
+
                         <a:labelDate value="#{item.fecha}"/>
                     </b:dataTableColumn> 
-                    
-                    <b:dataTableColumn value="#{item.mision}" label="#{msg['field.mision']}" />
-                    <b:dataTableColumn value="#{item.estatus.idestatus}" label="#{msg['field.estatus']}" />
-                    <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
                   
+                    
+                    <b:dataTableColumn label="#{msg['field.fechahorapartida']}" >
+                        <p:calendar  
+                            disabled="true"
+                                    
+                                    pattern="dd/MM/yyyy HH:mm:ss a" value="#{item.fechahorapartida}"  />
+                      
+                    </b:dataTableColumn> 
+                    <b:dataTableColumn label="#{msg['field.fechahoraregreso']}" >
+                        <p:calendar  disabled="true" pattern="dd/MM/yyyy HH:mm:ss a" value="#{item.fechahoraregreso}"  />
+                      
+                    </b:dataTableColumn> 
+
+                    
+                    <b:dataTableColumn value="#{item.lugarllegada}" label="#{msg['field.lugarllegada']}" style="color: #{solicitudAdministrativoController.columnColor(item.estatus.idestatus)}" />
+                    <b:dataTableColumn value="#{item.mision}" label="#{msg['field.mision']}" style="color: #{solicitudAdministrativoController.columnColor(item.estatus.idestatus)}" />
+                    <b:dataTableColumn value="#{item.estatus.idestatus}" label="#{msg['field.estatus']}" style="color: #{solicitudAdministrativoController.columnColor(item.estatus.idestatus)}" />
+                    
+
                     <b:dataTableColumn label="">
 
-                        <a:column
+                        <a:column_view
 
-                            edit="#{solicitudController.prepare('view',item)}"
-                            delete="#{solicitudController.delete(item,false)}"
+                            edit="#{solicitudAdministrativoController.prepare('view',item)}"
                             rendered="#{applicationMenu.solicitud.delete}"
                             />
                     </b:dataTableColumn>
@@ -86,6 +100,6 @@
 
         </b:form>
 
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitud.list}" />
+        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudAdministrativo.list}" />
     </ui:define>
 </ui:composition>

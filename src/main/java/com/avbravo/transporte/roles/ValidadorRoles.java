@@ -29,6 +29,8 @@ public class ValidadorRoles implements Serializable {
     @Inject
     RolAdministrador rolAdministrador;
     @Inject
+    RolAdministrativo rolAdministrativo;
+    @Inject
     RolDocente rolDocente;
 
     @Inject
@@ -45,6 +47,9 @@ public class ValidadorRoles implements Serializable {
                     break;
                 case "docente":
                     rolDocente.enabled();
+                    break;
+                case "administrativo":
+                    rolAdministrativo.enabled();
                     break;
 
                 case "secretaria":

@@ -88,6 +88,9 @@ public class SolicitudDocenteController implements Serializable, IController {
     //Entity
     Solicitud solicitud;
     Solicitud solicitudSelected;
+    Usuario solicita = new Usuario();
+    Usuario responsable = new Usuario();
+    Usuario responsableOld = new Usuario();
 
     //List
     List<Solicitud> solicitudList = new ArrayList<>();
@@ -95,6 +98,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     List<Unidad> unidadList = new ArrayList<>();
     List<Facultad> facultadList = new ArrayList<>();
     List<Carrera> carreraList = new ArrayList<>();
+    List<Usuario> usuarioList = new ArrayList<>();
 
     //Repository
     @Inject
@@ -153,6 +157,30 @@ public class SolicitudDocenteController implements Serializable, IController {
 
     public void setPages(List<Integer> pages) {
         this.pages = pages;
+    }
+
+    public List<Usuario> getUsuarioList() {
+        return usuarioList;
+    }
+
+    public void setUsuarioList(List<Usuario> usuarioList) {
+        this.usuarioList = usuarioList;
+    }
+
+    public Usuario getSolicita() {
+        return solicita;
+    }
+
+    public void setSolicita(Usuario solicita) {
+        this.solicita = solicita;
+    }
+
+    public Usuario getResponsable() {
+        return responsable;
+    }
+
+    public void setResponsable(Usuario responsable) {
+        this.responsable = responsable;
     }
 
     public List<Facultad> getFacultadList() {
@@ -310,7 +338,10 @@ public class SolicitudDocenteController implements Serializable, IController {
                 if (optional.isPresent()) {
                     solicitud = optional.get();
                     unidadList = solicitud.getUnidad();
-
+                    usuarioList = solicitud.getUsuario();
+                    solicita = usuarioList.get(0);
+                    responsable = usuarioList.get(1);
+                    responsableOld = responsable;
                     facultadList = solicitud.getFacultad();
                     carreraList = solicitud.getCarrera();
 
@@ -413,7 +444,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             Date idsecond = solicitud.getFecha();
             Integer id = solicitud.getIdsolicitud();
 
-            List<Solicitud> list = solicitudRepository.findBy(new Document("fecha", solicitud.getFecha()));
+            List<Solicitud> list = solicitudRepository.findBy(new Document("usuario.username", loginController.getUsuario().getUsername()).append("fecha", solicitud.getFecha()));
             if (!list.isEmpty()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yasolicitoviajeenestafecha"));
             }
@@ -423,10 +454,15 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud.setFecha(idsecond);
             solicitud.setMision("---");
             solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
-            solicitud.setUsuario(loginController.getUsuario());
-            solicitud.setResponsable(loginController.getUsuario().getNombre());
-            solicitud.setEmail(loginController.getUsuario().getEmail());
-            solicitud.setTelefono(loginController.getUsuario().getCelular());
+            solicita = loginController.getUsuario();
+            responsable = solicita;
+            responsableOld=responsable;
+
+            usuarioList = new ArrayList<>();
+            usuarioList.add(solicita);
+            usuarioList.add(responsable);
+            solicitud.setUsuario(usuarioList);
+
             solicitud.setPeriodoacademico(JsfUtil.getAnioActual().toString());
             solicitud.setFechahorapartida(solicitud.getFecha());
             solicitud.setFechahoraregreso(solicitud.getFecha());
@@ -482,7 +518,10 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud.setUnidad(unidadList);
             solicitud.setFacultad(facultadList);
             solicitud.setCarrera(carreraList);
-            solicitud.setUsuario(loginController.getUsuario());
+            usuarioList = new ArrayList<>();
+            usuarioList.add(solicita);
+            usuarioList.add(responsable);
+            solicitud.setUsuario(usuarioList);
 
             if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
 
@@ -491,13 +530,26 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
             //Verificar si tiene un viaje en esas fechas
 
+            Optional<Solicitud> optionalRango = solicitudServices.coincidenciaEnRango(solicitud);
+            if (optionalRango.isPresent()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.solicitudnumero") + " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
+                return "";
+            }
 
-Optional<Solicitud> optionalRango = solicitudServices.coincidenciaEnRango(solicitud);
-if(optionalRango.isPresent()){
-       JsfUtil.warningDialog(rf.getAppMessage("warning.view"),rf.getMessage("warning.solicitudnumero")+ " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
-                        return ""; 
-}
-
+            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
+                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horapartidaescero"));
+                return "";
+            }
+            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
+                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
+            }
+            
+            if(solicitud.getPasajeros()<0){
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
+                return ""; 
+            }
 
             //Lo datos del usuario
             solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
@@ -506,6 +558,16 @@ if(optionalRango.isPresent()){
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                         "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 //enviarEmails();
+
+  //si cambia el email o celular del responsable actualizar ese usuario
+  
+  if(!responsableOld.getEmail().equals(responsable.getEmail())|| !responsableOld.getCelular().equals(responsable.getCelular())){
+      usuarioRepository.update(responsable);
+      //actuliza el que esta en el login
+      if(responsable.getUsername().equals(loginController.getUsuario().getUsername())){
+          loginController.setUsuario(responsable);
+      }
+  }
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
             } else {
@@ -533,11 +595,39 @@ if(optionalRango.isPresent()){
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
                 return "";
             }
+            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
+                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horapartidaescero"));
+                return "";
+            }
+            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
+                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
+            }
 
+            usuarioList = new ArrayList<>();
+            usuarioList.add(solicita);
+            usuarioList.add(responsable);
+            solicitud.setUsuario(usuarioList);
+             if(solicitud.getPasajeros()<0){
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
+                return ""; 
+            }
+             
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             solicitudRepository.update(solicitud);
+            
+              //si cambia el email o celular del responsable actualizar ese usuario
+  
+  if(!responsableOld.getEmail().equals(responsable.getEmail())|| !responsableOld.getCelular().equals(responsable.getCelular())){
+      usuarioRepository.update(responsable);
+      //actuliza el que esta en el login
+      if(responsable.getUsername().equals(loginController.getUsuario().getUsername())){
+          loginController.setUsuario(responsable);
+      }
+  }
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
             JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
@@ -630,11 +720,6 @@ if(optionalRango.isPresent()){
 
     public void handleSelect(SelectEvent event) {
         try {
-//            JsfUtil.testMessage("======================handle Selected");
-//            System.out.println("Factultad");
-//            facultadList.forEach(f -> System.out.println(f.getDescripcion()));
-//            System.out.println("Carrera");
-//            carreraList.forEach(c -> System.out.println(c.getDescripcion()));
 
             solicitudList.removeAll(solicitudList);
             solicitudList.add(solicitudSelected);
@@ -643,6 +728,16 @@ if(optionalRango.isPresent()){
             loginController.put("searchsolicitud", "_autocomplete");
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="handleSelectResponsable(SelectEvent event)">
+
+    public void handleSelectResponsable(SelectEvent event) {
+        try {
+
+            responsableOld = responsable;
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelectResponsable() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -1048,7 +1143,7 @@ if(optionalRango.isPresent()){
                         message.setSubject("Solicitud de Viaje Docente");
                         String texto = "";
                         texto = " <h1> Solicitud #:" + solicitud.getIdsolicitud() + "  </h1>";
-                        texto = " <h1> Solicitadi por: " + solicitud.getResponsable() + "  </h1>";
+                        texto = " <h1> Solicitadi por: " + solicitud.getUsuario().get(0).getNombre() + "  </h1>";
                         texto += " <b>";
                         texto += "<br> Fecha de partidad " + solicitud.getFechahorapartida() + " lugar de salida: " + solicitud.getLugarpartida()
                                 + "   <FONT COLOR=\"red\">Pendiente de aprobaciòn </FONT>  ";

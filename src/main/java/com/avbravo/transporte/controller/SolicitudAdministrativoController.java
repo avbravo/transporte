@@ -8,11 +8,11 @@ package com.avbravo.transporte.controller;
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.avbravoutils.JsfUtil;
 import com.avbravo.avbravoutils.printer.Printer;
-import com.avbravo.avbravoutils.validator.EmailValidator;
 import com.avbravo.commonejb.entity.Carrera;
 import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.CarreraRepository;
 import com.avbravo.commonejb.repository.FacultadRepository;
+import com.avbravo.commonejb.services.SemestreServices;
 import com.avbravo.ejbjmoordb.interfaces.IController;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
@@ -31,6 +31,7 @@ import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
+import com.avbravo.transporteejb.services.TipovehiculoServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -64,7 +65,7 @@ import org.primefaces.event.UnselectEvent;
  */
 @Named
 @ViewScoped
-public class SolicitudDocentePorAdministradorController implements Serializable, IController {
+public class SolicitudAdministrativoController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -87,6 +88,9 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
     //Entity
     Solicitud solicitud;
     Solicitud solicitudSelected;
+    Usuario solicita = new Usuario();
+    Usuario responsable = new Usuario();
+     Usuario responsableOld = new Usuario();
 
     //List
     List<Solicitud> solicitudList = new ArrayList<>();
@@ -94,6 +98,7 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
     List<Unidad> unidadList = new ArrayList<>();
     List<Facultad> facultadList = new ArrayList<>();
     List<Carrera> carreraList = new ArrayList<>();
+    List<Usuario> usuarioList = new ArrayList<>();
 
     //Repository
     @Inject
@@ -127,9 +132,13 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
     SolicitudServices solicitudServices;
     @Inject
     EstatusServices estatusServices;
+    @Inject
+    SemestreServices semestreServices;
 
     @Inject
     TiposolicitudServices tiposolicitudServices;
+    @Inject
+    TipovehiculoServices tipovehiculoServices;
     @Inject
     ResourcesFiles rf;
     @Inject
@@ -150,6 +159,14 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
         this.pages = pages;
     }
 
+    public List<Usuario> getUsuarioList() {
+        return usuarioList;
+    }
+
+    public void setUsuarioList(List<Usuario> usuarioList) {
+        this.usuarioList = usuarioList;
+    }
+
     public List<Facultad> getFacultadList() {
         return facultadList;
     }
@@ -164,6 +181,22 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
 
     public void setCarreraList(List<Carrera> carreraList) {
         this.carreraList = carreraList;
+    }
+
+    public Usuario getSolicita() {
+        return solicita;
+    }
+
+    public void setSolicita(Usuario solicita) {
+        this.solicita = solicita;
+    }
+
+    public Usuario getResponsable() {
+        return responsable;
+    }
+
+    public void setResponsable(Usuario responsable) {
+        this.responsable = responsable;
     }
 
     public Date getOld() {
@@ -272,7 +305,7 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public SolicitudDocentePorAdministradorController() {
+    public SolicitudAdministrativoController() {
     }
 
     // </editor-fold>
@@ -308,6 +341,10 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
 
                     facultadList = solicitud.getFacultad();
                     carreraList = solicitud.getCarrera();
+                    usuarioList = solicitud.getUsuario();
+                    solicita = usuarioList.get(0);
+                    responsable= usuarioList.get(1);
+                    responsableOld = responsable;
 
                     solicitudSelected = solicitud;
                     _old = solicitud.getFecha();
@@ -363,15 +400,15 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
                     unidadList = solicitud.getUnidad();
                     loginController.put("idsolicitud", solicitud.getIdsolicitud().toString());
 
-                    url = "/pages/solicituddocente/view.xhtml";
+                    url = "/pages/solicitudadministrativo/view.xhtml";
                     break;
 
                 case "golist":
-                    url = "/pages/solicituddocente/list.xhtml";
+                    url = "/pages/solicitudadministrativo/list.xhtml";
                     break;
 
                 case "gonew":
-                    url = "/pages/solicituddocente/new.xhtml";
+                    url = "/pages/solicitudadministrativo/new.xhtml";
                     break;
 
             }
@@ -407,18 +444,51 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
 
             Date idsecond = solicitud.getFecha();
             Integer id = solicitud.getIdsolicitud();
+
+            List<Solicitud> list = solicitudRepository.findBy(new Document("usuario.username", loginController.getUsuario().getUsername()).append("fecha", solicitud.getFecha()));
+            if (!list.isEmpty()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yasolicitoviajeenestafecha"));
+            }
             solicitud = new Solicitud();
             solicitudSelected = new Solicitud();
             solicitud.setIdsolicitud(id);
             solicitud.setFecha(idsecond);
-            solicitud.setResponsable(loginController.getUsuario().getNombre());
-            solicitud.setEmail(loginController.getUsuario().getEmail());
-            solicitud.setTelefono(loginController.getUsuario().getCelular());
+            solicitud.setNumerogrupo("--");
+
+            solicitud.setMision("---");
+            solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
+            solicita = loginController.getUsuario();
+            responsable = solicita;
+responsableOld=responsable;
+            usuarioList = new ArrayList<>();
+            usuarioList.add(solicita);
+            usuarioList.add(responsable);
+            solicitud.setUsuario(usuarioList);
+
             solicitud.setPeriodoacademico(JsfUtil.getAnioActual().toString());
             solicitud.setFechahorapartida(solicitud.getFecha());
             solicitud.setFechahoraregreso(solicitud.getFecha());
             unidadList = new ArrayList<>();
             unidadList.add(loginController.getUsuario().getUnidad());
+            solicitud.setUnidad(unidadList);
+            Integer mes = JsfUtil.getMesDeUnaFecha(solicitud.getFecha());
+
+            String idsemestre = "V";
+            if (mes <= 3) {
+                //verano
+                idsemestre = "V";
+
+            } else {
+                if (mes <= 7) {
+                    //primer
+                    idsemestre = "I";
+                } else {
+                    //segundo
+                    idsemestre = "II";
+                }
+            }
+            solicitud.setSemestre(semestreServices.findById(idsemestre));
+            solicitud.setTipovehiculo(tipovehiculoServices.findById("BUS"));
 
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
 
@@ -446,10 +516,42 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
+
+            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
+                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horapartidaescero"));
+                return "";
+            }
+            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
+                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
+            }
             solicitud.setActivo("si");
             solicitud.setUnidad(unidadList);
             solicitud.setFacultad(facultadList);
             solicitud.setCarrera(carreraList);
+          usuarioList = new ArrayList<>();
+            usuarioList.add(solicita);
+            usuarioList.add(responsable);
+            solicitud.setUsuario(usuarioList);
+
+            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
+                return "";
+            }
+            //Verificar si tiene un viaje en esas fechas
+
+            Optional<Solicitud> optionalRango = solicitudServices.coincidenciaEnRango(solicitud);
+            if (optionalRango.isPresent()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.solicitudnumero") + " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
+                return "";
+            }
+
+             if(solicitud.getPasajeros()<0){
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
+                return ""; 
+            }
             //Lo datos del usuario
             solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
@@ -457,6 +559,15 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                         "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 //enviarEmails();
+  //si cambia el email o celular del responsable actualizar ese usuario
+  
+  if(!responsableOld.getEmail().equals(responsable.getEmail())|| !responsableOld.getCelular().equals(responsable.getCelular())){
+      usuarioRepository.update(responsable);
+      //actuliza el que esta en el login
+      if(responsable.getUsername().equals(loginController.getUsuario().getUsername())){
+          loginController.setUsuario(responsable);
+      }
+  }
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
             } else {
@@ -479,10 +590,46 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
             solicitud.setFacultad(facultadList);
             solicitud.setCarrera(carreraList);
             //guarda el contenido actualizado
+            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
+                return "";
+            }
+            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
+                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horapartidaescero"));
+                return "";
+            }
+            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
+                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
+            }
+            
+             usuarioList = new ArrayList<>();
+            usuarioList.add(solicita);
+            usuarioList.add(responsable);
+            solicitud.setUsuario(usuarioList);
+            
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
+            
+             if(solicitud.getPasajeros()<0){
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
+                return ""; 
+            }
+             
             solicitudRepository.update(solicitud);
+            
+              //si cambia el email o celular del responsable actualizar ese usuario
+  
+  if(!responsableOld.getEmail().equals(responsable.getEmail())|| !responsableOld.getCelular().equals(responsable.getCelular())){
+      usuarioRepository.update(responsable);
+      //actuliza el que esta en el login
+      if(responsable.getUsername().equals(loginController.getUsuario().getUsername())){
+          loginController.setUsuario(responsable);
+      }
+  }
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
             JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
@@ -664,10 +811,9 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
             Document doc;
             switch (loginController.get("searchsolicitud")) {
                 case "_init":
-                    if (loginController.getRol().getIdrol().equals("DOCENTE")) {
-
-                    }
-                    solicitudList = solicitudRepository.findPagination(page, rowPage);
+                    doc = new Document("usuario.username", loginController.getUsuario().getUsername());
+//                    solicitudList = solicitudRepository.findPagination(page, rowPage);
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
                 case "_autocomplete":
@@ -675,13 +821,16 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
                     break;
 
                 case "idsolicitud":
-                    doc = new Document("idsolicitud", solicitud.getIdsolicitud());
+                    doc = new Document("idsolicitud", solicitud.getIdsolicitud()).append("usuario.username", loginController.getUsuario().getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
                     break;
 
                 default:
+                    doc = new Document("usuario.username", loginController.getUsuario().getUsername());
+//                    solicitudList = solicitudRepository.findPagination(page, rowPage);
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
-                    solicitudList = solicitudRepository.findPagination(page, rowPage);
+//                    solicitudList = solicitudRepository.findPagination(page, rowPage);
                     break;
             }
 
@@ -991,7 +1140,7 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
                         message.setSubject("Solicitud de Viaje Docente");
                         String texto = "";
                         texto = " <h1> Solicitud #:" + solicitud.getIdsolicitud() + "  </h1>";
-                        texto = " <h1> Solicitadi por: " + solicitud.getResponsable() + "  </h1>";
+                        texto = " <h1> Solicitadi por: " + solicitud.getUsuario().get(0).getNombre() + "  </h1>";
                         texto += " <b>";
                         texto += "<br> Fecha de partidad " + solicitud.getFechahorapartida() + " lugar de salida: " + solicitud.getLugarpartida()
                                 + "   <FONT COLOR=\"red\">Pendiente de aprobaciòn </FONT>  ";
@@ -1008,5 +1157,72 @@ public class SolicitudDocentePorAdministradorController implements Serializable,
         }
         return "";
     }
+
+    // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
+    public String columnColor(String estatus) {
+        String color = "";
+        try {
+            switch (estatus) {
+                case "RECHAZADO":
+                    color = "red";
+                    break;
+                case "APROBADO":
+                    color = "green";
+                    break;
+                default:
+                    color = "black";
+            }
+        } catch (Exception e) {
+            JsfUtil.errorMessage("color() " + e.getLocalizedMessage());
+        }
+        return color;
+    } // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="verificarEditable(Solicitud item)">
+    /**
+     * verifica si es editable
+     *
+     * @param item
+     * @return
+     */
+    public Boolean verificarEditable(Solicitud item) {
+        Boolean editable = false;
+        try {
+            if (item.getEstatus().getIdestatus().equals("SOLICITADO")) {
+                editable = true;
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("verificarEditable() " + e.getLocalizedMessage());
+        }
+        return editable;
+    } // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="onDateSelect(SelectEvent event)">
+    public String onDateSelect(SelectEvent event) {
+        try {
+            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
+                return "";
+            }
+
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("onDateSelect() " + ex.getLocalizedMessage());
+        }
+        return "";
+        // </editor-fold>
+    }
+    
+    // <editor-fold defaultstate="collapsed" desc="handleSelectResponsable(SelectEvent event)">
+
+    public void handleSelectResponsable(SelectEvent event) {
+        try {
+
+      responsableOld = responsable;
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelectResponsable() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
 
 }
