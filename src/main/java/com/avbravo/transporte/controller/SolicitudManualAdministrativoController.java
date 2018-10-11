@@ -65,7 +65,7 @@ import org.primefaces.event.UnselectEvent;
  */
 @Named
 @ViewScoped
-public class SolicitudAdministrativoController implements Serializable, IController {
+public class SolicitudManualAdministrativoController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -305,7 +305,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public SolicitudAdministrativoController() {
+    public SolicitudManualAdministrativoController() {
     }
 
     // </editor-fold>
@@ -400,15 +400,15 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     unidadList = solicitud.getUnidad();
                     loginController.put("idsolicitud", solicitud.getIdsolicitud().toString());
 
-                    url = "/pages/solicitudadministrativo/view.xhtml";
+                    url = "/pages/solicitudmanualadministrativo/view.xhtml";
                     break;
 
                 case "golist":
-                    url = "/pages/solicitudadministrativo/list.xhtml";
+                    url = "/pages/solicitudmanualadministrativo/list.xhtml";
                     break;
 
                 case "gonew":
-                    url = "/pages/solicitudadministrativo/new.xhtml";
+                    url = "/pages/solicitudmanualadministrativo/new.xhtml";
                     break;
 
             }
@@ -563,7 +563,8 @@ responsableOld=responsable;
   
   if(!responsableOld.getEmail().equals(responsable.getEmail())|| !responsableOld.getCelular().equals(responsable.getCelular())){
       usuarioRepository.update(responsable);
-        if(responsable.getUsername().equals(loginController.getUsuario().getUsername())){
+      //actuliza el que esta en el login
+      if(responsable.getUsername().equals(loginController.getUsuario().getUsername())){
           loginController.setUsuario(responsable);
       }
   }
@@ -624,7 +625,8 @@ responsableOld=responsable;
   
   if(!responsableOld.getEmail().equals(responsable.getEmail())|| !responsableOld.getCelular().equals(responsable.getCelular())){
       usuarioRepository.update(responsable);
-        if(responsable.getUsername().equals(loginController.getUsuario().getUsername())){
+      //actuliza el que esta en el login
+      if(responsable.getUsername().equals(loginController.getUsuario().getUsername())){
           loginController.setUsuario(responsable);
       }
   }
@@ -809,9 +811,9 @@ responsableOld=responsable;
             Document doc;
             switch (loginController.get("searchsolicitud")) {
                 case "_init":
-                    doc = new Document("usuario.username", loginController.getUsuario().getUsername());
+//                    doc = new Document("usuario.username", loginController.getUsuario().getUsername());
 //                    solicitudList = solicitudRepository.findPagination(page, rowPage);
-                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+                    solicitudList = solicitudRepository.findPagination( page, rowPage, new Document("idsolicitud", -1));
 
                     break;
                 case "_autocomplete":
@@ -819,14 +821,14 @@ responsableOld=responsable;
                     break;
 
                 case "idsolicitud":
-                    doc = new Document("idsolicitud", solicitud.getIdsolicitud()).append("usuario.username", loginController.getUsuario().getUsername());
+                    doc = new Document("idsolicitud", solicitud.getIdsolicitud());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
                     break;
 
                 default:
-                    doc = new Document("usuario.username", loginController.getUsuario().getUsername());
+//                    doc = new Document("usuario.username", loginController.getUsuario().getUsername());
 //                    solicitudList = solicitudRepository.findPagination(page, rowPage);
-                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+                    solicitudList = solicitudRepository.findPagination( page, rowPage, new Document("idsolicitud", -1));
 
 //                    solicitudList = solicitudRepository.findPagination(page, rowPage);
                     break;

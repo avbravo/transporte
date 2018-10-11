@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
+                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+    <ui:define name="content">
+        <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            }
+        </style>
+        <h1>#{msg['titleview.solicitud']}</h1>
+        <hr/>
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudAdministrativoPorAdministrador.query}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+            <h:panelGroup id="content" layout="block"> 
+
+                <a:messages id="msg"/>
+                <b:panel title="#{app['title.data']}">
+                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{solicitudManualAdministrativoController.writable}"> 
+                        <p:outputLabel  value="#{msg['field.fecha']}" />
+                        <a:labelDate  value="#{solicitudManualAdministrativoController.solicitud.fecha}" id="fecha"   />
+                        <p:outputLabel  value="#{msg['field.idsolicitud']}" />
+                        <p:outputLabel  value="#{solicitudManualAdministrativoController.solicitud.idsolicitud}" id="idsolicitud"   />
+
+                        <p:outputLabel  value="#{msg['field.solicitadopor']}" />
+                         <e:autocompleteusuario listener="#{solicitudManualAdministrativoController.handleSelect}"
+                                             value="#{solicitudManualAdministrativoController.solicita}"
+                                                itemLabel=" #{p.nombre}"
+                                                field="nombre"
+                                                dropdown="true"
+                                                minQueryLength="0"
+                                                update=":form:celular :form:email"
+                                            
+                                                />
+                        
+                        
+                       <p:outputLabel value="#{msg['field.responsable']}"/>
+                      <e:autocompleteusuario listener="#{solicitudManualAdministrativoController.handleSelect}"
+                                             value="#{solicitudManualAdministrativoController.responsable}"
+                                                itemLabel=" #{p.nombre}"
+                                                field="nombre"
+                                                dropdown="true"
+                                                minQueryLength="0"
+                                                update=":form:panel"
+                                                />
+                        
+                        
+                         <p:outputLabel  value="#{msg['field.telefono']}" />
+                       <a:inputText span="4"  value="#{solicitudManualAdministrativoController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
+
+                        <p:outputLabel  value="#{msg['field.email']}" />
+                        <a:email  value="#{solicitudManualAdministrativoController.responsable.email}" id="email"  label="#{msg['field.email']}" />
+
+                        
+                       <p:outputLabel value="#{msg['field.idunidad']}"/>
+                        <p:autoComplete dropdown="false"
+                                        multiple="true"
+                                        scrollHeight="250"
+                                        size="15"
+                                        emptyMessage="#{app['info.nohayregistros']}"
+                                        value="#{solicitudManualAdministrativoController.unidadList}"
+                                        completeMethod="#{solicitudManualAdministrativoController.completeFiltradoUnidad}"
+                                        var="p"
+                                        required="true"
+                                        itemLabel="#{p.idunidad}"
+
+                                        itemValue="#{p}" forceSelection="true">
+                            <f:converter binding="#{unidadConverter}"/>
+                            <f:attribute name="field" value="idunidad"/>
+                            <f:attribute name="fielddropdown" value="false"/>
+                            <f:attribute name="fieldquerylenth" value="1"/>
+                            <p:ajax event="itemSelect" listener="#{solicitudManualAdministrativoController.handleSelect}"
+                                    />
+                            <f:facet name="itemtip">
+                                <h:panelGrid columns="1" cellpadding="5">
+                                    <h:outputText value="#{msg['field.unidad']} #{p.idunidad}" />
+
+
+                                </h:panelGrid>
+                            </f:facet>
+                        </p:autoComplete>
+
+                          
+                        <p:spacer/>
+                        <p:spacer/>
+
+                        <p:outputLabel  value="#{msg['field.objetivo']}" />
+                        <b:inputTextarea rows="2"  value="#{solicitudManualAdministrativoController.solicitud.objetivo}" id="objetivo"  label="#{msg['field.objetivo']}" />
+
+
+                      
+                        <p:outputLabel  value="#{msg['field.lugares']}" />
+                        <b:inputTextarea rows="2" value="#{solicitudManualAdministrativoController.solicitud.lugares}" id="lugares"  label="#{msg['field.lugares']}" />
+
+
+                          <p:outputLabel  value="#{msg['field.pasajeros']}" />
+                        <a:inputText span="4" value="#{solicitudManualAdministrativoController.solicitud.pasajeros}" id="pasajeros"  label="#{msg['field.pasajeros']}" />
+
+
+                        <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
+                        <a:calendar 
+                                    pattern="dd/MM/yyyy HH:mm a" value="#{solicitudManualAdministrativoController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" />
+
+
+                        <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+                        <a:inputText value="#{solicitudManualAdministrativoController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
+
+
+
+                        <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
+                        <a:calendar pattern="dd/MM/yyyy HH:mm a" value="#{solicitudManualAdministrativoController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                                   
+
+                                    label="#{msg['field.fechahoraregreso']}" />
+
+                        <p:outputLabel  value="#{msg['field.lugaregreso']}" />
+                        <a:inputText value="#{solicitudManualAdministrativoController.solicitud.lugarregreso}" id="lugarregreso"  label="#{msg['field.lugaregreso']}" />
+
+
+                        <p:outputLabel  value="#{msg['field.lugarllegada']}" />
+                        <a:inputText value="#{solicitudManualAdministrativoController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
+
+
+
+                        <p:outputLabel  value="#{msg['field.recursossolicitados']}" />
+                        <b:inputTextarea rows="2" value="#{solicitudManualAdministrativoController.solicitud.recursossolicitados}" id="recursossolicitados"  label="#{msg['field.recursossolicitados']}" />
+
+                        <p:outputLabel  value="#{msg['field.observaciones']}" />
+                        <b:inputTextarea rows="2" value="#{solicitudManualAdministrativoController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
+
+
+
+                    <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
+                    <e:autocompletetipovehiculo listener="#{solicitudManualAdministrativoController.handleSelect}"
+                                                  value="#{solicitudManualAdministrativoController.solicitud.tipovehiculo}"
+                                                  itemLabel=" #{p.idtipovehiculo}"
+                                                  field="idtipovehiculo"
+                                                    dropdown="true"
+                                                minQueryLength="0"
+                                                  />
+
+                      
+                        <p:outputLabel value="#{msg['field.idestatus']}"/>
+                         <p:outputLabel  value="#{solicitudManualAdministrativoController.solicitud.estatus.idestatus}" />
+
+                        <p:outputLabel  value="#{msg['field.activo']}" />
+                        <p:outputLabel  value="#{solicitudManualAdministrativoController.solicitud.activo}" />
+                        
+ 
+                    </b:panelGrid>
+                    <a:view 
+                        renderedDelete="false"
+                        renderedEdit="#{solicitudManualAdministrativoController.verificarEditable(solicitudManualAdministrativoController.solicitud) and applicationMenu.solicitudAdministrativoPorAdministrador.edit and solicitudManualAdministrativoController.writable}" 
+                        renderedList="false"
+                        edit="#{solicitudManualAdministrativoController.edit()}"
+                        delete="#{solicitudManualAdministrativoController.delete(solicitudManualAdministrativoController.solicitud,true)}"
+                        print="#{solicitudManualAdministrativoController.print()}"
+                        url="#{solicitudManualAdministrativoController.prepare('golist',solicitudManualAdministrativoController.solicitud)}"
+                        />
+                </b:panel>
+            </h:panelGroup>
+        </b:form>
+        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudAdministrativoPorAdministrador.query}" />
+        <br/><br/><br/>
+    </ui:define>
+</ui:composition>

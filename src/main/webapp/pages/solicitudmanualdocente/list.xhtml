@@ -22,8 +22,8 @@
         <h1>#{msg['titlelist.solicitud']}</h1>
         <hr/>
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudDocentePorAdministrador.list}" onkeypress="if (event.keyCode == 13) {
-                     return false;
-                 }">
+                    return false;
+                }">
 
             <b:growl  id="msgs"/>
 
@@ -42,19 +42,19 @@
             </b:panel>
             <b:panel id="dataTable">
                 <a:paginator 
-                    rowPage="#{solicitudDocentePorAdministradorController.rowPage}"
-                    clear="#{solicitudDocentePorAdministradorController.clear()}"
-                    first="#{solicitudDocentePorAdministradorController.first()}"
-                    back="#{solicitudDocentePorAdministradorController.back()}"
-                    next="#{solicitudDocentePorAdministradorController.next()}"
-                    last="#{solicitudDocentePorAdministradorController.last()}"
-                    page="#{solicitudDocentePorAdministradorController.page}"
-                    pages="#{solicitudDocentePorAdministradorController.pages}"
-                    skip="ajax:solicitudDocentePorAdministradorController.skip(solicitudDocentePorAdministradorController.page)" 
-                    new="#{solicitudDocentePorAdministradorController.prepare('gonew',solicitudDocentePorAdministradorController.solicitud)}"
-                    printAll="#{solicitudDocentePorAdministradorController.printAll()}"
+                    rowPage="#{solicitudManualDocenteController.rowPage}"
+                    clear="#{solicitudManualDocenteController.clear()}"
+                    first="#{solicitudManualDocenteController.first()}"
+                    back="#{solicitudManualDocenteController.back()}"
+                    next="#{solicitudManualDocenteController.next()}"
+                    last="#{solicitudManualDocenteController.last()}"
+                    page="#{solicitudManualDocenteController.page}"
+                    pages="#{solicitudManualDocenteController.pages}"
+                    skip="ajax:solicitudManualDocenteController.skip(solicitudManualDocenteController.page)" 
+                    new="#{solicitudManualDocenteController.prepare('gonew',solicitudManualDocenteController.solicitud)}"
+                    printAll="#{solicitudManualDocenteController.printAll()}"
                     />
-                <b:dataTable value="#{solicitudDocentePorAdministradorController.solicitudDataModel}"
+                <b:dataTable value="#{solicitudManualDocenteController.solicitudDataModel}"
                              var="item"
                              id="dataTable2"
                              paginated="false"
@@ -66,17 +66,31 @@
 
                         <a:labelDate value="#{item.fecha}"/>
                     </b:dataTableColumn> 
+                  
+                    
+                    <b:dataTableColumn label="#{msg['field.fechahorapartida']}" >
+                        <p:calendar  
+                            disabled="true"
+                                    
+                                    pattern="dd/MM/yyyy HH:mm:ss a" value="#{item.fechahorapartida}"  />
+                      
+                    </b:dataTableColumn> 
+                    <b:dataTableColumn label="#{msg['field.fechahoraregreso']}" >
+                        <p:calendar  disabled="true" pattern="dd/MM/yyyy HH:mm:ss a" value="#{item.fechahoraregreso}"  />
+                      
+                    </b:dataTableColumn> 
 
-                    <b:dataTableColumn value="#{item.mision}" label="#{msg['field.mision']}" />
-                    <b:dataTableColumn value="#{item.estatus.idestatus}" label="#{msg['field.estatus']}" />
-                    <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
+                    
+                    <b:dataTableColumn value="#{item.lugarllegada}" label="#{msg['field.lugarllegada']}" style="color: #{solicitudManualDocenteController.columnColor(item.estatus.idestatus)}" />
+                    <b:dataTableColumn value="#{item.mision}" label="#{msg['field.mision']}" style="color: #{solicitudManualDocenteController.columnColor(item.estatus.idestatus)}" />
+                    <b:dataTableColumn value="#{item.estatus.idestatus}" label="#{msg['field.estatus']}" style="color: #{solicitudManualDocenteController.columnColor(item.estatus.idestatus)}" />
+                    
 
                     <b:dataTableColumn label="">
 
-                        <a:column
+                        <a:column_view
 
-                            edit="#{solicitudDocentePorAdministradorController.prepare('view',item)}"
-                            delete="#{solicitudDocentePorAdministradorController.delete(item,false)}"
+                            edit="#{solicitudManualDocenteController.prepare('view',item)}"
                             rendered="#{applicationMenu.solicitud.delete}"
                             />
                     </b:dataTableColumn>
