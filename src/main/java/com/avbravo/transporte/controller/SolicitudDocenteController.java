@@ -421,6 +421,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitudSelected = new Solicitud();
             solicitud.setIdsolicitud(id);
             solicitud.setFecha(idsecond);
+            solicitud.setMision("---");
+            solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
             solicitud.setUsuario(loginController.getUsuario());
             solicitud.setResponsable(loginController.getUsuario().getNombre());
             solicitud.setEmail(loginController.getUsuario().getEmail());
