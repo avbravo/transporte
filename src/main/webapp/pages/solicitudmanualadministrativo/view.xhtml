@@ -19,7 +19,7 @@
                 border-color: #428BCA;
             }
         </style>
-        <h1>#{msg['titleview.solicitud']}</h1>
+        <h1>#{msg['titleview.solicitudmanualadministrativo']}</h1>
         <hr/>
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudAdministrativoPorAdministrador.query}" onkeypress="if (event.keyCode == 13) {
                     return false;
@@ -96,8 +96,8 @@
                         <p:spacer/>
                         <p:spacer/>
 
-                        <p:outputLabel  value="#{msg['field.objetivo']}" />
-                        <b:inputTextarea rows="2"  value="#{solicitudManualAdministrativoController.solicitud.objetivo}" id="objetivo"  label="#{msg['field.objetivo']}" />
+                        <p:outputLabel  value="#{msg['field.mision']}" />
+                        <b:inputTextarea rows="2"  value="#{solicitudManualAdministrativoController.solicitud.mision}" id="mision"  label="#{msg['field.mision']}" />
 
 
                       

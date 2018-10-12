@@ -530,7 +530,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
             //Verificar si tiene un viaje en esas fechas
 
-            Optional<Solicitud> optionalRango = solicitudServices.coincidenciaEnRango(solicitud);
+            Optional<Solicitud> optionalRango = solicitudServices.coincidenciaResponsableEnRango(solicitud);
             if (optionalRango.isPresent()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.solicitudnumero") + " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
                 return "";

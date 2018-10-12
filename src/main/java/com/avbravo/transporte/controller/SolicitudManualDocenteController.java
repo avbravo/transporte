@@ -159,6 +159,8 @@ public class SolicitudManualDocenteController implements Serializable, IControll
         this.pages = pages;
     }
 
+    
+    
     public List<Usuario> getUsuarioList() {
         return usuarioList;
     }
@@ -453,10 +455,12 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             solicitud.setIdsolicitud(id);
             solicitud.setFecha(idsecond);
             solicitud.setMision("---");
+            
             solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
             solicita = loginController.getUsuario();
             responsable = solicita;
             responsableOld=responsable;
+            
 
             usuarioList = new ArrayList<>();
             usuarioList.add(solicita);
@@ -490,10 +494,8 @@ public class SolicitudManualDocenteController implements Serializable, IControll
 
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
 
-            String textsearch = "ADMINISTRATIVO";
-            if (loginController.getRol().getIdrol().toUpperCase().equals("DOCENTE")) {
-                textsearch = "DOCENTE";
-            }
+            String textsearch = "DOCENTE";
+            
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
             solicitudSelected = solicitud;
 
@@ -530,7 +532,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             }
             //Verificar si tiene un viaje en esas fechas
 
-            Optional<Solicitud> optionalRango = solicitudServices.coincidenciaEnRango(solicitud);
+            Optional<Solicitud> optionalRango = solicitudServices.coincidenciaResponsableEnRango(solicitud);
             if (optionalRango.isPresent()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.solicitudnumero") + " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
                 return "";
@@ -814,9 +816,9 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             Document doc;
             switch (loginController.get("searchsolicitud")) {
                 case "_init":
-//                    doc = new Document("usuario.username", loginController.getUsuario().getUsername());
-//                    solicitudList = solicitudRepository.findPagination(page, rowPage);
-                    solicitudList = solicitudRepository.findPagination( page, rowPage, new Document("idsolicitud", -1));
+                  doc = new Document("tiposolicitud.idtiposolicitud", "DOCENTE");
+
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
                 case "_autocomplete":
@@ -829,11 +831,9 @@ public class SolicitudManualDocenteController implements Serializable, IControll
                     break;
 
                 default:
-//                    doc = new Document("usuario.username", loginController.getUsuario().getUsername());
-//                    solicitudList = solicitudRepository.findPagination(page, rowPage);
+        doc = new Document("tiposolicitud.idtiposolicitud", "DOCENTE");
                     solicitudList = solicitudRepository.findPagination( page, rowPage, new Document("idsolicitud", -1));
 
-//                    solicitudList = solicitudRepository.findPagination(page, rowPage);
                     break;
             }
 
@@ -1214,6 +1214,9 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             JsfUtil.errorMessage("onDateSelect() " + ex.getLocalizedMessage());
         }
         return "";
-        // </editor-fold>
+     
     }
+       // </editor-fold>
+    
+    
 }
