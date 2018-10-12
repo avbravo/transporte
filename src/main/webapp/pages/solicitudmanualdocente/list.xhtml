@@ -19,9 +19,12 @@
                 border-color: #428BCA;
             } 
         </style>
+        
+ 
         <h1>#{msg['titlelist.solicitudmanualdocente']}</h1>
         <hr/>
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudDocentePorAdministrador.list}" onkeypress="if (event.keyCode == 13) {
+        
+        <b:form id="form"  styleClass="form-signin" prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudDocentePorAdministrador.list}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
@@ -111,7 +114,7 @@
             </b:panel>
 
         </b:form>
-
+     
         <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudDocentePorAdministrador.list}" />
     </ui:define>
 </ui:composition>
