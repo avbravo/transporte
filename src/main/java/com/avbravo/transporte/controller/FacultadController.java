@@ -208,7 +208,10 @@ public class FacultadController implements Serializable, IController {
             String id = loginController.get("idfacultad");
             String pageSession = loginController.get("pagefacultad");
             //Search
-            loginController.put("searchfacultad", "_init");
+            
+            if (loginController.get("searchfacultad") == null || loginController.get("searchfacultad").equals("")) {
+                loginController.put("searchfacultad", "_init");
+            }
             writable = false;
 
             facultadList = new ArrayList<>();

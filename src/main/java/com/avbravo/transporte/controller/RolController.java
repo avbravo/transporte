@@ -207,7 +207,10 @@ public class RolController implements Serializable, IController {
             String pageSession = loginController.get("pagerol");
             //Search
 
-            loginController.put("searchrol", "_init");
+         
+            if (loginController.get("searchrol") == null || loginController.get("searchrol").equals("")) {
+                loginController.put("searchrol", "_init");
+            }
 
             writable = false;
 

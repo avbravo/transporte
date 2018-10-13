@@ -207,7 +207,10 @@ public class TiposolicitudController implements Serializable, IController {
             String id = loginController.get("idtiposolicitud");
             String pageSession = loginController.get("pagetiposolicitud");
             //Search
-            loginController.put("searchtiposolicitud", "_init");
+            
+            if (loginController.get("searchtiposolicitud") == null || loginController.get("searchtiposolicitud").equals("")) {
+                loginController.put("searchtiposolicitud", "_init");
+            }
             writable = false;
 
             tiposolicitudList = new ArrayList<>();

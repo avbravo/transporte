@@ -207,7 +207,10 @@ public class UnidadController implements Serializable, IController {
             String id = loginController.get("idunidad");
             String pageSession = loginController.get("pageunidad");
             //Search
-            loginController.put("searchunidad", "_init");
+            
+            if (loginController.get("searchunidad") == null || loginController.get("searchunidad").equals("")) {
+                loginController.put("searchunidad", "_init");
+            }
             writable = false;
 
             unidadList = new ArrayList<>();

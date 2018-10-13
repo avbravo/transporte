@@ -227,7 +227,10 @@ public class ConductorController implements Serializable, IController {
             String id = loginController.get("idconductor");
             String pageSession = loginController.get("pageconductor");
             //Search
-            loginController.put("searchconductor", "_init");
+            
+            if (loginController.get("searchconductor") == null || loginController.get("searchconductor").equals("")) {
+                loginController.put("searchconductor", "_init");
+            }
             writable = false;
 
             conductorList = new ArrayList<>();

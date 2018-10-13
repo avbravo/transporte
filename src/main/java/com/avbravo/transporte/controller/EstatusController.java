@@ -207,7 +207,10 @@ public class EstatusController implements Serializable, IController {
             String id = loginController.get("idestatus");
             String pageSession = loginController.get("pageestatus");
             //Search
-            loginController.put("searchestatus", "_init");
+
+            if (loginController.get("searchestatus") == null || loginController.get("searchestatus").equals("")) {
+                loginController.put("searchestatus", "_init");
+            }
             writable = false;
 
             estatusList = new ArrayList<>();

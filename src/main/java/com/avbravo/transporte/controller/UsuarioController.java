@@ -264,7 +264,10 @@ public class UsuarioController implements Serializable, IController {
             String id = loginController.get("username");
             String pageSession = loginController.get("pageusuario");
             //Search
-            loginController.put("searchusuario", "_init");
+            
+            if (loginController.get("searchusuario") == null || loginController.get("searchusuario").equals("")) {
+                loginController.put("searchusuario", "_init");
+            }
             writable = false;
 
             usuarioList = new ArrayList<>();

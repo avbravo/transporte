@@ -207,7 +207,10 @@ public class TipovehiculoController implements Serializable, IController {
             String id = loginController.get("idtipovehiculo");
             String pageSession = loginController.get("pagetipovehiculo");
             //Search
-            loginController.put("searchtipovehiculo", "_init");
+            
+            if (loginController.get("searchtipovehiculo") == null || loginController.get("searchtipovehiculo").equals("")) {
+                loginController.put("searchtipovehiculo", "_init");
+            }
             writable = false;
 
             tipovehiculoList = new ArrayList<>();

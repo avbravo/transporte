@@ -325,7 +325,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             String id = loginController.get("idsolicitud");
             String pageSession = loginController.get("pagesolicitud");
             //Search
-            loginController.put("searchsolicitud", "_init");
+            
+            if (loginController.get("searchsolicitud") == null || loginController.get("searchsolicitud").equals("")) {
+                loginController.put("searchsolicitud", "_init");
+            }
             writable = false;
 
             solicitudList = new ArrayList<>();

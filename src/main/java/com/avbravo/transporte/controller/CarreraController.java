@@ -212,7 +212,10 @@ public class CarreraController implements Serializable, IController {
             String id = loginController.get("idcarrera");
             String pageSession = loginController.get("pagecarrera");
             //Search
-            loginController.put("searchcarrera", "_init");
+            
+            if (loginController.get("searchcarrera") == null || loginController.get("searchcarrera").equals("")) {
+                loginController.put("searchcarrera", "_init");
+            }
             writable = false;
 
             carreraList = new ArrayList<>();
