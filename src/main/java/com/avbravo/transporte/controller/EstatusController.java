@@ -218,27 +218,36 @@ public class EstatusController implements Serializable, IController {
             estatus = new Estatus();
             estatusDataModel = new EstatusDataModel(estatusList);
 
-            if (id != null) {
-                Optional<Estatus> optional = estatusRepository.find("idestatus", id);
-                if (optional.isPresent()) {
-                    estatus = optional.get();
-                    estatusSelected = estatus;
-                    writable = true;
-
-                }
-            }
-            if (action != null && action.equals("gonew")) {
-                estatus = new Estatus();
-                estatusSelected = estatus;
-                writable = false;
-
-            }
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = estatusRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
-            move();
+            if (action != null) {
+                switch (action) {
+                    case "gonew":
+                        estatus = new Estatus();
+                        estatusSelected = estatus;
+                        writable = false;
+                        break;
+                    case "view":
+                        if (id != null) {
+                            Optional<Estatus> optional = estatusRepository.find("idestatus", id);
+                            if (optional.isPresent()) {
+                                estatus = optional.get();
+                                estatusSelected = estatus;
+                                writable = true;
+
+                            }
+                        }
+                        break;
+                    case "golist":
+                        move();
+                        break;
+                }
+            } else {
+                move();
+            }
 
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());

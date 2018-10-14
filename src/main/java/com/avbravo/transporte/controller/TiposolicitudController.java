@@ -207,7 +207,7 @@ public class TiposolicitudController implements Serializable, IController {
             String id = loginController.get("idtiposolicitud");
             String pageSession = loginController.get("pagetiposolicitud");
             //Search
-            
+
             if (loginController.get("searchtiposolicitud") == null || loginController.get("searchtiposolicitud").equals("")) {
                 loginController.put("searchtiposolicitud", "_init");
             }
@@ -218,27 +218,36 @@ public class TiposolicitudController implements Serializable, IController {
             tiposolicitud = new Tiposolicitud();
             tiposolicitudDataModel = new TiposolicitudDataModel(tiposolicitudList);
 
-            if (id != null) {
-                Optional<Tiposolicitud> optional = tiposolicitudRepository.find("idtiposolicitud", id);
-                if (optional.isPresent()) {
-                    tiposolicitud = optional.get();
-                    tiposolicitudSelected = tiposolicitud;
-                    writable = true;
-
-                }
-            }
-            if (action != null && action.equals("gonew")) {
-                tiposolicitud = new Tiposolicitud();
-                tiposolicitudSelected = tiposolicitud;
-                writable = false;
-
-            }
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = tiposolicitudRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
-            move();
+            if (action != null) {
+                switch (action) {
+                    case "gonew":
+                        tiposolicitud = new Tiposolicitud();
+                        tiposolicitudSelected = tiposolicitud;
+                        writable = false;
+                        break;
+                    case "view":
+                        if (id != null) {
+                            Optional<Tiposolicitud> optional = tiposolicitudRepository.find("idtiposolicitud", id);
+                            if (optional.isPresent()) {
+                                tiposolicitud = optional.get();
+                                tiposolicitudSelected = tiposolicitud;
+                                writable = true;
+
+                            }
+                        }
+                        break;
+                    case "golist":
+                        move();
+                        break;
+                }
+            } else {
+                move();
+            }
 
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());

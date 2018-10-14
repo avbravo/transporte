@@ -207,7 +207,6 @@ public class RolController implements Serializable, IController {
             String pageSession = loginController.get("pagerol");
             //Search
 
-         
             if (loginController.get("searchrol") == null || loginController.get("searchrol").equals("")) {
                 loginController.put("searchrol", "_init");
             }
@@ -219,28 +218,36 @@ public class RolController implements Serializable, IController {
             rol = new Rol();
             rolDataModel = new RolDataModel(rolList);
 
-            if (id != null) {
-                Optional<Rol> optional = rolRepository.find("idrol", id);
-                if (optional.isPresent()) {
-                    rol = optional.get();
-                    rolSelected = rol;
-                    writable = true;
-
-                }
-            }
-            if (action != null && action.equals("gonew")) {
-                rol = new Rol();
-                rolSelected = rol;
-                writable = false;
-
-            }
-
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = rolRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
-            move();
+            if (action != null) {
+                switch (action) {
+                    case "gonew":
+                        rol = new Rol();
+                        rolSelected = rol;
+                        writable = false;
+                        break;
+                    case "view":
+                        if (id != null) {
+                            Optional<Rol> optional = rolRepository.find("idrol", id);
+                            if (optional.isPresent()) {
+                                rol = optional.get();
+                                rolSelected = rol;
+                                writable = true;
+
+                            }
+                        }
+                        break;
+                    case "golist":
+                        move();
+                        break;
+                }
+            } else {
+                move();
+            }
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());
         }

@@ -209,7 +209,6 @@ public class SemestreController implements Serializable, IController {
             String pageSession = loginController.get("pagerol");
             //Search
 
-            
             if (loginController.get("searchrol") == null || loginController.get("searchrol").equals("")) {
                 loginController.put("searchrol", "_init");
             }
@@ -220,28 +219,38 @@ public class SemestreController implements Serializable, IController {
             semestre = new Semestre();
             semestreDataModel = new SemestreDataModel(semestreList);
 
-            if (id != null) {
-                Optional<Semestre> optional = semestreRepository.find("idsemestre", id);
-                if (optional.isPresent()) {
-                    semestre = optional.get();
-                    semestreSelected = semestre;
-                    writable = true;
-
-                }
-            }
-            if (action != null && action.equals("gonew")) {
-                semestre = new Semestre();
-                semestreSelected = semestre;
-                writable = false;
-
-            }
-
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = semestreRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
-            move();
+            if (action != null) {
+                switch (action) {
+                    case "gonew":
+                        semestre = new Semestre();
+                        semestreSelected = semestre;
+                        writable = false;
+
+                        break;
+                    case "view":
+                        if (id != null) {
+                            Optional<Semestre> optional = semestreRepository.find("idsemestre", id);
+                            if (optional.isPresent()) {
+                                semestre = optional.get();
+                                semestreSelected = semestre;
+                                writable = true;
+
+                            }
+                        }
+
+                        break;
+                    case "golist":
+                        move();
+                        break;
+                }
+            } else {
+                move();
+            }
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());
         }

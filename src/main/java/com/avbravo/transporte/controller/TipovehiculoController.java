@@ -207,7 +207,7 @@ public class TipovehiculoController implements Serializable, IController {
             String id = loginController.get("idtipovehiculo");
             String pageSession = loginController.get("pagetipovehiculo");
             //Search
-            
+
             if (loginController.get("searchtipovehiculo") == null || loginController.get("searchtipovehiculo").equals("")) {
                 loginController.put("searchtipovehiculo", "_init");
             }
@@ -218,27 +218,36 @@ public class TipovehiculoController implements Serializable, IController {
             tipovehiculo = new Tipovehiculo();
             tipovehiculoDataModel = new TipovehiculoDataModel(tipovehiculoList);
 
-            if (id != null) {
-                Optional<Tipovehiculo> optional = tipovehiculoRepository.find("idtipovehiculo", id);
-                if (optional.isPresent()) {
-                    tipovehiculo = optional.get();
-                    tipovehiculoSelected = tipovehiculo;
-                    writable = true;
-
-                }
-            }
-            if (action != null && action.equals("gonew")) {
-                tipovehiculo = new Tipovehiculo();
-                tipovehiculoSelected = tipovehiculo;
-                writable = false;
-
-            }
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = tipovehiculoRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
-            move();
+            if (action != null) {
+                switch (action) {
+                    case "gonew":
+                        tipovehiculo = new Tipovehiculo();
+                        tipovehiculoSelected = tipovehiculo;
+                        writable = false;
+                        break;
+                    case "view":
+                        if (id != null) {
+                            Optional<Tipovehiculo> optional = tipovehiculoRepository.find("idtipovehiculo", id);
+                            if (optional.isPresent()) {
+                                tipovehiculo = optional.get();
+                                tipovehiculoSelected = tipovehiculo;
+                                writable = true;
+
+                            }
+                        }
+                        break;
+                    case "golist":
+                        move();
+                        break;
+                }
+            } else {
+                move();
+            }
 
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());

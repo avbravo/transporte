@@ -205,14 +205,11 @@ public class CarreraController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-//carreraRepository.setDatabase("elsa");
-//carreraRepository.setDatabase(loginController.getUsuario().getTipoalmacen());
-//carreraRepository.setDatabase(loginController.getUsuario().getTipoalmacen()+"_"+loginController.getUsuario().getIdalmacen());
             String action = loginController.get("carrera");
             String id = loginController.get("idcarrera");
             String pageSession = loginController.get("pagecarrera");
             //Search
-            
+
             if (loginController.get("searchcarrera") == null || loginController.get("searchcarrera").equals("")) {
                 loginController.put("searchcarrera", "_init");
             }
@@ -225,29 +222,39 @@ public class CarreraController implements Serializable, IController {
 
             carreraDataModel = new CarreraDataModel(carreraList);
 
-            if (id != null) {
-
-                Optional<Carrera> optional = carreraRepository.find("idcarrera", Integer.parseInt(id));
-                if (optional.isPresent()) {
-                    carrera = optional.get();
-                    carreraSelected = optional.get();
-                    _old = carrera.getDescripcion();
-                    writable = true;
-
-                }
-            }
-            if (action != null && action.equals("gonew")) {
-                carrera = new Carrera();
-                carreraSelected = carrera;
-                writable = false;
-
-            }
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = carreraRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
-            move();
+            if (action != null) {
+                switch (action) {
+                    case "gonew":
+                        carrera = new Carrera();
+                        carreraSelected = carrera;
+                        writable = false;
+                        break;
+                    case "view":
+                        if (id != null) {
+
+                            Optional<Carrera> optional = carreraRepository.find("idcarrera", Integer.parseInt(id));
+                            if (optional.isPresent()) {
+                                carrera = optional.get();
+                                carreraSelected = optional.get();
+                                _old = carrera.getDescripcion();
+                                writable = true;
+
+                            }
+                        }
+
+                        break;
+                    case "golist":
+                        move();
+                        break;
+                }
+            } else {
+                move();
+            }
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());
         }

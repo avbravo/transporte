@@ -159,8 +159,6 @@ public class SolicitudManualDocenteController implements Serializable, IControll
         this.pages = pages;
     }
 
-    
-    
     public List<Usuario> getUsuarioList() {
         return usuarioList;
     }
@@ -338,36 +336,45 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             solicitud = new Solicitud();
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
-            if (id != null) {
-                Optional<Solicitud> optional = solicitudRepository.find("idsolicitud", Integer.parseInt(id));
-                if (optional.isPresent()) {
-                    solicitud = optional.get();
-                    unidadList = solicitud.getUnidad();
-                    usuarioList = solicitud.getUsuario();
-                    solicita = usuarioList.get(0);
-                    responsable = usuarioList.get(1);
-                    responsableOld = responsable;
-                    facultadList = solicitud.getFacultad();
-                    carreraList = solicitud.getCarrera();
-
-                    solicitudSelected = solicitud;
-                    _old = solicitud.getFecha();
-                    writable = true;
-
-                }
-            }
-            if (action != null && action.equals("gonew")) {
-                solicitud = new Solicitud();
-                solicitudSelected = solicitud;
-                writable = false;
-
-            }
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = solicitudRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
-            move();
+            if (action != null) {
+                switch (action) {
+                    case "gonew":
+                        solicitud = new Solicitud();
+                        solicitudSelected = solicitud;
+                        writable = false;
+                        break;
+                    case "view":
+                        if (id != null) {
+                            Optional<Solicitud> optional = solicitudRepository.find("idsolicitud", Integer.parseInt(id));
+                            if (optional.isPresent()) {
+                                solicitud = optional.get();
+                                unidadList = solicitud.getUnidad();
+                                usuarioList = solicitud.getUsuario();
+                                solicita = usuarioList.get(0);
+                                responsable = usuarioList.get(1);
+                                responsableOld = responsable;
+                                facultadList = solicitud.getFacultad();
+                                carreraList = solicitud.getCarrera();
+
+                                solicitudSelected = solicitud;
+                                _old = solicitud.getFecha();
+                                writable = true;
+
+                            }
+                        }
+                        break;
+                    case "golist":
+                        move();
+                        break;
+                }
+            } else {
+                move();
+            }
 
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());
@@ -458,12 +465,11 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             solicitud.setIdsolicitud(id);
             solicitud.setFecha(idsecond);
             solicitud.setMision("---");
-            
+
             solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
             solicita = loginController.getUsuario();
             responsable = solicita;
-            responsableOld=responsable;
-            
+            responsableOld = responsable;
 
             usuarioList = new ArrayList<>();
             usuarioList.add(solicita);
@@ -498,7 +504,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
 
             String textsearch = "DOCENTE";
-            
+
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
             solicitudSelected = solicitud;
 
@@ -550,10 +556,10 @@ public class SolicitudManualDocenteController implements Serializable, IControll
                     && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
             }
-            
-            if(solicitud.getPasajeros()<0){
+
+            if (solicitud.getPasajeros() < 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
-                return ""; 
+                return "";
             }
 
             //Lo datos del usuario
@@ -564,15 +570,14 @@ public class SolicitudManualDocenteController implements Serializable, IControll
                         "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 //enviarEmails();
 
-  //si cambia el email o celular del responsable actualizar ese usuario
-  
-  if(!responsableOld.getEmail().equals(responsable.getEmail())|| !responsableOld.getCelular().equals(responsable.getCelular())){
-      usuarioRepository.update(responsable);
-      //actuliza el que esta en el login
-      if(responsable.getUsername().equals(loginController.getUsuario().getUsername())){
-          loginController.setUsuario(responsable);
-      }
-  }
+                //si cambia el email o celular del responsable actualizar ese usuario
+                if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
+                    usuarioRepository.update(responsable);
+                    //actuliza el que esta en el login
+                    if (responsable.getUsername().equals(loginController.getUsuario().getUsername())) {
+                        loginController.setUsuario(responsable);
+                    }
+                }
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
             } else {
@@ -614,25 +619,24 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             usuarioList.add(solicita);
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
-             if(solicitud.getPasajeros()<0){
+            if (solicitud.getPasajeros() < 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
-                return ""; 
+                return "";
             }
-             
+
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             solicitudRepository.update(solicitud);
-            
-              //si cambia el email o celular del responsable actualizar ese usuario
-  
-  if(!responsableOld.getEmail().equals(responsable.getEmail())|| !responsableOld.getCelular().equals(responsable.getCelular())){
-      usuarioRepository.update(responsable);
-      //actuliza el que esta en el login
-      if(responsable.getUsername().equals(loginController.getUsuario().getUsername())){
-          loginController.setUsuario(responsable);
-      }
-  }
+
+            //si cambia el email o celular del responsable actualizar ese usuario
+            if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
+                usuarioRepository.update(responsable);
+                //actuliza el que esta en el login
+                if (responsable.getUsername().equals(loginController.getUsuario().getUsername())) {
+                    loginController.setUsuario(responsable);
+                }
+            }
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
             JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
@@ -819,7 +823,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             Document doc;
             switch (loginController.get("searchsolicitud")) {
                 case "_init":
-                  doc = new Document("tiposolicitud.idtiposolicitud", "DOCENTE");
+                    doc = new Document("tiposolicitud.idtiposolicitud", "DOCENTE");
 
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
@@ -829,13 +833,13 @@ public class SolicitudManualDocenteController implements Serializable, IControll
                     break;
 
                 case "idsolicitud":
-                   doc = new Document("idsolicitud", solicitud.getIdsolicitud());
-                    solicitudList = solicitudRepository.findPagination(doc,page, rowPage, new Document("idsolicitud", -1));
+                    doc = new Document("idsolicitud", solicitud.getIdsolicitud());
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
                     break;
 
                 default:
-        doc = new Document("tiposolicitud.idtiposolicitud", "DOCENTE");
-                    solicitudList = solicitudRepository.findPagination( page, rowPage, new Document("idsolicitud", -1));
+                    doc = new Document("tiposolicitud.idtiposolicitud", "DOCENTE");
+                    solicitudList = solicitudRepository.findPagination(page, rowPage, new Document("idsolicitud", -1));
 
                     break;
             }
@@ -1217,9 +1221,8 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             JsfUtil.errorMessage("onDateSelect() " + ex.getLocalizedMessage());
         }
         return "";
-     
+
     }
-       // </editor-fold>
-    
-    
+    // </editor-fold>
+
 }

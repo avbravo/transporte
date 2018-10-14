@@ -264,7 +264,7 @@ public class UsuarioController implements Serializable, IController {
             String id = loginController.get("username");
             String pageSession = loginController.get("pageusuario");
             //Search
-            
+
             if (loginController.get("searchusuario") == null || loginController.get("searchusuario").equals("")) {
                 loginController.put("searchusuario", "_init");
             }
@@ -275,31 +275,41 @@ public class UsuarioController implements Serializable, IController {
             usuario = new Usuario();
             usuarioDataModel = new UsuarioDataModel(usuarioList);
 
-            if (id != null) {
-                Optional<Usuario> optional = usuarioRepository.find("username", id);
-                if (optional.isPresent()) {
-                    usuario = optional.get();
-                    rolList = usuario.getRol();
-
-                    usuario.setPassword(JsfUtil.desencriptar(usuario.getPassword()));
-
-                    usuarioSelected = usuario;
-                    writable = true;
-
-                }
-            }
-            if (action != null && action.equals("gonew")) {
-                usuario = new Usuario();
-                usuarioSelected = usuario;
-                writable = false;
-
-            }
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = usuarioRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
-            move();
+            if (action != null) {
+                switch (action) {
+                    case "gonew":
+                        usuario = new Usuario();
+                        usuarioSelected = usuario;
+                        writable = false;
+                        break;
+                    case "view":
+
+                        if (id != null) {
+                            Optional<Usuario> optional = usuarioRepository.find("username", id);
+                            if (optional.isPresent()) {
+                                usuario = optional.get();
+                                rolList = usuario.getRol();
+
+                                usuario.setPassword(JsfUtil.desencriptar(usuario.getPassword()));
+
+                                usuarioSelected = usuario;
+                                writable = true;
+
+                            }
+                        }
+                        break;
+                    case "golist":
+                        move();
+                        break;
+                }
+            } else {
+                move();
+            }
 
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());

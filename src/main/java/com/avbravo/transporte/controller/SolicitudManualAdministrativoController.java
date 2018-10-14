@@ -325,7 +325,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
             String id = loginController.get("idsolicitud");
             String pageSession = loginController.get("pagesolicitud");
             //Search
-            
+
             if (loginController.get("searchsolicitud") == null || loginController.get("searchsolicitud").equals("")) {
                 loginController.put("searchsolicitud", "_init");
             }
@@ -336,37 +336,47 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
             solicitud = new Solicitud();
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
-            if (id != null) {
-                Optional<Solicitud> optional = solicitudRepository.find("idsolicitud", Integer.parseInt(id));
-                if (optional.isPresent()) {
-                    solicitud = optional.get();
-                    unidadList = solicitud.getUnidad();
-
-                    facultadList = solicitud.getFacultad();
-                    carreraList = solicitud.getCarrera();
-                    usuarioList = solicitud.getUsuario();
-                    solicita = usuarioList.get(0);
-                    responsable = usuarioList.get(1);
-                    responsableOld = responsable;
-
-                    solicitudSelected = solicitud;
-                    _old = solicitud.getFecha();
-                    writable = true;
-
-                }
-            }
-            if (action != null && action.equals("gonew")) {
-                solicitud = new Solicitud();
-                solicitudSelected = solicitud;
-                writable = false;
-
-            }
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = solicitudRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
-            move();
+            if (action != null) {
+                switch (action) {
+                    case "gonew":
+                        solicitud = new Solicitud();
+                        solicitudSelected = solicitud;
+                        writable = false;
+
+                        break;
+                    case "view":
+                        if (id != null) {
+                            Optional<Solicitud> optional = solicitudRepository.find("idsolicitud", Integer.parseInt(id));
+                            if (optional.isPresent()) {
+                                solicitud = optional.get();
+                                unidadList = solicitud.getUnidad();
+
+                                facultadList = solicitud.getFacultad();
+                                carreraList = solicitud.getCarrera();
+                                usuarioList = solicitud.getUsuario();
+                                solicita = usuarioList.get(0);
+                                responsable = usuarioList.get(1);
+                                responsableOld = responsable;
+
+                                solicitudSelected = solicitud;
+                                _old = solicitud.getFecha();
+                                writable = true;
+
+                            }
+                        }
+                        break;
+                    case "golist":
+                        move();
+                        break;
+                }
+            } else {
+                move();
+            }
 
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());
@@ -496,7 +506,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
 
             String textsearch = "ADMINISTRATIVO";
-          
+
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
             solicitudSelected = solicitud;
 

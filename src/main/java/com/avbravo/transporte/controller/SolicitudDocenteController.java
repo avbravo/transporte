@@ -325,7 +325,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             String id = loginController.get("idsolicitud");
             String pageSession = loginController.get("pagesolicitud");
             //Search
-            
+
             if (loginController.get("searchsolicitud") == null || loginController.get("searchsolicitud").equals("")) {
                 loginController.put("searchsolicitud", "_init");
             }
@@ -336,36 +336,45 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud = new Solicitud();
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
-            if (id != null) {
-                Optional<Solicitud> optional = solicitudRepository.find("idsolicitud", Integer.parseInt(id));
-                if (optional.isPresent()) {
-                    solicitud = optional.get();
-                    unidadList = solicitud.getUnidad();
-                    usuarioList = solicitud.getUsuario();
-                    solicita = usuarioList.get(0);
-                    responsable = usuarioList.get(1);
-                    responsableOld = responsable;
-                    facultadList = solicitud.getFacultad();
-                    carreraList = solicitud.getCarrera();
-
-                    solicitudSelected = solicitud;
-                    _old = solicitud.getFecha();
-                    writable = true;
-
-                }
-            }
-            if (action != null && action.equals("gonew")) {
-                solicitud = new Solicitud();
-                solicitudSelected = solicitud;
-                writable = false;
-
-            }
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = solicitudRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
-            move();
+            if (action != null) {
+                switch (action) {
+                    case "gonew":
+                        solicitud = new Solicitud();
+                        solicitudSelected = solicitud;
+                        writable = false;
+                        break;
+                    case "view":
+                        if (id != null) {
+                            Optional<Solicitud> optional = solicitudRepository.find("idsolicitud", Integer.parseInt(id));
+                            if (optional.isPresent()) {
+                                solicitud = optional.get();
+                                unidadList = solicitud.getUnidad();
+                                usuarioList = solicitud.getUsuario();
+                                solicita = usuarioList.get(0);
+                                responsable = usuarioList.get(1);
+                                responsableOld = responsable;
+                                facultadList = solicitud.getFacultad();
+                                carreraList = solicitud.getCarrera();
+
+                                solicitudSelected = solicitud;
+                                _old = solicitud.getFecha();
+                                writable = true;
+
+                            }
+                        }
+                        break;
+                    case "golist":
+                        move();
+                        break;
+                }
+            } else {
+                move();
+            }
 
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());
@@ -459,7 +468,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
             solicita = loginController.getUsuario();
             responsable = solicita;
-            responsableOld=responsable;
+            responsableOld = responsable;
 
             usuarioList = new ArrayList<>();
             usuarioList.add(solicita);
@@ -548,10 +557,10 @@ public class SolicitudDocenteController implements Serializable, IController {
                     && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
             }
-            
-            if(solicitud.getPasajeros()<0){
+
+            if (solicitud.getPasajeros() < 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
-                return ""; 
+                return "";
             }
 
             //Lo datos del usuario
@@ -562,15 +571,14 @@ public class SolicitudDocenteController implements Serializable, IController {
                         "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 //enviarEmails();
 
-  //si cambia el email o celular del responsable actualizar ese usuario
-  
-  if(!responsableOld.getEmail().equals(responsable.getEmail())|| !responsableOld.getCelular().equals(responsable.getCelular())){
-      usuarioRepository.update(responsable);
-      //actuliza el que esta en el login
-      if(responsable.getUsername().equals(loginController.getUsuario().getUsername())){
-          loginController.setUsuario(responsable);
-      }
-  }
+                //si cambia el email o celular del responsable actualizar ese usuario
+                if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
+                    usuarioRepository.update(responsable);
+                    //actuliza el que esta en el login
+                    if (responsable.getUsername().equals(loginController.getUsuario().getUsername())) {
+                        loginController.setUsuario(responsable);
+                    }
+                }
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
             } else {
@@ -612,25 +620,24 @@ public class SolicitudDocenteController implements Serializable, IController {
             usuarioList.add(solicita);
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
-             if(solicitud.getPasajeros()<0){
+            if (solicitud.getPasajeros() < 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
-                return ""; 
+                return "";
             }
-             
+
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             solicitudRepository.update(solicitud);
-            
-              //si cambia el email o celular del responsable actualizar ese usuario
-  
-  if(!responsableOld.getEmail().equals(responsable.getEmail())|| !responsableOld.getCelular().equals(responsable.getCelular())){
-      usuarioRepository.update(responsable);
-      //actuliza el que esta en el login
-      if(responsable.getUsername().equals(loginController.getUsuario().getUsername())){
-          loginController.setUsuario(responsable);
-      }
-  }
+
+            //si cambia el email o celular del responsable actualizar ese usuario
+            if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
+                usuarioRepository.update(responsable);
+                //actuliza el que esta en el login
+                if (responsable.getUsername().equals(loginController.getUsuario().getUsername())) {
+                    loginController.setUsuario(responsable);
+                }
+            }
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
             JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());

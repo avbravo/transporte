@@ -227,7 +227,7 @@ public class ConductorController implements Serializable, IController {
             String id = loginController.get("idconductor");
             String pageSession = loginController.get("pageconductor");
             //Search
-            
+
             if (loginController.get("searchconductor") == null || loginController.get("searchconductor").equals("")) {
                 loginController.put("searchconductor", "_init");
             }
@@ -238,27 +238,37 @@ public class ConductorController implements Serializable, IController {
             conductor = new Conductor();
             conductorDataModel = new ConductorDataModel(conductorList);
 
-            if (id != null) {
-                Optional<Conductor> optional = conductorRepository.find("idconductor", Integer.parseInt(id));
-                if (optional.isPresent()) {
-                    conductor = optional.get();
-                    conductorSelected = conductor;
-                    writable = true;
-
-                }
-            }
-            if (action != null && action.equals("gonew")) {
-                conductor = new Conductor();
-                conductorSelected = conductor;
-                writable = false;
-
-            }
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = conductorRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
-            move();
+            if (action != null) {
+                switch (action) {
+                    case "gonew":
+                        conductor = new Conductor();
+                        conductorSelected = conductor;
+                        writable = false;
+
+                        break;
+                    case "view":
+                        if (id != null) {
+                            Optional<Conductor> optional = conductorRepository.find("idconductor", Integer.parseInt(id));
+                            if (optional.isPresent()) {
+                                conductor = optional.get();
+                                conductorSelected = conductor;
+                                writable = true;
+
+                            }
+                        }
+                        break;
+                    case "golist":
+                        move();
+                        break;
+                }
+            } else {
+                move();
+            }
 
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());

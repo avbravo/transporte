@@ -207,7 +207,7 @@ public class UnidadController implements Serializable, IController {
             String id = loginController.get("idunidad");
             String pageSession = loginController.get("pageunidad");
             //Search
-            
+
             if (loginController.get("searchunidad") == null || loginController.get("searchunidad").equals("")) {
                 loginController.put("searchunidad", "_init");
             }
@@ -218,27 +218,37 @@ public class UnidadController implements Serializable, IController {
             unidad = new Unidad();
             unidadDataModel = new UnidadDataModel(unidadList);
 
-            if (id != null) {
-                Optional<Unidad> optional = unidadRepository.find("idunidad", id);
-                if (optional.isPresent()) {
-                    unidad = optional.get();
-                    unidadSelected = unidad;
-                    writable = true;
-
-                }
-            }
-            if (action != null && action.equals("gonew")) {
-                unidad = new Unidad();
-                unidadSelected = unidad;
-                writable = false;
-
-            }
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = unidadRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
-            move();
+            if (action != null) {
+                switch (action) {
+                    case "gonew":
+                        unidad = new Unidad();
+                        unidadSelected = unidad;
+                        writable = false;
+
+                        break;
+                    case "view":
+                        if (id != null) {
+                            Optional<Unidad> optional = unidadRepository.find("idunidad", id);
+                            if (optional.isPresent()) {
+                                unidad = optional.get();
+                                unidadSelected = unidad;
+                                writable = true;
+
+                            }
+                        }
+                        break;
+                    case "golist":
+                        move();
+                        break;
+                }
+            } else {
+                move();
+            }
 
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());

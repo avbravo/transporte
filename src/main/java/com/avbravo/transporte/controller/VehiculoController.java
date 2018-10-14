@@ -250,27 +250,36 @@ public class VehiculoController implements Serializable, IController {
             vehiculo = new Vehiculo();
             vehiculoDataModel = new VehiculoDataModel(vehiculoList);
 
-            if (id != null) {
-                Optional<Vehiculo> optional = vehiculoRepository.find("idvehiculo", Integer.parseInt(id));
-                if (optional.isPresent()) {
-                    vehiculo = optional.get();
-                    vehiculoSelected = vehiculo;
-                    writable = true;
-
-                }
-            }
-            if (action != null && action.equals("gonew")) {
-                vehiculo = new Vehiculo();
-                vehiculoSelected = vehiculo;
-                writable = false;
-
-            }
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = vehiculoRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
-            move();
+            if (action != null) {
+                switch (action) {
+                    case "gonew":
+                        vehiculo = new Vehiculo();
+                        vehiculoSelected = vehiculo;
+                        writable = false;
+                        break;
+                    case "view":
+                        if (id != null) {
+                            Optional<Vehiculo> optional = vehiculoRepository.find("idvehiculo", Integer.parseInt(id));
+                            if (optional.isPresent()) {
+                                vehiculo = optional.get();
+                                vehiculoSelected = vehiculo;
+                                writable = true;
+
+                            }
+                        }
+                        break;
+                    case "golist":
+                        move();
+                        break;
+                }
+            } else {
+                move();
+            }
 
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());

@@ -208,7 +208,7 @@ public class FacultadController implements Serializable, IController {
             String id = loginController.get("idfacultad");
             String pageSession = loginController.get("pagefacultad");
             //Search
-            
+
             if (loginController.get("searchfacultad") == null || loginController.get("searchfacultad").equals("")) {
                 loginController.put("searchfacultad", "_init");
             }
@@ -221,29 +221,38 @@ public class FacultadController implements Serializable, IController {
 
             facultadDataModel = new FacultadDataModel(facultadList);
 
-            if (id != null) {
-
-                Optional<Facultad> optional = facultadRepository.find("idfacultad", Integer.parseInt(id));
-                if (optional.isPresent()) {
-                    facultad = optional.get();
-                    facultadSelected = optional.get();
-                    _old = facultad.getDescripcion();
-                    writable = true;
-
-                }
-            }
-            if (action != null && action.equals("gonew")) {
-                facultad = new Facultad();
-                facultadSelected = facultad;
-                writable = false;
-
-            }
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
             Integer c = facultadRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
-            move();
+            if (action != null) {
+                switch (action) {
+                    case "gonew":
+                        facultad = new Facultad();
+                        facultadSelected = facultad;
+                        writable = false;
+                        break;
+                    case "view":
+                        if (id != null) {
+
+                            Optional<Facultad> optional = facultadRepository.find("idfacultad", Integer.parseInt(id));
+                            if (optional.isPresent()) {
+                                facultad = optional.get();
+                                facultadSelected = optional.get();
+                                _old = facultad.getDescripcion();
+                                writable = true;
+
+                            }
+                        }
+                        break;
+                    case "golist":
+                        move();
+                        break;
+                }
+            } else {
+                move();
+            }
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());
         }
