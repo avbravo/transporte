@@ -83,8 +83,23 @@
                     <p:outputLabel  value="#{msg['field.idsolicitud']}" />
                     <p:outputLabel  value="#{calendarioController.solicitud.idsolicitud}" id="idsolicitud"   />
 
-                    <p:outputLabel value="#{msg['field.idestatus']}"/>
-                    <p:outputLabel  value="#{calendarioController.solicitud.estatus.idestatus}" />
+                    <p:outputLabel value="#{msg['field.idestatus']}" rendered="!#{applicationMenu.menuBarAdministracion}"/>
+                    <p:outputLabel  value="#{calendarioController.solicitud.estatus.idestatus}"  rendered="#{!applicationMenu.menuBarAdministracion}"/>
+
+                    <p:outputLabel value="#{msg['field.idestatus']}" rendered="#{applicationMenu.menuBarAdministracion}"/>
+                    <e:autocompleteestatus listener="#{calendarioController.handleSelectEstatusTipovehiculo}"
+                                           value="#{calendarioController.estatusSelected}"
+                                           rendered="#{applicationMenu.menuBarAdministracion}"
+                                           itemLabel=" #{p.idestatus}"
+                                           field="idestatus"
+                                           dropdown="true"
+                                           fromstart="true"
+                                           minQueryLength="0"
+                                           />
+
+
+                    <p:outputLabel  value="#{msg['field.tiposolicitud']}" />
+                    <p:outputLabel  value="#{calendarioController.solicitud.tiposolicitud.idtiposolicitud}" />
 
 
                     <p:outputLabel  value="#{msg['field.solicitadopor']}" />
@@ -284,10 +299,17 @@
                     <p:outputLabel  value="#{msg['field.observaciones']}" />
                     <b:inputTextarea disabled="true" rows="2" value="#{calendarioController.solicitud.observaciones}" id="observaciones"   />
 
-                    <p:outputLabel  value="#{msg['field.tiposolicitud']}" />
-                    <p:outputLabel  value="#{calendarioController.solicitud.tiposolicitud.idtiposolicitud}" />
 
-
+                    <b:commandButton value="#{app['button.close']}"
+                                     iconAwesome="fa-close"
+                                     oncomplete="PF('eventDialog').hide();"/>
+                    <b:commandButton
+                        rendered="#{applicationMenu.menuBarAdministracion}"
+                        value="#{app['button.edit']}"
+                        iconAwesome="fa-edit"
+                        action="#{calendarioController.edit()}"
+                        oncomplete="PF('eventDialog').hide();"
+                        />
 
 
                 </b:panelGrid>
@@ -295,7 +317,7 @@
 
 
 
-            
+
         </b:form>
         <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.calendariobuses.list}" />
 

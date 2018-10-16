@@ -25,10 +25,7 @@
                 <b:dropMenu value="#{msg['menubar.solicitud']}" rendered="#{applicationMenu.menuBarSolicitud}">
 
 
-                    <b:dropMenu value="#{msg['menu.aprobar']}" rendered="#{applicationMenu.solicitudManual.menu}">
-                        <b:navLink value="#{msg['menu.aprobarsolicituddocente']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="" iconAwesome= "fa-calendar-o" />
-                        <b:navLink value="#{msg['menu.administrativo']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="/pages/estatus/list" iconAwesome= "fa-calendar-o" />
-                    </b:dropMenu>
+                  
                     <b:dropMenu value="#{msg['menu.solicitudmanual']}" rendered="#{applicationMenu.solicitudManual.menu}">
                         <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="/pages/solicitudmanualdocente/list" iconAwesome= "fa-calendar-o" />
                         <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{applicationMenu.solicitudAdministrativoPorAdministrador.menu}" outcome="/pages/solicitudmanualadministrativo/list" iconAwesome= "fa-calendar-o" />

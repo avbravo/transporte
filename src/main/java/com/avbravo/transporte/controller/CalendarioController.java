@@ -81,16 +81,17 @@ public class CalendarioController implements Serializable, IController {
 
     //    private String stmpPort="80";
     private String stmpPort = "25";
-    private String menuelement="";
+    private String menuelement = "";
     List<Facultad> suggestionsFacultad = new ArrayList<>();
     List<Carrera> suggestionsCarrera = new ArrayList<>();
     List<Unidad> suggestionsUnidad = new ArrayList<>();
     private Date _old;
     private Boolean writable = false;
-    private Boolean esDocente =true;
+    private Boolean esDocente = true;
     //DataModel
     private SolicitudDataModel solicitudDataModel;
     Estatus estatus = new Estatus();
+    Estatus estatusSelected = new Estatus();
     Tipovehiculo tipovehiculo = new Tipovehiculo();
 
     private ScheduleModel eventModel;
@@ -180,6 +181,14 @@ public class CalendarioController implements Serializable, IController {
         this.pages = pages;
     }
 
+    public Estatus getEstatusSelected() {
+        return estatusSelected;
+    }
+
+    public void setEstatusSelected(Estatus estatusSelected) {
+        this.estatusSelected = estatusSelected;
+    }
+
     public Boolean getEsDocente() {
         return esDocente;
     }
@@ -188,10 +197,6 @@ public class CalendarioController implements Serializable, IController {
         this.esDocente = esDocente;
     }
 
-   
-    
-    
-    
     public Estatus getEstatus() {
         return estatus;
     }
@@ -208,8 +213,6 @@ public class CalendarioController implements Serializable, IController {
         this.tipovehiculo = tipovehiculo;
     }
 
-    
-    
     public List<Usuario> getUsuarioList() {
         return usuarioList;
     }
@@ -393,19 +396,27 @@ public class CalendarioController implements Serializable, IController {
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="init">
 
-    
-    
     @PostConstruct
     public void init() {
         try {
+           
             String action = loginController.get("solicitud");
             String id = loginController.get("idsolicitud");
             String pageSession = loginController.get("pagesolicitud");
             //Search
-
             if (loginController.get("searchsolicitud") == null || loginController.get("searchsolicitud").equals("")) {
                 loginController.put("searchsolicitud", "_init");
             }
+
+            if (loginController.get("calendariotipovehiculo") == null || loginController.get("calendariotipovehiculo").equals("")) {
+                loginController.put("calendariotipovehiculo", "BUS");
+
+            }
+            if (loginController.get("calendarioestatus") == null || loginController.get("calendarioestatus").equals("")) {
+                loginController.put("calendarioestatus", "SOLICITADO");
+
+            }
+
             writable = false;
 
             solicitudList = new ArrayList<>();
@@ -413,11 +424,10 @@ public class CalendarioController implements Serializable, IController {
             solicitud = new Solicitud();
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
-            tipovehiculo = tipovehiculoServices.findById("BUS");
-            estatus = estatusServices.findById("SOLICITADO");
-            esDocente=true;
+            tipovehiculo = tipovehiculoServices.findById(loginController.get("calendariotipovehiculo"));
+            estatus = estatusServices.findById(loginController.get("calendarioestatus"));
+            esDocente = true;
             cargarSchedule();
-
 
         } catch (Exception e) {
             JsfUtil.errorMessage("init() " + e.getLocalizedMessage());
@@ -638,51 +648,45 @@ public class CalendarioController implements Serializable, IController {
     @Override
     public String edit() {
         try {
-            solicitud.setUnidad(unidadList);
-            solicitud.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
-            solicitud.setUnidad(unidadList);
-            solicitud.setFacultad(facultadList);
-            solicitud.setCarrera(carreraList);
-            //guarda el contenido actualizado
-            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
-
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
-                return "";
-            }
-            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
-                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horapartidaescero"));
-                return "";
-            }
-            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
-                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
-            }
-
-            usuarioList = new ArrayList<>();
-            usuarioList.add(solicita);
-            usuarioList.add(responsable);
-            solicitud.setUsuario(usuarioList);
-            if (solicitud.getPasajeros() < 0) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
-                return "";
-            }
+            solicitud.setEstatus(estatusSelected);
+//            solicitud.setUnidad(unidadList);
+//            solicitud.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
+//            solicitud.setUnidad(unidadList);
+//            solicitud.setFacultad(facultadList);
+//            solicitud.setCarrera(carreraList);
+//            //guarda el contenido actualizado
+//            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+//
+//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
+//                return "";
+//            }
+//            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
+//                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
+//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horapartidaescero"));
+//                return "";
+//            }
+//            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
+//                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
+//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
+//            }
+//
+//            usuarioList = new ArrayList<>();
+//            usuarioList.add(solicita);
+//            usuarioList.add(responsable);
+//            solicitud.setUsuario(usuarioList);
+//            if (solicitud.getPasajeros() < 0) {
+//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
+//                return "";
+//            }
 
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             solicitudRepository.update(solicitud);
 
-            //si cambia el email o celular del responsable actualizar ese usuario
-            if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
-                usuarioRepository.update(responsable);
-                //actuliza el que esta en el login
-                if (responsable.getUsername().equals(loginController.getUsuario().getUsername())) {
-                    loginController.setUsuario(responsable);
-                }
-            }
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
+            System.out.println("exception " + solicitudRepository.getException());
             JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
         }
         return "";
@@ -787,11 +791,10 @@ public class CalendarioController implements Serializable, IController {
 
     public void handleSelectEstatusTipovehiculo(SelectEvent event) {
         try {
+            loginController.put("calendariotipovehiculo", tipovehiculo.getIdtipovehiculo());
+            loginController.put("calendarioestatus", estatus.getIdestatus());
+            cargarSchedule();
 
-
-         cargarSchedule();
-           
-         
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -801,8 +804,7 @@ public class CalendarioController implements Serializable, IController {
     public void cargarSchedule() {
         try {
 
-
-            Document doc = new Document("tipovehiculo.idtipovehiculo", tipovehiculo.getIdtipovehiculo()).append("estatus.idestatus",estatus.getIdestatus()).append("activo", "si");
+            Document doc = new Document("tipovehiculo.idtipovehiculo", tipovehiculo.getIdtipovehiculo()).append("estatus.idestatus", estatus.getIdestatus()).append("activo", "si");
             solicitudList = solicitudRepository.findBy(doc, new Document("fecha", 1));
             eventModel = new DefaultScheduleModel();
             if (!solicitudList.isEmpty()) {
@@ -810,7 +812,7 @@ public class CalendarioController implements Serializable, IController {
                     eventModel.addEvent(new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso()));
                 });
             }
-         
+
         } catch (Exception ex) {
             JsfUtil.errorMessage("cargarSchedule() " + ex.getLocalizedMessage());
         }
@@ -1305,7 +1307,7 @@ public class CalendarioController implements Serializable, IController {
     public void onEventSelect(SelectEvent selectEvent) {
         try {
             // esnuevo = false;
-             esDocente =false;
+            esDocente = false;
             event = (ScheduleEvent) selectEvent.getObject();
 
             String title = event.getTitle();
@@ -1314,7 +1316,7 @@ public class CalendarioController implements Serializable, IController {
             Integer idsolicitud = 0;
             if (i != -1) {
                 idsolicitud = Integer.parseInt(title.substring(1, i).trim());
-            } 
+            }
             solicitud.setIdsolicitud(idsolicitud);
             Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
             if (optional.isPresent()) {
@@ -1325,11 +1327,12 @@ public class CalendarioController implements Serializable, IController {
                 unidadList = solicitud.getUnidad();
                 carreraList = solicitud.getCarrera();
                 solicitudSelected = solicitud;
+                estatusSelected = solicitud.getEstatus();
                 esDocente = solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE");
-            } 
+            }
 
         } catch (Exception e) {
-          
+
             JsfUtil.errorMessage("onEventSelect() " + e.getLocalizedMessage());
         }
     }
