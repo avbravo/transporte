@@ -35,9 +35,13 @@ public class ApplicationMenu implements Serializable {
     /*
      elementos
      */
+     MenuElement carrera = new MenuElement();
+    MenuElement calendario = new MenuElement();
+    MenuElement calendariobuses = new MenuElement();
+    MenuElement calendarioautos = new MenuElement();
     MenuElement conductor = new MenuElement();
     MenuElement conductorcambiarcedula = new MenuElement();
-    MenuElement carrera = new MenuElement();
+   
     MenuElement estatus = new MenuElement();
     MenuElement facultad = new MenuElement();
     MenuElement tiposolicitud = new MenuElement();
@@ -61,7 +65,11 @@ public class ApplicationMenu implements Serializable {
         menuBarRegistros = activo;
         menuBarReportes = activo;
         menuBarAdministracion = activo;
+         calendario.initialize(activo);
+         calendarioautos.initialize(activo);
+         calendariobuses.initialize(activo);
         carrera.initialize(activo);
+       
         conductor.initialize(activo);
         conductorcambiarcedula.initialize(activo);
         estatus.initialize(activo);
@@ -90,6 +98,30 @@ public class ApplicationMenu implements Serializable {
 
     public void setSolicitudManual(MenuElement solicitudManual) {
         this.solicitudManual = solicitudManual;
+    }
+
+    public MenuElement getCalendariobuses() {
+        return calendariobuses;
+    }
+
+    public void setCalendariobuses(MenuElement calendariobuses) {
+        this.calendariobuses = calendariobuses;
+    }
+
+    public MenuElement getCalendario() {
+        return calendario;
+    }
+
+    public void setCalendario(MenuElement calendario) {
+        this.calendario = calendario;
+    }
+
+    public MenuElement getCalendarioautos() {
+        return calendarioautos;
+    }
+
+    public void setCalendarioautos(MenuElement calendarioautos) {
+        this.calendarioautos = calendarioautos;
     }
     
     

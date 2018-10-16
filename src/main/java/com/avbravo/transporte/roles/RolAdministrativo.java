@@ -41,8 +41,11 @@ public class RolAdministrativo implements Serializable {
         /*
          *menu
          */
-
+     applicationMenu.getCalendario().initialize(Boolean.TRUE);
+applicationMenu.getCalendarioautos().initialize(Boolean.TRUE);
+applicationMenu.getCalendariobuses().initialize(Boolean.TRUE);
         applicationMenu.getCarrera().initialize(Boolean.FALSE);
+        
         applicationMenu.getConductor().initialize(Boolean.FALSE);
         applicationMenu.getConductorcambiarcedula().initialize(Boolean.FALSE);
         applicationMenu.getEstatus().initialize(Boolean.FALSE);

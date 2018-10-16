@@ -39,10 +39,18 @@
 
 
                     <b:navLink value="#{msg['menu.viajes']}" rendered="#{applicationMenu.viajes.menu}" outcome="/pages/estatus/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.calendario']}" rendered="#{applicationMenu.viajes.menu}" outcome="/pages/estatus/list" iconAwesome= "fa-calendar-o" />
 
+                    <b:dropMenu  value="#{msg['menu.calendario']}"  rendered="#{applicationMenu.calendario.menu}">
+
+                        <b:navLink value="#{msg['menu.calendario']}" rendered="#{applicationMenu.calendariobuses.menu}" outcome="/pages/calendario/calendario" iconAwesome= "fa-calendar-o" />
+                        
+
+                    </b:dropMenu>
+                   
 
                 </b:dropMenu>
+
+
                 <b:dropMenu value="#{msg['menubar.registros']}" rendered="#{applicationMenu.menuBarRegistros}">
                     <b:navLink value="#{msg['menu.vehiculo']}" rendered="#{applicationMenu.vehiculo.menu}" outcome="/pages/vehiculo/list" iconAwesome= "fa-car" />
                     <b:navLink value="#{msg['menu.vehiculocambiarplaca']}" rendered="#{applicationMenu.vehiculocambiarplaca.menu}" outcome="/pages/vehiculo/cambiarplaca" iconAwesome="fa-pencil-square-o" />

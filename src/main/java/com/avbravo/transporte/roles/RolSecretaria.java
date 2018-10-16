@@ -40,6 +40,9 @@ public class RolSecretaria implements Serializable {
         /*
          *menu
          */
+        applicationMenu.getCalendario().initialize(Boolean.TRUE);
+applicationMenu.getCalendarioautos().initialize(Boolean.TRUE);
+applicationMenu.getCalendariobuses().initialize(Boolean.TRUE);
 
         applicationMenu.getCarrera().initialize(Boolean.TRUE);
         applicationMenu.getConductor().initialize(Boolean.TRUE);
