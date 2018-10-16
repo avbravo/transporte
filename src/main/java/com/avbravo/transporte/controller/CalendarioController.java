@@ -18,11 +18,14 @@ import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
+import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Estatus;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
+import com.avbravo.transporteejb.entity.Vehiculo;
+import com.avbravo.transporteejb.entity.Viajes;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
 import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
@@ -93,6 +96,9 @@ public class CalendarioController implements Serializable, IController {
     Estatus estatus = new Estatus();
     Estatus estatusSelected = new Estatus();
     Tipovehiculo tipovehiculo = new Tipovehiculo();
+    Vehiculo vehiculo = new Vehiculo();
+    Conductor conductor = new Conductor();
+    Viajes viajes = new Viajes();
 
     private ScheduleModel eventModel;
 
@@ -181,6 +187,33 @@ public class CalendarioController implements Serializable, IController {
         this.pages = pages;
     }
 
+    public Vehiculo getVehiculo() {
+        return vehiculo;
+    }
+
+    public void setVehiculo(Vehiculo vehiculo) {
+        this.vehiculo = vehiculo;
+    }
+
+    public Conductor getConductor() {
+        return conductor;
+    }
+
+    public void setConductor(Conductor conductor) {
+        this.conductor = conductor;
+    }
+
+    public Viajes getViajes() {
+        return viajes;
+    }
+
+    public void setViajes(Viajes viajes) {
+        this.viajes = viajes;
+    }
+
+    
+    
+    
     public Estatus getEstatusSelected() {
         return estatusSelected;
     }
@@ -1344,8 +1377,8 @@ public class CalendarioController implements Serializable, IController {
         try {
 //            esnuevo = true;
             event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
-            System.out.println("--->onDateSelect() ");
-
+            JsfUtil.warningDialog("this ", "onDateSelectCalendar "+ (Date) selectEvent.getObject());
+            System.out.println("onDateSelectCalendar()");
         } catch (Exception e) {
             JsfUtil.errorMessage("onDateSelect() " + e.getLocalizedMessage());
         }

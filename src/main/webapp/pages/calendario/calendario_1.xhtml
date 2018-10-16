@@ -99,51 +99,6 @@
                                            />
 
 
-                    <p:outputLabel value="#{msg['field.vehiculo']}"
-                                   rendered="#{applicationMenu.menuBarAdministracion}" />
-                    <e:autocompletevehiculo listener="#{calendarioController.handleSelect}"
-                                            rendered="#{applicationMenu.menuBarAdministracion}"
-                                            value="#{calendarioController.vehiculo}"
-                                            itemLabel=" #{p.marca}"
-                                            field="marca"
-                                            dropdown="true"
-                                            fromstart="true"
-                                            minQueryLength="0"
-                                            />
-
-
-                    <p:outputLabel value="#{msg['field.conductor']}"  rendered="#{applicationMenu.menuBarAdministracion}"/>
-                    <e:autocompleteconductor listener="#{calendariController.handleSelect}"
-                                             rendered="#{applicationMenu.menuBarAdministracion}"
-                                             value="#{calendarioController.conductor}"
-                                             itemLabel=" #{p.nombre}"
-                                             dropdown="true"
-                                             fromstart="true"
-                                             minQueryLength="0"
-                                             field="nombre"
-                                             />
-
-
-                    <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}" rendered="#{applicationMenu.menuBarAdministracion}" />
-                    <a:calendar rendered="#{applicationMenu.menuBarAdministracion}"
-                        pattern="dd/MM/yyyy HH:mm a" value="#{calendarioController.viajes.fechahorainicioreserva}"   label="#{msg['field.fechahorainicioreserva']}" />
-
-
-                    <p:outputLabel  value="#{msg['field.fechahorafinreserva']}" rendered="#{applicationMenu.menuBarAdministracion}" />
-                    <a:calendar rendered="#{applicationMenu.menuBarAdministracion}"
-                        pattern="dd/MM/yyyy HH:mm a" value="#{calendarioController.viajes.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
-
-
-
-                    <p:outputLabel  value="#{msg['field.comentarios']}" rendered="#{applicationMenu.menuBarAdministracion}"/>
-                    <b:inputTextarea rows="2" value="#{calendarioController.viajes.comentarios}" rendered="#{applicationMenu.menuBarAdministracion}" />
-
-
-                    <p:outputLabel  value="#{msg['field.kmestimados']}" />
-                    <a:inputText  value="#{calendarioController.viajes.kmestimados}"  />
-
-
-
                     <p:outputLabel  value="#{msg['field.tiposolicitud']}" />
                     <p:outputLabel  value="#{calendarioController.solicitud.tiposolicitud.idtiposolicitud}" />
 
@@ -361,13 +316,13 @@
                 </b:panelGrid>
             </p:dialog>
 
-            <p:dialog widgetVar="newDialog" header="#{msg['dialogo.nuevasolicitud']}" 
+<p:dialog widgetVar="newDialog" header="#{msg['dialogo.nuevasolicitud']}" 
                       width="650" height="450"
                       responsive="true"
                       showEffect="clip" hideEffect="clip">
                 <b:panelGrid id="newDetails" colSpans="2,10" size="xs" > 
                 </b:panelGrid>
-            </p:dialog>
+</p:dialog>
 
 
         </b:form>
