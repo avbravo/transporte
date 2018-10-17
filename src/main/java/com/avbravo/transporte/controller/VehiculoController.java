@@ -390,6 +390,7 @@ public class VehiculoController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
+            vehiculo.setEnreparacion("no");
             Integer id = autoincrementableTransporteejbServices.getContador("vehiculo");
             vehiculo.setIdvehiculo(id);
             //Lo datos del usuario

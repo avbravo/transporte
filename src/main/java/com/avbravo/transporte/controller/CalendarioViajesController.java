@@ -77,7 +77,7 @@ import org.primefaces.model.ScheduleModel;
  */
 @Named
 @ViewScoped
-public class CalendarioController implements Serializable, IController {
+public class CalendarioViajesController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -416,7 +416,7 @@ public class CalendarioController implements Serializable, IController {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public CalendarioController() {
+    public CalendarioViajesController() {
     }
 
     // </editor-fold>
@@ -822,7 +822,7 @@ public class CalendarioController implements Serializable, IController {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelectEstatus(SelectEvent event)">
 
-    public void handleSelectEstatusTipovehiculo(SelectEvent event) {
+    public void handleSelectVehiculoConductor(SelectEvent event) {
         try {
             loginController.put("calendariotipovehiculo", tipovehiculo.getIdtipovehiculo());
             loginController.put("calendarioestatus", estatus.getIdestatus());

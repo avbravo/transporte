@@ -26,10 +26,13 @@ public class ApplicationMenu implements Serializable {
     /*
      barra de menu
      */
+    private Boolean menuBarAdministracion = false;
+    private Boolean menuBarCombustible = false;
+    private Boolean menuBarMantenimiento = false;
     private Boolean menuBarSolicitud = false;
     private Boolean menuBarRegistros = false;
     private Boolean menuBarReportes = false;
-    private Boolean menuBarAdministracion = false;
+    
     private Boolean menuBarViajes = false;
 
     /*
@@ -61,10 +64,13 @@ public class ApplicationMenu implements Serializable {
     MenuElement unidad = new MenuElement();
 
     public void enabledAll(Boolean activo) {
+                menuBarAdministracion = activo;
+                menuBarCombustible = activo;
+                menuBarMantenimiento = activo;
         menuBarSolicitud = activo;
         menuBarRegistros = activo;
         menuBarReportes = activo;
-        menuBarAdministracion = activo;
+
          calendario.initialize(activo);
          calendarioautos.initialize(activo);
          calendariobuses.initialize(activo);
@@ -92,6 +98,25 @@ public class ApplicationMenu implements Serializable {
 
     }
 
+    public Boolean getMenuBarCombustible() {
+        return menuBarCombustible;
+    }
+
+    public void setMenuBarCombustible(Boolean menuBarCombustible) {
+        this.menuBarCombustible = menuBarCombustible;
+    }
+
+    public Boolean getMenuBarMantenimiento() {
+        return menuBarMantenimiento;
+    }
+
+    public void setMenuBarMantenimiento(Boolean menuBarMantenimiento) {
+        this.menuBarMantenimiento = menuBarMantenimiento;
+    }
+
+    
+    
+    
     public MenuElement getSolicitudManual() {
         return solicitudManual;
     }
