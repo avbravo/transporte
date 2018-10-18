@@ -85,7 +85,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.facultad']}" />
-                        <p:autoComplete dropdown="false"
+                        <p:autoComplete dropdown="true"
                                         multiple="true"
                                         scrollHeight="250"
                                         size="15"
@@ -101,7 +101,7 @@
                             <f:converter binding="#{facultadConverter}"/>
                             <f:attribute name="field" value="descripcion"/>
                             <f:attribute name="fielddropdown" value="false"/>
-                            <f:attribute name="fieldquerylenth" value="1"/>
+                            <f:attribute name="fieldquerylenth" value="0"/>
                             <p:ajax event="itemSelect" listener="#{solicitudDocenteController.handleSelect}"
                                     update=":form:content"     />
                             <p:ajax event="itemUnselect" listener="#{solicitudDocenteController.itemUnselect}"
@@ -120,11 +120,11 @@
 
 
                         <p:outputLabel  value="#{msg['field.carrera']}" />
-                        <p:autoComplete dropdown="false"
+                        <p:autoComplete dropdown="true"
                                         id="carrera"
                                         multiple="true"
                                         scrollHeight="250"
-                                        size="15"
+                                        size="55"
                                         emptyMessage="#{app['info.nohayregistros']}"
                                         value="#{solicitudDocenteController.carreraList}"
                                         completeMethod="#{solicitudDocenteController.completeFiltradoCarrera}"

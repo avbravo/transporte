@@ -924,9 +924,6 @@ public class SolicitudManualDocenteController implements Serializable, IControll
 
             Boolean found = false;
             query = query.trim();
-            if (query.length() < 1) {
-                return suggestionsFacultad;
-            }
 
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = facultadRepository.findRegexInText(field, query, true, new Document(field, 1));
@@ -956,9 +953,9 @@ public class SolicitudManualDocenteController implements Serializable, IControll
         try {
             Boolean found = false;
             query = query.trim();
-            if (query.length() < 1) {
-                return suggestionsCarrera;
-            }
+//            if (query.length() < 1) {
+//                return suggestionsCarrera;
+//            }
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = carreraRepository.findRegexInText(field, query, true, new Document(field, 1));
             temp = removeByNotFoundFacultad(temp);

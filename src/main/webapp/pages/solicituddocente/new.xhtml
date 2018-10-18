@@ -95,10 +95,10 @@
 
 
                         <p:outputLabel  value="#{msg['field.facultad']}" />
-                        <p:autoComplete dropdown="false"
+                        <p:autoComplete dropdown="true"
                                         multiple="true"
                                         scrollHeight="250"
-                                        size="15"
+                                        size="55"
                                         emptyMessage="#{app['info.nohayregistros']}"
                                         value="#{solicitudDocenteController.facultadList}"
                                         completeMethod="#{solicitudDocenteController.completeFiltradoFacultad}"
@@ -130,11 +130,11 @@
 
 
                         <p:outputLabel  value="#{msg['field.carrera']}" />
-                        <p:autoComplete dropdown="false"
+                        <p:autoComplete dropdown="true"
                                         id="carrera"
                                         multiple="true"
                                         scrollHeight="250"
-                                        size="15"
+                                        size="55"
                                         emptyMessage="#{app['info.nohayregistros']}"
                                         value="#{solicitudDocenteController.carreraList}"
                                         completeMethod="#{solicitudDocenteController.completeFiltradoCarrera}"
