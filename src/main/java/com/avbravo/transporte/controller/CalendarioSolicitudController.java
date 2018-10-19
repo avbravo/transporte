@@ -811,13 +811,25 @@ public class CalendarioSolicitudController implements Serializable, IController 
     public void handleSelect(SelectEvent event) {
         try {
 
+       
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
+           
             solicitudList.removeAll(solicitudList);
             solicitudList.add(solicitudSelected);
             solicitudFiltered = solicitudList;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-            loginController.put("searchsolicitud", "_autocomplete");
+            
+            loginController.put("searchsolicitud", "idsolicitud");
+              lookupTransporteejbServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
         } catch (Exception ex) {
-            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage("handleAutocompleteOfListXhtml " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelectEstatus(SelectEvent event)">

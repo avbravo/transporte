@@ -730,17 +730,24 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
     public void handleSelect(SelectEvent event) {
         try {
-//            JsfUtil.testMessage("======================handle Selected");
-//            System.out.println("Factultad");
-//            facultadList.forEach(f -> System.out.println(f.getDescripcion()));
-//            System.out.println("Carrera");
-//            carreraList.forEach(c -> System.out.println(c.getDescripcion()));
 
+          
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
             solicitudList.removeAll(solicitudList);
             solicitudList.add(solicitudSelected);
             solicitudFiltered = solicitudList;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-            loginController.put("searchsolicitud", "_autocomplete");
+            
+            loginController.put("searchsolicitud", "idsolicitud");
+            lookupTransporteejbServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
+            
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -829,7 +836,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     break;
 
                 case "idsolicitud":
-                    doc = new Document("idsolicitud", solicitud.getIdsolicitud()).append("usuario.username", loginController.getUsuario().getUsername());
+                    doc = new Document("idsolicitud", lookupTransporteejbServices.getIdsolicitud()).append("usuario.username", loginController.getUsuario().getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
                     break;
 
@@ -1113,6 +1120,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }
     // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="enviarEmails()">
+   
     public String enviarEmails() {
         try {
             Boolean enviados = false;
@@ -1165,6 +1174,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         }
         return "";
     }
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
     public String columnColor(String estatus) {

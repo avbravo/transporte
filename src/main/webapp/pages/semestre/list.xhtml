@@ -32,14 +32,14 @@
 
                     
                     <p:outputLabel value="#{msg['field.idsemestre']}"/>
-                    <e:autocompletesemestre listener="#{semestreController.handleSelect}"
+                    <e:autocompletesemestre listener="#{semestreController.handleAutocompleteOfListXhtml}"
                                                   value="#{semestreController.semestreSelected}"
                                                   itemLabel="#{p.idsemestre}"
                                                   field="idsemestre"
                                                   update=":form:dataTable"/>
 
                     <p:outputLabel value="#{msg['field.descripcion']}"/>
-                      <e:autocompletesemestre listener="#{semestreController.handleSelect}"
+                      <e:autocompletesemestre listener="#{semestreController.handleAutocompleteOfListXhtml}"
                                                 value="#{semestreController.semestreSelected}"
                                                 itemLabel=" #{p.descripcion}"
                                                 field="descripcion"

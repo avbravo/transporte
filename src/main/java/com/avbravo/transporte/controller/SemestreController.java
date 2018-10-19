@@ -482,11 +482,23 @@ public class SemestreController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
-            semestreList.removeAll(semestreList);
+           
+        
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
+           semestreList.removeAll(semestreList);
             semestreList.add(semestreSelected);
             semestreFiltered = semestreList;
             semestreDataModel = new SemestreDataModel(semestreList);
-            loginController.put("searchrol", "_autocomplete");
+            
+            loginController.put("searchsemestre", "idsemestre");
+            lookupTransporteejbServices.setIdsemestre(semestreSelected.getIdsemestre());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -600,7 +612,7 @@ public class SemestreController implements Serializable, IController {
                     break;
 
                 case "idsemestre":
-                    doc = new Document("idsemestre", semestre.getIdsemestre());
+                    doc = new Document("idsemestre", lookupTransporteejbServices.getIdsemestre());
                     semestreList = semestreRepository.findPagination(doc, page, rowPage, new Document("idsemestre", -1));
                     break;
 

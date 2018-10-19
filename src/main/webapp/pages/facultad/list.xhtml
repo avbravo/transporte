@@ -33,7 +33,7 @@
 
 
                     <p:outputLabel value="#{msg['field.facultad']}"/>
-                    <e:autocompletefacultad  listener="#{facultadController.handleSelect}"
+                    <e:autocompletefacultad  listener="#{facultadController.handleAutocompleteOfListXhtml}"
                                              value="#{facultadController.facultadSelected}"
                                              itemLabel=" #{p.descripcion}"
                                              field="descripcion"
@@ -45,14 +45,14 @@
                 <b:row>
                     <b:column medium-screen="4">
                         <a:search label="#{msg['field.idfacultad']}"
-                                  value="#{facultadController.lookupCommonejbServices.idfacultad}"
+                                  value="#{facultadController.lookupTransporteejbServices.idfacultad}"
                                   renderedList="#{applicationMenu.facultad.list}"  
                                   search="#{facultadController.searchBy('idfacultad')}"
                                   />
                     </b:column>
                     <b:column medium-screen="8">
                         <a:search label="#{msg['field.descripcion']}"
-                                  value="#{facultadController.lookupCommonejbServices.descripcion}"
+                                  value="#{facultadController.lookupTransporteejbServices.descripcion}"
                                   renderedList="#{applicationMenu.facultad.list}"  
                                   search="#{facultadController.searchBy('descripcion')}"
                                   />

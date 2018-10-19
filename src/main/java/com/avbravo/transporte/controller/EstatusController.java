@@ -78,6 +78,7 @@ public class EstatusController implements Serializable, IController {
     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
     LookupTransporteejbServices lookupTransporteejbServices;
+    
 
     @Inject
     RevisionHistoryServices revisionHistoryServices;
@@ -105,14 +106,15 @@ public class EstatusController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupTransporteejbServices getlookupTransporteejbServices() {
+    public LookupTransporteejbServices getLookupTransporteejbServices() {
         return lookupTransporteejbServices;
     }
 
-    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
 
+   
     public Integer getPage() {
         return page;
     }
@@ -483,13 +485,25 @@ public class EstatusController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
+          
+       
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
             estatusList.removeAll(estatusList);
             estatusList.add(estatusSelected);
             estatusFiltered = estatusList;
             estatusDataModel = new EstatusDataModel(estatusList);
-            loginController.put("searchestatus", "_autocomplete");
+            
+            loginController.put("searchestatus", "idestatus");
+            lookupTransporteejbServices.setIdestatus(estatusSelected.getIdestatus());
         } catch (Exception ex) {
-            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage("handleAutocompleteOfListXhtml() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -574,8 +588,6 @@ public class EstatusController implements Serializable, IController {
                     break;
 
                 case "idestatus":
-//                        doc = new Document("idestatus", estatus.getIdestatus());
-//                        estatusList = estatusRepository.findPagination(doc, page, rowPage, new Document("idestatus", -1));
                     estatusList = estatusRepository.findRegexInTextPagination("idestatus", lookupTransporteejbServices.getIdestatus(), true, page, rowPage, new Document("idestatus", -1));
                     break;
 

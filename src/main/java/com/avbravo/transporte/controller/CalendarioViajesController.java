@@ -811,13 +811,25 @@ public class CalendarioViajesController implements Serializable, IController {
     public void handleSelect(SelectEvent event) {
         try {
 
-            solicitudList.removeAll(solicitudList);
+          
+          
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
+             solicitudList.removeAll(solicitudList);
             solicitudList.add(solicitudSelected);
             solicitudFiltered = solicitudList;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-            loginController.put("searchsolicitud", "_autocomplete");
+            
+            loginController.put("searchsolicitud", "idsolicitud");
+            lookupTransporteejbServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
         } catch (Exception ex) {
-            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage("handleAutocompleteOfListXhtml() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelectEstatus(SelectEvent event)">
@@ -1228,6 +1240,8 @@ public class CalendarioViajesController implements Serializable, IController {
     }
     // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="enviarEmails()">
+
     public String enviarEmails() {
         try {
             Boolean enviados = false;
@@ -1279,7 +1293,7 @@ public class CalendarioViajesController implements Serializable, IController {
             JsfUtil.errorMessage("enviarEmails() " + e.getLocalizedMessage());
         }
         return "";
-    }
+    }    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
     public String columnColor(String estatus) {
@@ -1337,6 +1351,8 @@ public class CalendarioViajesController implements Serializable, IController {
         // </editor-fold>
     }
 
+    // <editor-fold defaultstate="collapsed" desc="onEventSelect(SelectEvent selectEvent)">
+
     public void onEventSelect(SelectEvent selectEvent) {
         try {
             // esnuevo = false;
@@ -1368,8 +1384,13 @@ public class CalendarioViajesController implements Serializable, IController {
 
             JsfUtil.errorMessage("onEventSelect() " + e.getLocalizedMessage());
         }
-    }
+    }    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="onDateSelectCalendar(SelectEvent selectEvent)">
+  
+    
+    // <editor-fold defaultstate="collapsed" desc="onDateSelectCalendar(SelectEvent selectEvent)">
+  
     /*
     cuando selecciona una fecha
      */
@@ -1384,6 +1405,10 @@ public class CalendarioViajesController implements Serializable, IController {
         }
 
     }
+      // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="onEventMove(ScheduleEntryMoveEvent event))">
+   
 
     public void onEventMove(ScheduleEntryMoveEvent event) {
         System.out.println("--->onEventMove() ");
@@ -1391,12 +1416,14 @@ public class CalendarioViajesController implements Serializable, IController {
 
 //        addMessage(message);
     }
-
+ // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="onEventResize(ScheduleEntryResizeEvent event)">
+    
     public void onEventResize(ScheduleEntryResizeEvent event) {
         System.out.println("--->onEventResize() ");
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event resized", "Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
 
 //        addMessage(message);
     }
-
+// </editor-fold>
 }

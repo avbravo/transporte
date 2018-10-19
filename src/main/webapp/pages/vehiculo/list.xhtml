@@ -34,14 +34,14 @@
 
 
                     <p:outputLabel value="#{msg['field.placa']}"/>
-                    <e:autocompletevehiculo listener="#{vehiculoController.handleSelect}"
+                    <e:autocompletevehiculo listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
                                                   value="#{vehiculoController.vehiculoSelected}"
                                                   itemLabel=" #{p.placa}"
                                                   field="placa"
                                                   update=" :form:dataTable"/>
                     
                     <p:outputLabel value="#{msg['field.marca']}"/>
-                    <e:autocompletevehiculo listener="#{vehiculoController.handleSelect}"
+                    <e:autocompletevehiculo listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
                                                   value="#{vehiculoController.vehiculoSelected}"
                                                   itemLabel=" #{p.marca}"
                                                   field="marca"
@@ -49,7 +49,7 @@
 
                
                     <p:outputLabel value="#{msg['field.modelo']}"/>
-                    <e:autocompletevehiculo listener="#{vehiculoController.handleSelect}"
+                    <e:autocompletevehiculo listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
                                                   value="#{vehiculoController.vehiculoSelected}"
                                                   itemLabel=" #{p.modelo}"
                                                   field="modelo"

@@ -731,13 +731,25 @@ public class SolicitudDocenteController implements Serializable, IController {
     public void handleSelect(SelectEvent event) {
         try {
 
+          
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
+    
+    
+       // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
             solicitudList.removeAll(solicitudList);
             solicitudList.add(solicitudSelected);
             solicitudFiltered = solicitudList;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-            loginController.put("searchsolicitud", "_autocomplete");
+            
+            loginController.put("searchsolicitud", "idsolicitud");
+            lookupTransporteejbServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
         } catch (Exception ex) {
-            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage("handleAutocompleteOfListXhtml " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelectResponsable(SelectEvent event)">
@@ -834,7 +846,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                     break;
 
                 case "idsolicitud":
-                    doc = new Document("idsolicitud", solicitud.getIdsolicitud()).append("usuario.username", loginController.getUsuario().getUsername());
+                    doc = new Document("idsolicitud", lookupTransporteejbServices.getIdsolicitud()).append("usuario.username", loginController.getUsuario().getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
                     break;
 
@@ -1118,6 +1130,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     }
     // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="enviarEmails()">
+
     public String enviarEmails() {
         try {
             Boolean enviados = false;
@@ -1169,7 +1183,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             JsfUtil.errorMessage("enviarEmails() " + e.getLocalizedMessage());
         }
         return "";
-    }
+    }    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
     public String columnColor(String estatus) {

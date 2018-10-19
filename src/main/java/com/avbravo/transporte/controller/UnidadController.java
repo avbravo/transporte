@@ -483,11 +483,24 @@ public class UnidadController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
-            unidadList.removeAll(unidadList);
+           
+           
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
+    
+    
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
+             unidadList.removeAll(unidadList);
             unidadList.add(unidadSelected);
             unidadFiltered = unidadList;
             unidadDataModel = new UnidadDataModel(unidadList);
-            loginController.put("searchunidad", "_autocomplete");
+            
+            loginController.put("searchunidad", "idunidad");
+            lookupTransporteejbServices.setIdunidad(unidadSelected.getIdunidad());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }

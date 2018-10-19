@@ -479,16 +479,26 @@ public class RolController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
-            rolList.removeAll(rolList);
-            rolList.add(rolSelected);
-            rolFiltered = rolList;
-            rolDataModel = new RolDataModel(rolList);
-            loginController.put("searchrol", "_autocomplete");
+      
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
+           rolList.removeAll(rolList);
+            rolList.add(rolSelected);
+            rolFiltered = rolList;
+           rolDataModel = new RolDataModel(rolList);
+            
+            loginController.put("searchrol", "idrol");
+            lookupTransporteejbServices.setIdrol(rolSelected.getIdrol());
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleAutocompleteOfListXhtml() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="last">
     @Override
     public String last() {
@@ -597,7 +607,7 @@ public class RolController implements Serializable, IController {
                     break;
 
                 case "idrol":
-                    doc = new Document("idrol", rol.getIdrol());
+                    doc = new Document("idrol", lookupTransporteejbServices.getIdrol());
                     rolList = rolRepository.findPagination(doc, page, rowPage, new Document("idrol", -1));
                     break;
 

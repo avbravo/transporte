@@ -105,13 +105,15 @@ public class TiposolicitudController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupTransporteejbServices getlookupTransporteejbServices() {
+    public LookupTransporteejbServices getLookupTransporteejbServices() {
         return lookupTransporteejbServices;
     }
 
-    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
         this.lookupTransporteejbServices = lookupTransporteejbServices;
     }
+
+   
 
     public Integer getPage() {
         return page;
@@ -482,11 +484,23 @@ public class TiposolicitudController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
+          
+         
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
             tiposolicitudList.removeAll(tiposolicitudList);
             tiposolicitudList.add(tiposolicitudSelected);
             tiposolicitudFiltered = tiposolicitudList;
             tiposolicitudDataModel = new TiposolicitudDataModel(tiposolicitudList);
-            loginController.put("searchtiposolicitud", "_autocomplete");
+            
+            loginController.put("searchtiposolicitud", "idtiposolicitud");
+            lookupTransporteejbServices.setIdtiposolicitud(tiposolicitudSelected.getIdtiposolicitud());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }

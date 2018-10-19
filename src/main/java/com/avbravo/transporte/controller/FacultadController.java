@@ -20,6 +20,7 @@ import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
 
 import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -77,8 +78,7 @@ public class FacultadController implements Serializable, IController {
     //Atributos para busquedas
     @Inject
     AutoincrementableCommonejbServices autoincrementableCommonejbServices;
-    @Inject
-    LookupCommonejbServices lookupCommonejbServices;
+   
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -91,6 +91,8 @@ public class FacultadController implements Serializable, IController {
     Printer printer;
     @Inject
     LoginController loginController;
+    @Inject
+    LookupTransporteejbServices lookupTransporteejbServices;
 
     //List of Relations
     //Repository of Relations
@@ -101,17 +103,20 @@ public class FacultadController implements Serializable, IController {
         return facultadRepository.listOfPage(rowPage);
     }
 
+    public LookupTransporteejbServices getLookupTransporteejbServices() {
+        return lookupTransporteejbServices;
+    }
+
+    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
+        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    }
+
+    
+    
     public void setPages(List<Integer> pages) {
         this.pages = pages;
     }
 
-    public LookupCommonejbServices getLookupCommonejbServices() {
-        return lookupCommonejbServices;
-    }
-
-    public void setLookupCommonejbServices(LookupCommonejbServices lookupCommonejbServices) {
-        this.lookupCommonejbServices = lookupCommonejbServices;
-    }
 
     public Integer getPage() {
         return page;
@@ -500,16 +505,25 @@ public class FacultadController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
-            facultadList.removeAll(facultadList);
-            facultadList.add(facultadSelected);
-            facultadFiltered = facultadList;
-            facultadDataModel = new FacultadDataModel(facultadList);
-            loginController.put("searchfacultad", "_autocomplete");
+         
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
 
+// <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
+         facultadList.removeAll(facultadList);
+            facultadList.add(facultadSelected);
+            facultadFiltered = facultadList;
+            facultadDataModel = new FacultadDataModel(facultadList);
+            loginController.put("searchfacultad", "idfacultad");
+            lookupTransporteejbServices.setIdfacultad(facultadSelected.getIdfacultad());
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleAutocompleteOfListXhtml() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="last">
     @Override
     public String last() {
@@ -591,12 +605,12 @@ public class FacultadController implements Serializable, IController {
                     break;
 
                 case "idfacultad":
-                    doc = new Document("idfacultad", lookupCommonejbServices.getIdfacultad());
+                    doc = new Document("idfacultad", lookupTransporteejbServices.getIdfacultad());
 
                     facultadList = facultadRepository.findBy(doc);
                     break;
                 case "descripcion":
-                    facultadList = facultadRepository.findRegexInTextPagination("descripcion", lookupCommonejbServices.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
+                    facultadList = facultadRepository.findRegexInTextPagination("descripcion", lookupTransporteejbServices.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
                     break;
 
                 default:

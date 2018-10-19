@@ -516,11 +516,23 @@ public class VehiculoController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
+
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
+
             vehiculoList.removeAll(vehiculoList);
             vehiculoList.add(vehiculoSelected);
             vehiculoFiltered = vehiculoList;
             vehiculoDataModel = new VehiculoDataModel(vehiculoList);
-            loginController.put("searchvehiculo", "_autocomplete");
+
+            loginController.put("searchvehiculo", "placa");
+            lookupTransporteejbServices.setPlaca(vehiculoSelected.getPlaca());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -608,7 +620,7 @@ public class VehiculoController implements Serializable, IController {
 
                 case "idvehiculo":
 
-                    vehiculoList = vehiculoRepository.findRegexInTextPagination("idvehiculo", lookupTransporteejbServices.getIdvehiculo(), true, page, rowPage, new Document("idvehiculo", -1));
+                    vehiculoList = vehiculoRepository.findRegexInTextPagination("placa", lookupTransporteejbServices.getPlaca(), true, page, rowPage, new Document("idvehiculo", -1));
                     break;
 
                 default:

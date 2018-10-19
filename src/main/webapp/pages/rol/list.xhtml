@@ -33,14 +33,14 @@
 
                     
                     <p:outputLabel value="#{msg['field.idrol']}"/>
-                    <e:autocompleterol listener="#{rolController.handleSelect}"
+                    <e:autocompleterol listener="#{rolController.handleAutocompleteOfListXhtml}"
                                                   value="#{rolController.rolSelected}"
                                                   itemLabel="#{p.idrol}"
                                                   field="idrol"
                                                   update=":form:dataTable"/>
 
                     <p:outputLabel value="#{msg['field.rol']}"/>
-                      <e:autocompleterol listener="#{rolController.handleSelect}"
+                      <e:autocompleterol listener="#{rolController.handleAutocompleteOfListXhtml}"
                                                 value="#{rolController.rolSelected}"
                                                 itemLabel=" #{p.rol}"
                                                 field="rol"

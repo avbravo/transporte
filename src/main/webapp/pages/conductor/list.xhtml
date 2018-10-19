@@ -34,14 +34,14 @@
 
 
                     <p:outputLabel value="#{msg['field.cedula']}"/>
-                    <e:autocompleteconductor listener="#{conductorController.handleSelect}"
+                    <e:autocompleteconductor listener="#{conductorController.handleAutocompleteOfListXhtml}"
                                                   value="#{conductorController.conductorSelected}"
                                                   itemLabel=" #{p.cedula}"
                                                   field="cedula"
                                                   update=" :form:dataTable"/>
                     
                     <p:outputLabel value="#{msg['field.nombre']}"/>
-                    <e:autocompleteconductor listener="#{conductorController.handleSelect}"
+                    <e:autocompleteconductor listener="#{conductorController.handleAutocompleteOfListXhtml}"
                                                   value="#{conductorController.conductorSelected}"
                                                   itemLabel=" #{p.nombre}"
                                                   field="nombre"

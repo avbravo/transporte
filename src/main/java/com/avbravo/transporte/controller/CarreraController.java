@@ -501,16 +501,27 @@ public class CarreraController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
-            carreraList.removeAll(carreraList);
-            carreraList.add(carreraSelected);
-            carreraFiltered = carreraList;
-            carreraDataModel = new CarreraDataModel(carreraList);
-            loginController.put("searchcarrera", "_autocomplete");
+          
+        
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
+      carreraList.removeAll(carreraList);
+            carreraList.add(carreraSelected);
+            carreraFiltered = carreraList;
+            carreraDataModel = new CarreraDataModel(carreraList);
+            
+            loginController.put("searchcarrera", "idcarrera");
+            lookupTransporteejbServices.setIdcarrera(carreraSelected.getIdcarrera());
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleAutocompleteOfListXhtml() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="last">
     @Override
     public String last() {

@@ -506,13 +506,29 @@ public class ConductorController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
+         
+       
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
             conductorList.removeAll(conductorList);
             conductorList.add(conductorSelected);
             conductorFiltered = conductorList;
             conductorDataModel = new ConductorDataModel(conductorList);
-            loginController.put("searchconductor", "_autocomplete");
+             
+             
+             
+            
+            
+            loginController.put("searchconductor", "idconductor");
+            lookupTransporteejbServices.setIdconductor(conductorSelected.getIdconductor());
         } catch (Exception ex) {
-            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage("handleAutocompleteOfListXhtml() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -598,7 +614,7 @@ public class ConductorController implements Serializable, IController {
 
                 case "idconductor":
 
-                    conductorList = conductorRepository.findRegexInTextPagination("idconductor", lookupTransporteejbServices.getIdconductor(), true, page, rowPage, new Document("idconductor", -1));
+                    conductorList = conductorRepository.findBy(new Document("idconductor", lookupTransporteejbServices.getIdconductor()), new Document("idconductor", -1));
                     break;
                 case "nombre":
 

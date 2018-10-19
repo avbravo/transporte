@@ -33,14 +33,14 @@
 
 
                     <p:outputLabel value="#{msg['field.username']}"/>
-                    <e:autocompleteusuario listener="#{usuarioController.handleSelect}"
+                    <e:autocompleteusuario listener="#{usuarioController.handleAutocompleteOfListXhtml}"
                                                   value="#{usuarioController.usuarioSelected}"
                                                   itemLabel=" #{p.username}"
                                                   field="username"
                                                   update=" :form:dataTable"/>
 
                     <p:outputLabel value="#{msg['field.nombre']}"/>
-                      <e:autocompleteusuario listener="#{usuarioController.handleSelect}"
+                      <e:autocompleteusuario listener="#{usuarioController.handleAutocompleteOfListXhtml}"
                                                 value="#{usuarioController.usuarioSelected}"
                                                 itemLabel=" #{p.nombre}"
                                                 field="nombre"

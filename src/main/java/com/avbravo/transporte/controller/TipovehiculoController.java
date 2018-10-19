@@ -482,11 +482,23 @@ public class TipovehiculoController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
-            tipovehiculoList.removeAll(tipovehiculoList);
+           
+        
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
+       tipovehiculoList.removeAll(tipovehiculoList);
             tipovehiculoList.add(tipovehiculoSelected);
             tipovehiculoFiltered = tipovehiculoList;
             tipovehiculoDataModel = new TipovehiculoDataModel(tipovehiculoList);
-            loginController.put("searchtipovehiculo", "_autocomplete");
+            
+            loginController.put("searchtipovehiculo", "idtipovehiculo");
+            lookupTransporteejbServices.setIdtipovehiculo(tipovehiculoSelected.getIdtipovehiculo());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }

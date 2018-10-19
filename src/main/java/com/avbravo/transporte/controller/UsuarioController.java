@@ -548,11 +548,24 @@ public class UsuarioController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
-            usuarioList.removeAll(usuarioList);
+           
+          
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
+    
+    
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
+             usuarioList.removeAll(usuarioList);
             usuarioList.add(usuarioSelected);
             usuarioFiltered = usuarioList;
             usuarioDataModel = new UsuarioDataModel(usuarioList);
-            loginController.put("searchusuario", "_autocomplete");
+            
+            loginController.put("searchusuario", "username");
+            lookupTransporteejbServices.setUsername(usuarioSelected.getUsername());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -639,7 +652,7 @@ public class UsuarioController implements Serializable, IController {
                     break;
 
                 case "username":
-                    doc = new Document("username", usuario.getUsername());
+                    doc = new Document("username",  lookupTransporteejbServices.getUsername());
                     usuarioList = usuarioRepository.findPagination(doc, page, rowPage, new Document("username", -1));
                     break;
 
@@ -735,5 +748,7 @@ public class UsuarioController implements Serializable, IController {
         }
         return suggestions;
     }
+  
+    // </editor-fold>
 
 }
