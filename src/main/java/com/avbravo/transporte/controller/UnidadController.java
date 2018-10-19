@@ -585,12 +585,6 @@ public class UnidadController implements Serializable, IController {
                 case "_autocomplete":
                     //no se realiza ninguna accion 
                     break;
-//              
-//                    case "idunidad":
-//                        doc = new Document("idunidad", lookupTransporteejbServices.getIdunidad());
-//                        unidadList = unidadRepository.findPagination(doc, page, rowPage, new Document("idunidad", -1));
-//                        break;
-
                 case "idunidad":
                     unidadList = unidadRepository.findRegexInTextPagination("idunidad", lookupTransporteejbServices.getIdunidad(), true, page, rowPage, new Document("descripcion", -1));
                     break;
