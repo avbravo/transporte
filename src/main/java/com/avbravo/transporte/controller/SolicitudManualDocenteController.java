@@ -836,18 +836,19 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             Document doc;
             switch (loginController.get("searchsolicitud")) {
                 case "_init":
+                        case "_autocomplete":
                     doc = new Document("tiposolicitud.idtiposolicitud", "DOCENTE");
 
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
-                    break;
+            
 
                 case "idsolicitud":
-                    doc = new Document("idsolicitud", lookupServices.getIdsolicitud());
+                   
+                         doc = new Document("idsolicitud", lookupServices.getIdsolicitud());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+                   
                     break;
 
                 default:

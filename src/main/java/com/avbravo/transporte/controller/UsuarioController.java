@@ -548,22 +548,20 @@ public class UsuarioController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
-           
-          
+
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
-    
-    
+
     // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
     public void handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-             usuarioList.removeAll(usuarioList);
+            usuarioList.removeAll(usuarioList);
             usuarioList.add(usuarioSelected);
             usuarioFiltered = usuarioList;
             usuarioDataModel = new UsuarioDataModel(usuarioList);
-            
+
             loginController.put("searchusuario", "username");
             lookupServices.setUsername(usuarioSelected.getUsername());
         } catch (Exception ex) {
@@ -644,16 +642,19 @@ public class UsuarioController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchusuario")) {
                 case "_init":
+                case "_autocomplete":
                     usuarioList = usuarioRepository.findPagination(page, rowPage);
 
                     break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
-                    break;
 
                 case "username":
-                    doc = new Document("username",  lookupServices.getUsername());
-                    usuarioList = usuarioRepository.findPagination(doc, page, rowPage, new Document("username", -1));
+                    if (lookupServices.getUsername() != null) {
+                        doc = new Document("username", lookupServices.getUsername());
+                        usuarioList = usuarioRepository.findPagination(doc, page, rowPage, new Document("username", -1));
+                    } else {
+                        usuarioList = usuarioRepository.findPagination(page, rowPage);
+                    }
+
                     break;
 
                 default:
@@ -748,7 +749,6 @@ public class UsuarioController implements Serializable, IController {
         }
         return suggestions;
     }
-  
-    // </editor-fold>
 
+    // </editor-fold>
 }

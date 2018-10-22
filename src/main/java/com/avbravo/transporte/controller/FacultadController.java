@@ -597,17 +597,20 @@ public class FacultadController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchfacultad")) {
                 case "_init":
+                        case "_autocomplete":
                     facultadList = facultadRepository.findPagination(page, rowPage);
 
                     break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
-                    break;
-
+            
                 case "idfacultad":
-                    doc = new Document("idfacultad", lookupServices.getIdfacultad());
+                    if (lookupServices.getIdfacultad() != null) {
+                         doc = new Document("idfacultad", lookupServices.getIdfacultad());
 
                     facultadList = facultadRepository.findBy(doc);
+                    } else {
+                        facultadList = facultadRepository.findPagination(page, rowPage);
+                    }
+                   
                     break;
                 case "descripcion":
                     facultadList = facultadRepository.findRegexInTextPagination("descripcion", lookupServices.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));

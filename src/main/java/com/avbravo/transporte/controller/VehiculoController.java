@@ -209,8 +209,6 @@ public class VehiculoController implements Serializable, IController {
         this.writable = writable;
     }
 
-  
-
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
     public VehiculoController() {
@@ -605,16 +603,18 @@ public class VehiculoController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchvehiculo")) {
                 case "_init":
+                case "_autocomplete":
                     vehiculoList = vehiculoRepository.findPagination(page, rowPage);
 
                     break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
-                    break;
 
                 case "idvehiculo":
+                    if (lookupServices.getPlaca() != null) {
+                        vehiculoList = vehiculoRepository.findRegexInTextPagination("placa", lookupServices.getPlaca(), true, page, rowPage, new Document("idvehiculo", -1));
+                    } else {
+                        vehiculoList = vehiculoRepository.findPagination(page, rowPage);
+                    }
 
-                    vehiculoList = vehiculoRepository.findRegexInTextPagination("placa", lookupServices.getPlaca(), true, page, rowPage, new Document("idvehiculo", -1));
                     break;
 
                 default:

@@ -577,15 +577,18 @@ public class TipovehiculoController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchtipovehiculo")) {
                 case "_init":
+                       case "_autocomplete":
                     tipovehiculoList = tipovehiculoRepository.findPagination(page, rowPage);
 
                     break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
-                    break;
 
                 case "idtipovehiculo":
-                    tipovehiculoList = tipovehiculoRepository.findRegexInTextPagination("idtipovehiculo", lookupServices.getIdtipovehiculo(), true, page, rowPage, new Document("idtipovehiculo", -1));
+                    if (lookupServices.getIdtipovehiculo()!= null) {
+                          tipovehiculoList = tipovehiculoRepository.findRegexInTextPagination("idtipovehiculo", lookupServices.getIdtipovehiculo(), true, page, rowPage, new Document("idtipovehiculo", -1));
+                    } else {
+                        tipovehiculoList = tipovehiculoRepository.findPagination(page, rowPage);
+                    }
+                  
                     break;
 
                 default:

@@ -947,18 +947,17 @@ public class CalendarioSolicitudController implements Serializable, IController 
             Document doc;
             switch (loginController.get("searchsolicitud")) {
                 case "_init":
+                       case "_autocomplete":
                     doc = new Document("usuario.username", loginController.getUsuario().getUsername());
-//                    solicitudList = solicitudRepository.findPagination(page, rowPage);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
-                    break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
                     break;
 
                 case "idsolicitud":
-                    doc = new Document("idsolicitud", solicitud.getIdsolicitud()).append("usuario.username", loginController.getUsuario().getUsername());
+                 
+                          doc = new Document("idsolicitud", solicitud.getIdsolicitud()).append("usuario.username", loginController.getUsuario().getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+                  
                     break;
 
                 default:

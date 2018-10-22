@@ -598,16 +598,18 @@ public class ConductorController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchconductor")) {
                 case "_init":
+                      case "_autocomplete":
                     conductorList = conductorRepository.findPagination(page, rowPage);
 
                     break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
-                    break;
-
+              
                 case "idconductor":
-
-                    conductorList = conductorRepository.findBy(new Document("idconductor", lookupServices.getIdconductor()), new Document("idconductor", -1));
+                    if (lookupServices.getIdconductor() != null) {
+                         conductorList = conductorRepository.findBy(new Document("idconductor", lookupServices.getIdconductor()), new Document("idconductor", -1));
+                    } else {
+                             conductorList = conductorRepository.findPagination(page, rowPage);
+                    }
+                   
                     break;
                 case "nombre":
 

@@ -596,17 +596,21 @@ public class CarreraController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchcarrera")) {
                 case "_init":
+                           case "_autocomplete":
                     carreraList = carreraRepository.findPagination(page, rowPage);
 
                     break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
-                    break;
+         
 
                 case "idcarrera":
-                    doc = new Document("idcarrera", lookupServices.getIdcarrera());
+                    if (lookupServices.getIdcarrera() != null) {
+                         doc = new Document("idcarrera", lookupServices.getIdcarrera());
 
                     carreraList = carreraRepository.findBy(doc);
+                    } else {
+                         carreraList = carreraRepository.findPagination(page, rowPage); 
+                    }
+                   
                     break;
                 case "descripcion":
                     carreraList = carreraRepository.findRegexInTextPagination("descripcion", lookupServices.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));

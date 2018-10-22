@@ -483,22 +483,20 @@ public class UnidadController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
-           
-           
+
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
-    
-    
+
     // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
     public void handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-             unidadList.removeAll(unidadList);
+            unidadList.removeAll(unidadList);
             unidadList.add(unidadSelected);
             unidadFiltered = unidadList;
             unidadDataModel = new UnidadDataModel(unidadList);
-            
+
             loginController.put("searchunidad", "idunidad");
             lookupServices.setIdunidad(unidadSelected.getIdunidad());
         } catch (Exception ex) {
@@ -579,14 +577,17 @@ public class UnidadController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchunidad")) {
                 case "_init":
+                case "_autocomplete":
                     unidadList = unidadRepository.findPagination(page, rowPage);
 
                     break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
-                    break;
                 case "idunidad":
-                    unidadList = unidadRepository.findRegexInTextPagination("idunidad", lookupServices.getIdunidad(), true, page, rowPage, new Document("descripcion", -1));
+                    if (lookupServices.getIdunidad() != null) {
+                        unidadList = unidadRepository.findRegexInTextPagination("idunidad", lookupServices.getIdunidad(), true, page, rowPage, new Document("descripcion", -1));
+                    } else {
+                        unidadList = unidadRepository.findPagination(page, rowPage);
+                    }
+
                     break;
 
                 default:

@@ -604,16 +604,19 @@ public class SemestreController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchrol")) {
                 case "_init":
+                       case "_autocomplete":
                     semestreList = semestreRepository.findPagination(page, rowPage);
 
                     break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
-                    break;
 
                 case "idsemestre":
-                    doc = new Document("idsemestre", lookupServices.getIdsemestre());
+                    if (lookupServices.getIdsemestre() != null) {
+                         doc = new Document("idsemestre", lookupServices.getIdsemestre());
                     semestreList = semestreRepository.findPagination(doc, page, rowPage, new Document("idsemestre", -1));
+                    } else {
+                        semestreList = semestreRepository.findPagination(page, rowPage);
+                    }
+                   
                     break;
 
                 default:

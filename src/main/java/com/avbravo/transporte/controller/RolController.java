@@ -599,16 +599,20 @@ public class RolController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchrol")) {
                 case "_init":
+                       case "_autocomplete":
                     rolList = rolRepository.findPagination(page, rowPage);
 
                     break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
-                    break;
+       
 
                 case "idrol":
-                    doc = new Document("idrol", lookupServices.getIdrol());
+                    if (lookupServices.getIdrol() != null) {
+                         doc = new Document("idrol", lookupServices.getIdrol());
                     rolList = rolRepository.findPagination(doc, page, rowPage, new Document("idrol", -1));
+                    } else {
+                         rolList = rolRepository.findPagination(page, rowPage);
+                    }
+                   
                     break;
 
                 default:

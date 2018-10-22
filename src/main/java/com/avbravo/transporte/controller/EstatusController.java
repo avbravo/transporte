@@ -580,15 +580,19 @@ public class EstatusController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchestatus")) {
                 case "_init":
+                     case "_autocomplete":
                     estatusList = estatusRepository.findPagination(page, rowPage);
 
                     break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
-                    break;
-
+               
+              
                 case "idestatus":
-                    estatusList = estatusRepository.findRegexInTextPagination("idestatus", lookupServices.getIdestatus(), true, page, rowPage, new Document("idestatus", -1));
+                    if (lookupServices.getIdestatus() != null) {
+                         estatusList = estatusRepository.findRegexInTextPagination("idestatus", lookupServices.getIdestatus(), true, page, rowPage, new Document("idestatus", -1));
+                    } else {
+                        estatusList = estatusRepository.findPagination(page, rowPage);
+                    }
+                   
                     break;
 
                 default:

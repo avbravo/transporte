@@ -579,15 +579,18 @@ public class TiposolicitudController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchtiposolicitud")) {
                 case "_init":
+                    case "_autocomplete":
                     tiposolicitudList = tiposolicitudRepository.findPagination(page, rowPage);
 
                     break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
-                    break;
 
                 case "idtiposolicitud":
-                    tiposolicitudList = tiposolicitudRepository.findRegexInTextPagination("idtiposolicitud", lookupServices.getIdtiposolicitud(), true, page, rowPage, new Document("idtiposolicitud", -1));
+                    if (lookupServices.getIdtiposolicitud() != null) {
+                          tiposolicitudList = tiposolicitudRepository.findRegexInTextPagination("idtiposolicitud", lookupServices.getIdtiposolicitud(), true, page, rowPage, new Document("idtiposolicitud", -1));
+                    } else {
+                         tiposolicitudList = tiposolicitudRepository.findPagination(page, rowPage);
+                    }
+                  
                     break;
 
                 default:
