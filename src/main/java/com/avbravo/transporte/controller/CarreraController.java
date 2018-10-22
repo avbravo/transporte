@@ -18,8 +18,9 @@ import com.avbravo.commonejb.services.FacultadServices;
 import com.avbravo.ejbjmoordb.interfaces.IController;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
+import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporte.util.ResourcesFiles;
-import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
+
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -80,7 +81,7 @@ public class CarreraController implements Serializable, IController {
     @Inject
     AutoincrementableCommonejbServices autoincrementableCommonejbServices;
     @Inject
-    LookupTransporteejbServices lookupTransporteejbServices;
+    LookupServices lookupServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -107,12 +108,12 @@ public class CarreraController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupTransporteejbServices getLookupTransporteejbServices() {
-        return lookupTransporteejbServices;
+    public LookupServices getLookupServices() {
+        return lookupServices;
     }
 
-    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    public void setLookupServices(LookupServices lookupServices) {
+        this.lookupServices = lookupServices;
     }
 
     public Integer getPage() {
@@ -517,7 +518,7 @@ public class CarreraController implements Serializable, IController {
             carreraDataModel = new CarreraDataModel(carreraList);
             
             loginController.put("searchcarrera", "idcarrera");
-            lookupTransporteejbServices.setIdcarrera(carreraSelected.getIdcarrera());
+            lookupServices.setIdcarrera(carreraSelected.getIdcarrera());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleAutocompleteOfListXhtml() " + ex.getLocalizedMessage());
         }
@@ -603,12 +604,12 @@ public class CarreraController implements Serializable, IController {
                     break;
 
                 case "idcarrera":
-                    doc = new Document("idcarrera", lookupTransporteejbServices.getIdcarrera());
+                    doc = new Document("idcarrera", lookupServices.getIdcarrera());
 
                     carreraList = carreraRepository.findBy(doc);
                     break;
                 case "descripcion":
-                    carreraList = carreraRepository.findRegexInTextPagination("descripcion", lookupTransporteejbServices.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
+                    carreraList = carreraRepository.findRegexInTextPagination("descripcion", lookupServices.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
                     break;
 
                 default:

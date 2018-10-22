@@ -17,7 +17,7 @@ import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbRepository;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
-import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
+import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
@@ -90,7 +90,7 @@ public class UsuarioController implements Serializable, IController {
     @Inject
     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
-    LookupTransporteejbServices lookupTransporteejbServices;
+    LookupServices lookupServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -118,8 +118,8 @@ public class UsuarioController implements Serializable, IController {
         return usuarioRepository.listOfPage(rowPage);
     }
 
-    public LookupTransporteejbServices getlookupTransporteejbServices() {
-        return lookupTransporteejbServices;
+    public LookupServices getLookupServices() {
+        return lookupServices;
     }
 
     public UnidadServices getUnidadServices() {
@@ -154,8 +154,8 @@ public class UsuarioController implements Serializable, IController {
         this.passwordnewrepeat = passwordnewrepeat;
     }
 
-    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    public void setLookupServices(LookupServices lookupServices) {
+        this.lookupServices = lookupServices;
     }
 
     public void setPages(List<Integer> pages) {
@@ -565,7 +565,7 @@ public class UsuarioController implements Serializable, IController {
             usuarioDataModel = new UsuarioDataModel(usuarioList);
             
             loginController.put("searchusuario", "username");
-            lookupTransporteejbServices.setUsername(usuarioSelected.getUsername());
+            lookupServices.setUsername(usuarioSelected.getUsername());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -652,7 +652,7 @@ public class UsuarioController implements Serializable, IController {
                     break;
 
                 case "username":
-                    doc = new Document("username",  lookupTransporteejbServices.getUsername());
+                    doc = new Document("username",  lookupServices.getUsername());
                     usuarioList = usuarioRepository.findPagination(doc, page, rowPage, new Document("username", -1));
                     break;
 

@@ -20,7 +20,7 @@ import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
 
 import com.avbravo.transporte.util.ResourcesFiles;
-import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
+import com.avbravo.transporte.util.LookupServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -92,7 +92,7 @@ public class FacultadController implements Serializable, IController {
     @Inject
     LoginController loginController;
     @Inject
-    LookupTransporteejbServices lookupTransporteejbServices;
+    LookupServices lookupServices;
 
     //List of Relations
     //Repository of Relations
@@ -103,12 +103,12 @@ public class FacultadController implements Serializable, IController {
         return facultadRepository.listOfPage(rowPage);
     }
 
-    public LookupTransporteejbServices getLookupTransporteejbServices() {
-        return lookupTransporteejbServices;
+    public LookupServices getLookupServices() {
+        return lookupServices;
     }
 
-    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    public void setLookupServices(LookupServices lookupServices) {
+        this.lookupServices = lookupServices;
     }
 
     
@@ -519,7 +519,7 @@ public class FacultadController implements Serializable, IController {
             facultadFiltered = facultadList;
             facultadDataModel = new FacultadDataModel(facultadList);
             loginController.put("searchfacultad", "idfacultad");
-            lookupTransporteejbServices.setIdfacultad(facultadSelected.getIdfacultad());
+            lookupServices.setIdfacultad(facultadSelected.getIdfacultad());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleAutocompleteOfListXhtml() " + ex.getLocalizedMessage());
         }
@@ -605,12 +605,12 @@ public class FacultadController implements Serializable, IController {
                     break;
 
                 case "idfacultad":
-                    doc = new Document("idfacultad", lookupTransporteejbServices.getIdfacultad());
+                    doc = new Document("idfacultad", lookupServices.getIdfacultad());
 
                     facultadList = facultadRepository.findBy(doc);
                     break;
                 case "descripcion":
-                    facultadList = facultadRepository.findRegexInTextPagination("descripcion", lookupTransporteejbServices.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
+                    facultadList = facultadRepository.findRegexInTextPagination("descripcion", lookupServices.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
                     break;
 
                 default:

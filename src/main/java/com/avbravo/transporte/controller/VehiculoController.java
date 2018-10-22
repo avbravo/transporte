@@ -17,7 +17,7 @@ import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
-import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
+import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.services.VehiculoServices;
@@ -81,7 +81,7 @@ public class VehiculoController implements Serializable, IController {
     @Inject
     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
-    LookupTransporteejbServices lookupTransporteejbServices;
+    LookupServices lookupServices;
     @Inject
     TipovehiculoServices tipovehiculoServices;
 
@@ -129,12 +129,12 @@ public class VehiculoController implements Serializable, IController {
         this.tipovehiculoServices = tipovehiculoServices;
     }
 
-    public LookupTransporteejbServices getlookupTransporteejbServices() {
-        return lookupTransporteejbServices;
+    public LookupServices getLookupServices() {
+        return lookupServices;
     }
 
-    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    public void setLookupServices(LookupServices lookupServices) {
+        this.lookupServices = lookupServices;
     }
 
     public Integer getPage() {
@@ -209,13 +209,7 @@ public class VehiculoController implements Serializable, IController {
         this.writable = writable;
     }
 
-    public LookupTransporteejbServices getLookupTransporteejbServices() {
-        return lookupTransporteejbServices;
-    }
-
-    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
-    }
+  
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
@@ -532,7 +526,7 @@ public class VehiculoController implements Serializable, IController {
             vehiculoDataModel = new VehiculoDataModel(vehiculoList);
 
             loginController.put("searchvehiculo", "placa");
-            lookupTransporteejbServices.setPlaca(vehiculoSelected.getPlaca());
+            lookupServices.setPlaca(vehiculoSelected.getPlaca());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -620,7 +614,7 @@ public class VehiculoController implements Serializable, IController {
 
                 case "idvehiculo":
 
-                    vehiculoList = vehiculoRepository.findRegexInTextPagination("placa", lookupTransporteejbServices.getPlaca(), true, page, rowPage, new Document("idvehiculo", -1));
+                    vehiculoList = vehiculoRepository.findRegexInTextPagination("placa", lookupServices.getPlaca(), true, page, rowPage, new Document("idvehiculo", -1));
                     break;
 
                 default:

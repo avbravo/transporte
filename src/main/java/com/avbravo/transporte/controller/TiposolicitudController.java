@@ -15,7 +15,7 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.TiposolicitudDataModel;
 import com.avbravo.transporteejb.entity.Tiposolicitud;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
-import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
+import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.TiposolicitudRepository;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
@@ -77,7 +77,7 @@ public class TiposolicitudController implements Serializable, IController {
     @Inject
     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
-    LookupTransporteejbServices lookupTransporteejbServices;
+    LookupServices lookupServices;
 
     @Inject
     RevisionHistoryServices revisionHistoryServices;
@@ -105,12 +105,12 @@ public class TiposolicitudController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupTransporteejbServices getLookupTransporteejbServices() {
-        return lookupTransporteejbServices;
+    public LookupServices getLookupServices() {
+        return lookupServices;
     }
 
-    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    public void setLookupServices(LookupServices lookupServices) {
+        this.lookupServices = lookupServices;
     }
 
    
@@ -500,7 +500,7 @@ public class TiposolicitudController implements Serializable, IController {
             tiposolicitudDataModel = new TiposolicitudDataModel(tiposolicitudList);
             
             loginController.put("searchtiposolicitud", "idtiposolicitud");
-            lookupTransporteejbServices.setIdtiposolicitud(tiposolicitudSelected.getIdtiposolicitud());
+            lookupServices.setIdtiposolicitud(tiposolicitudSelected.getIdtiposolicitud());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -587,7 +587,7 @@ public class TiposolicitudController implements Serializable, IController {
                     break;
 
                 case "idtiposolicitud":
-                    tiposolicitudList = tiposolicitudRepository.findRegexInTextPagination("idtiposolicitud", lookupTransporteejbServices.getIdtiposolicitud(), true, page, rowPage, new Document("idtiposolicitud", -1));
+                    tiposolicitudList = tiposolicitudRepository.findRegexInTextPagination("idtiposolicitud", lookupServices.getIdtiposolicitud(), true, page, rowPage, new Document("idtiposolicitud", -1));
                     break;
 
                 default:

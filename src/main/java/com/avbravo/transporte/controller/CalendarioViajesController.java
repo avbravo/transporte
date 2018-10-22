@@ -28,7 +28,7 @@ import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viajes;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
-import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
+import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
@@ -150,7 +150,7 @@ public class CalendarioViajesController implements Serializable, IController {
     @Inject
     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
-    LookupTransporteejbServices lookupTransporteejbServices;
+    LookupServices lookupServices;
 
     @Inject
     RevisionHistoryServices revisionHistoryServices;
@@ -334,12 +334,12 @@ public class CalendarioViajesController implements Serializable, IController {
         this.unidadList = unidadList;
     }
 
-    public LookupTransporteejbServices getlookupTransporteejbServices() {
-        return lookupTransporteejbServices;
+    public LookupServices getLookupServices() {
+        return lookupServices;
     }
 
-    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    public void setLookupServices(LookupServices lookupServices) {
+        this.lookupServices = lookupServices;
     }
 
     public Integer getPage() {
@@ -827,7 +827,7 @@ public class CalendarioViajesController implements Serializable, IController {
             solicitudDataModel = new SolicitudDataModel(solicitudList);
             
             loginController.put("searchsolicitud", "idsolicitud");
-            lookupTransporteejbServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
+            lookupServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleAutocompleteOfListXhtml() " + ex.getLocalizedMessage());
         }

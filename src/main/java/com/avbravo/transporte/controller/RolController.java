@@ -17,7 +17,7 @@ import com.avbravo.transporteejb.datamodel.RolDataModel;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbRepository;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
-import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
+import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.services.RolServices;
@@ -77,7 +77,7 @@ public class RolController implements Serializable, IController {
     @Inject
     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
-    LookupTransporteejbServices lookupTransporteejbServices;
+    LookupServices lookupServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -104,12 +104,12 @@ public class RolController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupTransporteejbServices getlookupTransporteejbServices() {
-        return lookupTransporteejbServices;
+    public LookupServices getLookupServices() {
+        return lookupServices;
     }
 
-    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    public void setLookupServices(LookupServices lookupServices) {
+        this.lookupServices = lookupServices;
     }
 
     public Integer getPage() {
@@ -494,7 +494,7 @@ public class RolController implements Serializable, IController {
            rolDataModel = new RolDataModel(rolList);
             
             loginController.put("searchrol", "idrol");
-            lookupTransporteejbServices.setIdrol(rolSelected.getIdrol());
+            lookupServices.setIdrol(rolSelected.getIdrol());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleAutocompleteOfListXhtml() " + ex.getLocalizedMessage());
         }
@@ -607,7 +607,7 @@ public class RolController implements Serializable, IController {
                     break;
 
                 case "idrol":
-                    doc = new Document("idrol", lookupTransporteejbServices.getIdrol());
+                    doc = new Document("idrol", lookupServices.getIdrol());
                     rolList = rolRepository.findPagination(doc, page, rowPage, new Document("idrol", -1));
                     break;
 

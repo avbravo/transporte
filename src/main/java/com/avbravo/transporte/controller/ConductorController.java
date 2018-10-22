@@ -16,7 +16,7 @@ import com.avbravo.transporteejb.datamodel.ConductorDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
-import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
+import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.services.ConductorServices;
@@ -81,7 +81,7 @@ public class ConductorController implements Serializable, IController {
     @Inject
     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
-    LookupTransporteejbServices lookupTransporteejbServices;
+    LookupServices lookupServices;
 
     @Inject
     RevisionHistoryServices revisionHistoryServices;
@@ -117,22 +117,15 @@ public class ConductorController implements Serializable, IController {
         this.cedulanueva = cedulanueva;
     }
 
-    public LookupTransporteejbServices getLookupTransporteejbServices() {
-        return lookupTransporteejbServices;
+    public LookupServices getLookupServices() {
+        return lookupServices;
     }
 
-    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    public void setLookupServices(LookupServices lookupServices) {
+        this.lookupServices = lookupServices;
     }
 
-    public LookupTransporteejbServices getlookupTransporteejbServices() {
-        return lookupTransporteejbServices;
-    }
-
-    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
-    }
-
+   
     public Integer getPage() {
         return page;
     }
@@ -526,7 +519,7 @@ public class ConductorController implements Serializable, IController {
             
             
             loginController.put("searchconductor", "idconductor");
-            lookupTransporteejbServices.setIdconductor(conductorSelected.getIdconductor());
+            lookupServices.setIdconductor(conductorSelected.getIdconductor());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleAutocompleteOfListXhtml() " + ex.getLocalizedMessage());
         }
@@ -614,11 +607,11 @@ public class ConductorController implements Serializable, IController {
 
                 case "idconductor":
 
-                    conductorList = conductorRepository.findBy(new Document("idconductor", lookupTransporteejbServices.getIdconductor()), new Document("idconductor", -1));
+                    conductorList = conductorRepository.findBy(new Document("idconductor", lookupServices.getIdconductor()), new Document("idconductor", -1));
                     break;
                 case "nombre":
 
-                    conductorList = conductorRepository.findRegexInTextPagination("nombre", lookupTransporteejbServices.getNombre(), true, page, rowPage, new Document("nombre", -1));
+                    conductorList = conductorRepository.findRegexInTextPagination("nombre", lookupServices.getNombre(), true, page, rowPage, new Document("nombre", -1));
                     break;
 
                 default:

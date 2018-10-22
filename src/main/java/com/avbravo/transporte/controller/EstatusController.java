@@ -15,7 +15,7 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.EstatusDataModel;
 import com.avbravo.transporteejb.entity.Estatus;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
-import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
+import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
@@ -77,7 +77,7 @@ public class EstatusController implements Serializable, IController {
     @Inject
     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
-    LookupTransporteejbServices lookupTransporteejbServices;
+    LookupServices lookupServices;
     
 
     @Inject
@@ -106,12 +106,12 @@ public class EstatusController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupTransporteejbServices getLookupTransporteejbServices() {
-        return lookupTransporteejbServices;
+    public LookupServices getLookupServices() {
+        return lookupServices;
     }
 
-    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    public void setLookupServices(LookupServices lookupServices) {
+        this.lookupServices = lookupServices;
     }
 
    
@@ -501,7 +501,7 @@ public class EstatusController implements Serializable, IController {
             estatusDataModel = new EstatusDataModel(estatusList);
             
             loginController.put("searchestatus", "idestatus");
-            lookupTransporteejbServices.setIdestatus(estatusSelected.getIdestatus());
+            lookupServices.setIdestatus(estatusSelected.getIdestatus());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleAutocompleteOfListXhtml() " + ex.getLocalizedMessage());
         }
@@ -588,7 +588,7 @@ public class EstatusController implements Serializable, IController {
                     break;
 
                 case "idestatus":
-                    estatusList = estatusRepository.findRegexInTextPagination("idestatus", lookupTransporteejbServices.getIdestatus(), true, page, rowPage, new Document("idestatus", -1));
+                    estatusList = estatusRepository.findRegexInTextPagination("idestatus", lookupServices.getIdestatus(), true, page, rowPage, new Document("idestatus", -1));
                     break;
 
                 default:

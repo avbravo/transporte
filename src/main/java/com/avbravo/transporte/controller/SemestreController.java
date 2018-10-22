@@ -19,7 +19,7 @@ import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbRepository;
 
-import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
+import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.services.RolServices;
@@ -79,7 +79,7 @@ public class SemestreController implements Serializable, IController {
     @Inject
     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
-    LookupTransporteejbServices lookupTransporteejbServices;
+    LookupServices lookupServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -106,12 +106,12 @@ public class SemestreController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupTransporteejbServices getlookupTransporteejbServices() {
-        return lookupTransporteejbServices;
+    public LookupServices getLookupServices() {
+        return lookupServices;
     }
 
-    public void setlookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    public void setLookupServices(LookupServices lookupServices) {
+        this.lookupServices = lookupServices;
     }
 
     public Integer getPage() {
@@ -498,7 +498,7 @@ public class SemestreController implements Serializable, IController {
             semestreDataModel = new SemestreDataModel(semestreList);
             
             loginController.put("searchsemestre", "idsemestre");
-            lookupTransporteejbServices.setIdsemestre(semestreSelected.getIdsemestre());
+            lookupServices.setIdsemestre(semestreSelected.getIdsemestre());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -612,7 +612,7 @@ public class SemestreController implements Serializable, IController {
                     break;
 
                 case "idsemestre":
-                    doc = new Document("idsemestre", lookupTransporteejbServices.getIdsemestre());
+                    doc = new Document("idsemestre", lookupServices.getIdsemestre());
                     semestreList = semestreRepository.findPagination(doc, page, rowPage, new Document("idsemestre", -1));
                     break;
 

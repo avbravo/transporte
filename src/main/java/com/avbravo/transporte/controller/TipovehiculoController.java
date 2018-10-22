@@ -15,7 +15,7 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.TipovehiculoDataModel;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
-import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
+import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.TipovehiculoRepository;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
@@ -77,7 +77,7 @@ public class TipovehiculoController implements Serializable, IController {
     @Inject
     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
-    LookupTransporteejbServices lookupTransporteejbServices;
+    LookupServices lookupServices;
 
     @Inject
     RevisionHistoryServices revisionHistoryServices;
@@ -105,12 +105,12 @@ public class TipovehiculoController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupTransporteejbServices getLookupTransporteejbServices() {
-        return lookupTransporteejbServices;
+    public LookupServices getLookupServices() {
+        return lookupServices;
     }
 
-    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    public void setLookupServices(LookupServices lookupServices) {
+        this.lookupServices = lookupServices;
     }
 
     public Integer getPage() {
@@ -498,7 +498,7 @@ public class TipovehiculoController implements Serializable, IController {
             tipovehiculoDataModel = new TipovehiculoDataModel(tipovehiculoList);
             
             loginController.put("searchtipovehiculo", "idtipovehiculo");
-            lookupTransporteejbServices.setIdtipovehiculo(tipovehiculoSelected.getIdtipovehiculo());
+            lookupServices.setIdtipovehiculo(tipovehiculoSelected.getIdtipovehiculo());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -585,7 +585,7 @@ public class TipovehiculoController implements Serializable, IController {
                     break;
 
                 case "idtipovehiculo":
-                    tipovehiculoList = tipovehiculoRepository.findRegexInTextPagination("idtipovehiculo", lookupTransporteejbServices.getIdtipovehiculo(), true, page, rowPage, new Document("idtipovehiculo", -1));
+                    tipovehiculoList = tipovehiculoRepository.findRegexInTextPagination("idtipovehiculo", lookupServices.getIdtipovehiculo(), true, page, rowPage, new Document("idtipovehiculo", -1));
                     break;
 
                 default:

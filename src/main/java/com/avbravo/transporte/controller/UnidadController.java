@@ -15,7 +15,7 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.UnidadDataModel;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
-import com.avbravo.transporteejb.producer.LookupTransporteejbServices;
+import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.services.UnidadServices;
@@ -77,7 +77,7 @@ public class UnidadController implements Serializable, IController {
     @Inject
     ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
     @Inject
-    LookupTransporteejbServices lookupTransporteejbServices;
+    LookupServices lookupServices;
 
     @Inject
     RevisionHistoryServices revisionHistoryServices;
@@ -105,12 +105,12 @@ public class UnidadController implements Serializable, IController {
         this.pages = pages;
     }
 
-    public LookupTransporteejbServices getLookupTransporteejbServices() {
-        return lookupTransporteejbServices;
+    public LookupServices getLookupServices() {
+        return lookupServices;
     }
 
-    public void setLookupTransporteejbServices(LookupTransporteejbServices lookupTransporteejbServices) {
-        this.lookupTransporteejbServices = lookupTransporteejbServices;
+    public void setLookupServices(LookupServices lookupServices) {
+        this.lookupServices = lookupServices;
     }
 
     public Integer getPage() {
@@ -500,7 +500,7 @@ public class UnidadController implements Serializable, IController {
             unidadDataModel = new UnidadDataModel(unidadList);
             
             loginController.put("searchunidad", "idunidad");
-            lookupTransporteejbServices.setIdunidad(unidadSelected.getIdunidad());
+            lookupServices.setIdunidad(unidadSelected.getIdunidad());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -586,7 +586,7 @@ public class UnidadController implements Serializable, IController {
                     //no se realiza ninguna accion 
                     break;
                 case "idunidad":
-                    unidadList = unidadRepository.findRegexInTextPagination("idunidad", lookupTransporteejbServices.getIdunidad(), true, page, rowPage, new Document("descripcion", -1));
+                    unidadList = unidadRepository.findRegexInTextPagination("idunidad", lookupServices.getIdunidad(), true, page, rowPage, new Document("descripcion", -1));
                     break;
 
                 default:
