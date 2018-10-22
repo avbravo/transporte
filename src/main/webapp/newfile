@@ -1,9 +1,17 @@
-<a:newlowercase label="#{msg['field.username']}"
-   value="#{usuarioController.usuario.username}"
-   isnew="#{usuarioController.isNew()}"
-      disabled="#{usuarioController.writable}"
-   new="#{usuarioController.prepare('new',usuarioController.usuario)}"
-   rendererList="#{applicationMenu.usuario.list}"
-   list="#{usuarioController.prepare('golist',usuarioController.usuario)}"
+--------------------------------
+algunas veces yo lo pense
+muchas otras te espere
+pronto estaras viendo mis ojos
 
-   />
+mirame  bebe
+mirame mi amor
+abre tus labios 
+dime tus primeras palabras mi amor
+yooo nunca las olvidareeeeeee
+--------------------------------------
+te necesito bbb
+es algo nuevo para mi
+aprendere contigo
+
+
+
