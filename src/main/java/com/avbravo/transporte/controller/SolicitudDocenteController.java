@@ -526,11 +526,10 @@ public class SolicitudDocenteController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
-            
-            if(!solicitudServices.isValid(solicitud)){
-              return "";
-          }
-              
+
+            if (!solicitudServices.isValid(solicitud)) {
+                return "";
+            }
 
             solicitud.setActivo("si");
             solicitud.setUnidad(unidadList);
@@ -541,19 +540,12 @@ public class SolicitudDocenteController implements Serializable, IController {
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
 
-            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
-
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
-                return "";
-            }
             //Verificar si tiene un viaje en esas fechas
-
             Optional<Solicitud> optionalRango = solicitudServices.coincidenciaResponsableEnRango(solicitud);
             if (optionalRango.isPresent()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.solicitudnumero") + " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
                 return "";
             }
-
 
             //Lo datos del usuario
             solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
@@ -592,11 +584,9 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud.setUnidad(unidadList);
             solicitud.setFacultad(facultadList);
             solicitud.setCarrera(carreraList);
-             if(!solicitudServices.isValid(solicitud)){
-              return "";
-          }
-             
-           
+            if (!solicitudServices.isValid(solicitud)) {
+                return "";
+            }
 
             usuarioList = new ArrayList<>();
             usuarioList.add(solicita);
@@ -713,21 +703,19 @@ public class SolicitudDocenteController implements Serializable, IController {
     public void handleSelect(SelectEvent event) {
         try {
 
-          
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
-    
-    
-       // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
     public void handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
             solicitudList.removeAll(solicitudList);
             solicitudList.add(solicitudSelected);
             solicitudFiltered = solicitudList;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-            
+
             loginController.put("searchsolicitud", "idsolicitud");
             lookupServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
         } catch (Exception ex) {
@@ -1113,7 +1101,6 @@ public class SolicitudDocenteController implements Serializable, IController {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="enviarEmails()">
-
     public String enviarEmails() {
         try {
             Boolean enviados = false;

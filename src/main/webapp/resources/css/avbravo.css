@@ -115,4 +115,9 @@ Dialogo
         border: none !important;
 }
 
+.ui-autocomplete-multiple-container.ui-inputfield {
+    width: 100% !important;
+}
+
+
 

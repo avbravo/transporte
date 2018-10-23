@@ -42,7 +42,7 @@
 
 
 
-                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{solicitudDocenteController.writable}"> 
+                    <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{solicitudDocenteController.writable}"> 
 
                         
                                      <p:outputLabel  value="#{msg['field.solicitadopor']}" />
@@ -165,9 +165,10 @@
 
                      
                      
-                        <p:outputLabel  value="#{msg['field.numerogrupo']}" />
-                        <a:inputText span="4" value="#{solicitudDocenteController.solicitud.numerogrupo}" id="numerogrupo"  label="#{msg['field.numerogrupo']}" />
+                       
 
+   <p:outputLabel  value="#{msg['field.numerogrupos']}" />
+   <p:chips id="numerogrupo" value="#{solicitudDocenteController.solicitud.numerogrupo}" />
                          
               
                         <p:spacer/>
