@@ -26,29 +26,28 @@
 
 
                   
-                    <b:dropMenu value="#{msg['menu.solicitudmanual']}" rendered="#{applicationMenu.solicitudManual.menu}">
+                 
                         <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="/pages/solicitudmanualdocente/list" iconAwesome= "fa-calendar-o" />
                         <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{applicationMenu.solicitudAdministrativoPorAdministrador.menu}" outcome="/pages/solicitudmanualadministrativo/list" iconAwesome= "fa-calendar-o" />
-                    </b:dropMenu>
+                 
 
                     <b:navLink value="#{msg['menu.solicituddocente']}" rendered="#{applicationMenu.solicitudDocente.menu}" outcome="/pages/solicituddocente/list" iconAwesome= "fa-calendar-o" />                   
                     <b:navLink value="#{msg['menu.solicitudadministrativo']}" rendered="#{applicationMenu.solicitudAdministrativo.menu}" outcome="/pages/solicitudadministrativo/list" iconAwesome= "fa-calendar-o" />
 
 
 
-                    <b:dropMenu  value="#{msg['menu.calendario']}"  rendered="#{applicationMenu.calendario.menu}">
 
-                        <b:navLink value="#{msg['menu.solicitudes']}" rendered="#{applicationMenu.calendariobuses.menu}" outcome="/pages/calendario/solicitudes" iconAwesome= "fa-calendar-o" />
+                </b:dropMenu>
+                
+                <b:dropMenu value="#{msg['menubar.calendario']}" rendered="#{applicationMenu.menuBarCalendario}">
+                    <b:navLink value="#{msg['menu.solicitudes']}" rendered="#{applicationMenu.calendariobuses.menu}" outcome="/pages/calendario/solicitudes" iconAwesome= "fa-calendar-o" />
                         <b:navLink value="#{msg['menu.viajes']}" rendered="#{applicationMenu.calendariobuses.menu}" outcome="/pages/calendario/viajes" iconAwesome= "fa-calendar-o" />
-                        
-
-                    </b:dropMenu>
-                   
-
+                    
                 </b:dropMenu>
-                <b:dropMenu value="#{msg['menubar.combustible']}" rendered="#{applicationMenu.menuBarCombustible}">
-                </b:dropMenu>
+                
                 <b:dropMenu value="#{msg['menubar.mantenimiento']}" rendered="#{applicationMenu.menuBarMantenimiento}">
+                    <b:dropMenu value="#{msg['menubar.combustible']}" rendered="#{applicationMenu.menuBarCombustible}">
+                </b:dropMenu>
                 </b:dropMenu>
 
                 <b:dropMenu value="#{msg['menubar.registros']}" rendered="#{applicationMenu.menuBarRegistros}">

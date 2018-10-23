@@ -466,7 +466,10 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
             solicitudSelected = new Solicitud();
             solicitud.setIdsolicitud(id);
             solicitud.setFecha(idsecond);
-            solicitud.setNumerogrupo("--");
+       
+     List<String> numeroGrupoList = new ArrayList<>();
+            solicitud.setNumerogrupo(numeroGrupoList);
+
 
             solicitud.setObjetivo("---");
             solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
@@ -520,13 +523,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
     @Override
     public String save() {
         try {
-            Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
-            solicitud.setIdsolicitud(idsolicitud);
-            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
-            if (optional.isPresent()) {
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return null;
-            }
+          
 
               if(!solicitudServices.isValid(solicitud)){
               return "";
@@ -543,11 +540,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
 
-            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
-
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
-                return "";
-            }
+          
             //Verificar si tiene un viaje en esas fechas
 
             Optional<Solicitud> optionalRango = solicitudServices.coincidenciaResponsableEnRango(solicitud);
@@ -556,9 +549,12 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
                 return "";
             }
 
-            if (solicitud.getPasajeros() < 0) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
-                return "";
+              Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
+            solicitud.setIdsolicitud(idsolicitud);
+            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
+            if (optional.isPresent()) {
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
+                return null;
             }
             //Lo datos del usuario
             solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));

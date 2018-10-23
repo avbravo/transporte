@@ -463,9 +463,12 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
             solicitud = new Solicitud();
             solicitudSelected = new Solicitud();
+            
             solicitud.setIdsolicitud(id);
             solicitud.setFecha(idsecond);
-            solicitud.setNumerogrupo("--");
+            List<String> numeroGrupoList = new ArrayList<>();
+            solicitud.setNumerogrupo(numeroGrupoList);
+            solicitud.setNumerodevehiculos(0);
 
             solicitud.setObjetivo("---");
             solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
@@ -521,18 +524,11 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     @Override
     public String save() {
         try {
-            Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
-            solicitud.setIdsolicitud(idsolicitud);
-            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
-            if (optional.isPresent()) {
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return null;
+          
+            if (!solicitudServices.isValid(solicitud)) {
+                return "";
             }
 
-          if(!solicitudServices.isValid(solicitud)){
-              return "";
-          }
-                
             solicitud.setActivo("si");
             solicitud.setUnidad(unidadList);
             solicitud.setFacultad(facultadList);
@@ -543,14 +539,19 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             solicitud.setUsuario(usuarioList);
 
             //Verificar si tiene un viaje en esas fechas
-
             Optional<Solicitud> optionalRango = solicitudServices.coincidenciaResponsableEnRango(solicitud);
             if (optionalRango.isPresent()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.solicitudnumero") + " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
                 return "";
             }
+  Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
+            solicitud.setIdsolicitud(idsolicitud);
+            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
+            if (optional.isPresent()) {
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
+                return null;
+            }
 
-         
             //Lo datos del usuario
             solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
@@ -587,15 +588,12 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             solicitud.setUnidad(unidadList);
             solicitud.setFacultad(facultadList);
             solicitud.setCarrera(carreraList);
-           
-             if(!solicitudServices.isValid(solicitud)){
-              return "";
-          }
-            
-            //guarda el contenido actualizado
-         
-           
 
+            if (!solicitudServices.isValid(solicitud)) {
+                return "";
+            }
+
+            //guarda el contenido actualizado
             usuarioList = new ArrayList<>();
             usuarioList.add(solicita);
             usuarioList.add(responsable);
@@ -711,12 +709,11 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     public void handleSelect(SelectEvent event) {
         try {
 
-          
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
     public void handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
@@ -724,10 +721,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             solicitudList.add(solicitudSelected);
             solicitudFiltered = solicitudList;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-            
+
             loginController.put("searchsolicitud", "idsolicitud");
             lookupServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
-            
+
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -1101,7 +1098,6 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="enviarEmails()">
-   
     public String enviarEmails() {
         try {
             Boolean enviados = false;

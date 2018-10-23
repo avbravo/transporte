@@ -34,6 +34,7 @@ public class RolAdministrativo implements Serializable {
          *barra
          */
 applicationMenu.setMenuBarAdministracion(Boolean.FALSE);
+applicationMenu.setMenuBarCalendario(Boolean.FALSE);
         applicationMenu.setMenuBarCombustible(Boolean.FALSE);
  applicationMenu.setMenuBarMantenimiento(Boolean.FALSE);
         applicationMenu.setMenuBarSolicitud(Boolean.TRUE);

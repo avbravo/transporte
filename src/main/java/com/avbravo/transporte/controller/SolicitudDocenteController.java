@@ -519,13 +519,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     @Override
     public String save() {
         try {
-            Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
-            solicitud.setIdsolicitud(idsolicitud);
-            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
-            if (optional.isPresent()) {
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return null;
-            }
+           
 
             if (!solicitudServices.isValid(solicitud)) {
                 return "";
@@ -545,6 +539,13 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (optionalRango.isPresent()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.solicitudnumero") + " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
                 return "";
+            }
+             Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
+            solicitud.setIdsolicitud(idsolicitud);
+            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
+            if (optional.isPresent()) {
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
+                return null;
             }
 
             //Lo datos del usuario
@@ -807,7 +808,6 @@ public class SolicitudDocenteController implements Serializable, IController {
             switch (loginController.get("searchsolicitud")) {
                 case "_init":
                     doc = new Document("usuario.username", loginController.getUsuario().getUsername());
-//                    solicitudList = solicitudRepository.findPagination(page, rowPage);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;

@@ -35,6 +35,7 @@ public class RolDocente implements Serializable {
          */
 
         applicationMenu.setMenuBarAdministracion(Boolean.FALSE);
+        applicationMenu.setMenuBarCalendario(Boolean.FALSE);
         applicationMenu.setMenuBarCombustible(Boolean.FALSE);
  applicationMenu.setMenuBarMantenimiento(Boolean.FALSE);
         applicationMenu.setMenuBarSolicitud(Boolean.TRUE);

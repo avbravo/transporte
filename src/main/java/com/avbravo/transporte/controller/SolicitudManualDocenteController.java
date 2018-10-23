@@ -518,13 +518,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     @Override
     public String save() {
         try {
-            Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
-            solicitud.setIdsolicitud(idsolicitud);
-            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
-            if (optional.isPresent()) {
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return null;
-            }
+           
             solicitud.setActivo("si");
             solicitud.setUnidad(unidadList);
             solicitud.setFacultad(facultadList);
@@ -546,7 +540,13 @@ public class SolicitudManualDocenteController implements Serializable, IControll
                 return "";
             }
 
-          
+           Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
+            solicitud.setIdsolicitud(idsolicitud);
+            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
+            if (optional.isPresent()) {
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
+                return null;
+            }
            
 
             //Lo datos del usuario

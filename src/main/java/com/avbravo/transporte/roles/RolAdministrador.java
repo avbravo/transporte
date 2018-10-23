@@ -33,21 +33,22 @@ public class RolAdministrador implements Serializable {
         /*
          *barra
          */
- applicationMenu.setMenuBarAdministracion(Boolean.TRUE);
- applicationMenu.setMenuBarCombustible(Boolean.TRUE);
- applicationMenu.setMenuBarMantenimiento(Boolean.TRUE);
+        applicationMenu.setMenuBarAdministracion(Boolean.TRUE);
+        applicationMenu.setMenuBarCalendario(Boolean.TRUE);
+        applicationMenu.setMenuBarCombustible(Boolean.TRUE);
+        applicationMenu.setMenuBarMantenimiento(Boolean.TRUE);
         applicationMenu.setMenuBarSolicitud(Boolean.TRUE);
         applicationMenu.setMenuBarRegistros(Boolean.TRUE);
         applicationMenu.setMenuBarReportes(Boolean.TRUE);
-       
+
         /*
          *menu
          */
-     applicationMenu.getCalendario().initialize(Boolean.TRUE);
-applicationMenu.getCalendarioautos().initialize(Boolean.TRUE);
-applicationMenu.getCalendariobuses().initialize(Boolean.TRUE);
+        applicationMenu.getCalendario().initialize(Boolean.TRUE);
+        applicationMenu.getCalendarioautos().initialize(Boolean.TRUE);
+        applicationMenu.getCalendariobuses().initialize(Boolean.TRUE);
         applicationMenu.getCarrera().initialize(Boolean.TRUE);
-  
+
         applicationMenu.getConductor().initialize(Boolean.TRUE);
         applicationMenu.getConductorcambiarcedula().initialize(Boolean.TRUE);
         applicationMenu.getEstatus().initialize(Boolean.TRUE);

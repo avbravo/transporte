@@ -10,7 +10,6 @@ import com.avbravo.avbravoutils.JsfUtil;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 
-
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -30,12 +29,11 @@ public class DashboardIndexController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
 
-    
-
     @Inject
     SolicitudRepository solicitudRepository;
-   
 
+    @Inject
+    LoginController loginController;
     @Inject
     ResourcesFiles rf;
 
@@ -60,7 +58,6 @@ public class DashboardIndexController implements Serializable {
     public DashboardIndexController() {
     }
 
-  
     public Integer getTotales() {
         return totales;
     }
@@ -69,10 +66,6 @@ public class DashboardIndexController implements Serializable {
         this.totales = totales;
     }
 
-    
-    
-    
-    
     public Integer getTotalSolicitado() {
         return totalSolicitado;
     }
@@ -97,26 +90,38 @@ public class DashboardIndexController implements Serializable {
         this.totalRechazado = totalRechazado;
     }
 
-   
-      // <editor-fold defaultstate="collapsed" desc="init">
+    // <editor-fold defaultstate="collapsed" desc="init">
     @PostConstruct
     public void init() {
-       
-calcularTotales();
+
+        calcularTotales();
     } // </editor-fold>
 
-    
-
     // <editor-fold defaultstate="collapsed" desc="calcularTotales()">
-    public void calcularTotales(){
+    public void calcularTotales() {
         try {
-            totalSolicitado = solicitudRepository.count(new Document("activo","si").append("estatus.idestatus","SOLICITADO"));
-            totalAprobado = solicitudRepository.count(new Document("activo","si").append("estatus.idestatus","APROBADO"));
-            totalRechazado =solicitudRepository.count(new Document("activo","si").append("estatus.idestatus","RECHAZADO"));
-            totalCancelado =solicitudRepository.count(new Document("activo","si").append("estatus.idestatus","CANCELADO"));
-            totales = totalAprobado+totalCancelado+totalRechazado+totalSolicitado;
+            switch (loginController.getRol().getIdrol()){
+                case "ADMINISTRADOR":
+                case "SECRETARIA":
+                       totalSolicitado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "SOLICITADO"));
+            totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO"));
+            totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO"));
+            totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO"));
+            
+            break;
+                 
+                default:
+
+                      totalSolicitado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "SOLICITADO").append("usuario.username", loginController.getUsuario().getUsername()));
+            totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO").append("usuario.username", loginController.getUsuario().getUsername()));
+            totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO").append("usuario.username", loginController.getUsuario().getUsername()));
+            totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO").append("usuario.username", loginController.getUsuario().getUsername()));
+                    
+            }
+         totales = totalAprobado + totalCancelado + totalRechazado + totalSolicitado;
+         
         } catch (Exception e) {
-            JsfUtil.errorMessage("calcularTotales() "+e.getLocalizedMessage());
+            JsfUtil.errorMessage("calcularTotales() " + e.getLocalizedMessage());
         }
     }
     // </editor-fold>
