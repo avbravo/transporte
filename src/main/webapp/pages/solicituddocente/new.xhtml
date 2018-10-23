@@ -168,7 +168,7 @@
                        
 
    <p:outputLabel  value="#{msg['field.numerogrupos']}" />
-   <p:chips id="numerogrupo" value="#{solicitudDocenteController.solicitud.numerogrupo}" />
+   <p:chips id="numerogrupo" value="#{solicitudDocenteController.solicitud.numerogrupo}" label="#{msg['field.chips']}" />
                          
               
                         <p:spacer/>
@@ -180,7 +180,7 @@
 
                       
                         <p:outputLabel  value="#{msg['field.lugares']}" />
-                        <b:inputTextarea rows="2" value="#{solicitudDocenteController.solicitud.lugares}" id="lugares"  label="#{msg['field.lugares']}" />
+                      <p:chips value="#{solicitudDocenteController.solicitud.lugares}" id="lugares"  label="#{msg['field.chips']}" />
 
 
                           <p:outputLabel  value="#{msg['field.pasajeros']}" />
@@ -216,7 +216,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.recursossolicitados']}" />
-                        <b:inputTextarea rows="2" value="#{solicitudDocenteController.solicitud.recursossolicitados}" id="recursossolicitados"    />
+            <p:chips value="#{solicitudDocenteController.solicitud.recursossolicitados}" id="recursossolicitados" label="#{msg['field.chips']}"   />
 
                         <p:outputLabel  value="#{msg['field.observaciones']}" />
                         <b:inputTextarea rows="2" value="#{solicitudDocenteController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
