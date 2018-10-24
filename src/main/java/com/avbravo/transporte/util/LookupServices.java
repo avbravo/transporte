@@ -21,6 +21,7 @@ public class LookupServices {
     private String idunidad;
     private String idsemestre;
     private String username;
+    private String idtipogira;
     private String idtiposolicitud;
     private String idtipovehiculo;
     private String idestatus;
@@ -120,6 +121,14 @@ public class LookupServices {
 
     public void setIdrol(String idrol) {
         this.idrol = idrol;
+    }
+
+    public String getIdtipogira() {
+        return idtipogira;
+    }
+
+    public void setIdtipogira(String idtipogira) {
+        this.idtipogira = idtipogira;
     }
 
   

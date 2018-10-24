@@ -48,6 +48,7 @@ public class ApplicationMenu implements Serializable {
 
     MenuElement estatus = new MenuElement();
     MenuElement facultad = new MenuElement();
+    MenuElement tipogira = new MenuElement();
     MenuElement tiposolicitud = new MenuElement();
     MenuElement tipovehiculo = new MenuElement();
     MenuElement rol = new MenuElement();
@@ -82,6 +83,7 @@ public class ApplicationMenu implements Serializable {
         conductorcambiarcedula.initialize(activo);
         estatus.initialize(activo);
         facultad.initialize(activo);
+        tipogira.initialize(activo);
         tiposolicitud.initialize(activo);
         tipovehiculo.initialize(activo);
         rol.initialize(activo);
@@ -100,6 +102,17 @@ public class ApplicationMenu implements Serializable {
 
     }
 
+    public MenuElement getTipogira() {
+        return tipogira;
+    }
+
+    public void setTipogira(MenuElement tipogira) {
+        this.tipogira = tipogira;
+    }
+
+    
+    
+    
     public Boolean getMenuBarCalendario() {
         return menuBarCalendario;
     }

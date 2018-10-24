@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
+    <ui:define name="content">
+        <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            } 
+        </style>
+        <h1>#{msg['titlelist.tipogira']}</h1>
+        <hr/>
+         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.tipogira.list}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+
+          <b:growl  id="msgs"/>
+         
+            <b:panel title="#{app['label.search']}" id="content"> 
+                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
+                <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
+
+
+
+                    <p:outputLabel value="#{msg['field.idtipogira']}"/>
+                    <e:autocompletetipogira listener="#{tipogiraController.handleAutocompleteOfListXhtml}"
+                                                  value="#{tipogiraController.tipogiraSelected}"
+                                                  itemLabel=" #{p.idtipogira}"
+                                                  field="idtipogira"
+                                                  size="35"
+                                                  update=" :form:dataTable"/>
+
+               
+                      
+                      
+
+                </b:panelGrid>
+                  <b:row>
+                  
+                    <b:column medium-screen="6">
+                        <a:search label="#{msg['field.idunidad']}"
+                                  value="#{tipogiraController.lookupServices.idtipogira}"
+                                  renderedList="#{applicationMenu.tipogira.list}"  
+                                  search="#{tipogiraController.searchBy('idtipogira')}"
+                                  />
+                    </b:column>
+                </b:row>
+            </b:panel>
+            <b:panel id="dataTable">
+                <a:paginator 
+                    rowPage="#{tipogiraController.rowPage}"
+                    clear="#{tipogiraController.clear()}"
+                    first="#{tipogiraController.first()}"
+                    back="#{tipogiraController.back()}"
+                    next="#{tipogiraController.next()}"
+                    last="#{tipogiraController.last()}"
+                    page="#{tipogiraController.page}"
+                    pages="#{tipogiraController.pages}"
+                 skip="ajax:tipogiraController.skip(tipogiraController.page)" 
+                    new="#{tipogiraController.prepare('gonew',tipogiraController.tipogira)}"
+                    printAll="#{tipogiraController.printAll()}"
+                    />
+                <b:dataTable value="#{tipogiraController.tipogiraDataModel}"
+                             var="item"
+                             id="dataTable2"
+                             paginated="false"
+                             onpage="console.log('page');">
+
+                    <b:dataTableColumn value="#{item.idtipogira}" label="#{msg['field.idtipogira']}"/>
+
+                    <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
+                  
+                    <b:dataTableColumn label="">
+
+                        <a:column
+
+                            edit="#{tipogiraController.prepare('view',item)}"
+                            delete="#{tipogiraController.delete(item,false)}"
+                            rendered="#{applicationMenu.tipogira.delete}"
+                            />
+                    </b:dataTableColumn>
+
+                </b:dataTable>
+            </b:panel>
+
+        </b:form>
+
+        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tipogira.list}" />
+    </ui:define>
+</ui:composition>
