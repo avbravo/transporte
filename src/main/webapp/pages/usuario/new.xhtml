@@ -19,8 +19,7 @@
                 border-color: #428BCA;
             }
         </style>
-        <h1>#{msg['titleview.usuario']}</h1>
-        <hr/>
+       
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.usuario.create}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -28,6 +27,7 @@
 
                 <a:messages id="msg"/>
                 <a:newlowercase label="#{msg['field.username']}"
+                                title="#{msg['titleview.usuario']}"
                        value="#{usuarioController.usuario.username}"
                        isnew="#{usuarioController.isNew()}"
                           disabled="#{usuarioController.writable}"

@@ -19,8 +19,7 @@
                 border-color: #428BCA;
             }
         </style>
-        <h1>#{msg['titleview.vehiculo']}</h1>
-        <hr/>
+      
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.vehiculo.create}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -28,6 +27,7 @@
 
                 <a:messages id="msg"/>
                 <a:new label="#{msg['field.placa']}"
+                       title="#{msg['titleview.vehiculo']}"
                        value="#{vehiculoController.vehiculo.placa}"
                        isnew="#{vehiculoController.isNew()}"
                           disabled="#{vehiculoController.writable}"

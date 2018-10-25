@@ -18,8 +18,8 @@
                 border-color: #428BCA;
             }
         </style>
-        <h1>#{msg['titleview.rol']}</h1>
-        <hr/>
+        
+       
          <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.rol.create}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -27,6 +27,7 @@
                 
                  <a:messages id="msg"/>
                  <a:new label="#{msg['field.idrol']}"
+                        title="#{msg['titleview.rol']}"
                                   value="#{rolController.rol.idrol}"
                                   isnew="#{rolController.isNew()}"
                                    disabled="#{rolController.writable}"

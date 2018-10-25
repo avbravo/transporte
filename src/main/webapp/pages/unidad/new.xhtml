@@ -18,8 +18,7 @@
                 border-color: #428BCA;
             }
         </style>
-        <h1>#{msg['titleview.unidad']}</h1>
-        <hr/>
+        
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.unidad.create}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -27,6 +26,7 @@
 
                 <a:messages id="msg"/>
                 <a:new label="#{msg['field.idunidad']}"
+                       title="#{msg['titleview.unidad']}"
                        value="#{unidadController.unidad.idunidad}"
                        isnew="#{unidadController.isNew()}"
                        disabled="#{unidadController.writable}"

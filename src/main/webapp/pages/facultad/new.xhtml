@@ -18,8 +18,7 @@
                 border-color: #428BCA;
             }
         </style>
-        <h1>#{msg['titleview.facultad']}</h1>
-        <hr/>
+     
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.facultad.create}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -27,6 +26,7 @@
 
                 <a:messages id="msg"/>
                 <a:new label="#{msg['field.descripcion']}"
+                       title="#{msg['titleview.facultad']}"
                        value="#{facultadController.facultad.descripcion}"
                        isnew="#{facultadController.isNew()}"
                        disabled="#{facultadController.writable}"

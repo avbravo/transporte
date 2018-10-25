@@ -18,8 +18,7 @@
                 border-color: #428BCA;
             }
         </style>
-        <h1>#{msg['titleview.tipovehiculo']}</h1>
-        <hr/>
+    
          <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.tipovehiculo.create}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -27,6 +26,7 @@
 
                 <a:messages id="msg"/>
                 <a:new label="#{msg['field.idtipovehiculo']}"
+                       title="#{msg['titleview.tipovehiculo']}"
                        value="#{tipovehiculoController.tipovehiculo.idtipovehiculo}"
                        isnew="#{tipovehiculoController.isNew()}"
                           disabled="#{tipovehiculoController.writable}"

@@ -19,8 +19,7 @@
                 border-color: #428BCA;
             }
         </style>
-        <h1>#{msg['titleview.solicitudadministrativo']}</h1>
-        <hr/>
+       
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudAdministrativo.create}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -29,6 +28,7 @@
                 <a:messages id="msg"/>
 
                 <a:newDate label="#{msg['field.fecha']}"
+                           title="#{msg['titleview.solicitudadministrativo']}"
                            value="#{solicitudAdministrativoController.solicitud.fecha}"
                            isnew="#{solicitudAdministrativoController.isNew()}"
                            disabled="#{solicitudAdministrativoController.writable}"
