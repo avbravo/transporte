@@ -18,15 +18,14 @@
                 border-color: #428BCA;
             }
         </style>
-        <h1>#{msg['titleview.conductor']}</h1>
-        <hr/>
+       
          <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.conductor.query}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <a:messages id="msg"/>
-                <b:panel title="#{app['title.data']}"  look="primary">
+                <b:panel title="#{msg['titleview.conductor']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{conductorController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idconductor']}" />
                         <p:outputLabel  value="#{conductorController.conductor.idconductor}" id="idconductor"   />
