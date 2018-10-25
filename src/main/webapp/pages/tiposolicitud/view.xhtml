@@ -26,7 +26,7 @@
             <h:panelGroup id="content" layout="block"> 
 
                 <a:messages id="msg"/>
-                <b:panel title="#{app['title.data']}">
+                <b:panel title="#{app['title.data']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{tiposolicitudController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idtiposolicitud']}" />
                         <p:outputLabel  value="#{tiposolicitudController.tiposolicitud.idtiposolicitud}" id="idtiposolicitud"   />
