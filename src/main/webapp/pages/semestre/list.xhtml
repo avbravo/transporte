@@ -26,7 +26,7 @@
                 }">
       
             <b:growl id="msgs"/>
-            <b:panel title="#{app['label.search']}" id="content"> 
+            <b:panel title="#{app['label.search']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
 
@@ -47,7 +47,7 @@
 
                 </b:panelGrid>
             </b:panel>
-            <b:panel id="dataTable">
+            <b:panel id="dataTable" look="primary">
                 <a:paginator 
                     rowPage="#{semestreController.rowPage}"
                      clear="#{semestreController.clear()}"
