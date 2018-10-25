@@ -17,15 +17,14 @@
                 border-color: #428BCA;
             } 
         </style>
-        <h1>#{msg['titlelist.tipogira']}</h1>
-        <hr/>
+        
          <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.tipogira.list}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
           <b:growl  id="msgs"/>
          
-            <b:panel title="#{app['label.search']}" id="content"   look="primary" > 
+            <b:panel title="#{msg['titlelist.tipogira']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
 

@@ -20,8 +20,7 @@
             }
 
         </style>
-        <h1>#{msg['titleview.calendariosolicitud']}</h1>
-        <hr/>
+        
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.calendariobuses.list}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -29,7 +28,7 @@
 
                 <a:messages id="msg"/>
 
-                <b:panel title="#{app['title.data']}" look="primary">
+                <b:panel title="#{msg['titleview.calendariosolicitud']}" look="primary">
 
 
                     <p:outputLabel value="#{msg['field.idestatus']}"/>

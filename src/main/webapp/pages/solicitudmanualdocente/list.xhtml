@@ -21,16 +21,13 @@
         </style>
         
  
-        <h1>#{msg['titlelist.solicitudmanualdocente']}</h1>
-        <hr/>
-        
         <b:form id="form"  styleClass="form-signin" prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudDocentePorAdministrador.list}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
             <b:growl  id="msgs"/>
 
-            <b:panel title="#{app['label.search']}" id="content"   look="primary" > 
+            <b:panel title="#{msg['titlelist.solicitudmanualdocente']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
 
