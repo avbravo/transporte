@@ -18,8 +18,7 @@
                 border-color: #428BCA;
             }
         </style>
-        <h1>#{msg['titleview.estatus']}</h1>
-        <hr/>
+        
          <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.estatus.create}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -27,6 +26,7 @@
 
                 <a:messages id="msg"/>
                 <a:new label="#{msg['field.idestatus']}"
+                       title="#{msg['titleview.estatus']}"
                        value="#{estatusController.estatus.idestatus}"
                        isnew="#{estatusController.isNew()}"
                         disabled="#{estatusController.writable}"
@@ -35,7 +35,7 @@
                        list="#{estatusController.prepare('golist',estatusController.estatus)}"
 
                        />
-                <b:panel title="#{app['title.data']}">
+                <b:panel title="#{app['title.data']}" look="primary">
 
 
 

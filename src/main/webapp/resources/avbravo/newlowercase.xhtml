@@ -11,6 +11,7 @@
 
         <composite:attribute name="label" />
         <composite:attribute name="value" />
+        <composite:attribute name="title" default="" />
         <composite:attribute name="columns" default="1" />
         <composite:attribute name="readonly" default="false"/>
         <composite:attribute name="label2" default="" />
@@ -35,7 +36,7 @@
         <p:remoteCommand  update=":form:content :form:panel"
                           name="remoteid" 
                           actionListener="#{cc.attrs.isnew}"/>
-        <b:panel title="#{app['label.new']}">
+        <b:panel title="#{cc.attrs.title}" look="primary">
             <b:panelGrid  columns="#{cc.attrs.columns}" size="xs" colSpans="1,11"> 
 
                 <p:outputLabel value="#{cc.attrs.label}"/>
