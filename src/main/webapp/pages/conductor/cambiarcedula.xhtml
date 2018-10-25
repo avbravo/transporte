@@ -28,7 +28,7 @@
                                   name="remoteid" 
                                   actionListener="#{conductorController.findByCedula()}"/>
                 <a:messages id="msg"/>
-                <b:panel title="#{msg['titleview.changecedula']}">
+                <b:panel title="#{msg['titleview.changecedula']}"> look="primary"
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{loginController.loggedIn}"> 
                         <p:outputLabel  value="#{msg['field.cedula']}" />
                         <b:inputText       

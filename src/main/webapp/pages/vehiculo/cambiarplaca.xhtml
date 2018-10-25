@@ -28,7 +28,7 @@
                                   name="remoteid" 
                                   actionListener="#{vehiculoController.findByPlaca()}"/>
                 <a:messages id="msg"/>
-                <b:panel title="#{msg['titleview.changeplaca']}">
+                <b:panel title="#{msg['titleview.changeplaca']}" look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{loginController.loggedIn}"> 
                         <p:outputLabel  value="#{msg['field.placa']}" />
                         <b:inputText       
