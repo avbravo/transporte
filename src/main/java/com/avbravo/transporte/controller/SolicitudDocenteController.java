@@ -108,7 +108,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     CarreraRepository carreraRepository;
     @Inject
     UnidadRepository unidadRepository;
-   
+
     @Inject
     SolicitudRepository solicitudRepository;
     @Inject
@@ -467,7 +467,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud.setIdsolicitud(id);
             solicitud.setFecha(idsecond);
             solicitud.setMision("---");
-              solicitud.setNumerodevehiculos(1);
+            solicitud.setNumerodevehiculos(1);
             solicitud.setPasajeros(25);
             solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
             solicita = loginController.getUsuario();
@@ -523,7 +523,6 @@ public class SolicitudDocenteController implements Serializable, IController {
     @Override
     public String save() {
         try {
-           
 
             if (!solicitudServices.isValid(solicitud)) {
                 return "";
@@ -544,7 +543,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.solicitudnumero") + " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
                 return "";
             }
-             Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
+            Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
             solicitud.setIdsolicitud(idsolicitud);
             Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
             if (optional.isPresent()) {
@@ -568,6 +567,8 @@ public class SolicitudDocenteController implements Serializable, IController {
                         loginController.setUsuario(responsable);
                     }
                 }
+                facultadList = new ArrayList<>();
+                carreraList = new ArrayList<>();
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
             } else {
