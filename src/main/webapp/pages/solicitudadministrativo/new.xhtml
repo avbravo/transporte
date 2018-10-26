@@ -108,8 +108,18 @@
                         <p:spacer/>
                         <p:spacer/>
 
+                           <p:outputLabel value="#{msg['field.idtipogira']}"/>
+                           <e:autocompletetipogira listener="#{solicitudAdministrativoController.handleSelect}"
+                                                  value="#{solicitudAdministrativoController.solicitud.tipogira}"
+                                                  itemLabel=" #{p.idtipogira}"
+                                                  field="idtipogira"
+                                                  dropdown="true"
+                                                  fromstart="true"
+                                                  minQueryLength="0"
+                                                  update=""/>
+                           
                         <p:outputLabel  value="#{msg['field.mision']}" />
-                        <b:inputTextarea rows="2"  value="#{solicitudAdministrativoController.solicitud.mision}" id="mision"  label="#{msg['field.mision']}" />
+                        <b:inputTextarea rows="2"  span="8" value="#{solicitudAdministrativoController.solicitud.mision}" id="mision"  label="#{msg['field.mision']}" />
 
 
                       
@@ -130,7 +140,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <a:inputText value="#{solicitudAdministrativoController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
+                        <a:inputText span="8" value="#{solicitudAdministrativoController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
 
 
 
@@ -143,7 +153,7 @@
                         
 
                         <p:outputLabel  value="#{msg['field.lugarllegada']}" />
-                        <a:inputText value="#{solicitudAdministrativoController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
+                        <a:inputText  span="8" value="#{solicitudAdministrativoController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
 
 
 
@@ -151,7 +161,7 @@
                         <p:chips value="#{solicitudAdministrativoController.solicitud.recursossolicitados}" id="recursossolicitados"  title="#{msg['field.chips']}"  />
 
                         <p:outputLabel  value="#{msg['field.observaciones']}" />
-                        <b:inputTextarea rows="2" value="#{solicitudAdministrativoController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
+                        <b:inputTextarea rows="2" span="8" value="#{solicitudAdministrativoController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
 
 
 
