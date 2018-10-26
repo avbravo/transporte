@@ -177,11 +177,11 @@
 
                         
                         <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
-                        <a:inputText span="4" value="#{solicitudManualDocenteController.solicitud.numerodevehiculos}" id="numerodevehiculos"  label="#{msg['field.numerodevehiculos']}" />
+                      <b:slider2 span="8"  min="0" max="15" value="#{solicitudManualDocenteController.solicitud.numerodevehiculos}" id="numerodevehiculos"  label="#{msg['field.numerodevehiculos']}" />
 
                         
                         <p:outputLabel  value="#{msg['field.pasajeros']}" />
-                        <a:inputText span="4" value="#{solicitudManualDocenteController.solicitud.pasajeros}" id="pasajeros"  label="#{msg['field.pasajeros']}" />
+                    <b:slider2 span="8"  min="0" max="150" value="#{solicitudManualDocenteController.solicitud.pasajeros}" id="pasajeros"  label="#{msg['field.pasajeros']}" />
 
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />

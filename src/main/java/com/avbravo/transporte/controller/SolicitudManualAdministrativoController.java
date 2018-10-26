@@ -466,6 +466,8 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
             solicitudSelected = new Solicitud();
             solicitud.setIdsolicitud(id);
             solicitud.setFecha(idsecond);
+              solicitud.setNumerodevehiculos(1);
+            solicitud.setPasajeros(25);
        
      List<String> numeroGrupoList = new ArrayList<>();
             solicitud.setNumerogrupo(numeroGrupoList);

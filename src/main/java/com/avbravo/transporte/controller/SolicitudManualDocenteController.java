@@ -465,6 +465,8 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             solicitud.setIdsolicitud(id);
             solicitud.setFecha(idsecond);
             solicitud.setMision("---");
+            solicitud.setNumerodevehiculos(1);
+            solicitud.setPasajeros(25);
 
             solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
             solicita = loginController.getUsuario();
