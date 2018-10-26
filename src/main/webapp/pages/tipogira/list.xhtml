@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <ui:composition template="/layout/template.xhtml" 
                 xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
@@ -17,7 +19,7 @@
                 border-color: #428BCA;
             } 
         </style>
-        
+       
          <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.tipogira.list}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -35,7 +37,6 @@
                                                   value="#{tipogiraController.tipogiraSelected}"
                                                   itemLabel=" #{p.idtipogira}"
                                                   field="idtipogira"
-                                                  size="35"
                                                   update=" :form:dataTable"/>
 
                
@@ -43,10 +44,10 @@
                       
 
                 </b:panelGrid>
-                  <b:row>
+                   <b:row>
                   
                     <b:column medium-screen="6">
-                        <a:search label="#{msg['field.idunidad']}"
+                        <a:search label="#{msg['field.idtipogira']}"
                                   value="#{tipogiraController.lookupServices.idtipogira}"
                                   renderedList="#{applicationMenu.tipogira.list}"  
                                   search="#{tipogiraController.searchBy('idtipogira')}"
@@ -73,7 +74,7 @@
                              id="dataTable2"
                              paginated="false"
                              onpage="console.log('page');">
-
+ 
                     <b:dataTableColumn value="#{item.idtipogira}" label="#{msg['field.idtipogira']}"/>
 
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />

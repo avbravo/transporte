@@ -18,7 +18,7 @@
                 border-color: #428BCA;
             }
         </style>
-       
+    
          <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.tipogira.create}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -29,7 +29,7 @@
                        title="#{msg['titleview.tipogira']}"
                        value="#{tipogiraController.tipogira.idtipogira}"
                        isnew="#{tipogiraController.isNew()}"
-                          disabled="#{giraController.writable}"
+                          disabled="#{tipogiraController.writable}"
                        new="#{tipogiraController.prepare('new',tipogiraController.tipogira)}"
                        rendererList="#{applicationMenu.tipogira.list}"
                        list="#{tipogiraController.prepare('golist',tipogiraController.tipogira)}"

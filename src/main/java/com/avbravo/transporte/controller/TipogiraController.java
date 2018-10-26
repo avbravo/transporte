@@ -113,8 +113,6 @@ public class TipogiraController implements Serializable, IController {
         this.lookupServices = lookupServices;
     }
 
-   
-
     public Integer getPage() {
         return page;
     }
@@ -484,8 +482,8 @@ public class TipogiraController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
-          
-         
+           
+        
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -494,7 +492,7 @@ public class TipogiraController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
     public void handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-            tipogiraList.removeAll(tipogiraList);
+       tipogiraList.removeAll(tipogiraList);
             tipogiraList.add(tipogiraSelected);
             tipogiraFiltered = tipogiraList;
             tipogiraDataModel = new TipogiraDataModel(tipogiraList);
@@ -579,16 +577,16 @@ public class TipogiraController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchtipogira")) {
                 case "_init":
-                    case "_autocomplete":
+                       case "_autocomplete":
                     tipogiraList = tipogiraRepository.findPagination(page, rowPage);
 
                     break;
 
                 case "idtipogira":
-                    if (lookupServices.getIdtipogira() != null) {
+                    if (lookupServices.getIdtipogira()!= null) {
                           tipogiraList = tipogiraRepository.findRegexInTextPagination("idtipogira", lookupServices.getIdtipogira(), true, page, rowPage, new Document("idtipogira", -1));
                     } else {
-                         tipogiraList = tipogiraRepository.findPagination(page, rowPage);
+                        tipogiraList = tipogiraRepository.findPagination(page, rowPage);
                     }
                   
                     break;
