@@ -462,6 +462,11 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (!list.isEmpty()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yasolicitoviajeenestafecha"));
             }
+            if (JsfUtil.fechaMenor(solicitud.getFecha(), JsfUtil.getFechaActual())) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechasolicitudmenorqueactual"));
+                writable =false;
+                       
+            }
             solicitud = new Solicitud();
             solicitudSelected = new Solicitud();
             solicitud.setIdsolicitud(id);
