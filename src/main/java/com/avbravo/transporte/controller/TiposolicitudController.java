@@ -113,8 +113,6 @@ public class TiposolicitudController implements Serializable, IController {
         this.lookupServices = lookupServices;
     }
 
-   
-
     public Integer getPage() {
         return page;
     }
@@ -484,8 +482,8 @@ public class TiposolicitudController implements Serializable, IController {
 
     public void handleSelect(SelectEvent event) {
         try {
-          
-         
+           
+        
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
@@ -494,7 +492,7 @@ public class TiposolicitudController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
     public void handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-            tiposolicitudList.removeAll(tiposolicitudList);
+       tiposolicitudList.removeAll(tiposolicitudList);
             tiposolicitudList.add(tiposolicitudSelected);
             tiposolicitudFiltered = tiposolicitudList;
             tiposolicitudDataModel = new TiposolicitudDataModel(tiposolicitudList);
@@ -579,16 +577,16 @@ public class TiposolicitudController implements Serializable, IController {
             Document doc;
             switch (loginController.get("searchtiposolicitud")) {
                 case "_init":
-                    case "_autocomplete":
+                       case "_autocomplete":
                     tiposolicitudList = tiposolicitudRepository.findPagination(page, rowPage);
 
                     break;
 
                 case "idtiposolicitud":
-                    if (lookupServices.getIdtiposolicitud() != null) {
+                    if (lookupServices.getIdtiposolicitud()!= null) {
                           tiposolicitudList = tiposolicitudRepository.findRegexInTextPagination("idtiposolicitud", lookupServices.getIdtiposolicitud(), true, page, rowPage, new Document("idtiposolicitud", -1));
                     } else {
-                         tiposolicitudList = tiposolicitudRepository.findPagination(page, rowPage);
+                        tiposolicitudList = tiposolicitudRepository.findPagination(page, rowPage);
                     }
                   
                     break;
