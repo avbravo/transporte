@@ -25,7 +25,7 @@ public class LookupServices {
     private String idtiposolicitud;
     private String idtipovehiculo;
     private String idestatus;
-
+private String idsugerencia;
     private String idrol;
 
     private String nombre;
@@ -103,6 +103,17 @@ public class LookupServices {
     public LookupServices() {
     }
 
+    public String getIdsugerencia() {
+        return idsugerencia;
+    }
+
+    public void setIdsugerencia(String idsugerencia) {
+        this.idsugerencia = idsugerencia;
+    }
+
+    
+    
+    
     public Integer getIdcarrera() {
         return idcarrera;
     }

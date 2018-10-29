@@ -8,7 +8,6 @@ package com.avbravo.transporte.roles;
 import java.io.Serializable;
 import com.avbravo.avbravoutils.menu.MenuElement;
 import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
@@ -59,6 +58,7 @@ public class ApplicationMenu implements Serializable {
     MenuElement solicitudDocentePorAdministrador = new MenuElement();
     MenuElement solicitudAdministrativo = new MenuElement();
     MenuElement solicitudAdministrativoPorAdministrador = new MenuElement();
+    MenuElement sugerencia = new MenuElement();
     MenuElement vehiculo = new MenuElement();
     MenuElement vehiculocambiarplaca = new MenuElement();
     MenuElement viajes = new MenuElement();
@@ -110,6 +110,15 @@ public class ApplicationMenu implements Serializable {
         this.tipogira = tipogira;
     }
 
+    public MenuElement getSugerencia() {
+        return sugerencia;
+    }
+
+    public void setSugerencia(MenuElement sugerencia) {
+        this.sugerencia = sugerencia;
+    }
+
+    
     
     
     

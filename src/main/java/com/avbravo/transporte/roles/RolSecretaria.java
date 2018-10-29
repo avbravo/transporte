@@ -62,6 +62,7 @@ applicationMenu.getCalendariobuses().initialize(Boolean.TRUE);
         applicationMenu.getSolicitudDocentePorAdministrador().initialize(Boolean.TRUE);
         applicationMenu.getSolicitudAdministrativo().initialize(Boolean.FALSE);
         applicationMenu.getSolicitudAdministrativoPorAdministrador().initialize(Boolean.TRUE);
+        applicationMenu.getSugerencia().initialize(Boolean.FALSE);
         applicationMenu.getTipogira().initialize(Boolean.FALSE);
         applicationMenu.getTiposolicitud().initialize(Boolean.TRUE);
         applicationMenu.getTipovehiculo().initialize(Boolean.TRUE);
