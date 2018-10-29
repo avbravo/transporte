@@ -174,7 +174,19 @@
                                                   />
 
                
+ <p:outputLabel  value="#{msg['field.sugerencia']}" style="font-size: 25;" />
+        <b:dataTable value="#{sugerenciaController.sugerenciaDataModel}"
+                             var="item"
+                             id="dataTable2"
+                             paginated="false"
+                             onpage="console.log('page');">
+                    
+                    <b:dataTableColumn value="#{item.descripcion}" label="#{msg['field.descripcion']}"/>
+                  
+                  
 
+                </b:dataTable>
+ 
 
                         <a:save rendered="#{solicitudManualAdministrativoController.writable and applicationMenu.solicitudAdministrativoPorAdministrador.create}"
                                 save="#{solicitudManualAdministrativoController.save()}" />

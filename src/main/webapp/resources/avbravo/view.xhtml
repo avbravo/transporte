@@ -31,7 +31,7 @@
         <b:panelGrid id="panelEdit" colSpans="3,3,3,3" size="xs" > 
 
             <b:commandButton rendered="#{cc.attrs.renderedEdit}" 
-
+                             look="primary"
                              iconAwesome="fa-edit" 
                              title="#{app['button.edit']}"  
                              value="#{app['button.edit']}"  
@@ -57,6 +57,7 @@
            
             
             <p:commandButton icon="fa fa-print" 
+                              look="primary"
                                  rendered="#{cc.attrs.renderedList}"
                                           value="#{app['button.print']}"
                                          title="#{app['button.print']}" 
@@ -69,7 +70,7 @@
             
             <b:commandButton immediate="true"
                              iconAwesome="fa-share" 
-
+ look="primary"
                              value="#{app['button.return']}" 
                              title="#{app['button.return']}" 
 
