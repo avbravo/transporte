@@ -16,7 +16,7 @@ import com.avbravo.transporteejb.datamodel.UsuarioDataModel;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbRepository;
-import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
+
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.RolRepository;
@@ -87,8 +87,7 @@ public class UsuarioController implements Serializable, IController {
 
     //Services
     //Atributos para busquedas
-    @Inject
-    ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
+    
     @Inject
     LookupServices lookupServices;
     @Inject

@@ -20,7 +20,7 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbRepository;
 
 import com.avbravo.transporte.util.LookupServices;
-import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
+
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.services.RolServices;
 import java.util.ArrayList;
@@ -76,8 +76,7 @@ public class SemestreController implements Serializable, IController {
 
     //Services
     //Atributos para busquedas
-    @Inject
-    ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
+   
     @Inject
     LookupServices lookupServices;
     @Inject

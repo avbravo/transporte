@@ -22,7 +22,7 @@ import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
-import com.avbravo.transporteejb.producer.ReferentialIntegrityTransporteejbServices;
+
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.entity.Tipogira;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
@@ -121,8 +121,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     @Inject
     AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
 
-    @Inject
-    ReferentialIntegrityTransporteejbServices referentialIntegrityTransporteejbServices;
+    
     @Inject
     LookupServices lookupServices;
 
