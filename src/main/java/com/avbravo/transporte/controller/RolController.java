@@ -628,4 +628,8 @@ public class RolController implements Serializable, IController {
             JsfUtil.errorMessage("move() " + e.getLocalizedMessage());
         }
     }// </editor-fold>
+    
+    public Integer tam(){
+       return rolRepository.findAll().size();
+    }
 }
