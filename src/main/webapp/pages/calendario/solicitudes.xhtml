@@ -68,16 +68,48 @@
                 </b:panel>
             </h:panelGroup>
 
-            <p:dialog widgetVar="eventDialog" header="#{msg['dialogo.calendario']}" 
+            <p:dialog widgetVar="eventDialog" header="#{msg['dialogo.solicitud']}" 
                       width="650" height="450"
                       responsive="true"
                       showEffect="clip" hideEffect="clip">
                 <b:panelGrid id="eventDetails" colSpans="2,10" size="xs" > 
-                    <p:outputLabel  value="#{msg['field.fecha']}" />
-                    <a:labelDate  value="#{calendarioSolicitudController.solicitud.fecha}" id="fecha"   />
+                    
                     <p:outputLabel  value="#{msg['field.idsolicitud']}" />
                     <p:outputLabel  value="#{calendarioSolicitudController.solicitud.idsolicitud}" id="idsolicitud"   />
 
+                  
+                    
+                    <p:outputLabel  value="#{msg['field.fechapartida']}" />
+                    <p:calendar  disabled="true"  size="8"                                  
+                                 style="background-color: grey;"
+                                 pattern="dd/MM/yyyy" value="#{calendarioSolicitudController.solicitud.fechahorapartida}"  />
+
+                    <p:outputLabel  value="#{msg['field.horapartida']}" />        
+                    <p:calendar  disabled="true"    
+                                 size="8" 
+                                 pattern="HH:mm:ss a" value="#{calendarioSolicitudController.solicitud.fechahorapartida}"  />
+
+
+
+                    <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+                    <p:outputLabel value="#{calendarioSolicitudController.solicitud.lugarpartida}" id="lugarpartida"   />
+
+                   
+
+
+                    <p:outputLabel  value="#{msg['field.fecharegreso']}" />
+                    <p:calendar  disabled="true"  size="8"                                  
+                                 style="background-color: grey;"
+                                 pattern="dd/MM/yyyy" value="#{calendarioSolicitudController.solicitud.fechahoraregreso}"  />
+
+
+
+                    <p:outputLabel  value="#{msg['field.horaregreso']}" />
+                    <p:calendar  disabled="true"    
+                                 size="8" 
+                                 pattern="HH:mm:ss a" value="#{calendarioSolicitudController.solicitud.fechahoraregreso}"  />
+
+                    
                     <p:outputLabel value="#{msg['field.idestatus']}" rendered="!#{applicationMenu.menuBarAdministracion}"/>
                     <p:outputLabel  value="#{calendarioSolicitudController.solicitud.estatus.idestatus}"  rendered="#{!applicationMenu.menuBarAdministracion}"/>
 
@@ -293,38 +325,7 @@
                     <p:outputLabel  value="#{msg['field.pasajeros']}" />
                     <p:outputLabel value="#{calendarioSolicitudController.solicitud.pasajeros}" id="pasajeros"  />
 
-                    <p:outputLabel  value="#{msg['field.fechapartida']}" />
-                    <p:calendar  disabled="true"  size="8"                                  
-                                 style="background-color: grey;"
-                                 pattern="dd/MM/yyyy" value="#{calendarioSolicitudController.solicitud.fechahorapartida}"  />
-
-                    <p:outputLabel  value="#{msg['field.horapartida']}" />        
-                    <p:calendar  disabled="true"    
-                                 size="8" 
-                                 pattern="HH:mm:ss a" value="#{calendarioSolicitudController.solicitud.fechahorapartida}"  />
-
-
-
-                    <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                    <p:outputLabel value="#{calendarioSolicitudController.solicitud.lugarpartida}" id="lugarpartida"   />
-
-
-
-                    <p:outputLabel  value="#{msg['field.fecharegreso']}" />
-                    <p:calendar  disabled="true"  size="8"                                  
-                                 style="background-color: grey;"
-                                 pattern="dd/MM/yyyy" value="#{calendarioSolicitudController.solicitud.fechahoraregreso}"  />
-
-
-
-                    <p:outputLabel  value="#{msg['field.horaregreso']}" />
-                    <p:calendar  disabled="true"    
-                                 size="8" 
-                                 pattern="HH:mm:ss a" value="#{calendarioSolicitudController.solicitud.fechahoraregreso}"  />
-
-
-
-                
+                  
 
                     <p:outputLabel  value="#{msg['field.lugarllegada']}" />
                     <p:outputLabel value="#{calendarioSolicitudController.solicitud.lugarllegada}" id="lugarllegada"   />
@@ -345,6 +346,7 @@
                         rendered="#{applicationMenu.menuBarAdministracion}"
                         value="#{app['button.edit']}"
                         iconAwesome="fa-edit"
+                        look="primary"
                         action="#{calendarioSolicitudController.edit()}"
                         oncomplete="PF('eventDialog').hide();"
                         />
