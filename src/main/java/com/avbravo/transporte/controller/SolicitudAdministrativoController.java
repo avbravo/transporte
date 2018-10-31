@@ -24,9 +24,12 @@ import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 
 import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.entity.Tiposolicitud;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
+import com.avbravo.transporteejb.repository.TiposolicitudRepository;
+import com.avbravo.transporteejb.repository.TipovehiculoRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
@@ -73,9 +76,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
     //    private String stmpPort="80";
     private String stmpPort = "25";
-    List<Facultad> suggestionsFacultad = new ArrayList<>();
-    List<Carrera> suggestionsCarrera = new ArrayList<>();
-    List<Unidad> suggestionsUnidad = new ArrayList<>();
+  
     private Date _old;
     private Boolean writable = false;
     //DataModel
@@ -100,6 +101,15 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     List<Facultad> facultadList = new ArrayList<>();
     List<Carrera> carreraList = new ArrayList<>();
     List<Usuario> usuarioList = new ArrayList<>();
+    List<Tiposolicitud> tiposolicitudList = new ArrayList<>();
+    List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+    List<Tipovehiculo> suggestionsTipovehiculo = new ArrayList<>();
+      
+      
+      List<Facultad> suggestionsFacultad = new ArrayList<>();
+    List<Carrera> suggestionsCarrera = new ArrayList<>();
+    List<Unidad> suggestionsUnidad = new ArrayList<>();
+    List<Tiposolicitud> suggestionsTiposolicitud = new ArrayList<>();
 
     //Repository
     @Inject
@@ -110,6 +120,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     UnidadRepository unidadRepository;
     @Inject
     SolicitudRepository solicitudRepository;
+    @Inject
+     TiposolicitudRepository tiposolicitudRepository;
+        @Inject
+    TipovehiculoRepository tipovehiculoRepository;
     @Inject
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
     @Inject
@@ -159,6 +173,26 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         this.pages = pages;
     }
 
+    public List<Tipovehiculo> getTipovehiculoList() {
+        return tipovehiculoList;
+    }
+
+    public void setTipovehiculoList(List<Tipovehiculo> tipovehiculoList) {
+        this.tipovehiculoList = tipovehiculoList;
+    }
+
+    
+    
+    public List<Tiposolicitud> getTiposolicitudList() {
+        return tiposolicitudList;
+    }
+
+    public void setTiposolicitudList(List<Tiposolicitud> tiposolicitudList) {
+        this.tiposolicitudList = tiposolicitudList;
+    }
+
+    
+    
     public List<Usuario> getUsuarioList() {
         return usuarioList;
     }
@@ -475,7 +509,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             solicitud.setPasajeros(25);
             List<String> numeroGrupoList = new ArrayList<>();
             solicitud.setNumerogrupo(numeroGrupoList);
-            solicitud.setNumerodevehiculos(0);
+            solicitud.setNumerodevehiculos(1);
 
             solicitud.setObjetivo("---");
             solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
@@ -547,6 +581,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             usuarioList.add(solicita);
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
+               solicitud.setTipovehiculo(tipovehiculoList);
 
             //Verificar si tiene un viaje en esas fechas
             Optional<Solicitud> optionalRango = solicitudServices.coincidenciaResponsableEnRango(solicitud);
@@ -1228,4 +1263,69 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         }
     }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="completeFiltradoTipovehiculo(String query)">
+    public List<Tipovehiculo> completeFiltradoTipovehiculo(String query) {
+
+        suggestionsTipovehiculo = new ArrayList<>();
+        List<Tipovehiculo> temp = new ArrayList<>();
+        try {
+
+            Boolean found = false;
+            query = query.trim();
+
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            temp = tipovehiculoRepository.findRegexInText(field, query, true, new Document(field, 1));
+            if (tipovehiculoList == null || tipovehiculoList.isEmpty()) {
+
+                if (!temp.isEmpty()) {
+                    suggestionsTipovehiculo = temp;
+                }
+            } else {
+
+                if (!temp.isEmpty()) {
+                    temp.stream().forEach(f -> addTipovehiculo(f));
+                }
+
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("completeFiltradoFacultad() " + e.getLocalizedMessage());
+        }
+        return suggestionsTipovehiculo;
+    }// </editor-fold>
+    
+    
+      // <editor-fold defaultstate="collapsed" desc="addTipovehiculo(Tipovehiculo tipovehiculo)">
+    private Boolean addTipovehiculo(Tipovehiculo tipovehiculo) {
+        try {
+            if (!foundTipovehiculo(tipovehiculo.getIdtipovehiculo())) {
+                suggestionsTipovehiculo.add(tipovehiculo);
+            }
+        } catch (Exception e) {
+            JsfUtil.errorMessage("addTiposolocitud()" + e.getLocalizedMessage());
+        }
+        return false;
+    }
+
+    // </editor-fold>
+    
+     // <editor-fold defaultstate="collapsed" desc="foundTipovehiculo(String idtipovehiculo)">
+    private Boolean foundTipovehiculo(String idtipovehiculo) {
+        Boolean _found = true;
+        try {
+            Tipovehiculo tipovehiculo = tipovehiculoList.stream() // Convert to steam
+                    .filter(x -> x.getIdtipovehiculo()== idtipovehiculo) // we want "jack" only
+                    .findAny() // If 'findAny' then return found
+                    .orElse(null);
+            if (tipovehiculo == null) {
+
+                _found = false;
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("foundTipovehiculo() " + e.getLocalizedMessage());
+        }
+        return _found;
+    }
+    // </editor-fold>
 }

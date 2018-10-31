@@ -153,15 +153,30 @@
 
 
                     <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
-                    <e:autocompletetipovehiculo listener="#{solicitudAdministrativoController.handleSelect}"
-                                                  value="#{solicitudAdministrativoController.solicitud.tipovehiculo}"
-                                                  itemLabel=" #{p.idtipovehiculo}"
-                                                  field="idtipovehiculo"
-                                                    dropdown="true"
-                                                minQueryLength="0"
-                                                multiple="true"
-                                                  />
+                  <p:autoComplete dropdown="true"
+                                        multiple="true"
+                                        scrollHeight="250"
+                                        size="55"
+                                        emptyMessage="#{app['info.nohayregistros']}"
+                                        value="#{solicitudAdministrativoController.tipovehiculoList}"
+                                        completeMethod="#{solicitudAdministrativoController.completeFiltradoTipovehiculo}"
+                                        var="p"
+                                        required="false"
 
+
+                                        itemLabel="#{p.idtipovehiculo}"
+                                        itemValue="#{p}" forceSelection="true">
+                            <f:converter binding="#{tipovehiculoConverter}"/>
+                            <f:attribute name="field" value="idtipovehiculo"/>
+                            <f:attribute name="fielddropdown" value="false"/>
+                            <f:attribute name="fieldquerylenth" value="1"/>
+                             <p:ajax event="itemSelect" listener="#{solicitudAdministrativoController.handleSelect}"
+                                    update=""
+                                    />
+
+
+                        </p:autoComplete>
+               
                       
                         <p:outputLabel value="#{msg['field.idestatus']}"/>
                          <p:outputLabel  value="#{solicitudAdministrativoController.solicitud.estatus.idestatus}" />

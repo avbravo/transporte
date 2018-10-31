@@ -1,17 +1,66 @@
---------------------------------
-algunas veces yo lo pense
-muchas otras te espere
-pronto estaras viendo mis ojos
+  // <editor-fold defaultstate="collapsed" desc="completeFiltradoTipovehiculo(String query)">
+    public List<Tipovehiculo> completeFiltradoTipovehiculo(String query) {
 
-mirame  bebe
-mirame mi amor
-abre tus labios 
-dime tus primeras palabras mi amor
-yooo nunca las olvidareeeeeee
---------------------------------------
-te necesito bbb
-es algo nuevo para mi
-aprendere contigo
+        suggestionsTipovehiculo = new ArrayList<>();
+        List<Tipovehiculo> temp = new ArrayList<>();
+        try {
 
+            Boolean found = false;
+            query = query.trim();
 
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            temp = tipovehiculoRepository.findRegexInText(field, query, true, new Document(field, 1));
+            if (tipovehiculoList == null || tipovehiculoList.isEmpty()) {
+
+                if (!temp.isEmpty()) {
+                    suggestionsTipovehiculo = temp;
+                }
+            } else {
+
+                if (!temp.isEmpty()) {
+                    temp.stream().forEach(f -> addTipovehiculo(f));
+                }
+
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("completeFiltradoFacultad() " + e.getLocalizedMessage());
+        }
+        return suggestionsTipovehiculo;
+    }// </editor-fold>
+    
+    
+      // <editor-fold defaultstate="collapsed" desc="addTipovehiculo(Tipovehiculo tipovehiculo)">
+    private Boolean addTipovehiculo(Tipovehiculo tipovehiculo) {
+        try {
+            if (!foundTipovehiculo(tipovehiculo.getIdtipovehiculo())) {
+                suggestionsTipovehiculo.add(tipovehiculo);
+            }
+        } catch (Exception e) {
+            JsfUtil.errorMessage("addTiposolocitud()" + e.getLocalizedMessage());
+        }
+        return false;
+    }
+
+    // </editor-fold>
+    
+     // <editor-fold defaultstate="collapsed" desc="foundTipovehiculo(String idtipovehiculo)">
+    private Boolean foundTipovehiculo(String idtipovehiculo) {
+        Boolean _found = true;
+        try {
+            Tipovehiculo tipovehiculo = tipovehiculoList.stream() // Convert to steam
+                    .filter(x -> x.getIdtipovehiculo()== idtipovehiculo) // we want "jack" only
+                    .findAny() // If 'findAny' then return found
+                    .orElse(null);
+            if (tipovehiculo == null) {
+
+                _found = false;
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("foundTipovehiculo() " + e.getLocalizedMessage());
+        }
+        return _found;
+    }
+    // </editor-fold>
 
