@@ -24,7 +24,7 @@ import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 
 import com.avbravo.transporte.util.LookupServices;
-import com.avbravo.transporteejb.entity.Tipogira;
+import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
@@ -506,7 +506,10 @@ public class SolicitudDocenteController implements Serializable, IController {
                 }
             }
             solicitud.setSemestre(semestreServices.findById(idsemestre));
-            solicitud.setTipovehiculo(tipovehiculoServices.findById("BUS"));
+            List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+                    
+                    tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+            solicitud.setTipovehiculo(tipovehiculoList);
 
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
 

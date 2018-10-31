@@ -27,7 +27,7 @@
 
                 <a:messages id="msg"/>
 
-                <a:newDate label="#{msg['field.fechagira']}}"
+                <a:newDate label="#{msg['field.fechagira']}"
                            title="#{msg['titleview.solicitudmanualadministrativo']}"
                            value="#{solicitudManualAdministrativoController.solicitud.fecha}"
                            isnew="#{solicitudManualAdministrativoController.isNew()}"
@@ -171,8 +171,34 @@
                                                   field="idtipovehiculo"
                                                   dropdown="true"
                                                minQueryLength="0"
+                                               multiple="true"
                                                   />
+ <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
+                      <p:autoComplete dropdown="true"
+                                        multiple="true"
+                                        scrollHeight="250"
+                                        size="55"
+                                        emptyMessage="#{app['info.nohayregistros']}"
+                                        value="#{solicitudDocenteController.facultadList}"
+                                        completeMethod="#{solicitudDocenteController.completeFiltradoFacultad}"
+                                        var="p"
+                                        required="false"
 
+
+                                        itemLabel="#{p.descripcion}"
+                                        itemValue="#{p}" forceSelection="true">
+                            <f:converter binding="#{facultadConverter}"/>
+                            <f:attribute name="field" value="descripcion"/>
+                            <f:attribute name="fielddropdown" value="false"/>
+                            <f:attribute name="fieldquerylenth" value="1"/>
+                            <p:ajax event="itemSelect" listener="#{solicitudDocenteController.handleSelect}"
+                                    update=":form:content"     />
+                            <p:ajax event="itemUnselect" listener="#{solicitudDocenteController.itemUnselect}"
+                                    update=":form:content"
+                                    />
+
+
+                        </p:autoComplete>
                
  <p:outputLabel  value="#{msg['field.sugerencia']}" style="font-size: 25;" />
         <b:dataTable value="#{sugerenciaController.sugerenciaDataModel}"

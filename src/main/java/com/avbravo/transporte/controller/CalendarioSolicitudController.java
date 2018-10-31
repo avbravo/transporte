@@ -583,7 +583,10 @@ public class CalendarioSolicitudController implements Serializable, IController 
                 }
             }
             solicitud.setSemestre(semestreServices.findById(idsemestre));
-            solicitud.setTipovehiculo(tipovehiculoServices.findById("BUS"));
+             List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+                    
+                    tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+            solicitud.setTipovehiculo(tipovehiculoList);
 
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
 
