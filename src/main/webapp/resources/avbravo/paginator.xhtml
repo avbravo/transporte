@@ -49,28 +49,32 @@
                               name="remoteshowall" />
             <p:remoteCommand  update=":form:content"
                               name="remotecontent" />
-            <b:commandButton                      
+            <b:commandButton    
+                 look="primary"
                 iconAwesome="fa-step-backward"
                 oncomplete="remoteshowall();"
                 action="#{cc.attrs.first}"
                 update=":form:dataTable " />
 
             <b:commandButton   iconAwesome="fa-caret-left"  
-
+                               look="primary"
                                oncomplete="remoteshowall();"
                                action="#{cc.attrs.back}"
                                update=":form:dataTable " /> 
             <b:commandButton   iconAwesome="fa-play"  
                                oncomplete="remoteshowall();"
                                action="#{cc.attrs.next}" 
+                               look="primary"
                                update=":form:dataTable " /> 
 
             <b:commandButton  iconAwesome="fa-step-forward"  
                               oncomplete="remoteshowall();"
+                              look="primary"
                               action="#{cc.attrs.last}"  
                               update=":form:dataTable " /> 
 
             <b:selectOneMenu id="pages"
+                             
                              value="#{cc.attrs.page}"                                                  
                              colMd="1"
                              onchange="#{cc.attrs.skip}"
@@ -84,6 +88,7 @@
 
             <b:commandButton iconAwesome="fa-plus"  
                              action="#{cc.attrs.new}"
+                             look="primary"
                              rendered="#{cc.attrs.renderednew}"
                              oncomplete="remotecontent()"
                              > 
@@ -91,15 +96,18 @@
             </b:commandButton>
 
 
-            <p:commandButton icon="fa fa-print"                                                                                                         
+
+            <b:commandButton iconAwesome="fa-print"                                                                                                         
                              title="#{app['button.print']}"                                          
                              action="#{cc.attrs.printAll}" 
                              ajax="false"
+                             look="primary"
                              style="width:60px"/> 
 
 
             <b:commandButton  iconAwesome="fa-list-alt"                                                
-                              action="#{cc.attrs.clear}"                                                                               
+                              action="#{cc.attrs.clear}"    
+                              look="primary"
                               title="#{app['button.all']}"
                               update=":form:dataTable :form:content"
                               oncomplete="remoteshowall()"

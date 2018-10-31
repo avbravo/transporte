@@ -31,12 +31,13 @@
         <b:panelGrid id="panelEdit" colSpans="3,3,3,3" size="xs" > 
 
             <b:commandButton rendered="#{cc.attrs.renderedEdit}" 
-                             look="primary"
+
                              iconAwesome="fa-edit" 
                              title="#{app['button.edit']}"  
                              value="#{app['button.edit']}"  
                              process=":form:content" 
                              action="#{cc.attrs.edit}" 
+                             look="primary"
                              update=":form:content" /> 
             <b:dropMenu value="#{app['button.delete']}" iconAwesome="fa-trash-o" rendered="#{cc.attrs.renderedDelete}">
                 <b:panel title="#{app['info.doyouwantdelete']}" >
@@ -56,25 +57,24 @@
 
            
             
-            <p:commandButton icon="fa fa-print" 
-                            
+            <b:commandButton iconAwesome="fa-print" 
                                  rendered="#{cc.attrs.renderedList}"
                                           value="#{app['button.print']}"
                                          title="#{app['button.print']}" 
                                          process=":form:content"
                                          action="#{cc.attrs.print}" 
                                          ajax="false"
-                                       update=":form:content"/> 
-            
-            
+                                         look="primary"
+                                       /> 
+         
             
             
             <b:commandButton immediate="true"
                              iconAwesome="fa-share" 
- look="primary"
+
                              value="#{app['button.return']}" 
                              title="#{app['button.return']}" 
-
+look="primary"
                              action="#{cc.attrs.url}"/>
 
 

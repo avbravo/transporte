@@ -27,6 +27,7 @@
                         iconAwesome="fa-edit" 
                         title="#{app['button.edit']}"
                         immediate="true"
+                        look="primary"
                         oncomplete="remoteid()"
                         action="#{cc.attrs.edit}">
 
@@ -36,7 +37,7 @@
 
             <p:row>
                 <p:column>
-                    <b:dropMenu styleClass="danger"  value="" tooltip="#{app['button.delete']}" iconAwesome="fa-trash-o">
+                    <b:dropMenu styleClass="danger"   value="" tooltip="#{app['button.delete']}" iconAwesome="fa-trash-o">
                         <b:panel title="#{app['info.doyouwantdelete']}" >
 
                             <b:button value="#{app['button.no']}" look="success" />
