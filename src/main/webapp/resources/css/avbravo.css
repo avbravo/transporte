@@ -106,13 +106,13 @@ Dialogo
 
 
 .ui-state-disabled {
-	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)" ; 
-	filter: Alpha(Opacity=100) !important;	
-	opacity: 100 !important;
-	box-shadow:none !important;
-	color: #000000 !important;
-	font-weight: bolder !important; 
-        border: none !important;
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)" ; 
+    filter: Alpha(Opacity=100) !important;	
+    opacity: 100 !important;
+    box-shadow:none !important;
+    color: #000000 !important;
+    font-weight: bolder !important; 
+    border: none !important;
 }
 
 .ui-autocomplete-multiple-container.ui-inputfield {
@@ -120,4 +120,28 @@ Dialogo
 }
 
 
+/*
+para el autocomplete
+*/
+.agenda-compliant-custom .fc-ltr .fc-basic-view .fc-day-number 
+{
+    background-image: url("../resources/images/box.png") !important;
+    background-repeat: no-repeat !important;
+    background-position:left top !important;
+    background-size: 25px 15px !important
+}
 
+.agenda-noncompliant-custom .fc-ltr .fc-basic-view .fc-day-number {
+    background-image: url("../resources/images/bluebox.png") !important;
+    background-repeat: no-repeat !important;
+    background-position:left top !important;
+    background-size: 25px 15px !important
+}
+
+
+
+.public-event, .public-event .fc-event-skin, .public-event a{
+    background-color: green; 
+    color: black;
+    border-color: greenyellow;
+}

@@ -147,7 +147,6 @@ public class CalendarioSolicitudController implements Serializable, IController 
     @Inject
     AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
 
-    
     @Inject
     LookupServices lookupServices;
 
@@ -210,9 +209,6 @@ public class CalendarioSolicitudController implements Serializable, IController 
         this.viajes = viajes;
     }
 
-    
-    
-    
     public Estatus getEstatusSelected() {
         return estatusSelected;
     }
@@ -431,7 +427,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
     @PostConstruct
     public void init() {
         try {
-           
+
             String action = loginController.get("solicitud");
             String id = loginController.get("idsolicitud");
             String pageSession = loginController.get("pagesolicitud");
@@ -583,9 +579,9 @@ public class CalendarioSolicitudController implements Serializable, IController 
                 }
             }
             solicitud.setSemestre(semestreServices.findById(idsemestre));
-             List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
-                    
-                    tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+            List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+
+            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
             solicitud.setTipovehiculo(tipovehiculoList);
 
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
@@ -813,23 +809,22 @@ public class CalendarioSolicitudController implements Serializable, IController 
     public void handleSelect(SelectEvent event) {
         try {
 
-       
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
     public void handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-           
+
             solicitudList.removeAll(solicitudList);
             solicitudList.add(solicitudSelected);
             solicitudFiltered = solicitudList;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-            
+
             loginController.put("searchsolicitud", "idsolicitud");
-              lookupServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
+            lookupServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleAutocompleteOfListXhtml " + ex.getLocalizedMessage());
         }
@@ -856,7 +851,10 @@ public class CalendarioSolicitudController implements Serializable, IController 
             eventModel = new DefaultScheduleModel();
             if (!solicitudList.isEmpty()) {
                 solicitudList.forEach((a) -> {
-                    eventModel.addEvent(new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso()));
+
+                    eventModel.addEvent(
+                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
+                   );
                 });
             }
 
@@ -864,6 +862,16 @@ public class CalendarioSolicitudController implements Serializable, IController 
             JsfUtil.errorMessage("cargarSchedule() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
+
+    public String recorrerEventModel(ScheduleModel eventModel) {
+        try {
+
+            String title = event.getTitle();
+            System.out.println("----> " + eventModel.toString());
+        } catch (Exception e) {
+        }
+        return "";
+    }
 // <editor-fold defaultstate="collapsed" desc="handleSelectResponsable(SelectEvent event)">
 
     public void handleSelectResponsable(SelectEvent event) {
@@ -948,17 +956,17 @@ public class CalendarioSolicitudController implements Serializable, IController 
             Document doc;
             switch (loginController.get("searchsolicitud")) {
                 case "_init":
-                       case "_autocomplete":
+                case "_autocomplete":
                     doc = new Document("usuario.username", loginController.getUsuario().getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
 
                 case "idsolicitud":
-                 
-                          doc = new Document("idsolicitud", solicitud.getIdsolicitud()).append("usuario.username", loginController.getUsuario().getUsername());
+
+                    doc = new Document("idsolicitud", solicitud.getIdsolicitud()).append("usuario.username", loginController.getUsuario().getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
-                  
+
                     break;
 
                 default:
@@ -1390,7 +1398,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
         try {
 //            esnuevo = true;
             event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
-            JsfUtil.warningDialog("this ", "onDateSelectCalendar "+ (Date) selectEvent.getObject());
+            JsfUtil.warningDialog("this ", "onDateSelectCalendar " + (Date) selectEvent.getObject());
             System.out.println("onDateSelectCalendar()");
         } catch (Exception e) {
             JsfUtil.errorMessage("onDateSelect() " + e.getLocalizedMessage());
