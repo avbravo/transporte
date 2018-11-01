@@ -57,18 +57,10 @@
                     <!--                    <b:panelGrid id="panel" colSpans="2,10" size="xs" > -->
 
                     <p:schedule id="schedule"                            
-                                value="#{calendarioSolicitudController.eventModel}"
-                                widgetVar="myschedule" 
-                                timeZone="GMT-5" 
-                                locale="es"
-                                
-                                                                     
-                                >
+                                value="#{calendarioSolicitudController.eventModel}" widgetVar="myschedule" timeZone="GMT-5" locale="es">
                         <p:ajax  event="eventSelect" listener="#{calendarioSolicitudController.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
                         <!--<p:ajax  event="dateSelect" listener="#{calendarioSolicitudController.onDateSelectCalendar}" update="newDetails" oncomplete="PF('newDialog').show();" />-->
                     </p:schedule>
-
-
 
 
                     <!--</b:panelGrid>-->                    
@@ -81,14 +73,14 @@
                       responsive="true"
                       showEffect="clip" hideEffect="clip">
                 <b:panelGrid id="eventDetails" colSpans="2,10" size="xs" > 
-      
+
                     <p:outputLabel  value="#{msg['field.idsolicitud']}" />
                     <p:outputLabel  value="#{calendarioSolicitudController.solicitud.idsolicitud}" id="idsolicitud"   />
 
 
 
                     <p:outputLabel  value="#{msg['field.fechapartida']}" />
-                  
+                    <p:fieldset >
                         <p:calendar  disabled="true"  size="8"                                  
                                      style="background-color: grey;"
                                      pattern="dd/MM/yyyy" value="#{calendarioSolicitudController.solicitud.fechahorapartida}"  />
@@ -99,7 +91,8 @@
                                      pattern="HH:mm:ss a" value="#{calendarioSolicitudController.solicitud.fechahorapartida}"  />
 
 
-                
+                    </p:fieldset>
+
 
                     <p:outputLabel  value="#{msg['field.lugarpartida']}" />
 
@@ -107,7 +100,7 @@
 
 
                     <p:outputLabel  value="#{msg['field.fecharegreso']}" />
-                  
+                    <p:fieldset >
 
                         <p:calendar  disabled="true"  size="8"                                  
                                      style="background-color: grey;"
@@ -121,41 +114,27 @@
                                      pattern="HH:mm:ss a" value="#{calendarioSolicitudController.solicitud.fechahoraregreso}"  />
 
 
-      
+                    </p:fieldset>
 
 
 
 
-                    <p:outputLabel value="#{msg['field.idestatus']}" rendered="!#{applicationMenu.menuBarAdministracion}"/>
-                    <p:outputLabel  value="#{calendarioSolicitudController.solicitud.estatus.idestatus}"  rendered="#{!applicationMenu.menuBarAdministracion}"/>
+                    <p:outputLabel value="#{msg['field.idestatus']}" />
+                    <p:outputLabel  value="#{calendarioSolicitudController.solicitud.estatus.idestatus}"/>
 
-                    <p:outputLabel value="#{msg['field.idestatus']}" rendered="#{applicationMenu.menuBarAdministracion}"/>
-                    <e:autocompleteestatus listener="#{calendarioSolicitudController.handleSelectEstatusTipovehiculo}"
-                                           value="#{calendarioSolicitudController.estatusSelected}"
-                                           rendered="#{applicationMenu.menuBarAdministracion}"
-                                           itemLabel=" #{p.idestatus}"
-                                           field="idestatus"
-                                           dropdown="true"
-                                           fromstart="true"
-                                           minQueryLength="0"
-                                           />
+              
 
 
                     <p:outputLabel value="#{msg['field.vehiculo']}"
-                                   rendered="#{applicationMenu.menuBarAdministracion}" />
-                    <e:autocompletevehiculo listener="#{calendarioSolicitudController.handleSelect}"
-                                            rendered="#{applicationMenu.menuBarAdministracion}"
-                                            value="#{calendarioSolicitudController.vehiculo}"
-                                            itemLabel=" #{p.marca}"
-                                            field="marca"
-                                            dropdown="true"
-                                            fromstart="true"
-                                            minQueryLength="0"
-                                            />
+                                   rendered="#{calendarioSolicitudController.esAprobado}" />
+                    
+                     <p:outputLabel  value="#{calendarioSolicitudController.viajes.vehiculo.marca}" rendered="#{calendarioSolicitudController.esAprobado}"/>
+                       
+                  
 
 
                     <p:outputLabel value="#{msg['field.conductor']}"  rendered="#{applicationMenu.menuBarAdministracion}"/>
-                    <e:autocompleteconductor listener="#{calendarioSolicitudController.handleSelect}"
+                    <e:autocompleteconductor listener="#{calendariController.handleSelect}"
                                              rendered="#{applicationMenu.menuBarAdministracion}"
                                              value="#{calendarioSolicitudController.conductor}"
                                              itemLabel=" #{p.nombre}"
@@ -198,22 +177,22 @@
 
 
                     <p:outputLabel  value="#{msg['field.telefono']}" />
+                  
+                        <p:outputLabel  value="#{calendarioSolicitudController.responsable.celular}" id="celular" />
+                        <p:outputLabel  value="#{msg['field.email']}" />
+                        <p:outputLabel  value="#{calendarioSolicitudController.responsable.email}" id="email"   />
 
-                    <p:outputLabel  value="#{calendarioSolicitudController.responsable.celular}" id="celular" />
-                    <p:outputLabel  value="#{msg['field.email']}" />
-                    <p:outputLabel  value="#{calendarioSolicitudController.responsable.email}" id="email"   />
-
-
+         
 
                     <p:outputLabel  value="#{msg['field.semestre']}" rendered="#{calendarioSolicitudController.esDocente}" />
-
-                    <p:outputLabel  value="#{calendarioSolicitudController.solicitud.semestre.descripcion}" id="semestre"  rendered="#{calendarioSolicitudController.esDocente}" />
-
-                    <p:outputLabel  value="#{msg['field.periodoacademico']}"  rendered="#{calendarioSolicitudController.esDocente}"/>
-                    <p:outputLabel value="#{calendarioSolicitudController.solicitud.periodoacademico}" 
-                                   rendered="#{calendarioSolicitudController.esDocente}"
-                                   id="periodoacademico"  />
-
+            
+                        <p:outputLabel  value="#{calendarioSolicitudController.solicitud.semestre.descripcion}" id="semestre"  rendered="#{calendarioSolicitudController.esDocente}" />
+         
+                        <p:outputLabel  value="#{msg['field.periodoacademico']}"  rendered="#{calendarioSolicitudController.esDocente}"/>
+                        <p:outputLabel value="#{calendarioSolicitudController.solicitud.periodoacademico}" 
+                                       rendered="#{calendarioSolicitudController.esDocente}"
+                                       id="periodoacademico"  />
+               
 
 
 
@@ -368,6 +347,7 @@
                         action="#{calendarioSolicitudController.edit()}"
                         oncomplete="PF('eventDialog').hide();"
                         />
+
 
                 </b:panelGrid>
             </p:dialog>

@@ -33,6 +33,7 @@ import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
+import com.avbravo.transporteejb.repository.ViajesRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
@@ -83,6 +84,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
     private static final long serialVersionUID = 1L;
 
     //    private String stmpPort="80";
+    private Boolean esAprobado=false;
     private String stmpPort = "25";
     private String menuelement = "";
     List<Facultad> suggestionsFacultad = new ArrayList<>();
@@ -141,6 +143,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
     @Inject
     UsuarioRepository usuarioRepository;
+    @Inject
+    ViajesRepository viajesRepository;
 
     //Services
     //Atributos para busquedas
@@ -184,6 +188,18 @@ public class CalendarioSolicitudController implements Serializable, IController 
     public void setPages(List<Integer> pages) {
         this.pages = pages;
     }
+
+    public Boolean getEsAprobado() {
+        return esAprobado;
+    }
+
+    public void setEsAprobado(Boolean esAprobado) {
+        this.esAprobado = esAprobado;
+    }
+
+   
+    
+    
 
     public Vehiculo getVehiculo() {
         return vehiculo;
@@ -1248,7 +1264,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
         return false;
     }
     // </editor-fold>
-
+// <editor-fold defaultstate="collapsed" desc="enviarEmails()">
+   
     public String enviarEmails() {
         try {
             Boolean enviados = false;
@@ -1301,7 +1318,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
         }
         return "";
     }
-
+ // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
     public String columnColor(String estatus) {
         String color = "";
@@ -1361,9 +1378,9 @@ public class CalendarioSolicitudController implements Serializable, IController 
     public void onEventSelect(SelectEvent selectEvent) {
         try {
             // esnuevo = false;
-            esDocente = false;
+            esDocente = false; 
             event = (ScheduleEvent) selectEvent.getObject();
-
+esAprobado=false;
             String title = event.getTitle();
             Integer i = title.indexOf("M");
 
@@ -1375,6 +1392,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
             Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
             if (optional.isPresent()) {
                 solicitud = optional.get();
+               
                 solicita = solicitud.getUsuario().get(0);
                 responsable = solicitud.getUsuario().get(1);
                 facultadList = solicitud.getFacultad();
@@ -1383,6 +1401,16 @@ public class CalendarioSolicitudController implements Serializable, IController 
                 solicitudSelected = solicitud;
                 estatusSelected = solicitud.getEstatus();
                 esDocente = solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE");
+                 if(solicitud.getEstatus().getIdestatus().equals("APROBADO")){
+                    esAprobado=true;
+                   List<Viajes> list = new ArrayList<>();
+                   list = viajesRepository.findBy(new Document("solicitud.idsolicitud",solicitud.getIdsolicitud()));
+                   if(list.isEmpty()){
+                         JsfUtil.warningMessage(rf.getMessage("warning.notexitsviajeconesasolicitud"));
+                   }else{
+                       viajes = list.get(0);
+                   }
+                }
             }
 
         } catch (Exception e) {
