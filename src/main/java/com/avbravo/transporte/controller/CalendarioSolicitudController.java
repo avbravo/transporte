@@ -138,9 +138,10 @@ public class CalendarioSolicitudController implements Serializable, IController 
 
     //Repository
     @Inject
-    FacultadRepository facultadRepository;
-    @Inject
     CarreraRepository carreraRepository;
+    @Inject
+    FacultadRepository facultadRepository;
+    
     @Inject
     UnidadRepository unidadRepository;
     @Inject
@@ -722,45 +723,45 @@ public class CalendarioSolicitudController implements Serializable, IController 
     public String edit() {
         try {
             solicitud.setEstatus(estatusSelected);
-//            solicitud.setUnidad(unidadList);
-//            solicitud.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
-//            solicitud.setUnidad(unidadList);
-//            solicitud.setFacultad(facultadList);
-//            solicitud.setCarrera(carreraList);
-//            //guarda el contenido actualizado
-//            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
-//
-//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
-//                return "";
-//            }
-//            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
-//                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
-//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horapartidaescero"));
-//                return "";
-//            }
-//            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
-//                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
-//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
-//            }
-//
-//            usuarioList = new ArrayList<>();
-//            usuarioList.add(solicita);
-//            usuarioList.add(responsable);
-//            solicitud.setUsuario(usuarioList);
-//            if (solicitud.getPasajeros() < 0) {
-//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
-//                return "";
-//            }
+            Viajes viajes = new Viajes();
+            Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
+            viajes.setActivo("si");
+            viajes.setIdviaje(idviaje);
+            viajes.setConductor(conductorList);
+            viajes.setVehiculo(vehiculoList);
+
+           if (JsfUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
+
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechainicioreservamayorfechapartida"));
+               return "";
+            }
+           if (JsfUtil.fechaMenor(viajes.getFechahorafinreserva(), solicitud.getFechahoraregreso())) {
+
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechafinreservamenorfecharegreso"));
+               return "";
+            }
+           viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+            if (viajesRepository.save(viajes)) {
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajes.getIdviaje().toString(), loginController.getUsername(),
+                        "create", "viajes", viajesRepository.toDocument(viajes).toString()));
+                JsfUtil.successMessage(rf.getAppMessage("info.save"));
+           
+            } else {
+                JsfUtil.successMessage("save() " + viajesRepository.getException().toString());
+                return "";
+            }
+
+           
 
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             solicitudRepository.update(solicitud);
 
-         //   JsfUtil.successMessage(rf.getAppMessage("info.update"));
+         
             JsfUtil.infoDialog(rf.getAppMessage("info.view"),rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            System.out.println("exception " + solicitudRepository.getException());
+            
             JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
         }
         return "";
