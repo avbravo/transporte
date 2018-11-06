@@ -148,24 +148,9 @@ para el autocomplete
 
 
 /*
-dialog
+dialog con barra azul
 */
 
-/*
-.customDialog {
-    background: white;
-}
-
-.ui-dialog.customDialog .ui-dialog-content {
-    padding: 0;
-    margin: 20px 10px;
-}
-.ui-dialog-titlebar.ui-widget-header.customDialog {
-    background: green;
-    color: black;
-    box-shadow: none;
-}
-*/
 
 .customDialog {
     color : white;
