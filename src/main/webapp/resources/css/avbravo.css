@@ -145,3 +145,33 @@ para el autocomplete
     color: black;
     border-color: greenyellow;
 }
+
+
+/*
+dialog
+*/
+
+/*
+.customDialog {
+    background: white;
+}
+
+.ui-dialog.customDialog .ui-dialog-content {
+    padding: 0;
+    margin: 20px 10px;
+}
+.ui-dialog-titlebar.ui-widget-header.customDialog {
+    background: green;
+    color: black;
+    box-shadow: none;
+}
+*/
+
+.customDialog {
+    color : white;
+}
+
+.customDialog .ui-dialog-titlebar.ui-widget-header {
+    background: #006699 !important;
+    color: white;
+}
