@@ -722,15 +722,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
     @Override
     public String edit() {
         try {
-            solicitud.setEstatus(estatusSelected);
-            Viajes viajes = new Viajes();
-            Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
-            viajes.setActivo("si");
-            viajes.setIdviaje(idviaje);
-            viajes.setConductor(conductorList);
-            viajes.setVehiculo(vehiculoList);
-
-           if (JsfUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
+              if (JsfUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechainicioreservamayorfechapartida"));
                return "";
@@ -740,6 +732,16 @@ public class CalendarioSolicitudController implements Serializable, IController 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechafinreservamenorfecharegreso"));
                return "";
             }
+           
+          
+            Viajes viajes = new Viajes();
+            Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
+            viajes.setActivo("si");
+            viajes.setIdviaje(idviaje);
+            viajes.setConductor(conductorList);
+            viajes.setVehiculo(vehiculoList);
+
+         
            viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
             if (viajesRepository.save(viajes)) {
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajes.getIdviaje().toString(), loginController.getUsername(),
@@ -750,8 +752,9 @@ public class CalendarioSolicitudController implements Serializable, IController 
                 JsfUtil.successMessage("save() " + viajesRepository.getException().toString());
                 return "";
             }
+            
 
-           
+             solicitud.setEstatus(estatusSelected);
 
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
