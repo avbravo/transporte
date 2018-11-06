@@ -87,9 +87,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
     private Boolean esAprobado=false;
     private String stmpPort = "25";
     private String menuelement = "";
-    List<Facultad> suggestionsFacultad = new ArrayList<>();
-    List<Carrera> suggestionsCarrera = new ArrayList<>();
-    List<Unidad> suggestionsUnidad = new ArrayList<>();
+   
     private Date _old;
     private Boolean writable = false;
     private Boolean esDocente = true;
@@ -129,6 +127,11 @@ public class CalendarioSolicitudController implements Serializable, IController 
     List<Facultad> facultadList = new ArrayList<>();
     List<Carrera> carreraList = new ArrayList<>();
     List<Usuario> usuarioList = new ArrayList<>();
+    List<Vehiculo> vehiculoList = new ArrayList<>();
+    List<Conductor> conductorList = new ArrayList<>();
+     List<Facultad> suggestionsFacultad = new ArrayList<>();
+    List<Carrera> suggestionsCarrera = new ArrayList<>();
+    List<Unidad> suggestionsUnidad = new ArrayList<>();
 
     //Repository
     @Inject
@@ -195,6 +198,22 @@ public class CalendarioSolicitudController implements Serializable, IController 
 
     public void setEsAprobado(Boolean esAprobado) {
         this.esAprobado = esAprobado;
+    }
+
+    public List<Vehiculo> getVehiculoList() {
+        return vehiculoList;
+    }
+
+    public void setVehiculoList(List<Vehiculo> vehiculoList) {
+        this.vehiculoList = vehiculoList;
+    }
+
+    public List<Conductor> getConductorList() {
+        return conductorList;
+    }
+
+    public void setConductorList(List<Conductor> conductorList) {
+        this.conductorList = conductorList;
     }
 
    

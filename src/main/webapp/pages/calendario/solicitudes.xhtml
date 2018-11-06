@@ -120,15 +120,33 @@
 
 
                     <p:outputLabel value="#{msg['field.idestatus']}" />
-                    <p:outputLabel  value="#{calendarioSolicitudController.solicitud.estatus.idestatus}"/>
+                     <e:autocompleteestatus listener="#{calendarioSolicitudController.handleSelectEstatusTipovehiculo}"
+                                           value="#{calendarioSolicitudController.estatusSelected}"
+                                    rendered="#{applicationMenu.menuBarAdministracion}"
+                                           itemLabel=" #{p.idestatus}"
+                                           field="idestatus"
+                                           dropdown="true"
+                                           fromstart="true"
+                                           minQueryLength="0"
+                                           />
+
 
               
 
 
                     <p:outputLabel value="#{msg['field.vehiculo']}"
-                                   rendered="#{calendarioSolicitudController.esAprobado}" />
+                                   rendered="#{applicationMenu.menuBarAdministracion}"/>
                     
-                     <p:outputLabel  value="#{calendarioSolicitudController.viajes.vehiculo.marca}" rendered="#{calendarioSolicitudController.esAprobado}"/>
+                       <e:autocompletevehiculo listener="#{calendarioSolicitudController.handleSelect}"
+                                            rendered="#{applicationMenu.menuBarAdministracion}"
+                                            value="#{calendarioSolicitudController.vehiculoList}"
+                                            itemLabel=" #{p.marca}"
+                                            field="marca"
+                                            dropdown="true"
+                                            fromstart="true"
+                                            minQueryLength="0"
+                                            multiple="true"
+                                            />
                        
                   
 
@@ -136,12 +154,13 @@
                     <p:outputLabel value="#{msg['field.conductor']}"  rendered="#{applicationMenu.menuBarAdministracion}"/>
                     <e:autocompleteconductor listener="#{calendariController.handleSelect}"
                                              rendered="#{applicationMenu.menuBarAdministracion}"
-                                             value="#{calendarioSolicitudController.conductor}"
+                                             value="#{calendarioSolicitudController.conductorList}"
                                              itemLabel=" #{p.nombre}"
                                              dropdown="true"
                                              fromstart="true"
                                              minQueryLength="0"
                                              field="nombre"
+                                             multiple="true"
                                              />
 
 
