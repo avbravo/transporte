@@ -138,64 +138,33 @@
                     <p:outputLabel value="#{msg['field.vehiculo']}"
                                    rendered="#{applicationMenu.menuBarAdministracion}"/>
 
-                    <p:autoComplete dropdown="true"
-                                    multiple="true"
-                                    scrollHeight="250"
-                                    size="25"
-                                    rendered="#{applicationMenu.menuBarAdministracion}"
-                                    emptyMessage="#{app['info.nohayregistros']}"
-                                    value="#{calendarioSolicitudController.vehiculoList}"
-                                    completeMethod="#{calendarioSolicitudController.completeVehiculoFiltrado}"
-                                    var="p"
-                                    required="true"
-                                    itemLabel=" #{p.marca}"
-                                    itemValue="#{p}" forceSelection="true">
-                        <f:converter binding="#{vehiculoConverter}"/>
-                        <f:attribute name="field" value="marca"/>
-                        <f:attribute name="fielddropdown" value="false"/>
-                        <f:attribute name="fieldquerylenth" value="0"/>
-                        <p:ajax event="itemSelect" listener="#{calendarioSolicitudController.handleSelect}"
-                                />
-                        <f:facet name="itemtip">
-                            <h:panelGrid columns="1" cellpadding="5">
-                                <h:outputText value="#{msg['field.idvehiculo']} #{p.idvehiculo}" />
-                                <h:outputText value="#{msg['field.marca']} #{p.marca}" />
-                                <h:outputText value="#{msg['field.modelo']} #{p.modelo}" />
+                
 
-                            </h:panelGrid>
-                        </f:facet>
-                    </p:autoComplete>
+                    <e:autocompletevehiculo listener="#{calendarioSolicitudController.handleSelect}"
+                                            rendered="#{applicationMenu.menuBarAdministracion}"
+                                            value="#{calendarioSolicitudController.vehiculoList}"
+                                            itemLabel=" #{p.marca}"
+                                            field="marca"
+                                            dropdown="true"
+                                            fromstart="true"
+                                            minQueryLength="0"
+                                            multiple="true"
+                                            />
+
+
 
 
                     <p:outputLabel value="#{msg['field.conductor']}"  rendered="#{applicationMenu.menuBarAdministracion}"/>
-                    
-                    
-                     <p:autoComplete dropdown="true"
-                                    multiple="true"
-                                    scrollHeight="250"
-                                    size="25"
-                                    rendered="#{applicationMenu.menuBarAdministracion}"
-                                    emptyMessage="#{app['info.nohayregistros']}"
-                                    value="#{calendarioSolicitudController.conductorList}"
-                                    completeMethod="#{calendarioSolicitudController.completeConductorFiltrado}"
-                                    var="p"
-                                    required="true"
-                                    itemLabel="#{p.nombre}"
-                                    itemValue="#{p}" forceSelection="true">
-                        <f:converter binding="#{conductorConverter}"/>
-                        <f:attribute name="field" value="nombre"/>
-                        <f:attribute name="fielddropdown" value="false"/>
-                        <f:attribute name="fieldquerylenth" value="0"/>
-                        <p:ajax event="itemSelect" listener="#{calendarioSolicitudController.handleSelect}"
-                                />
-                        <f:facet name="itemtip">
-                            <h:panelGrid columns="1" cellpadding="5">
-                                <h:outputText value="#{msg['field.cedula']} #{p.cedula}" />
-                    <h:outputText value="#{msg['field.nombre']} #{p.nombre}" />
-                            </h:panelGrid>
-                        </f:facet>
-                    </p:autoComplete>
-
+                    <e:autocompleteconductor listener="#{calendariController.handleSelect}"
+                                             rendered="#{applicationMenu.menuBarAdministracion}"
+                                             value="#{calendarioSolicitudController.conductorList}"
+                                             itemLabel=" #{p.nombre}"
+                                             dropdown="true"
+                                             fromstart="true"
+                                             minQueryLength="0"
+                                             field="nombre"
+                                             multiple="true"
+                                             />
 
 
                     <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}" rendered="#{applicationMenu.menuBarAdministracion}" />

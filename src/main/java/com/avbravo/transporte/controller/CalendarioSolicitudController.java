@@ -21,6 +21,7 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Estatus;
+import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.entity.Unidad;
@@ -30,9 +31,11 @@ import com.avbravo.transporteejb.entity.Viajes;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
+import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
+import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.repository.ViajesRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
@@ -148,6 +151,10 @@ public class CalendarioSolicitudController implements Serializable, IController 
     UsuarioRepository usuarioRepository;
     @Inject
     ViajesRepository viajesRepository;
+    @Inject
+    VehiculoRepository vehiculoRepository;
+    @Inject
+    ConductorRepository conductorRepository;
 
     //Services
     //Atributos para busquedas
@@ -750,7 +757,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
 
             solicitudRepository.update(solicitud);
 
-            JsfUtil.successMessage(rf.getAppMessage("info.update"));
+         //   JsfUtil.successMessage(rf.getAppMessage("info.update"));
+            JsfUtil.infoDialog(rf.getAppMessage("info.view"),rf.getAppMessage("info.update"));
         } catch (Exception e) {
             System.out.println("exception " + solicitudRepository.getException());
             JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
@@ -898,6 +906,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
         }
     }// </editor-fold>
 
+    
     public String recorrerEventModel(ScheduleModel eventModel) {
         try {
 
@@ -1394,6 +1403,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
         // </editor-fold>
     }
 
+    
+    
     public void onEventSelect(SelectEvent selectEvent) {
         try {
             // esnuevo = false;
@@ -1466,5 +1477,109 @@ esAprobado=false;
 
 //        addMessage(message);
     }
+    
+    
+    // <editor-fold defaultstate="collapsed" desc="completeFiltrado(String query)">
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
+    public List<Vehiculo> completeVehiculoFiltrado(String query) {
+        List<Vehiculo> suggestions = new ArrayList<>();
+        List<Vehiculo> temp = new ArrayList<>();
+        try {
+            Boolean found = false;
+            query = query.trim();
+//            if (query.length() < 1) {
+//                return suggestions;
+//            }
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            temp = vehiculoRepository.findRegex(field, query, true, new Document(field, 1));
+
+            if (vehiculoList.isEmpty()) {
+                if (!temp.isEmpty()) {
+                    suggestions = temp;
+                }
+            } else {
+                if (!temp.isEmpty()) {
+
+                    for (Vehiculo v : temp) {
+                        found = false;
+                        for (Vehiculo  v2 : vehiculoList) {
+                            if (v.getIdvehiculo() ==v2.getIdvehiculo()) {
+                                found = true;
+                            }
+                        }
+                        if (!found) {
+                            suggestions.add(v);
+                        }
+
+                    }
+                }
+
+            }
+            //suggestions=  rolRepository.findRegex(field,query,true,new Document(field,1));
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("completeVehiculoFiltrado() " + e.getLocalizedMessage());
+        }
+        return suggestions;
+    }
+
+    // </editor-fold>
+
+
+        // <editor-fold defaultstate="collapsed" desc="completeFiltrado(String query)">
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
+    public List<Conductor> completeConductorFiltrado(String query) {
+        List<Conductor> suggestions = new ArrayList<>();
+        List<Conductor> temp = new ArrayList<>();
+        try {
+            Boolean found = false;
+            query = query.trim();
+//            if (query.length() < 1) {
+//                return suggestions;
+//            }
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            temp = conductorRepository.findRegex(field, query, true, new Document(field, 1));
+
+            if (conductorList.isEmpty()) {
+                if (!temp.isEmpty()) {
+                    suggestions = temp;
+                }
+            } else {
+                if (!temp.isEmpty()) {
+
+                    for (Conductor c : temp) {
+                        found = false;
+                        for (Conductor  c2 : conductorList) {
+                            if (c.getIdconductor()==c2.getIdconductor()) {
+                                found = true;
+                            }
+                        }
+                        if (!found) {
+                            suggestions.add(c);
+                        }
+
+                    }
+                }
+
+            }
+            //suggestions=  rolRepository.findRegex(field,query,true,new Document(field,1));
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("completeConductorFiltrado() " + e.getLocalizedMessage());
+        }
+        return suggestions;
+    }
+
+    // </editor-fold>
 
 }
