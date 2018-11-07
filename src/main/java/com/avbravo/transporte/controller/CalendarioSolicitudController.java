@@ -749,9 +749,16 @@ public class CalendarioSolicitudController implements Serializable, IController 
                 }
 
                 if(solicitud.getNumerodevehiculos() != vehiculoList.size()){
-                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodevehicuos"));
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodevehiculosnoigualvehiculos"));
                     return "";
                 }
+                if(conductorList.size() != vehiculoList.size()){
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+                    return "";
+                }
+                
+                
+                
       viajes = viajesSelected;
                 Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
                 viajes.setActivo("si");
