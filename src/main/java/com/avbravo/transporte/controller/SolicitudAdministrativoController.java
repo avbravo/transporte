@@ -512,6 +512,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             solicitud.setNumerodevehiculos(1);
 
             solicitud.setObjetivo("---");
+            solicitud.setLugarpartida("UTP-AZUERO");
             solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
             solicita = loginController.getUsuario();
             responsable = solicita;

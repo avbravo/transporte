@@ -127,7 +127,7 @@
                       <p:chips value="#{solicitudManualAdministrativoController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
 
  <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
-                    <b:slider2 span="8"  min="0" max="15" value="#{solicitudManualAdministrativoController.solicitud.numerodevehiculos}" id="numerodevehiculos"  label="#{msg['field.numerodevehiculos']}" />
+                 <b:touchSpin id="numerodevehiculos" col-md="3" value="#{solicitudManualAdministrativoController.solicitud.numerodevehiculos}" min="1" max="20" step="1" />
                         
                           <p:outputLabel  value="#{msg['field.pasajeros']}" />
                  <b:slider2 span="8"  min="0" max="150" value="#{solicitudManualAdministrativoController.solicitud.pasajeros}" id="pasajeros"  label="#{msg['field.pasajeros']}" />

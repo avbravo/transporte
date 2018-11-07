@@ -46,11 +46,13 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -504,6 +506,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             solicitud.setMision("---");
             solicitud.setNumerodevehiculos(1);
             solicitud.setPasajeros(25);
+            solicitud.setLugarpartida("UTP-AZUERO");
 
             solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
             solicita = loginController.getUsuario();
@@ -1321,4 +1324,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
         return _found;
     }
     // </editor-fold>
+    
+    
+  
 }

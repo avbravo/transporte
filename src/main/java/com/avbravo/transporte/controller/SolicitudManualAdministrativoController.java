@@ -508,6 +508,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
             solicitud.setFecha(idsecond);
               solicitud.setNumerodevehiculos(1);
             solicitud.setPasajeros(25);
+            solicitud.setLugarpartida("UTP-AZUERO");
        
      List<String> numeroGrupoList = new ArrayList<>();
             solicitud.setNumerogrupo(numeroGrupoList);

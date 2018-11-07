@@ -34,11 +34,11 @@
                     </b:commandButton>
                 </p:column>
             </p:row>
-
-            <p:row>
+            
+                  <p:row>
                 <p:column>
                     <b:dropMenu styleClass="danger"   value="" tooltip="#{app['button.delete']}" iconAwesome="fa-trash-o">
-                        <b:panel title="#{app['info.doyouwantdelete']}" >
+                        <b:panel title="#{app['info.doyouwantdelete']}" look="primary">
 
                             <b:button value="#{app['button.no']}" look="success" />
                             <b:commandButton rendered="#{cc.attrs.rendered}" 
