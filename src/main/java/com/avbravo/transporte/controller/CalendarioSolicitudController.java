@@ -87,10 +87,10 @@ public class CalendarioSolicitudController implements Serializable, IController 
     private static final long serialVersionUID = 1L;
 
     //    private String stmpPort="80";
-    private Boolean esAprobado=false;
+    private Boolean esAprobado = false;
     private String stmpPort = "25";
     private String menuelement = "";
-   
+
     private Date _old;
     private Boolean writable = false;
     private Boolean esDocente = true;
@@ -132,7 +132,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
     List<Usuario> usuarioList = new ArrayList<>();
     List<Vehiculo> vehiculoList = new ArrayList<>();
     List<Conductor> conductorList = new ArrayList<>();
-     List<Facultad> suggestionsFacultad = new ArrayList<>();
+    List<Facultad> suggestionsFacultad = new ArrayList<>();
     List<Carrera> suggestionsCarrera = new ArrayList<>();
     List<Unidad> suggestionsUnidad = new ArrayList<>();
 
@@ -141,7 +141,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
     CarreraRepository carreraRepository;
     @Inject
     FacultadRepository facultadRepository;
-    
+
     @Inject
     UnidadRepository unidadRepository;
     @Inject
@@ -223,10 +223,6 @@ public class CalendarioSolicitudController implements Serializable, IController 
     public void setConductorList(List<Conductor> conductorList) {
         this.conductorList = conductorList;
     }
-
-   
-    
-    
 
     public Vehiculo getVehiculo() {
         return vehiculo;
@@ -722,49 +718,47 @@ public class CalendarioSolicitudController implements Serializable, IController 
     @Override
     public String edit() {
         try {
-              if (JsfUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
+            if (esAprobado) {
+                if (JsfUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
 
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechainicioreservamayorfechapartida"));
-               return "";
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechainicioreservamayorfechapartida"));
+                    return "";
+                }
+                if (JsfUtil.fechaMenor(viajes.getFechahorafinreserva(), solicitud.getFechahoraregreso())) {
+
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechafinreservamenorfecharegreso"));
+                    return "";
+                }
+
+                Viajes viajes = new Viajes();
+                Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
+                viajes.setActivo("si");
+                viajes.setIdviaje(idviaje);
+                viajes.setConductor(conductorList);
+                viajes.setVehiculo(vehiculoList);
+
+                viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+                if (viajesRepository.save(viajes)) {
+                    revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajes.getIdviaje().toString(), loginController.getUsername(),
+                            "create", "viajes", viajesRepository.toDocument(viajes).toString()));
+                    JsfUtil.successMessage(rf.getAppMessage("info.save"));
+
+                } else {
+                    JsfUtil.successMessage("save() " + viajesRepository.getException().toString());
+                    return "";
+                }
             }
-           if (JsfUtil.fechaMenor(viajes.getFechahorafinreserva(), solicitud.getFechahoraregreso())) {
 
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechafinreservamenorfecharegreso"));
-               return "";
-            }
-           
-          
-            Viajes viajes = new Viajes();
-            Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
-            viajes.setActivo("si");
-            viajes.setIdviaje(idviaje);
-            viajes.setConductor(conductorList);
-            viajes.setVehiculo(vehiculoList);
-
-         
-           viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
-            if (viajesRepository.save(viajes)) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajes.getIdviaje().toString(), loginController.getUsername(),
-                        "create", "viajes", viajesRepository.toDocument(viajes).toString()));
-                JsfUtil.successMessage(rf.getAppMessage("info.save"));
-           
-            } else {
-                JsfUtil.successMessage("save() " + viajesRepository.getException().toString());
-                return "";
-            }
-            
-
-             solicitud.setEstatus(estatusSelected);
+            solicitud.setEstatus(estatusSelected);
 
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             solicitudRepository.update(solicitud);
 
-         
-            JsfUtil.infoDialog(rf.getAppMessage("info.view"),rf.getAppMessage("info.update"));
+            JsfUtil.infoDialog(rf.getAppMessage("info.view"), rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            
+
             JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
         }
         return "";
@@ -878,6 +872,19 @@ public class CalendarioSolicitudController implements Serializable, IController 
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelectEstatus(SelectEvent event)">
 
+    public void handleSelectEstatus(SelectEvent event) {
+        try {
+            esAprobado = false;
+            if (estatusSelected.getIdestatus().equals("APROBADO")) {
+                esAprobado = true;
+            }
+
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelectEstatus() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="handleSelectEstatus(SelectEvent event)">
+
     public void handleSelectEstatusTipovehiculo(SelectEvent event) {
         try {
             loginController.put("calendariotipovehiculo", tipovehiculo.getIdtipovehiculo());
@@ -901,7 +908,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
 
                     eventModel.addEvent(
                             new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
-                   );
+                    );
                 });
             }
 
@@ -910,7 +917,6 @@ public class CalendarioSolicitudController implements Serializable, IController 
         }
     }// </editor-fold>
 
-    
     public String recorrerEventModel(ScheduleModel eventModel) {
         try {
 
@@ -1297,7 +1303,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
     }
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="enviarEmails()">
-   
+
     public String enviarEmails() {
         try {
             Boolean enviados = false;
@@ -1350,8 +1356,9 @@ public class CalendarioSolicitudController implements Serializable, IController 
         }
         return "";
     }
- // </editor-fold>
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
+
     public String columnColor(String estatus) {
         String color = "";
         try {
@@ -1407,14 +1414,12 @@ public class CalendarioSolicitudController implements Serializable, IController 
         // </editor-fold>
     }
 
-    
-    
     public void onEventSelect(SelectEvent selectEvent) {
         try {
             // esnuevo = false;
-            esDocente = false; 
+            esDocente = false;
             event = (ScheduleEvent) selectEvent.getObject();
-esAprobado=false;
+            esAprobado = false;
             String title = event.getTitle();
             Integer i = title.indexOf("M");
 
@@ -1426,7 +1431,7 @@ esAprobado=false;
             Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
             if (optional.isPresent()) {
                 solicitud = optional.get();
-               
+
                 solicita = solicitud.getUsuario().get(0);
                 responsable = solicitud.getUsuario().get(1);
                 facultadList = solicitud.getFacultad();
@@ -1435,15 +1440,15 @@ esAprobado=false;
                 solicitudSelected = solicitud;
                 estatusSelected = solicitud.getEstatus();
                 esDocente = solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE");
-                 if(solicitud.getEstatus().getIdestatus().equals("APROBADO")){
-                    esAprobado=true;
-                   List<Viajes> list = new ArrayList<>();
-                   list = viajesRepository.findBy(new Document("solicitud.idsolicitud",solicitud.getIdsolicitud()));
-                   if(list.isEmpty()){
-                         JsfUtil.warningMessage(rf.getMessage("warning.notexitsviajeconesasolicitud"));
-                   }else{
-                       viajes = list.get(0);
-                   }
+                if (solicitud.getEstatus().getIdestatus().equals("APROBADO")) {
+                    esAprobado = true;
+                    List<Viajes> list = new ArrayList<>();
+                    list = viajesRepository.findBy(new Document("solicitud.idsolicitud", solicitud.getIdsolicitud()));
+                    if (list.isEmpty()) {
+                        JsfUtil.warningMessage(rf.getMessage("warning.notexitsviajeconesasolicitud"));
+                    } else {
+                        viajes = list.get(0);
+                    }
                 }
             }
 
@@ -1481,8 +1486,7 @@ esAprobado=false;
 
 //        addMessage(message);
     }
-    
-    
+
     // <editor-fold defaultstate="collapsed" desc="completeFiltrado(String query)">
     /**
      * Se usa para los autocomplete filtrando
@@ -1511,8 +1515,8 @@ esAprobado=false;
 
                     for (Vehiculo v : temp) {
                         found = false;
-                        for (Vehiculo  v2 : vehiculoList) {
-                            if (v.getIdvehiculo() ==v2.getIdvehiculo()) {
+                        for (Vehiculo v2 : vehiculoList) {
+                            if (v.getIdvehiculo() == v2.getIdvehiculo()) {
                                 found = true;
                             }
                         }
@@ -1533,9 +1537,7 @@ esAprobado=false;
     }
 
     // </editor-fold>
-
-
-        // <editor-fold defaultstate="collapsed" desc="completeFiltrado(String query)">
+    // <editor-fold defaultstate="collapsed" desc="completeFiltrado(String query)">
     /**
      * Se usa para los autocomplete filtrando
      *
@@ -1563,8 +1565,8 @@ esAprobado=false;
 
                     for (Conductor c : temp) {
                         found = false;
-                        for (Conductor  c2 : conductorList) {
-                            if (c.getIdconductor()==c2.getIdconductor()) {
+                        for (Conductor c2 : conductorList) {
+                            if (c.getIdconductor() == c2.getIdconductor()) {
                                 found = true;
                             }
                         }
@@ -1585,5 +1587,4 @@ esAprobado=false;
     }
 
     // </editor-fold>
-
 }
