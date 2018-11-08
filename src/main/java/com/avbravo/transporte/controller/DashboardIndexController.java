@@ -12,11 +12,15 @@ import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.bson.Document;
+
+
 // </editor-fold>
 
 /**
@@ -29,6 +33,7 @@ public class DashboardIndexController implements Serializable {
 
     // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
+
 
     @Inject
     SolicitudRepository solicitudRepository;
@@ -51,6 +56,9 @@ public class DashboardIndexController implements Serializable {
     Integer totalVehiculosEnReparacion;
     // </editor-fold>
 
+  
+    
+    
     public Integer getTotalCancelado() {
         return totalCancelado;
     }
@@ -160,11 +168,16 @@ public class DashboardIndexController implements Serializable {
 
             }
             totales = totalAprobado + totalCancelado + totalRechazado + totalSolicitado;
+            
+            
+         
+        
             //Vehiculos
             totalVehiculos = vehiculoRepository.findAll().size();
             totalVehiculosActivos = vehiculoRepository.count(new Document("activo","si"));
             totalVehiculosInActivos = vehiculoRepository.count(new Document("activo","no"));
             totalVehiculosEnReparacion = vehiculoRepository.count(new Document("enreparacion","si"));
+            totalVehiculosActivos-= totalVehiculosEnReparacion;
             
 
         } catch (Exception e) {
