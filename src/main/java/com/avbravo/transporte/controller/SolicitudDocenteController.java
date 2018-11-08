@@ -76,7 +76,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
     //    private String stmpPort="80";
     private String stmpPort = "25";
-   
+
     private Date _old;
     private Boolean writable = false;
     //DataModel
@@ -101,10 +101,10 @@ public class SolicitudDocenteController implements Serializable, IController {
     List<Facultad> facultadList = new ArrayList<>();
     List<Carrera> carreraList = new ArrayList<>();
     List<Usuario> usuarioList = new ArrayList<>();
-      List<Tiposolicitud> tiposolicitudList = new ArrayList<>();
-      List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+    List<Tiposolicitud> tiposolicitudList = new ArrayList<>();
+    List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
     List<Tipovehiculo> suggestionsTipovehiculo = new ArrayList<>();
-    
+
     List<Facultad> suggestionsFacultad = new ArrayList<>();
     List<Carrera> suggestionsCarrera = new ArrayList<>();
     List<Unidad> suggestionsUnidad = new ArrayList<>();
@@ -130,7 +130,6 @@ public class SolicitudDocenteController implements Serializable, IController {
     @Inject
     AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
 
-    
     @Inject
     LookupServices lookupServices;
 
@@ -141,8 +140,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     @Inject
     SolicitudServices solicitudServices;
     @Inject
-     TiposolicitudRepository tiposolicitudRepository;
-        @Inject
+    TiposolicitudRepository tiposolicitudRepository;
+    @Inject
     TipovehiculoRepository tipovehiculoRepository;
     @Inject
     EstatusServices estatusServices;
@@ -181,9 +180,6 @@ public class SolicitudDocenteController implements Serializable, IController {
         this.tipovehiculoList = tipovehiculoList;
     }
 
-    
-    
-    
     public List<Tiposolicitud> getTiposolicitudList() {
         return tiposolicitudList;
     }
@@ -192,8 +188,6 @@ public class SolicitudDocenteController implements Serializable, IController {
         this.tiposolicitudList = tiposolicitudList;
     }
 
-    
-    
     public List<Usuario> getUsuarioList() {
         return usuarioList;
     }
@@ -497,8 +491,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
             if (JsfUtil.fechaMenor(solicitud.getFecha(), JsfUtil.getFechaActual())) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechasolicitudmenorqueactual"));
-                writable =false;
-                       
+                writable = false;
+
             }
             solicitud = new Solicitud();
             solicitudSelected = new Solicitud();
@@ -542,8 +536,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
             solicitud.setSemestre(semestreServices.findById(idsemestre));
             List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
-                    
-                    tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+
+            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
             solicitud.setTipovehiculo(tipovehiculoList);
 
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
@@ -578,6 +572,14 @@ public class SolicitudDocenteController implements Serializable, IController {
             usuarioList.add(solicita);
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
+
+
+                List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+                for (int i = 0; i <solicitud.getNumerodevehiculos(); i++) {
+                    tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+                }
+                solicitud.setTipovehiculo(tipovehiculoList);
+
 
             //Verificar si tiene un viaje en esas fechas
             Optional<Solicitud> optionalRango = solicitudServices.coincidenciaResponsableEnRango(solicitud);
@@ -640,6 +642,12 @@ public class SolicitudDocenteController implements Serializable, IController {
             usuarioList.add(solicita);
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
+            
+              List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+                for (int i = 0; i <solicitud.getNumerodevehiculos(); i++) {
+                    tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+                }
+                solicitud.setTipovehiculo(tipovehiculoList);
             if (solicitud.getPasajeros() < 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
                 return "";
@@ -1254,12 +1262,11 @@ public class SolicitudDocenteController implements Serializable, IController {
             JsfUtil.errorMessage("onDateSelect() " + ex.getLocalizedMessage());
         }
         return "";
-  
+
     }
-    
-          // </editor-fold>
-    
-         // <editor-fold defaultstate="collapsed" desc="completeFiltradoTipovehiculo(String query)">
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="completeFiltradoTipovehiculo(String query)">
     public List<Tipovehiculo> completeFiltradoTipovehiculo(String query) {
 
         suggestionsTipovehiculo = new ArrayList<>();
@@ -1289,9 +1296,8 @@ public class SolicitudDocenteController implements Serializable, IController {
         }
         return suggestionsTipovehiculo;
     }// </editor-fold>
-    
-    
-      // <editor-fold defaultstate="collapsed" desc="addTipovehiculo(Tipovehiculo tipovehiculo)">
+
+    // <editor-fold defaultstate="collapsed" desc="addTipovehiculo(Tipovehiculo tipovehiculo)">
     private Boolean addTipovehiculo(Tipovehiculo tipovehiculo) {
         try {
             if (!foundTipovehiculo(tipovehiculo.getIdtipovehiculo())) {
@@ -1304,13 +1310,12 @@ public class SolicitudDocenteController implements Serializable, IController {
     }
 
     // </editor-fold>
-    
-     // <editor-fold defaultstate="collapsed" desc="foundTipovehiculo(String idtipovehiculo)">
+    // <editor-fold defaultstate="collapsed" desc="foundTipovehiculo(String idtipovehiculo)">
     private Boolean foundTipovehiculo(String idtipovehiculo) {
         Boolean _found = true;
         try {
             Tipovehiculo tipovehiculo = tipovehiculoList.stream() // Convert to steam
-                    .filter(x -> x.getIdtipovehiculo()== idtipovehiculo) // we want "jack" only
+                    .filter(x -> x.getIdtipovehiculo() == idtipovehiculo) // we want "jack" only
                     .findAny() // If 'findAny' then return found
                     .orElse(null);
             if (tipovehiculo == null) {

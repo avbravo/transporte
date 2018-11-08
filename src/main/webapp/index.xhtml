@@ -30,7 +30,7 @@
 
             <b:row>
                 
-                <b:column span="4">
+                <b:column span="3">
                     <h3><p:outputLabel value="#{msg['label.totalsolicitado']}"/></h3>
                     <div class="knob-container  ui-corner-all">
                         <p:knob value="#{dashboardIndexController.totalSolicitado}" max="#{dashboardIndexController.totalSolicitado}"
@@ -39,7 +39,7 @@
                                 />
                     </div>
                 </b:column>
-                <b:column span="4">
+                <b:column span="3">
                     <h3><p:outputLabel value="#{msg['label.totalaprobado']}"/></h3>
                     <div class="knob-container  ui-corner-all">
                         <p:knob value="#{dashboardIndexController.totalAprobado}" max="#{dashboardIndexController.totalAprobado}"
@@ -49,7 +49,7 @@
                     </div>
                 </b:column>
              
-                <b:column span="4">
+                <b:column span="3">
                     <h3><p:outputLabel value="#{msg['label.totalrechazado']}"/></h3>
                     <div class="knob-container  ui-corner-all">
                         <p:knob value="#{dashboardIndexController.totalRechazado}" max="#{dashboardIndexController.totalRechazado}"
@@ -58,11 +58,7 @@
                                 />
                     </div>
                 </b:column>
-                
-                </b:row>
-            <b:row>
-        
-                <b:column span="4">
+                 <b:column span="3">
                     <h3><p:outputLabel value="#{msg['label.totalcancelado']}"/></h3>
                     <div class="knob-container  ui-corner-all">
                         <p:knob value="#{dashboardIndexController.totalCancelado}" max="#{dashboardIndexController.totalCancelado}"
@@ -71,6 +67,10 @@
                                 />
                     </div>
                 </b:column>
+                </b:row>
+            <b:row >
+        
+               
                 <b:column span="4">
                     <h3><p:outputLabel value="#{msg['label.totales']}"/></h3>
                     <div class="knob-container  ui-corner-all">
@@ -84,6 +84,45 @@
 
 
 
+            </b:row>
+            <b:row>
+        
+                <b:column span="3">
+                    <h3><p:outputLabel value="#{msg['label.vehiculostotales']}"/></h3>
+                    <div class="knob-container  ui-corner-all">
+                        <p:knob value="#{dashboardIndexController.totalVehiculos}" max="#{dashboardIndexController.totalVehiculos}"
+                                disabled="true"
+                                foregroundColor="black" backgroundColor="#00000"
+                                />
+                    </div>
+                </b:column>
+                <b:column span="3">
+                    <h3><p:outputLabel value="#{msg['label.vehiculosactivostotales']}"/></h3>
+                    <div class="knob-container  ui-corner-all">
+                        <p:knob value="#{dashboardIndexController.totalVehiculosActivos}" max="#{dashboardIndexController.totalVehiculosActivos}"
+                                disabled="true"
+                                foregroundColor="blue" backgroundColor="#00000"
+                                />
+                    </div>
+                </b:column>
+                <b:column span="3">
+                    <h3><p:outputLabel value="#{msg['label.vehiculosinactivostotales']}"/></h3>
+                    <div class="knob-container  ui-corner-all">
+                        <p:knob value="#{dashboardIndexController.totalVehiculosInActivos}" max="#{dashboardIndexController.totalVehiculosInActivos}"
+                                disabled="true"
+                                foregroundColor="brown" backgroundColor="#00000"
+                                />
+                    </div>
+                </b:column>
+                <b:column span="3">
+                    <h3><p:outputLabel value="#{msg['label.vehiculosenreparaciontotales']}"/></h3>
+                    <div class="knob-container  ui-corner-all">
+                        <p:knob value="#{dashboardIndexController.totalVehiculosEnReparacion}" max="#{dashboardIndexController.totalVehiculosEnReparacion}"
+                                disabled="true"
+                                foregroundColor="yellow" backgroundColor="#00000"
+                                />
+                    </div>
+                </b:column>
             </b:row>
         </b:form>
 

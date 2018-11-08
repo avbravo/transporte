@@ -123,7 +123,28 @@
                     <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
                     <p:outputLabel  value="#{calendarioSolicitudController.solicitud.numerodevehiculos}" />
 
+ <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
+                      <p:autoComplete dropdown="false"
+                                        multiple="true"
+                                        scrollHeight="250"
+                                        size="55"
+                                        emptyMessage="#{app['info.nohayregistros']}"
+                                        value="#{calendarioSolicitudController.solicitud.tipovehiculo}"
+                                        completeMethod="#{solicitudManualAdministrativoController.completeFiltradoTipovehiculo}"
+                                        var="p"
+                                        required="false"
+                                        disabled="true"
 
+                                        itemLabel="#{p.idtipovehiculo}"
+                                        itemValue="#{p}" forceSelection="true">
+                            <f:converter binding="#{tipovehiculoConverter}"/>
+                            <f:attribute name="field" value="idtipovehiculo"/>
+                            <f:attribute name="fielddropdown" value="false"/>
+                            <f:attribute name="fieldquerylenth" value="1"/>
+                           
+
+
+                        </p:autoComplete>
                     <p:outputLabel  value="#{msg['field.pasajeros']}" />
                     <p:outputLabel  value="#{calendarioSolicitudController.solicitud.pasajeros}" />
 

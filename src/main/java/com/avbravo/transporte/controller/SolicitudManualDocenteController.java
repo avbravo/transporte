@@ -78,7 +78,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
 
     //    private String stmpPort="80";
     private String stmpPort = "25";
-   
+
     private Date _old;
     private Boolean writable = false;
     //DataModel
@@ -103,11 +103,11 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     List<Facultad> facultadList = new ArrayList<>();
     List<Carrera> carreraList = new ArrayList<>();
     List<Usuario> usuarioList = new ArrayList<>();
-      List<Tiposolicitud> tiposolicitudList = new ArrayList<>();
-          List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+    List<Tiposolicitud> tiposolicitudList = new ArrayList<>();
+    List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
     List<Tipovehiculo> suggestionsTipovehiculo = new ArrayList<>();
-    
-     List<Facultad> suggestionsFacultad = new ArrayList<>();
+
+    List<Facultad> suggestionsFacultad = new ArrayList<>();
     List<Carrera> suggestionsCarrera = new ArrayList<>();
     List<Unidad> suggestionsUnidad = new ArrayList<>();
     List<Tiposolicitud> suggestionsTiposolicitud = new ArrayList<>();
@@ -121,9 +121,9 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     UnidadRepository unidadRepository;
     @Inject
     SolicitudRepository solicitudRepository;
-    @Inject            
-     TiposolicitudRepository tiposolicitudRepository;
-        @Inject
+    @Inject
+    TiposolicitudRepository tiposolicitudRepository;
+    @Inject
     TipovehiculoRepository tipovehiculoRepository;
     @Inject
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
@@ -135,7 +135,6 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     @Inject
     AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
 
-   
     @Inject
     LookupServices lookupServices;
 
@@ -190,9 +189,6 @@ public class SolicitudManualDocenteController implements Serializable, IControll
         this.tipovehiculoList = tipovehiculoList;
     }
 
-    
-    
-    
     public List<Usuario> getUsuarioList() {
         return usuarioList;
     }
@@ -494,10 +490,10 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             if (!list.isEmpty()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yasolicitoviajeenestafecha"));
             }
-              if (JsfUtil.fechaMenor(solicitud.getFecha(), JsfUtil.getFechaActual())) {
+            if (JsfUtil.fechaMenor(solicitud.getFecha(), JsfUtil.getFechaActual())) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechasolicitudmenorqueactual"));
-                writable =false;
-                       
+                writable = false;
+
             }
             solicitud = new Solicitud();
             solicitudSelected = new Solicitud();
@@ -541,11 +537,10 @@ public class SolicitudManualDocenteController implements Serializable, IControll
                 }
             }
             solicitud.setSemestre(semestreServices.findById(idsemestre));
-              List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
-                    
-                    tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+            List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+
+            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
             solicitud.setTipovehiculo(tipovehiculoList);
-         
 
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
 
@@ -564,36 +559,38 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     @Override
     public String save() {
         try {
-           
+
             solicitud.setActivo("si");
             solicitud.setUnidad(unidadList);
             solicitud.setFacultad(facultadList);
             solicitud.setCarrera(carreraList);
             usuarioList = new ArrayList<>();
             usuarioList.add(solicita);
-            usuarioList.add(responsable);
+            usuarioList.add(responsable);            
             solicitud.setUsuario(usuarioList);
-               if(!solicitudServices.isValid(solicitud)){
-              return "";
-          }
+              List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+                for (int i = 0; i <solicitud.getNumerodevehiculos(); i++) {
+                    tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+                }
+                solicitud.setTipovehiculo(tipovehiculoList);
+            if (!solicitudServices.isValid(solicitud)) {
+                return "";
+            }
 
-            
             //Verificar si tiene un viaje en esas fechas
-
             Optional<Solicitud> optionalRango = solicitudServices.coincidenciaResponsableEnRango(solicitud);
             if (optionalRango.isPresent()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.solicitudnumero") + " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
                 return "";
             }
 
-           Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
+            Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
             solicitud.setIdsolicitud(idsolicitud);
             Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
             if (optional.isPresent()) {
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
-           
 
             //Lo datos del usuario
             solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
@@ -632,10 +629,14 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             solicitud.setUnidad(unidadList);
             solicitud.setFacultad(facultadList);
             solicitud.setCarrera(carreraList);
-              if(!solicitudServices.isValid(solicitud)){
-              return "";
-          }
-
+            if (!solicitudServices.isValid(solicitud)) {
+                return "";
+            }
+            List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+            for (int i = 0; i < solicitud.getNumerodevehiculos(); i++) {
+                tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+            }
+            solicitud.setTipovehiculo(tipovehiculoList);
             usuarioList = new ArrayList<>();
             usuarioList.add(solicita);
             usuarioList.add(responsable);
@@ -751,30 +752,27 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     public void handleSelect(SelectEvent event) {
         try {
 
-          
-            
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
     public void handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-              solicitudList.removeAll(solicitudList);
+            solicitudList.removeAll(solicitudList);
             solicitudList.add(solicitudSelected);
             solicitudFiltered = solicitudList;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-            
+
             loginController.put("searchsolicitud", "idsolicitud");
             lookupServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
-    
-// <editor-fold defaultstate="collapsed" desc="handleSelectResponsable(SelectEvent event)">
 
+// <editor-fold defaultstate="collapsed" desc="handleSelectResponsable(SelectEvent event)">
     public void handleSelectResponsable(SelectEvent event) {
         try {
 
@@ -857,19 +855,18 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             Document doc;
             switch (loginController.get("searchsolicitud")) {
                 case "_init":
-                        case "_autocomplete":
+                case "_autocomplete":
                     doc = new Document("tiposolicitud.idtiposolicitud", "DOCENTE");
 
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
-            
 
                 case "idsolicitud":
-                   
-                         doc = new Document("idsolicitud", lookupServices.getIdsolicitud());
+
+                    doc = new Document("idsolicitud", lookupServices.getIdsolicitud());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
-                   
+
                     break;
 
                 default:
@@ -1148,7 +1145,6 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="enviarEmails()">
-  
     public String enviarEmails() {
         try {
             Boolean enviados = false;
@@ -1201,8 +1197,9 @@ public class SolicitudManualDocenteController implements Serializable, IControll
         }
         return "";
     }
-  // </editor-fold>
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
+
     public String columnColor(String estatus) {
         String color = "";
         try {
@@ -1289,9 +1286,8 @@ public class SolicitudManualDocenteController implements Serializable, IControll
         }
         return suggestionsTipovehiculo;
     }// </editor-fold>
-    
-    
-      // <editor-fold defaultstate="collapsed" desc="addTipovehiculo(Tipovehiculo tipovehiculo)">
+
+    // <editor-fold defaultstate="collapsed" desc="addTipovehiculo(Tipovehiculo tipovehiculo)">
     private Boolean addTipovehiculo(Tipovehiculo tipovehiculo) {
         try {
             if (!foundTipovehiculo(tipovehiculo.getIdtipovehiculo())) {
@@ -1304,13 +1300,12 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     }
 
     // </editor-fold>
-    
-     // <editor-fold defaultstate="collapsed" desc="foundTipovehiculo(String idtipovehiculo)">
+    // <editor-fold defaultstate="collapsed" desc="foundTipovehiculo(String idtipovehiculo)">
     private Boolean foundTipovehiculo(String idtipovehiculo) {
         Boolean _found = true;
         try {
             Tipovehiculo tipovehiculo = tipovehiculoList.stream() // Convert to steam
-                    .filter(x -> x.getIdtipovehiculo()== idtipovehiculo) // we want "jack" only
+                    .filter(x -> x.getIdtipovehiculo() == idtipovehiculo) // we want "jack" only
                     .findAny() // If 'findAny' then return found
                     .orElse(null);
             if (tipovehiculo == null) {
@@ -1324,7 +1319,5 @@ public class SolicitudManualDocenteController implements Serializable, IControll
         return _found;
     }
     // </editor-fold>
-    
-    
-  
+
 }

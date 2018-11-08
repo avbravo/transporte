@@ -9,6 +9,7 @@ package com.avbravo.transporte.controller;
 import com.avbravo.avbravoutils.JsfUtil;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
+import com.avbravo.transporteejb.repository.VehiculoRepository;
 
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
@@ -31,6 +32,8 @@ public class DashboardIndexController implements Serializable {
 
     @Inject
     SolicitudRepository solicitudRepository;
+    @Inject
+    VehiculoRepository vehiculoRepository;
 
     @Inject
     LoginController loginController;
@@ -42,6 +45,10 @@ public class DashboardIndexController implements Serializable {
     Integer totalRechazado;
     Integer totalCancelado;
     Integer totales;
+    Integer totalVehiculos;
+    Integer totalVehiculosActivos;
+    Integer totalVehiculosInActivos;
+    Integer totalVehiculosEnReparacion;
     // </editor-fold>
 
     public Integer getTotalCancelado() {
@@ -50,6 +57,40 @@ public class DashboardIndexController implements Serializable {
 
     public void setTotalCancelado(Integer totalCancelado) {
         this.totalCancelado = totalCancelado;
+    }
+
+    public Integer getTotalVehiculos() {
+        return totalVehiculos;
+    }
+
+    public void setTotalVehiculos(Integer totalVehiculos) {
+        this.totalVehiculos = totalVehiculos;
+    }
+
+    public Integer getTotalVehiculosActivos() {
+        return totalVehiculosActivos;
+    }
+
+    public Integer getTotalVehiculosInActivos() {
+        return totalVehiculosInActivos;
+    }
+
+    public void setTotalVehiculosInActivos(Integer totalVehiculosInActivos) {
+        this.totalVehiculosInActivos = totalVehiculosInActivos;
+    }
+    
+    
+
+    public void setTotalVehiculosActivos(Integer totalVehiculosActivos) {
+        this.totalVehiculosActivos = totalVehiculosActivos;
+    }
+
+    public Integer getTotalVehiculosEnReparacion() {
+        return totalVehiculosEnReparacion;
+    }
+
+    public void setTotalVehiculosEnReparacion(Integer totalVehiculosEnReparacion) {
+        this.totalVehiculosEnReparacion = totalVehiculosEnReparacion;
     }
 
     /**
@@ -100,26 +141,32 @@ public class DashboardIndexController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="calcularTotales()">
     public void calcularTotales() {
         try {
-            switch (loginController.getRol().getIdrol()){
+            switch (loginController.getRol().getIdrol()) {
                 case "ADMINISTRADOR":
                 case "SECRETARIA":
-                       totalSolicitado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "SOLICITADO"));
-            totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO"));
-            totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO"));
-            totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO"));
-            
-            break;
-                 
+                    totalSolicitado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "SOLICITADO"));
+                    totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO"));
+                    totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO"));
+                    totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO"));
+
+                    break;
+
                 default:
 
-                      totalSolicitado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "SOLICITADO").append("usuario.username", loginController.getUsuario().getUsername()));
-            totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO").append("usuario.username", loginController.getUsuario().getUsername()));
-            totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO").append("usuario.username", loginController.getUsuario().getUsername()));
-            totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO").append("usuario.username", loginController.getUsuario().getUsername()));
-                    
+                    totalSolicitado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "SOLICITADO").append("usuario.username", loginController.getUsuario().getUsername()));
+                    totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO").append("usuario.username", loginController.getUsuario().getUsername()));
+                    totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO").append("usuario.username", loginController.getUsuario().getUsername()));
+                    totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO").append("usuario.username", loginController.getUsuario().getUsername()));
+
             }
-         totales = totalAprobado + totalCancelado + totalRechazado + totalSolicitado;
-         
+            totales = totalAprobado + totalCancelado + totalRechazado + totalSolicitado;
+            //Vehiculos
+            totalVehiculos = vehiculoRepository.findAll().size();
+            totalVehiculosActivos = vehiculoRepository.count(new Document("activo","si"));
+            totalVehiculosInActivos = vehiculoRepository.count(new Document("activo","no"));
+            totalVehiculosEnReparacion = vehiculoRepository.count(new Document("enreparacion","si"));
+            
+
         } catch (Exception e) {
             JsfUtil.errorMessage("calcularTotales() " + e.getLocalizedMessage());
         }

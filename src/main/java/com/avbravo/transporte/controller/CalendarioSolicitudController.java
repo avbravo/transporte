@@ -104,9 +104,6 @@ public class CalendarioSolicitudController implements Serializable, IController 
     Conductor conductor = new Conductor();
     Viajes viajes = new Viajes();
     Viajes viajesSelected = new Viajes();
-   
-    
-    
 
     private ScheduleModel eventModel;
 
@@ -213,11 +210,6 @@ public class CalendarioSolicitudController implements Serializable, IController 
         this.viajesSelected = viajesSelected;
     }
 
-   
-
-    
-    
-    
     public Boolean getEsAprobado() {
         return esAprobado;
     }
@@ -732,13 +724,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
         }
         return "";
     }// </editor-fold>
-    
-
-
-        
 
 // <editor-fold defaultstate="collapsed" desc="edit">
-
     @Override
     public String edit() {
         try {
@@ -754,18 +741,16 @@ public class CalendarioSolicitudController implements Serializable, IController 
                     return "";
                 }
 
-                if(solicitud.getNumerodevehiculos() != vehiculoList.size()){
+                if (solicitud.getNumerodevehiculos() != vehiculoList.size()) {
                     JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodevehiculosnoigualvehiculos"));
                     return "";
                 }
-                if(conductorList.size() != vehiculoList.size()){
+                if (conductorList.size() != vehiculoList.size()) {
                     JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
                     return "";
                 }
-                
-                
-                
-      viajes = viajesSelected;
+
+                viajes = viajesSelected;
                 Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
                 viajes.setActivo("si");
                 viajes.setIdviaje(idviaje);
@@ -773,8 +758,6 @@ public class CalendarioSolicitudController implements Serializable, IController 
                 viajes.setVehiculo(vehiculoList);
                 viajes.setSolicitud(solicitud);
                 viajes.setNumerovehiculos(solicitud.getNumerodevehiculos());
-               
-                
 
                 viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
                 if (viajesRepository.save(viajes)) {
@@ -1489,7 +1472,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
                     } else {
                         viajesSelected = list.get(0);
                     }
-                }else{
+                } else {
                     viajesSelected.setActivo("si");
                     viajesSelected.setFechahorainicioreserva(solicitud.getFechahorapartida());
                     viajesSelected.setFechahorafinreserva(solicitud.getFechahoraregreso());
@@ -1544,36 +1527,72 @@ public class CalendarioSolicitudController implements Serializable, IController 
         try {
             Boolean found = false;
             query = query.trim();
-//            if (query.length() < 1) {
-//                return suggestions;
-//            }
+
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = vehiculoRepository.findRegex(field, query, true, new Document(field, 1));
 
-            if (vehiculoList.isEmpty()) {
-                if (!temp.isEmpty()) {
-                    suggestions = temp;
-                }
+            if (temp.isEmpty()) {
+                return suggestions;
             } else {
-                if (!temp.isEmpty()) {
-
-                    for (Vehiculo v : temp) {
-                        found = false;
-                        for (Vehiculo v2 : vehiculoList) {
-                            if (v.getIdvehiculo() == v2.getIdvehiculo()) {
-                                found = true;
-                            }
-                        }
-                        if (!found) {
-                            suggestions.add(v);
-                        }
-
-                    }
+                List<Vehiculo> validos = temp.stream() // Convert to steam
+                        .filter(x -> isVehiculoValid(x)).collect(Collectors.toList());        // we want "jack" only
+                if (validos.isEmpty()) {
+                    return suggestions;
                 }
+                if (vehiculoList.isEmpty()) {
+                    return validos;
+                } else {
+                    validos.stream().map((v) -> vehiculoList.stream()
+                            .filter(x -> v.getIdvehiculo().equals(x.getIdvehiculo()))
+                            .findAny()
+                            .orElse(null)).filter((v2) -> (v2 != null)).forEachOrdered((v2) -> {
+                                suggestions.add(v2);
+                    });
 
+//                    for (Vehiculo v : validos) {
+//                        found = false;
+//                        for (Vehiculo v2 : vehiculoList) {
+//                            if (v.getIdvehiculo() == v2.getIdvehiculo()) {
+//                                found = true;
+//                            }
+//
+//                        }
+//                        if (!found) {
+//                            suggestions.add(v);
+//                        }
+//                    }
+                }
             }
-            //suggestions=  rolRepository.findRegex(field,query,true,new Document(field,1));
 
+//            if (vehiculoList.isEmpty()) {
+//                if (!temp.isEmpty()) {
+//                    for (Vehiculo v : temp) {
+//                        if (isVehiculoValid(v)) {
+//                            suggestions.add(v);
+//                        }
+//                    }
+//
+//                }
+//
+//            } else {
+//                if (!temp.isEmpty()) {
+//
+//                    for (Vehiculo v : temp) {
+//                        found = false;
+//                        for (Vehiculo v2 : vehiculoList) {
+//                            if (v.getIdvehiculo() == v2.getIdvehiculo()) {
+//                                found = true;
+//                            }
+//                        }
+//                        if (!found && v.getActivo().equals("si") && v.getEnreparacion().equals("no")) {
+//                            suggestions.add(v);
+//                        }
+//
+//                    }
+//                }
+//
+//            }
+            //suggestions=  rolRepository.findRegex(field,query,true,new Document(field,1));
         } catch (Exception e) {
             JsfUtil.errorMessage("completeVehiculoFiltrado() " + e.getLocalizedMessage());
         }
@@ -1630,5 +1649,26 @@ public class CalendarioSolicitudController implements Serializable, IController 
         return suggestions;
     }
 
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isVehiculoValido(Vehiculo vehiculo)">
+    public Boolean isVehiculoValid(Vehiculo vehiculo) {
+        Boolean valid = false;
+        try {
+
+            if (vehiculo.getActivo().equals("si") && vehiculo.getEnreparacion().equals("no")) {
+
+                for (Tipovehiculo t : solicitud.getTipovehiculo()) {
+                    if (vehiculo.getTipovehiculo().getIdtipovehiculo().equals(t.getIdtipovehiculo())) {
+                        valid = true;
+                        break;
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("isVehiculoValido()) " + e.getLocalizedMessage());
+        }
+        return valid;
+    }
     // </editor-fold>
 }
