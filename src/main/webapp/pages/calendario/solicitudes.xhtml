@@ -58,7 +58,7 @@
 
                     <p:schedule id="schedule"                            
                                 value="#{calendarioSolicitudController.eventModel}" widgetVar="myschedule" timeZone="GMT-5" locale="es">
-                        
+
                         <p:ajax  event="eventSelect"  listener="#{calendarioSolicitudController.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
                         <!--<p:ajax  event="dateSelect" listener="#{calendarioSolicitudController.onDateSelectCalendar}" update="newDetails" oncomplete="PF('newDialog').show();" />-->
                     </p:schedule>
@@ -72,8 +72,9 @@
             <p:dialog widgetVar="eventDialog" header="#{msg['dialogo.solicitud']}" 
                       width="650" height="450"
                       styleClass="customDialog"
-                      modal="true"
+
                       responsive="true"
+
                       showEffect="clip" hideEffect="clip">
                 <b:panelGrid id="eventDetails" colSpans="2,10" size="xs" > 
 
@@ -161,6 +162,7 @@
                                     completeMethod="#{calendarioSolicitudController.completeVehiculoFiltrado}"
                                     var="p"
                                     required="true"
+                                    requiredMessage="#{msg['field.vehiculo']}"
                                     itemLabel=" #{p.marca}"
                                     itemValue="#{p}" forceSelection="true">
                         <f:converter binding="#{vehiculoConverter}"/>
@@ -193,6 +195,7 @@
                                     completeMethod="#{calendarioSolicitudController.completeConductorFiltrado}"
                                     var="p"
                                     required="true"
+                                    requiredMessage="#{msg['field.conductor']}"
                                     itemLabel="#{p.nombre}"
                                     itemValue="#{p}" forceSelection="true">
                         <f:converter binding="#{conductorConverter}"/>
@@ -213,24 +216,29 @@
 
                     <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}" rendered="#{calendarioSolicitudController.esAprobado}" />
                     <a:calendar rendered="#{calendarioSolicitudController.esAprobado}"
+                                required="true"
                                 pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudController.viajesSelected.fechahorainicioreserva}"   label="#{msg['field.fechahorainicioreserva']}" />
 
 
                     <p:outputLabel  value="#{msg['field.fechahorafinreserva']}" rendered="#{calendarioSolicitudController.esAprobado}" />
                     <a:calendar rendered="#{calendarioSolicitudController.esAprobado}"
+                                required="true"
                                 pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudController.viajesSelected.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
 
 
 
                     <p:outputLabel  value="#{msg['field.comentarios']}" rendered="#{calendarioSolicitudController.esAprobado}"/>
-                    <b:inputTextarea rows="2" value="#{calendarioSolicitudController.viajesSelected.comentarios}" rendered="#{calendarioSolicitudController.esAprobado}" />
+                    <b:inputTextarea required="true" requiredMessage="#{msg['field.comentarios']}"
+                                     rows="2" value="#{calendarioSolicitudController.viajesSelected.comentarios}" rendered="#{calendarioSolicitudController.esAprobado}" />
 
 
                     <p:outputLabel  value="#{msg['field.kmestimados']}"  rendered="#{calendarioSolicitudController.esAprobado}"/>
                     <a:inputText span="5" value="#{calendarioSolicitudController.viajesSelected.kmestimados}" rendered="#{calendarioSolicitudController.esAprobado}"  />
 
                     <p:outputLabel  value="#{msg['field.costocombustible']}"  rendered="#{calendarioSolicitudController.esAprobado}"/>
-                    <a:inputText span="5" value="#{calendarioSolicitudController.viajesSelected.costocombustible}" rendered="#{calendarioSolicitudController.esAprobado}"  />
+                    <a:inputText required="true"
+                                 label="#{msg['field.costocombustible']}"
+                                 span="5" value="#{calendarioSolicitudController.viajesSelected.costocombustible}" rendered="#{calendarioSolicitudController.esAprobado}"  />
 
 
 
@@ -405,17 +413,17 @@
                     <b:commandButton value="#{app['button.close']}"
                                      iconAwesome="fa-close"
                                      oncomplete="PF('eventDialog').hide();"/>
-                    <b:commandButton
+
+                    <p:commandButton
                         rendered="#{applicationMenu.menuBarAdministracion}"
                         value="#{app['button.edit']}"
-                        iconAwesome="fa-edit"
-                        look="primary"
-                        action="#{calendarioSolicitudController.edit()}"
-                        oncomplete="PF('eventDialog').hide();"
-                        ajax="false"
+                        update="growl"
+                        oncomplete="PF('myschedule').update(); "
+                        actionListener="#{calendarioSolicitudController.edit}"                     
 
                         />
 
+                    <b:growl id="growl"/>
 
                 </b:panelGrid>
             </p:dialog>

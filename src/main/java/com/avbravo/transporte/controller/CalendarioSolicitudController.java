@@ -57,6 +57,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -731,6 +732,11 @@ public class CalendarioSolicitudController implements Serializable, IController 
         }
         return "";
     }// </editor-fold>
+    
+
+
+        
+
 // <editor-fold defaultstate="collapsed" desc="edit">
 
     @Override
