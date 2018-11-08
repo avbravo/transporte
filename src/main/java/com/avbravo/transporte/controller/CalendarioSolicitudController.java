@@ -1471,6 +1471,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
                         JsfUtil.warningMessage(rf.getMessage("warning.notexitsviajeconesasolicitud"));
                     } else {
                         viajesSelected = list.get(0);
+                        vehiculoList = viajesSelected.getVehiculo();
+                        conductorList =viajesSelected.getConductor();
                     }
                 } else {
                     viajesSelected.setActivo("si");
