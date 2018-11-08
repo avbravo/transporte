@@ -1,66 +1,18 @@
-  // <editor-fold defaultstate="collapsed" desc="completeFiltradoTipovehiculo(String query)">
-    public List<Tipovehiculo> completeFiltradoTipovehiculo(String query) {
 
-        suggestionsTipovehiculo = new ArrayList<>();
-        List<Tipovehiculo> temp = new ArrayList<>();
-        try {
+                    <b:commandButton value="#{app['button.close']}"
+                                     iconAwesome="fa-close"
+                                     oncomplete="PF('eventDialog').hide();"/>
 
-            Boolean found = false;
-            query = query.trim();
+                    <p:commandButton
+                        rendered="#{applicationMenu.menuBarAdministracion}"
+                        value="#{app['button.edit']}"
+                        update="growl"
+                        oncomplete="PF('myschedule').update(); "
+                        actionListener="#{calendarioSolicitudController.edit}"                     
 
-            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
-            temp = tipovehiculoRepository.findRegexInText(field, query, true, new Document(field, 1));
-            if (tipovehiculoList == null || tipovehiculoList.isEmpty()) {
+                        />
 
-                if (!temp.isEmpty()) {
-                    suggestionsTipovehiculo = temp;
-                }
-            } else {
+                    <b:growl id="growl"/>
 
-                if (!temp.isEmpty()) {
-                    temp.stream().forEach(f -> addTipovehiculo(f));
-                }
-
-            }
-
-        } catch (Exception e) {
-            JsfUtil.errorMessage("completeFiltradoFacultad() " + e.getLocalizedMessage());
-        }
-        return suggestionsTipovehiculo;
-    }// </editor-fold>
-    
-    
-      // <editor-fold defaultstate="collapsed" desc="addTipovehiculo(Tipovehiculo tipovehiculo)">
-    private Boolean addTipovehiculo(Tipovehiculo tipovehiculo) {
-        try {
-            if (!foundTipovehiculo(tipovehiculo.getIdtipovehiculo())) {
-                suggestionsTipovehiculo.add(tipovehiculo);
-            }
-        } catch (Exception e) {
-            JsfUtil.errorMessage("addTiposolocitud()" + e.getLocalizedMessage());
-        }
-        return false;
-    }
-
-    // </editor-fold>
-    
-     // <editor-fold defaultstate="collapsed" desc="foundTipovehiculo(String idtipovehiculo)">
-    private Boolean foundTipovehiculo(String idtipovehiculo) {
-        Boolean _found = true;
-        try {
-            Tipovehiculo tipovehiculo = tipovehiculoList.stream() // Convert to steam
-                    .filter(x -> x.getIdtipovehiculo()== idtipovehiculo) // we want "jack" only
-                    .findAny() // If 'findAny' then return found
-                    .orElse(null);
-            if (tipovehiculo == null) {
-
-                _found = false;
-            }
-
-        } catch (Exception e) {
-            JsfUtil.errorMessage("foundTipovehiculo() " + e.getLocalizedMessage());
-        }
-        return _found;
-    }
-    // </editor-fold>
-
+                </b:panelGrid>
+            </p:dialog>
