@@ -89,6 +89,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
 
     //    private String stmpPort="80";
     private Boolean esAprobado = false;
+    private Boolean esAprobadoParaEditar = false;
     private String stmpPort = "25";
     private String menuelement = "";
 
@@ -204,6 +205,14 @@ public class CalendarioSolicitudController implements Serializable, IController 
 
     public Viajes getViajesSelected() {
         return viajesSelected;
+    }
+
+    public Boolean getEsAprobadoParaEditar() {
+        return esAprobadoParaEditar;
+    }
+
+    public void setEsAprobadoParaEditar(Boolean esAprobadoParaEditar) {
+        this.esAprobadoParaEditar = esAprobadoParaEditar;
     }
 
     public void setViajesSelected(Viajes viajesSelected) {
@@ -476,7 +485,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
     @PostConstruct
     public void init() {
         try {
-
+            esAprobadoParaEditar = false;
             String action = loginController.get("solicitud");
             String id = loginController.get("idsolicitud");
             String pageSession = loginController.get("pagesolicitud");
@@ -729,6 +738,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
     @Override
     public String edit() {
         try {
+            //Si era apronado para editar
+
             if (esAprobado) {
                 if (JsfUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
 
@@ -749,25 +760,49 @@ public class CalendarioSolicitudController implements Serializable, IController 
                     JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
                     return "";
                 }
+                if (!esAprobadoParaEditar) {
+                    viajes = viajesSelected;
+                    Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
+                    viajes.setActivo("si");
+                    viajes.setIdviaje(idviaje);
+                    viajes.setConductor(conductorList);
+                    viajes.setVehiculo(vehiculoList);
+                    viajes.setSolicitud(solicitud);
+                    viajes.setNumerovehiculos(solicitud.getNumerodevehiculos());
 
-                viajes = viajesSelected;
-                Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
-                viajes.setActivo("si");
-                viajes.setIdviaje(idviaje);
-                viajes.setConductor(conductorList);
-                viajes.setVehiculo(vehiculoList);
-                viajes.setSolicitud(solicitud);
-                viajes.setNumerovehiculos(solicitud.getNumerodevehiculos());
+                    viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
 
-                viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
-                if (viajesRepository.save(viajes)) {
-                    revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajes.getIdviaje().toString(), loginController.getUsername(),
-                            "create", "viajes", viajesRepository.toDocument(viajes).toString()));
-                    JsfUtil.successMessage(rf.getAppMessage("info.save"));
+                    if (viajesRepository.save(viajes)) {
+                        revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajes.getIdviaje().toString(), loginController.getUsername(),
+                                "create", "viajes", viajesRepository.toDocument(viajes).toString()));
+                        JsfUtil.successMessage(rf.getAppMessage("info.save"));
 
+                    } else {
+                        JsfUtil.successMessage("save() " + viajesRepository.getException().toString());
+                        return "";
+                    }
                 } else {
-                    JsfUtil.successMessage("save() " + viajesRepository.getException().toString());
-                    return "";
+                    viajes = viajesSelected;
+                    viajes.setConductor(conductorList);
+                    viajes.setVehiculo(vehiculoList);
+                    viajesSelected.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "update"));
+                    if (viajesRepository.update(viajesSelected)) {
+                        revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajesSelected.getIdviaje().toString(), loginController.getUsername(),
+                                "update", "viajes", viajesRepository.toDocument(viajesSelected).toString()));
+
+                    }
+                }
+
+            } else {
+                //Si era apronado para editar y se cambio el estatus se coloca activo = no
+                if (esAprobadoParaEditar) {
+                    viajesSelected.setActivo("no");
+                    viajesSelected.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "update"));
+                    if (viajesRepository.update(viajesSelected)) {
+                        revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajesSelected.getIdviaje().toString(), loginController.getUsername(),
+                                "update", "viajes", viajesRepository.toDocument(viajesSelected).toString()));
+
+                    }
                 }
             }
 
@@ -1439,6 +1474,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
     public void onEventSelect(SelectEvent selectEvent) {
         try {
             // esnuevo = false;
+            esAprobadoParaEditar = false;
             viajesSelected = new Viajes();
             esDocente = false;
             event = (ScheduleEvent) selectEvent.getObject();
@@ -1465,6 +1501,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
                 esDocente = solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE");
                 if (solicitud.getEstatus().getIdestatus().equals("APROBADO")) {
                     esAprobado = true;
+                    esAprobadoParaEditar = true;
                     List<Viajes> list = new ArrayList<>();
                     list = viajesRepository.findBy(new Document("solicitud.idsolicitud", solicitud.getIdsolicitud()));
                     if (list.isEmpty()) {
@@ -1472,7 +1509,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
                     } else {
                         viajesSelected = list.get(0);
                         vehiculoList = viajesSelected.getVehiculo();
-                        conductorList =viajesSelected.getConductor();
+                        conductorList = viajesSelected.getConductor();
                     }
                 } else {
                     viajesSelected.setActivo("si");
@@ -1548,7 +1585,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
                             .filter(x -> v.getIdvehiculo().equals(x.getIdvehiculo()))
                             .findAny()
                             .orElse(null)).filter((v2) -> (v2 != null)).forEachOrdered((v2) -> {
-                                suggestions.add(v2);
+                        suggestions.add(v2);
                     });
 
 //                    for (Vehiculo v : validos) {
