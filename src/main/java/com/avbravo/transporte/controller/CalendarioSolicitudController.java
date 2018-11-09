@@ -21,7 +21,6 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Estatus;
-import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.entity.Unidad;
@@ -44,6 +43,7 @@ import com.avbravo.transporteejb.services.TipovehiculoServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +57,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -1468,8 +1467,10 @@ public class CalendarioSolicitudController implements Serializable, IController 
             JsfUtil.errorMessage("onDateSelect() " + ex.getLocalizedMessage());
         }
         return "";
-        // </editor-fold>
-    }
+       
+    } // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="onEventSelect(SelectEvent selectEvent)">
 
     public void onEventSelect(SelectEvent selectEvent) {
         try {
@@ -1522,7 +1523,9 @@ public class CalendarioSolicitudController implements Serializable, IController 
 
             JsfUtil.errorMessage("onEventSelect() " + e.getLocalizedMessage());
         }
-    }
+    } // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="onDateSelectCalendar(SelectEvent selectEvent)">
 
     /*
     cuando selecciona una fecha
@@ -1537,21 +1540,26 @@ public class CalendarioSolicitudController implements Serializable, IController 
             JsfUtil.errorMessage("onDateSelect() " + e.getLocalizedMessage());
         }
 
-    }
+    } // </editor-fold>
+
+   
+    // <editor-fold defaultstate="collapsed" desc="onEventMove(ScheduleEntryMoveEvent event) ">
 
     public void onEventMove(ScheduleEntryMoveEvent event) {
-        System.out.println("--->onEventMove() ");
+
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event moved", "Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
 
 //        addMessage(message);
-    }
+    } // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="onEventResize(ScheduleEntryResizeEvent event)">
 
     public void onEventResize(ScheduleEntryResizeEvent event) {
         System.out.println("--->onEventResize() ");
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event resized", "Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
 
 //        addMessage(message);
-    }
+    } // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="completeFiltrado(String query)">
     /**
@@ -1562,6 +1570,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
      */
     public List<Vehiculo> completeVehiculoFiltrado(String query) {
         List<Vehiculo> suggestions = new ArrayList<>();
+        List<Vehiculo> disponibles = new ArrayList<>();
         List<Vehiculo> temp = new ArrayList<>();
         try {
             Boolean found = false;
@@ -1573,69 +1582,69 @@ public class CalendarioSolicitudController implements Serializable, IController 
             if (temp.isEmpty()) {
                 return suggestions;
             } else {
-                List<Vehiculo> validos = temp.stream() 
-                        .filter(x -> isVehiculoValid(x)).collect(Collectors.toList());   
+                List<Vehiculo> validos = temp.stream()
+                        .filter(x -> isVehiculoValid(x)).collect(Collectors.toList());
                 if (validos.isEmpty()) {
                     return suggestions;
                 }
                 if (vehiculoList.isEmpty()) {
                     return validos;
                 } else {
-                    validos.stream().map((v) -> vehiculoList.stream()
-                            .filter(x -> v.getIdvehiculo().equals(x.getIdvehiculo()))
-                            .findAny()
-                            .orElse(null)).filter((v2) -> (v2 != null)).forEachOrdered((v2) -> {
-                        suggestions.add(v2);
+// REMOVERLOS SI YA ESTAN EN EL LISTADO
+
+                    validos.forEach((v) -> {
+                        Optional<Vehiculo> optional = vehiculoList.stream()
+                                .filter(v2 -> v2.getIdvehiculo() == v.getIdvehiculo())
+                                .findAny();
+                        if (!optional.isPresent()) {
+                            suggestions.add(v);
+                        }
                     });
 
-//                    for (Vehiculo v : validos) {
-//                        found = false;
-//                        for (Vehiculo v2 : vehiculoList) {
-//                            if (v.getIdvehiculo() == v2.getIdvehiculo()) {
-//                                found = true;
-//                            }
-//
-//                        }
-//                        if (!found) {
-//                            suggestions.add(v);
-//                        }
-//                    }
+                    for (Vehiculo v : suggestions) {
+
+                        List<Viajes> viajesList;
+                        if (esMismoDiaSolicitud()) {
+                            //SI LA SOLICITUD(salida y regreso es el mismo dia)
+                            //BUSCAR LOS REGISTROS DE VIAJES DEL VEHICULO ESE DIA
+                            viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
+                            if (viajesList.isEmpty()) {
+                                // INDICA QUE ESE VEHICULO ESTA DISPONIBLE NO TIENE NINGUN VIAJE
+                                disponibles.add(v);
+                            } else {
+                                // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
+                                if (!tieneDisponibilidadViaje(viajesList)) {
+                                    disponibles.add(v);
+                                }
+
+                            }
+                        } else {
+                            // ABARCA VARIOS DIAS 
+                            // OBTENER LOS VIAJES ENTRE ESOS DIAS
+
+                            viajesList = viajesVariosDias(v);
+                            if (viajesList.isEmpty()) {
+                                //SI ESTA VACIO INDICA QUE ESTA DISPONIBLE NO TIENE VIAJES EN ESA FECHA
+                                disponibles.add(v);
+                            } else {
+                                // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
+                                if (!tieneDisponibilidadViaje(viajesList)) {
+                                    disponibles.add(v);
+                                }
+                            }
+//                     
+                        }
+                    }
+                    // VERIRIFICAR SI TIENE VIAJES
+                    // List<Viajes> viajesList = viajesRepository.fi
+                    //si el dia y mes
                 }
             }
 
-//            if (vehiculoList.isEmpty()) {
-//                if (!temp.isEmpty()) {
-//                    for (Vehiculo v : temp) {
-//                        if (isVehiculoValid(v)) {
-//                            suggestions.add(v);
-//                        }
-//                    }
-//
-//                }
-//
-//            } else {
-//                if (!temp.isEmpty()) {
-//
-//                    for (Vehiculo v : temp) {
-//                        found = false;
-//                        for (Vehiculo v2 : vehiculoList) {
-//                            if (v.getIdvehiculo() == v2.getIdvehiculo()) {
-//                                found = true;
-//                            }
-//                        }
-//                        if (!found && v.getActivo().equals("si") && v.getEnreparacion().equals("no")) {
-//                            suggestions.add(v);
-//                        }
-//
-//                    }
-//                }
-//
-//            }
-            
         } catch (Exception e) {
             JsfUtil.errorMessage("completeVehiculoFiltrado() " + e.getLocalizedMessage());
         }
-        return suggestions;
+        return disponibles;
     }
 
     // </editor-fold>
@@ -1705,9 +1714,134 @@ public class CalendarioSolicitudController implements Serializable, IController 
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("isVehiculoValido()) " + e.getLocalizedMessage());
+            JsfUtil.errorMessage("isVehiculoValido() " + e.getLocalizedMessage());
         }
         return valid;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean esMismoDiaSolicitud()">
+    /**
+     * si el dia de partida es el mismo que el de regreso
+     *
+     * @return
+     */
+    private Boolean esMismoDiaSolicitud() {
+        try {
+
+            Integer dia = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer mes = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer anio = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer diaf = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
+            Integer mesf = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
+            Integer aniof = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
+// ES EN LA MISMA FECHA
+
+            if (anio == aniof && mes == mesf && dia == diaf) {
+                return true;
+            }
+        } catch (Exception e) {
+            JsfUtil.errorMessage("esMismoDiaSolicitud()" + e.getLocalizedMessage());
+        }
+        return false;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="tieneDisponibilidadViaje(List<Viajes> viajesList)">
+    /**
+     * recorre el list de viajes y verifica si esta ocupado
+     * @param viajesList
+     * @return 
+     */
+    public Boolean tieneDisponibilidadViaje(List<Viajes> viajesList) {
+        Boolean disponible = true;
+        try {
+
+            for (Viajes vj : viajesList) {
+                if (esOcupadoEseDiaHora(solicitud, vj)) {
+                    disponible = false;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            JsfUtil.errorMessage("tieneDisponibilidadViaje()" + e.getLocalizedMessage());
+        }
+        return disponible;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="esOcupadoEseDiaHora()">
+    /**
+     * verifica si esa solicitud esta ocupada
+     *
+     * @param solicitud
+     * @param viajes
+     * @return
+     */
+    public Boolean esOcupadoEseDiaHora(Solicitud solicitud, Viajes viajes) {
+        try {
+            if (JsfUtil.dateBetween(solicitud.getFechahorapartida(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())
+                    || JsfUtil.dateBetween(solicitud.getFechahoraregreso(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())) {
+                return true;
+            }
+        } catch (Exception e) {
+            JsfUtil.errorMessage("esOcupadoEseDiaHora()" + e.getLocalizedMessage());
+        }
+        return false;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="viajesVariosDias()">
+    /**
+     * devuelve la lista de viajes entre varios dias considerar que el busca
+     * entre la fecha de partida y la fecha de regreso por lo que muchos viajes
+     * puede que tengan fecha de partida y no de regreso en viajess y en otros
+     * casos no esten en la de partida y si en la de regreso
+     *
+     * @return
+     */
+    private List<Viajes> viajesVariosDias(Vehiculo v) {
+        List<Viajes> viajesList = new ArrayList<>();
+        try {
+            viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
+            List<Viajes> viajesStart = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
+            List<Viajes> viajesEnd = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorafinreserva", solicitud.getFechahoraregreso());
+            viajesList = new ArrayList<>();
+            if (viajesStart.isEmpty() && viajesEnd.isEmpty()) {
+                // NO HAY VIAJES EN ESAS FECHAS
+
+            } else {
+                if (!viajesStart.isEmpty() && !viajesEnd.isEmpty()) {
+                    viajesList = viajesStart;
+                    for (Viajes vjs : viajesEnd) {
+                        Boolean foundv = false;
+                        for (Viajes vje : viajesList) {
+                            if (vjs.getIdviaje() == vje.getIdviaje()) {
+                                foundv = true;
+                                break;
+                            }
+                        }
+                        if (!foundv) {
+                            viajesList.add(vjs);
+                        }
+                    }
+                } else {
+                    if (viajesStart.isEmpty() && !viajesEnd.isEmpty()) {
+                        viajesList = viajesEnd;
+                    } else {
+                        if (!viajesStart.isEmpty() && viajesEnd.isEmpty()) {
+                            viajesList = viajesStart;
+                        }
+                    }
+                }
+                Collections.sort(viajesList,
+                        (Viajes a, Viajes b) -> a.getIdviaje().compareTo(b.getIdviaje()));
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorMessage("viajesVariosDias()" + e.getLocalizedMessage());
+        }
+        return viajesList;
     }
     // </editor-fold>
 }
