@@ -1573,8 +1573,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
             if (temp.isEmpty()) {
                 return suggestions;
             } else {
-                List<Vehiculo> validos = temp.stream() // Convert to steam
-                        .filter(x -> isVehiculoValid(x)).collect(Collectors.toList());        // we want "jack" only
+                List<Vehiculo> validos = temp.stream() 
+                        .filter(x -> isVehiculoValid(x)).collect(Collectors.toList());   
                 if (validos.isEmpty()) {
                     return suggestions;
                 }
@@ -1631,7 +1631,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
 //                }
 //
 //            }
-            //suggestions=  rolRepository.findRegex(field,query,true,new Document(field,1));
+            
         } catch (Exception e) {
             JsfUtil.errorMessage("completeVehiculoFiltrado() " + e.getLocalizedMessage());
         }
