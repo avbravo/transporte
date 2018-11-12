@@ -93,6 +93,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     Usuario solicita = new Usuario();
     Usuario responsable = new Usuario();
     Usuario responsableOld = new Usuario();
+       Solicitud solicitudCopiar = new Solicitud();
 
     //List
     List<Solicitud> solicitudList = new ArrayList<>();
@@ -172,6 +173,16 @@ public class SolicitudDocenteController implements Serializable, IController {
         this.pages = pages;
     }
 
+    public Solicitud getSolicitudCopiar() {
+        return solicitudCopiar;
+    }
+
+    public void setSolicitudCopiar(Solicitud solicitudCopiar) {
+        this.solicitudCopiar = solicitudCopiar;
+    }
+
+    
+    
     public List<Tipovehiculo> getTipovehiculoList() {
         return tipovehiculoList;
     }

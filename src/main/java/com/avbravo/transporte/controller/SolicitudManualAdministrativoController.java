@@ -93,6 +93,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
     Usuario solicita = new Usuario();
     Usuario responsable = new Usuario();
     Usuario responsableOld = new Usuario();
+       Solicitud solicitudCopiar = new Solicitud();
 
     //List
     List<Solicitud> solicitudList = new ArrayList<>();
@@ -178,6 +179,14 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
 
     public void setTipovehiculoList(List<Tipovehiculo> tipovehiculoList) {
         this.tipovehiculoList = tipovehiculoList;
+    }
+
+    public Solicitud getSolicitudCopiar() {
+        return solicitudCopiar;
+    }
+
+    public void setSolicitudCopiar(Solicitud solicitudCopiar) {
+        this.solicitudCopiar = solicitudCopiar;
     }
     
     

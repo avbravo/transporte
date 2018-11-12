@@ -1,18 +1,30 @@
+public Solicitud copiarDesde(Solicitud fuente, Solicitud destino){
+        try {
+       
 
-                    <b:commandButton value="#{app['button.close']}"
-                                     iconAwesome="fa-close"
-                                     oncomplete="PF('eventDialog').hide();"/>
 
-                    <p:commandButton
-                        rendered="#{applicationMenu.menuBarAdministracion}"
-                        value="#{app['button.edit']}"
-                        update="growl"
-                        oncomplete="PF('myschedule').update(); "
-                        actionListener="#{calendarioSolicitudController.edit}"                     
+destino.setFacultad(fuente.getFacultad());
+facultadList =destino.getFacultad();
+destino.setCarrera(fuente.getCarrera());
+carreraList = destino.getCarrera();
 
-                        />
+destino.setLugares(fuente.getLugares());
+destino.setLugarllegada(fuente.getLugarllegada());
+destino.setLugarpartida(fuente.getLugarpartida());
+destino.setMision(fuente.getMision());
+destino.setNumerodevehiculos(fuente.getNumerodevehiculos());
+destino.setNumerogrupo(fuente.getNumerogrupo());
+destino.setObjetivo(fuente.getObjetivo());
+destino.setObservaciones(fuente.getObservaciones());
+destino.setSemestre(fuente.getSemestre());
+destino.setPeriodoacademico(fuente.getPeriodoacademico());
+destino.setPasajeros(fuente.getPasajeros());
+destino.setTipogira(fuente.getTipogira());
+destino.setTipovehiculo(fuente.getTipovehiculo());
+destino.setTipodestino(fuente.getTipodestino());
+destino.setRecursossolicitados(fuente.getRecursossolicitados());
 
-                    <b:growl id="growl"/>
-
-                </b:panelGrid>
-            </p:dialog>
+        } catch (Exception ex) {
+             JsfUtil.errorDialog("isValid() ", e.getLocalizedMessage().toString());
+        }
+    }

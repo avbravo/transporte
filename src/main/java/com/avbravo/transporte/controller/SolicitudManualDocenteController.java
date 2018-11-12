@@ -92,7 +92,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     //Entity
     Solicitud solicitud;
     Solicitud solicitudSelected;
- Solicitud solicitudCopiar = new Solicitud();
+    Solicitud solicitudCopiar = new Solicitud();
     Usuario solicita = new Usuario();
     Usuario responsable = new Usuario();
     Usuario responsableOld = new Usuario();
@@ -178,9 +178,6 @@ public class SolicitudManualDocenteController implements Serializable, IControll
         this.solicitudCopiar = solicitudCopiar;
     }
 
-    
-    
-    
     public void setPages(List<Integer> pages) {
         this.pages = pages;
     }
@@ -578,13 +575,13 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             solicitud.setCarrera(carreraList);
             usuarioList = new ArrayList<>();
             usuarioList.add(solicita);
-            usuarioList.add(responsable);            
+            usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
-              List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
-                for (int i = 0; i <solicitud.getNumerodevehiculos(); i++) {
-                    tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
-                }
-                solicitud.setTipovehiculo(tipovehiculoList);
+            List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+            for (int i = 0; i < solicitud.getNumerodevehiculos(); i++) {
+                tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+            }
+            solicitud.setTipovehiculo(tipovehiculoList);
             if (!solicitudServices.isValid(solicitud)) {
                 return "";
             }
@@ -772,30 +769,13 @@ public class SolicitudManualDocenteController implements Serializable, IControll
 
     public void handleSelectCopiarDesde(SelectEvent event) {
         try {
-//solicitud = solicitudCopiar;
 
+            
 
-solicitud.setFacultad(solicitudCopiar.getFacultad());
-facultadList =solicitud.getFacultad();
-solicitud.setCarrera(solicitudCopiar.getCarrera());
-carreraList = solicitud.getCarrera();
+            solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
 
-solicitud.setLugares(solicitudCopiar.getLugares());
-solicitud.setLugarllegada(solicitudCopiar.getLugarllegada());
-solicitud.setLugarpartida(solicitudCopiar.getLugarpartida());
-solicitud.setMision(solicitudCopiar.getMision());
-solicitud.setNumerodevehiculos(solicitudCopiar.getNumerodevehiculos());
-solicitud.setNumerogrupo(solicitudCopiar.getNumerogrupo());
-solicitud.setObjetivo(solicitudCopiar.getObjetivo());
-solicitud.setObservaciones(solicitudCopiar.getObservaciones());
-solicitud.setSemestre(solicitudCopiar.getSemestre());
-solicitud.setPeriodoacademico(solicitudCopiar.getPeriodoacademico());
-solicitud.setPasajeros(solicitudCopiar.getPasajeros());
-solicitud.setTipogira(solicitudCopiar.getTipogira());
-solicitud.setTipovehiculo(solicitudCopiar.getTipovehiculo());
-solicitud.setTiposolicitud(solicitudCopiar.getTiposolicitud());
-solicitud.setRecursossolicitados(solicitudCopiar.getRecursossolicitados());
-
+            facultadList = solicitud.getFacultad();
+            carreraList = solicitud.getCarrera();
         } catch (Exception ex) {
             JsfUtil.errorMessage("handleSelectCopiarDesde() " + ex.getLocalizedMessage());
         }
