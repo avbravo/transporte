@@ -26,6 +26,7 @@ import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.entity.Tiposolicitud;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
+import com.avbravo.transporteejb.entity.Viajes;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.TiposolicitudRepository;
@@ -39,6 +40,7 @@ import com.avbravo.transporteejb.services.TipovehiculoServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -765,14 +767,14 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="handleSelect">
+// <editor-fold defaultstate="collapsed" desc="handleSelectCopiarDesde(SelectEvent event)">
 
     public void handleSelectCopiarDesde(SelectEvent event) {
         try {
 
-            
 
-            solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
+      
+         solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
 
             facultadList = solicitud.getFacultad();
             carreraList = solicitud.getCarrera();
@@ -1344,4 +1346,31 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     }
     // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="metodo()">
+
+    public List<Solicitud> completeSolicitudParaCopiar(String query) {
+        List<Solicitud> suggestions = new ArrayList<>();
+        try {
+            List<Solicitud> list = new ArrayList<>();
+            list = solicitudRepository.complete(query);
+            if(!list.isEmpty()){
+                for(Solicitud s:list){
+                    if(s.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")){
+                        suggestions.add(s);
+                    }
+                }
+            }
+            if(!suggestions.isEmpty()){
+                 Collections.sort(suggestions,
+                        (Solicitud a, Solicitud b) -> a.getIdsolicitud().compareTo(b.getIdsolicitud()));
+            }
+            
+            
+        } catch (Exception e) {
+            JsfUtil.errorMessage("completeSolicitudParaCopiar() " + e.getLocalizedMessage());
+        }
+
+        return suggestions;
+    }
+        // </editor-fold>
 }

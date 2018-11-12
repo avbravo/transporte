@@ -46,30 +46,30 @@
 
 
 
-               
-                    
+
+
                         <p:outputLabel  value="#{msg['field.solicitadopor']}" />
                         <b:column>
-                        <e:autocompleteusuario listener="#{solicitudManualDocenteController.handleSelect}"
-                                               value="#{solicitudManualDocenteController.solicita}"
-                                               itemLabel=" #{p.nombre}"
-                                               field="nombre"
-                                               dropdown="true"
-                                               minQueryLength="0"
+                            <e:autocompleteusuario listener="#{solicitudManualDocenteController.handleSelect}"
+                                                   value="#{solicitudManualDocenteController.solicita}"
+                                                   itemLabel=" #{p.nombre}"
+                                                   field="nombre"
+                                                   dropdown="true"
+                                                   minQueryLength="0"
 
-                                               />
-                        
-                        <p:outputLabel  value="#{msg['field.copiardesde']}" />
-                        <e:autocompletesolicitud  listener="#{solicitudManualDocenteController.handleSelectCopiarDesde}"
-                                                  value="#{solicitudManualDocenteController.solicitudCopiar}"
-                                               itemLabel=" #{p.mision}"
-                                               field="mision"
-                                               dropdown="true"
-                                               minQueryLength="0"
-                                               update=":form:panel"
+                                                   /> 
 
-                                               />
-                        
+                            <p:outputLabel  value="#{msg['field.copiardesde']}" />
+                            <e:autocompletesolicitudmanualdocente  
+                                listener="#{solicitudManualDocenteController.handleSelectCopiarDesde}"
+                                value="#{solicitudManualDocenteController.solicitudCopiar}"
+                                itemLabel=" #{p.mision}"
+                                field="mision"
+                                dropdown="true"
+                                minQueryLength="0"
+                                update=":form:panel"
+                                />
+
                         </b:column>
 
 
@@ -135,13 +135,13 @@
                             <p:ajax event="itemUnselect" listener="#{solicitudManualDocenteController.itemUnselect}"
                                     update="carrera"
                                     />
-<!--                            <f:facet name="itemtip">
-                                <h:panelGrid columns="1" cellpadding="5">
-                                    <h:outputText value="#{msg['field.descripcion']} #{p.descripcion}" />
-
-
-                                </h:panelGrid>
-                            </f:facet>-->
+                            <!--                            <f:facet name="itemtip">
+                                                            <h:panelGrid columns="1" cellpadding="5">
+                                                                <h:outputText value="#{msg['field.descripcion']} #{p.descripcion}" />
+                            
+                            
+                                                            </h:panelGrid>
+                                                        </f:facet>-->
 
                         </p:autoComplete>
 
@@ -170,13 +170,13 @@
                             <p:ajax event="itemUnselect" listener="#{solicitudManualDocenteController.itemUnselect}"
                                     update=""
                                     />
-<!--                            <f:facet name="itemtip">
-                                <h:panelGrid columns="1" cellpadding="5">
-                                    <h:outputText value="#{msg['field.descripcion']} #{p.descripcion}" />
-
-
-                                </h:panelGrid>
-                            </f:facet>-->
+                            <!--                            <f:facet name="itemtip">
+                                                            <h:panelGrid columns="1" cellpadding="5">
+                                                                <h:outputText value="#{msg['field.descripcion']} #{p.descripcion}" />
+                            
+                            
+                                                            </h:panelGrid>
+                                                        </f:facet>-->
 
                         </p:autoComplete>
 
@@ -209,11 +209,11 @@
                         <p:chips value="#{solicitudManualDocenteController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
 
                         <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
-                       <b:touchSpin  col-md="3" value="#{solicitudManualDocenteController.solicitud.numerodevehiculos}" min="1" max="20" step="1" />
+                        <b:touchSpin  col-md="3" value="#{solicitudManualDocenteController.solicitud.numerodevehiculos}" min="1" max="20" step="1" />
 
 
                         <p:outputLabel  value="#{msg['field.pasajeros']}" />
-                 <b:touchSpin  col-md="3"  min="1"  step="1"  value="#{solicitudManualDocenteController.solicitud.pasajeros}" />
+                        <b:touchSpin  col-md="3"  min="1"  step="1"  value="#{solicitudManualDocenteController.solicitud.pasajeros}" />
 
 
 
@@ -251,18 +251,18 @@
 
 
 
- <p:outputLabel  value="#{msg['field.sugerencia']}" style="font-size: 25;" />
-        <b:dataTable value="#{sugerenciaController.sugerenciaDataModel}"
-                             var="item"
-                             id="dataTable2"
-                             paginated="false"
-                             onpage="console.log('page');">
-                    
-                    <b:dataTableColumn value="#{item.descripcion}" label="#{msg['field.descripcion']}"/>
-                  
-                  
+                        <p:outputLabel  value="#{msg['field.sugerencia']}" style="font-size: 25;" />
+                        <b:dataTable value="#{sugerenciaController.sugerenciaDataModel}"
+                                     var="item"
+                                     id="dataTable2"
+                                     paginated="false"
+                                     onpage="console.log('page');">
 
-                </b:dataTable>
+                            <b:dataTableColumn value="#{item.descripcion}" label="#{msg['field.descripcion']}"/>
+
+
+
+                        </b:dataTable>
 
 
 
