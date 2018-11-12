@@ -767,21 +767,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="handleSelectCopiarDesde(SelectEvent event)">
 
-    public void handleSelectCopiarDesde(SelectEvent event) {
-        try {
-
-
-      
-         solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
-
-            facultadList = solicitud.getFacultad();
-            carreraList = solicitud.getCarrera();
-        } catch (Exception ex) {
-            JsfUtil.errorMessage("handleSelectCopiarDesde() " + ex.getLocalizedMessage());
-        }
-    }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
     public void handleAutocompleteOfListXhtml(SelectEvent event) {
@@ -1346,7 +1332,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="completeSolicitudParaCopiar(String query)">
 
     public List<Solicitud> completeSolicitudParaCopiar(String query) {
         List<Solicitud> suggestions = new ArrayList<>();
@@ -1373,4 +1359,20 @@ public class SolicitudManualDocenteController implements Serializable, IControll
         return suggestions;
     }
         // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="handleSelectCopiarDesde(SelectEvent event)">
+
+    public void handleSelectCopiarDesde(SelectEvent event) {
+        try {
+
+
+      
+         solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
+
+            facultadList = solicitud.getFacultad();
+            carreraList = solicitud.getCarrera();
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelectCopiarDesde() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
 }

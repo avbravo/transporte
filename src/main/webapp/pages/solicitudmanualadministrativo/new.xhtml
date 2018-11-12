@@ -46,6 +46,7 @@
 
                       
                         <p:outputLabel  value="#{msg['field.solicitadopor']}" />
+                        <b:column>
                          <e:autocompleteusuario listener="#{solicitudManualAdministrativoController.handleSelect}"
                                              value="#{solicitudManualAdministrativoController.solicita}"
                                                 itemLabel=" #{p.nombre}"
@@ -55,6 +56,19 @@
                                                 update=":form:celular :form:email"
                                              
                                                 />
+                         
+                         <p:outputLabel  value="#{msg['field.copiardesde']}" />
+                         <e:autocompletesolicitudmanualadministrativo
+                                listener="#{solicitudManualAdministrativoController.handleSelectCopiarDesde}"
+                                value="#{solicitudManualAdministrativoController.solicitudCopiar}"
+                                itemLabel=" #{p.mision}"
+                                field="mision"
+                                dropdown="true"
+                                minQueryLength="0"
+                                update=":form:panel"
+                                />
+
+                        </b:column>
                         
                         
                        <p:outputLabel value="#{msg['field.responsable']}"/>

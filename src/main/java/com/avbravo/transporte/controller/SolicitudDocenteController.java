@@ -39,6 +39,7 @@ import com.avbravo.transporteejb.services.TipovehiculoServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1340,4 +1341,53 @@ public class SolicitudDocenteController implements Serializable, IController {
         return _found;
     }
     // </editor-fold>
+    
+      // <editor-fold defaultstate="collapsed" desc="completeSolicitudParaCopiar(String query)">
+
+    public List<Solicitud> completeSolicitudParaCopiar(String query) {
+        List<Solicitud> suggestions = new ArrayList<>();
+        try {
+            List<Solicitud> list = new ArrayList<>();
+            list = solicitudRepository.complete(query);
+            if(!list.isEmpty()){
+                for(Solicitud s:list){
+                    if(s.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE") 
+                            && ( s.getUsuario().get(0).getUsername().equals(loginController.getUsuario().getUsername())
+                            ||
+                            s.getUsuario().get(1).getUsername().equals(loginController.getUsuario().getUsername())
+                            )
+                            ){
+                        suggestions.add(s);
+                    }
+                }
+            }
+            if(!suggestions.isEmpty()){
+                 Collections.sort(suggestions,
+                        (Solicitud a, Solicitud b) -> a.getIdsolicitud().compareTo(b.getIdsolicitud()));
+            }
+            
+            
+        } catch (Exception e) {
+            JsfUtil.errorMessage("completeSolicitudParaCopiar() " + e.getLocalizedMessage());
+        }
+
+        return suggestions;
+    }
+        // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="handleSelectCopiarDesde(SelectEvent event)">
+
+    public void handleSelectCopiarDesde(SelectEvent event) {
+        try {
+
+
+      
+         solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
+
+            facultadList = solicitud.getFacultad();
+            carreraList = solicitud.getCarrera();
+        } catch (Exception ex) {
+            JsfUtil.errorMessage("handleSelectCopiarDesde() " + ex.getLocalizedMessage());
+        }
+    }// </editor-fold>
 }
