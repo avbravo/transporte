@@ -1810,6 +1810,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
             if (viajesStart.isEmpty() && viajesEnd.isEmpty()) {
                 // NO HAY VIAJES EN ESAS FECHAS
 
+                
+                
             } else {
                 if (!viajesStart.isEmpty() && !viajesEnd.isEmpty()) {
                     viajesList = viajesStart;
