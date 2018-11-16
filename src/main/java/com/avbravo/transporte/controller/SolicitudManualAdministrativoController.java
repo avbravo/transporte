@@ -26,6 +26,7 @@ import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.entity.Tiposolicitud;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.TiposolicitudRepository;
@@ -138,7 +139,8 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
 
     @Inject
     LookupServices lookupServices;
-
+   @Inject
+ErrorInfoTransporteejbServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject

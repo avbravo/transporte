@@ -20,6 +20,7 @@ import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 
 
 import java.util.ArrayList;
@@ -75,7 +76,8 @@ public class CarreraController implements Serializable, IController {
     RevisionHistoryCommonejbRepository revisionHistoryCommonejbRepository;
 
     //Services
-    //Atributos para busquedas
+  @Inject
+ErrorInfoTransporteejbServices errorServices;
     @Inject
     FacultadServices facultadServices;
     @Inject

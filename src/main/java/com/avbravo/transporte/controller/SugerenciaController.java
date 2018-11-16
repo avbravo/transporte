@@ -16,6 +16,7 @@ import com.avbravo.transporteejb.datamodel.SugerenciaDataModel;
 import com.avbravo.transporteejb.entity.Sugerencia;
 
 import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.SugerenciaRepository;
 import com.avbravo.transporteejb.services.SugerenciaServices;
@@ -77,7 +78,8 @@ public class SugerenciaController implements Serializable, IController {
    
     @Inject
     LookupServices lookupServices;
-
+   @Inject
+ErrorInfoTransporteejbServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject

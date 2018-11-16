@@ -16,6 +16,7 @@ import com.avbravo.transporteejb.datamodel.EstatusDataModel;
 import com.avbravo.transporteejb.entity.Estatus;
 
 import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
@@ -73,7 +74,8 @@ public class EstatusController implements Serializable, IController {
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
-    //Atributos para busquedas
+  @Inject
+ErrorInfoTransporteejbServices errorServices;
 
     @Inject
     LookupServices lookupServices;

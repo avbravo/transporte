@@ -16,6 +16,7 @@ import com.avbravo.transporteejb.datamodel.TipogiraDataModel;
 import com.avbravo.transporteejb.entity.Tipogira;
 
 import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.TipogiraRepository;
 import com.avbravo.transporteejb.services.TipogiraServices;
@@ -77,7 +78,8 @@ public class TipogiraController implements Serializable, IController {
    
     @Inject
     LookupServices lookupServices;
-
+   @Inject
+ErrorInfoTransporteejbServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject

@@ -17,6 +17,7 @@ import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 
 import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.services.ConductorServices;
@@ -75,7 +76,8 @@ public class ConductorController implements Serializable, IController {
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
 
     //Services
-    //Atributos para busquedas
+   @Inject
+ErrorInfoTransporteejbServices errorServices;
     @Inject
     AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
     

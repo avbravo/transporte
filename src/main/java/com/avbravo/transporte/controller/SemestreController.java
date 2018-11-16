@@ -20,6 +20,7 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbRepository;
 
 import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.services.RolServices;
@@ -79,6 +80,8 @@ public class SemestreController implements Serializable, IController {
    
     @Inject
     LookupServices lookupServices;
+       @Inject
+ErrorInfoTransporteejbServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject

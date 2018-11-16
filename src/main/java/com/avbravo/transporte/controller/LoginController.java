@@ -16,6 +16,7 @@ import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.producer.AccessInfoTransporteejbRepository;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import java.util.logging.Logger;
@@ -54,6 +55,8 @@ public class LoginController implements Serializable, SecurityInterface {
     AccessInfoTransporteejbRepository accessInfoTransporteejbRepository;
     @Inject
     ResourcesFiles rf;
+      @Inject
+ErrorInfoTransporteejbServices errorServices;
     @Inject
     ValidadorRoles validadorRoles;
     Boolean loggedIn = false;

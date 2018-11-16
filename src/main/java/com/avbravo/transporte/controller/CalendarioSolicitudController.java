@@ -28,6 +28,7 @@ import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viajes;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.ConductorRepository;
@@ -166,7 +167,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
 
     @Inject
     LookupServices lookupServices;
-
+@Inject
+ErrorInfoTransporteejbServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject

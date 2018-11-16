@@ -18,6 +18,7 @@ import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbRepository;
 
 import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
@@ -100,7 +101,8 @@ public class UsuarioController implements Serializable, IController {
     RolServices rolServices;
     @Inject
     UnidadServices unidadServices;
-
+   @Inject
+ErrorInfoTransporteejbServices errorServices;
     @Inject
     ResourcesFiles rf;
     @Inject

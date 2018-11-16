@@ -21,6 +21,7 @@ import com.avbravo.ejbjmoordb.services.UserInfoServices;
 
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -78,7 +79,8 @@ public class FacultadController implements Serializable, IController {
     //Atributos para busquedas
     @Inject
     AutoincrementableCommonejbServices autoincrementableCommonejbServices;
-   
+     @Inject
+ErrorInfoTransporteejbServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject

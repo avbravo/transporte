@@ -18,6 +18,7 @@ import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 
 import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.services.VehiculoServices;
@@ -83,7 +84,8 @@ public class VehiculoController implements Serializable, IController {
     LookupServices lookupServices;
     @Inject
     TipovehiculoServices tipovehiculoServices;
-
+   @Inject
+ErrorInfoTransporteejbServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject

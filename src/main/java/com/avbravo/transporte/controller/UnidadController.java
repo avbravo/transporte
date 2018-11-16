@@ -16,6 +16,7 @@ import com.avbravo.transporteejb.datamodel.UnidadDataModel;
 import com.avbravo.transporteejb.entity.Unidad;
 
 import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.services.UnidadServices;
@@ -77,7 +78,8 @@ public class UnidadController implements Serializable, IController {
   
     @Inject
     LookupServices lookupServices;
-
+   @Inject
+ErrorInfoTransporteejbServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject

@@ -16,6 +16,7 @@ import com.avbravo.transporteejb.datamodel.TiposolicitudDataModel;
 import com.avbravo.transporteejb.entity.Tiposolicitud;
 
 import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.TiposolicitudRepository;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
@@ -77,7 +78,8 @@ public class TiposolicitudController implements Serializable, IController {
     
     @Inject
     LookupServices lookupServices;
-
+   @Inject
+ErrorInfoTransporteejbServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
