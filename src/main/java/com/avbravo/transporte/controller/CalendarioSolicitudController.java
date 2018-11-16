@@ -771,7 +771,7 @@ ErrorInfoTransporteejbServices errorServices;
                     viajes.setIdviaje(idviaje);
                     viajes.setConductor(conductorList);
                     viajes.setVehiculo(vehiculoList);
-                    viajes.setSolicitud(solicitud);
+                    viajes.setSolicitud(solicitudList);
                     viajes.setNumerovehiculos(solicitud.getNumerodevehiculos());
 
                     viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
