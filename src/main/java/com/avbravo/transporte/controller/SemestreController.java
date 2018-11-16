@@ -254,7 +254,7 @@ ErrorInfoTransporteejbServices errorServices;
                 move();
             }
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="reset">
@@ -301,7 +301,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
 
         return url;
@@ -318,7 +318,7 @@ ErrorInfoTransporteejbServices errorServices;
             semestreDataModel = new SemestreDataModel(semestreList);
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -347,7 +347,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -374,7 +374,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -394,7 +394,7 @@ ErrorInfoTransporteejbServices errorServices;
             semestreRepository.update(semestre);
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -431,7 +431,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         //path = deleteonviewpage ? "/pages/semestre/list.xhtml" : "";
         path = "";
@@ -458,8 +458,8 @@ ErrorInfoTransporteejbServices errorServices;
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
-        } catch (Exception ex) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -475,8 +475,8 @@ ErrorInfoTransporteejbServices errorServices;
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
-        } catch (Exception ex) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -486,8 +486,8 @@ ErrorInfoTransporteejbServices errorServices;
         try {
            
         
-        } catch (Exception ex) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
     
@@ -501,8 +501,8 @@ ErrorInfoTransporteejbServices errorServices;
             
             loginController.put("searchsemestre", "idsemestre");
             lookupServices.setIdsemestre(semestreSelected.getIdsemestre());
-        } catch (Exception ex) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -513,7 +513,7 @@ ErrorInfoTransporteejbServices errorServices;
             page = semestreRepository.sizeOfPage(rowPage);
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -525,7 +525,7 @@ ErrorInfoTransporteejbServices errorServices;
             page = 1;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -539,7 +539,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -553,7 +553,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -565,7 +565,7 @@ ErrorInfoTransporteejbServices errorServices;
             this.page = page;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -580,7 +580,7 @@ ErrorInfoTransporteejbServices errorServices;
             move();
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -593,7 +593,7 @@ ErrorInfoTransporteejbServices errorServices;
             page = 1;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -632,7 +632,7 @@ ErrorInfoTransporteejbServices errorServices;
             semestreDataModel = new SemestreDataModel(semestreList);
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 }

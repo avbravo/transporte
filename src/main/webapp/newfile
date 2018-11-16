@@ -18,7 +18,7 @@
             solicitud.setTiposolicitud(solicitudCopiar.getTiposolicitud());
             solicitud.setRecursossolicitados(solicitudCopiar.getRecursossolicitados());
 
-        } catch (Exception ex) {
+        } catch (Exception e) {
             JsfUtil.errorDialog("copiarDesde() ", ex.getLocalizedMessage().toString());
         }
         return solicitud;

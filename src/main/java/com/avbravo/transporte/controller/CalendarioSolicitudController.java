@@ -517,7 +517,7 @@ ErrorInfoTransporteejbServices errorServices;
             cargarSchedule();
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="reset">
@@ -565,7 +565,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
 
         return url;
@@ -582,7 +582,7 @@ ErrorInfoTransporteejbServices errorServices;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -654,7 +654,7 @@ ErrorInfoTransporteejbServices errorServices;
             solicitudSelected = solicitud;
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -732,7 +732,8 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfMethod() + e.getLocalizedMessage());
+
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -819,7 +820,7 @@ ErrorInfoTransporteejbServices errorServices;
             JsfUtil.infoDialog(rf.getAppMessage("info.view"), rf.getAppMessage("info.update"));
         } catch (Exception e) {
 
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -856,7 +857,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         // path = deleteonviewpage ? "/pages/solicitud/list.xhtml" : "";
         path = "";
@@ -883,8 +884,8 @@ ErrorInfoTransporteejbServices errorServices;
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
-        } catch (Exception ex) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -900,8 +901,8 @@ ErrorInfoTransporteejbServices errorServices;
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
-        } catch (Exception ex) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -910,8 +911,8 @@ ErrorInfoTransporteejbServices errorServices;
     public void handleSelect(SelectEvent event) {
         try {
 
-        } catch (Exception ex) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -926,8 +927,8 @@ ErrorInfoTransporteejbServices errorServices;
 
             loginController.put("searchsolicitud", "idsolicitud");
             lookupServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
-        } catch (Exception ex) {
-            JsfUtil.errorMessage("handleAutocompleteOfListXhtml " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+           errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelectEstatus(SelectEvent event)">
@@ -939,8 +940,8 @@ ErrorInfoTransporteejbServices errorServices;
                 esAprobado = true;
             }
 
-        } catch (Exception ex) {
-            JsfUtil.errorMessage("handleSelectEstatus() " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelectEstatus(SelectEvent event)">
@@ -951,8 +952,8 @@ ErrorInfoTransporteejbServices errorServices;
             loginController.put("calendarioestatus", estatus.getIdestatus());
             cargarSchedule();
 
-        } catch (Exception ex) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="cargarSchedule()">
@@ -972,8 +973,8 @@ ErrorInfoTransporteejbServices errorServices;
                 });
             }
 
-        } catch (Exception ex) {
-            JsfUtil.errorMessage("cargarSchedule() " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -992,8 +993,8 @@ ErrorInfoTransporteejbServices errorServices;
         try {
 
             responsableOld = responsable;
-        } catch (Exception ex) {
-            JsfUtil.errorMessage("handleSelectResponsable() " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -1004,7 +1005,7 @@ ErrorInfoTransporteejbServices errorServices;
             page = solicitudRepository.sizeOfPage(rowPage);
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -1016,7 +1017,7 @@ ErrorInfoTransporteejbServices errorServices;
             page = 1;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -1030,7 +1031,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -1044,7 +1045,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -1056,7 +1057,7 @@ ErrorInfoTransporteejbServices errorServices;
             this.page = page;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -1097,7 +1098,7 @@ ErrorInfoTransporteejbServices errorServices;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -1109,7 +1110,7 @@ ErrorInfoTransporteejbServices errorServices;
             page = 1;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -1125,7 +1126,7 @@ ErrorInfoTransporteejbServices errorServices;
             move();
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -1262,8 +1263,8 @@ ErrorInfoTransporteejbServices errorServices;
                 carreraList = removeByNotFoundFacultad(carreraList);
             }
 
-        } catch (Exception ex) {
-            JsfUtil.errorMessage("itemUnselec() " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -1281,7 +1282,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("foundFacultad() " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return _found;
     }
@@ -1467,8 +1468,8 @@ ErrorInfoTransporteejbServices errorServices;
                 return "";
             }
 
-        } catch (Exception ex) {
-            JsfUtil.errorMessage("onDateSelect() " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
        

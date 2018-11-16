@@ -251,7 +251,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="reset">
@@ -298,7 +298,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
 
         return url;
@@ -315,7 +315,7 @@ ErrorInfoTransporteejbServices errorServices;
             tipovehiculoDataModel = new TipovehiculoDataModel(tipovehiculoList);
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -344,7 +344,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -374,7 +374,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -393,7 +393,7 @@ ErrorInfoTransporteejbServices errorServices;
             tipovehiculoRepository.update(tipovehiculo);
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -430,7 +430,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         // path = deleteonviewpage ? "/pages/tipovehiculo/list.xhtml" : "";
         path = "";
@@ -457,8 +457,8 @@ ErrorInfoTransporteejbServices errorServices;
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
-        } catch (Exception ex) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -474,8 +474,8 @@ ErrorInfoTransporteejbServices errorServices;
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
-        } catch (Exception ex) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -485,8 +485,8 @@ ErrorInfoTransporteejbServices errorServices;
         try {
            
         
-        } catch (Exception ex) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
     
@@ -500,8 +500,8 @@ ErrorInfoTransporteejbServices errorServices;
             
             loginController.put("searchtipovehiculo", "idtipovehiculo");
             lookupServices.setIdtipovehiculo(tipovehiculoSelected.getIdtipovehiculo());
-        } catch (Exception ex) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -512,7 +512,7 @@ ErrorInfoTransporteejbServices errorServices;
             page = tipovehiculoRepository.sizeOfPage(rowPage);
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -524,7 +524,7 @@ ErrorInfoTransporteejbServices errorServices;
             page = 1;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -538,7 +538,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -552,7 +552,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -564,7 +564,7 @@ ErrorInfoTransporteejbServices errorServices;
             this.page = page;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -603,7 +603,7 @@ ErrorInfoTransporteejbServices errorServices;
             tipovehiculoDataModel = new TipovehiculoDataModel(tipovehiculoList);
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -615,7 +615,7 @@ ErrorInfoTransporteejbServices errorServices;
             page = 1;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -631,7 +631,7 @@ ErrorInfoTransporteejbServices errorServices;
             move();
 
         } catch (Exception e) {
-            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
