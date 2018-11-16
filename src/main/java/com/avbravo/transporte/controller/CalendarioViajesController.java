@@ -462,7 +462,7 @@ public class CalendarioViajesController implements Serializable, IController {
             cargarSchedule();
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("init() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="reset">
@@ -510,7 +510,7 @@ public class CalendarioViajesController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("prepare() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
 
         return url;
@@ -527,7 +527,7 @@ public class CalendarioViajesController implements Serializable, IController {
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("showAll()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -598,7 +598,7 @@ public class CalendarioViajesController implements Serializable, IController {
             solicitudSelected = solicitud;
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("isNew()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -674,7 +674,7 @@ public class CalendarioViajesController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("save()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -722,7 +722,7 @@ public class CalendarioViajesController implements Serializable, IController {
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
             System.out.println("exception " + solicitudRepository.getException());
-            JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -759,7 +759,7 @@ public class CalendarioViajesController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("delete() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         // path = deleteonviewpage ? "/pages/solicitud/list.xhtml" : "";
         path = "";
@@ -787,7 +787,7 @@ public class CalendarioViajesController implements Serializable, IController {
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
         } catch (Exception ex) {
-            JsfUtil.errorMessage("imprimir() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -804,7 +804,7 @@ public class CalendarioViajesController implements Serializable, IController {
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
         } catch (Exception ex) {
-            JsfUtil.errorMessage("imprimir() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -816,7 +816,7 @@ public class CalendarioViajesController implements Serializable, IController {
           
           
         } catch (Exception ex) {
-            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
     
@@ -831,7 +831,7 @@ public class CalendarioViajesController implements Serializable, IController {
             loginController.put("searchsolicitud", "idsolicitud");
             lookupServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
         } catch (Exception ex) {
-            JsfUtil.errorMessage("handleAutocompleteOfListXhtml() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelectEstatus(SelectEvent event)">
@@ -843,7 +843,7 @@ public class CalendarioViajesController implements Serializable, IController {
             cargarSchedule();
 
         } catch (Exception ex) {
-            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="cargarSchedule()">
@@ -882,7 +882,7 @@ public class CalendarioViajesController implements Serializable, IController {
             page = solicitudRepository.sizeOfPage(rowPage);
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("last() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -894,7 +894,7 @@ public class CalendarioViajesController implements Serializable, IController {
             page = 1;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("first() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -908,7 +908,7 @@ public class CalendarioViajesController implements Serializable, IController {
             }
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("next() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -922,7 +922,7 @@ public class CalendarioViajesController implements Serializable, IController {
             }
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("back() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -934,7 +934,7 @@ public class CalendarioViajesController implements Serializable, IController {
             this.page = page;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("skip() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -976,7 +976,7 @@ public class CalendarioViajesController implements Serializable, IController {
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("move() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -988,7 +988,7 @@ public class CalendarioViajesController implements Serializable, IController {
             page = 1;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("clear()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -1004,7 +1004,7 @@ public class CalendarioViajesController implements Serializable, IController {
             move();
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("searchBy()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>

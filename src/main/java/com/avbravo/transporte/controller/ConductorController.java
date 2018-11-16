@@ -263,7 +263,7 @@ public class ConductorController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("init() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="reset">
@@ -310,7 +310,7 @@ public class ConductorController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("prepare() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
 
         return url;
@@ -327,7 +327,7 @@ public class ConductorController implements Serializable, IController {
             conductorDataModel = new ConductorDataModel(conductorList);
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("showAll()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -357,7 +357,7 @@ public class ConductorController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("isNew()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -388,7 +388,7 @@ public class ConductorController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("save()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -407,7 +407,7 @@ public class ConductorController implements Serializable, IController {
             conductorRepository.update(conductor);
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -445,7 +445,7 @@ public class ConductorController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("delete() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         // path = deleteonviewpage ? "/pages/conductor/list.xhtml" : "";
         path = "";
@@ -473,7 +473,7 @@ public class ConductorController implements Serializable, IController {
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
         } catch (Exception ex) {
-            JsfUtil.errorMessage("imprimir() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -490,7 +490,7 @@ public class ConductorController implements Serializable, IController {
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
         } catch (Exception ex) {
-            JsfUtil.errorMessage("imprimir() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -501,7 +501,7 @@ public class ConductorController implements Serializable, IController {
          
        
         } catch (Exception ex) {
-            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
     
@@ -520,7 +520,7 @@ public class ConductorController implements Serializable, IController {
             loginController.put("searchconductor", "idconductor");
             lookupServices.setIdconductor(conductorSelected.getIdconductor());
         } catch (Exception ex) {
-            JsfUtil.errorMessage("handleAutocompleteOfListXhtml() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -531,7 +531,7 @@ public class ConductorController implements Serializable, IController {
             page = conductorRepository.sizeOfPage(rowPage);
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("last() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -543,7 +543,7 @@ public class ConductorController implements Serializable, IController {
             page = 1;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("first() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -557,7 +557,7 @@ public class ConductorController implements Serializable, IController {
             }
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("next() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -571,7 +571,7 @@ public class ConductorController implements Serializable, IController {
             }
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("back() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -583,7 +583,7 @@ public class ConductorController implements Serializable, IController {
             this.page = page;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("skip() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -626,7 +626,7 @@ public class ConductorController implements Serializable, IController {
             conductorDataModel = new ConductorDataModel(conductorList);
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("move() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -638,7 +638,7 @@ public class ConductorController implements Serializable, IController {
             page = 1;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("clear()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -654,7 +654,7 @@ public class ConductorController implements Serializable, IController {
             move();
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("searchBy()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -725,7 +725,7 @@ public class ConductorController implements Serializable, IController {
             conductorRepository.update(conductor);
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>

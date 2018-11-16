@@ -249,7 +249,7 @@ public class TipogiraController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("init() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="reset">
@@ -296,7 +296,7 @@ public class TipogiraController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("prepare() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
 
         return url;
@@ -313,7 +313,7 @@ public class TipogiraController implements Serializable, IController {
             tipogiraDataModel = new TipogiraDataModel(tipogiraList);
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("showAll()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -342,7 +342,7 @@ public class TipogiraController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("isNew()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -372,7 +372,7 @@ public class TipogiraController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("save()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -391,7 +391,7 @@ public class TipogiraController implements Serializable, IController {
             tipogiraRepository.update(tipogira);
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            JsfUtil.errorMessage("edit()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -428,7 +428,7 @@ public class TipogiraController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("delete() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         // path = deleteonviewpage ? "/pages/tipogira/list.xhtml" : "";
         path = "";
@@ -456,7 +456,7 @@ public class TipogiraController implements Serializable, IController {
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
         } catch (Exception ex) {
-            JsfUtil.errorMessage("imprimir() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -473,7 +473,7 @@ public class TipogiraController implements Serializable, IController {
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
         } catch (Exception ex) {
-            JsfUtil.errorMessage("imprimir() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -484,7 +484,7 @@ public class TipogiraController implements Serializable, IController {
            
         
         } catch (Exception ex) {
-            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
     
@@ -499,7 +499,7 @@ public class TipogiraController implements Serializable, IController {
             loginController.put("searchtipogira", "idtipogira");
             lookupServices.setIdtipogira(tipogiraSelected.getIdtipogira());
         } catch (Exception ex) {
-            JsfUtil.errorMessage("handleSelect() " + ex.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + ex.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -510,7 +510,7 @@ public class TipogiraController implements Serializable, IController {
             page = tipogiraRepository.sizeOfPage(rowPage);
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("last() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -522,7 +522,7 @@ public class TipogiraController implements Serializable, IController {
             page = 1;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("first() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -536,7 +536,7 @@ public class TipogiraController implements Serializable, IController {
             }
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("next() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -550,7 +550,7 @@ public class TipogiraController implements Serializable, IController {
             }
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("back() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -562,7 +562,7 @@ public class TipogiraController implements Serializable, IController {
             this.page = page;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("skip() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -601,7 +601,7 @@ public class TipogiraController implements Serializable, IController {
             tipogiraDataModel = new TipogiraDataModel(tipogiraList);
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("move() " + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -613,7 +613,7 @@ public class TipogiraController implements Serializable, IController {
             page = 1;
             move();
         } catch (Exception e) {
-            JsfUtil.errorMessage("clear()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -629,7 +629,7 @@ public class TipogiraController implements Serializable, IController {
             move();
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("searchBy()" + e.getLocalizedMessage());
+            JsfUtil.errorMessage(nameOfClassAndMethod() +" " + e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
