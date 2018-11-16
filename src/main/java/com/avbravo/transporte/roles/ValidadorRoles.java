@@ -7,6 +7,7 @@ package com.avbravo.transporte.roles;
 
 import com.avbravo.avbravoutils.JsfUtil;
 import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -24,6 +25,8 @@ public class ValidadorRoles implements Serializable {
 
     @Inject
     ApplicationMenu applicationMenu;
+    @Inject
+    ErrorInfoTransporteejbServices errorServices ;
     @Inject
     ResourcesFiles rf;
     @Inject
@@ -62,7 +65,7 @@ public class ValidadorRoles implements Serializable {
                             rf.getAppMessage("info.sinrolasignado"));
             }
         } catch (Exception e) {
-            JsfUtil.errorMessage("validarRoles() " + e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
         }
         return ok;
     }

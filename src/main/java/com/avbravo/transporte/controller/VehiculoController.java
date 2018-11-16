@@ -669,7 +669,7 @@ ErrorInfoTransporteejbServices errorServices;
             vehiculo.setPlaca("");
             writable = false;
         } catch (Exception e) {
-            JsfUtil.errorMessage("clearPlaca() " + e.getLocalizedMessage());
+             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }
@@ -698,7 +698,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("findByPlaca()" + e.getLocalizedMessage());
+             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
 
         return "";

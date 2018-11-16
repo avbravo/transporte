@@ -746,7 +746,7 @@ ErrorInfoTransporteejbServices errorServices;
             //suggestions=  rolRepository.findRegex(field,query,true,new Document(field,1));
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("complete() " + e.getLocalizedMessage());
+             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return suggestions;
     }

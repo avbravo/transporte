@@ -183,7 +183,7 @@ ErrorInfoTransporteejbServices errorServices;
             
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("calcularTotales() " + e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
         }
     }
     // </editor-fold>
