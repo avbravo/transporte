@@ -964,7 +964,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("completeFiltradoUnidad() " + e.getLocalizedMessage());
+               errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return suggestionsUnidad;
     }// </editor-fold>
@@ -998,7 +998,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("completeFiltradoFacultad() " + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return suggestionsFacultad;
     }// </editor-fold>
@@ -1027,7 +1027,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
                 }
             }
         } catch (Exception e) {
-            JsfUtil.errorMessage("completeFiltradoCarrera() " + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return suggestionsCarrera;
     }// </editor-fold>
@@ -1055,7 +1055,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             });
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("removeByNotFoundFacultad() " + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return list;
     }
@@ -1087,7 +1087,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("foundFacultad() " + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return _found;
     }
@@ -1105,7 +1105,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
                 _found = false;
             }
         } catch (Exception e) {
-            JsfUtil.errorMessage("foundCarrera() " + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return _found;
     }
@@ -1124,7 +1124,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("foundUnidad() " + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return _found;
     }
@@ -1137,7 +1137,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
                 suggestionsFacultad.add(facultad);
             }
         } catch (Exception e) {
-            JsfUtil.errorMessage("addFacultad()" + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
     }
@@ -1150,7 +1150,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
                 suggestionsCarrera.add(carrera);
             }
         } catch (Exception e) {
-            JsfUtil.errorMessage("addCarrera()" + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
     }
@@ -1163,7 +1163,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
                 suggestionsUnidad.add(unidad);
             }
         } catch (Exception e) {
-            JsfUtil.errorMessage("addUnidad()" + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
     }
@@ -1218,7 +1218,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("enviarEmails() " + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }    // </editor-fold>
@@ -1238,7 +1238,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
                     color = "black";
             }
         } catch (Exception e) {
-            JsfUtil.errorMessage("color() " + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return color;
     } // </editor-fold>
@@ -1258,7 +1258,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("verificarEditable() " + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return editable;
     } // </editor-fold>
@@ -1306,7 +1306,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("completeFiltradoFacultad() " + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return suggestionsTipovehiculo;
     }// </editor-fold>
@@ -1318,7 +1318,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
                 suggestionsTipovehiculo.add(tipovehiculo);
             }
         } catch (Exception e) {
-            JsfUtil.errorMessage("addTiposolocitud()" + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
     }
@@ -1338,7 +1338,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("foundTipovehiculo() " + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return _found;
     }
@@ -1370,7 +1370,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             
             
         } catch (Exception e) {
-            JsfUtil.errorMessage("completeSolicitudParaCopiar() " + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
 
         return suggestions;

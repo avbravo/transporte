@@ -284,7 +284,7 @@ ErrorInfoTransporteejbServices errorServices;
 
             //              return "/dashboard.xhtml?faces-redirect=true";
         } catch (Exception e) {
-            JsfUtil.errorMessage(e, "doLogin()");
+errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }
@@ -344,7 +344,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             return true;
         } catch (Exception e) {
-            JsfUtil.errorMessage("userValid() " + e.getLocalizedMessage());
+errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
         }
         return isvalid;
     }// </editor-fold>
@@ -372,7 +372,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("sendToken() " + e.getLocalizedMessage());
+errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -391,7 +391,7 @@ ErrorInfoTransporteejbServices errorServices;
                 JsfUtil.warningMessage(rf.getAppMessage("warning.usernotvalid"));
             }
         } catch (Exception e) {
-            JsfUtil.errorMessage("destroyByUser() " + e.getLocalizedMessage());
+           errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }
@@ -472,7 +472,7 @@ ErrorInfoTransporteejbServices errorServices;
             usuarioRepository.update(usuario);
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            JsfUtil.errorMessage(e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
         }
         return null;
     }
@@ -483,7 +483,7 @@ ErrorInfoTransporteejbServices errorServices;
         try {
             parameters.put(key, value);
         } catch (Exception e) {
-            JsfUtil.errorMessage("asignarParametro() " + e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
         }
     }
     // </editor-fold>
@@ -494,7 +494,7 @@ ErrorInfoTransporteejbServices errorServices;
         try {
             value = parameters.get(key);
         } catch (Exception e) {
-            JsfUtil.errorMessage("valueParameters() " + e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
         }
         return value;
     }   // </editor-fold>

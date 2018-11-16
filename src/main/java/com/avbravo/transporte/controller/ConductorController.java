@@ -668,7 +668,7 @@ ErrorInfoTransporteejbServices errorServices;
             conductor.setCedula("");
             writable = false;
         } catch (Exception e) {
-            JsfUtil.errorMessage("clearCedula() " + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }
@@ -697,7 +697,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            JsfUtil.errorMessage("findByCedula()" + e.getLocalizedMessage());
+                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
 
         return "";
