@@ -8,6 +8,7 @@ package com.avbravo.transporte.controller;
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.avbravoutils.JsfUtil;
 import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 
@@ -39,7 +40,8 @@ public class DashboardIndexController implements Serializable {
     SolicitudRepository solicitudRepository;
     @Inject
     VehiculoRepository vehiculoRepository;
-
+   @Inject
+ErrorInfoTransporteejbServices errorServices;
     @Inject
     LoginController loginController;
     @Inject
