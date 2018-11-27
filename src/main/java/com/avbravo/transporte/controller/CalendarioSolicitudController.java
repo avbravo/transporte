@@ -1726,6 +1726,22 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
         return valid;
     }
     // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isVehiculoValido(Vehiculo vehiculo)">
+    public Boolean isSolicitudValid(Solicitud solicitud) {
+        Boolean valid = false;
+        try {
+
+            if (solicitud.getActivo().equals("si") && solicitud.getEstatus().getIdestatus().equals("SOLICITADO")) {
+
+              valid = true;
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    }
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Boolean esMismoDiaSolicitud()">
     /**
@@ -1853,4 +1869,100 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
         return viajesList;
     }
     // </editor-fold>
+    
+    
+    
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
+    public List<Solicitud> completeSolicitudFiltrado(String query) {
+        List<Solicitud> suggestions = new ArrayList<>();
+        List<Solicitud> disponibles = new ArrayList<>();
+        List<Solicitud> temp = new ArrayList<>();
+        try {
+            Boolean found = false;
+            query = query.trim();
+
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+           // temp = solicitudRepository.findRegex(field, query, true, new Document(field, 1));
+            Document doc = new Document();
+            doc.append("activo","si").append("estatus.idestatus", "SOLICITADO");
+            temp = solicitudRepository.findBy(doc, new Document("idsolicitud",-1));
+
+            if (temp.isEmpty()) {
+                return suggestions;
+            } else {
+                List<Solicitud> validos = temp.stream()
+                        .filter(x -> isSolicitudValid(x)).collect(Collectors.toList());
+                if (validos.isEmpty()) {
+                    return suggestions;
+                }
+               
+                if (solicitudList.isEmpty()) {
+                    return validos;
+                } else {
+// REMOVERLOS SI YA ESTAN EN EL LISTADO
+
+                    validos.forEach((v) -> {
+                        Optional<Solicitud> optional = solicitudList.stream()
+                                .filter(v2 -> v2.getIdsolicitud()== v.getIdsolicitud())
+                                .findAny();
+                        if (!optional.isPresent()) {
+                            suggestions.add(v);
+                        }
+                    });
+                    disponibles= suggestions;
+                    
+
+//                    for (Solicitud v : suggestions) {
+//
+//                        List<Viajes> viajesList;
+//                        if (esMismoDiaSolicitud()) {
+//                            //SI LA SOLICITUD(salida y regreso es el mismo dia)
+//                            //BUSCAR LOS REGISTROS DE VIAJES DEL VEHICULO ESE DIA
+//                            viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdsolicitud(), "fechahorainicioreserva", solicitud.getFechahorapartida());
+//                            if (viajesList.isEmpty()) {
+//                                // INDICA QUE ESE VEHICULO ESTA DISPONIBLE NO TIENE NINGUN VIAJE
+//                                disponibles.add(v);
+//                            } else {
+//                                // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
+//                                if (!tieneDisponibilidadViaje(viajesList)) {
+//                                    disponibles.add(v);
+//                                }
+//
+//                            }
+//                        } else {
+//                            // ABARCA VARIOS DIAS 
+//                            // OBTENER LOS VIAJES ENTRE ESOS DIAS
+//
+//                            viajesList = viajesVariosDias(v);
+//                            if (viajesList.isEmpty()) {
+//                                //SI ESTA VACIO INDICA QUE ESTA DISPONIBLE NO TIENE VIAJES EN ESA FECHA
+//                                disponibles.add(v);
+//                            } else {
+//                                // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
+//                                if (!tieneDisponibilidadViaje(viajesList)) {
+//                                    disponibles.add(v);
+//                                }
+//                            }
+////                     
+//                        }
+//                    }
+                    // VERIRIFICAR SI TIENE VIAJES
+                    // List<Viajes> viajesList = viajesRepository.fi
+                    //si el dia y mes
+                }
+            }
+
+        } catch (Exception e) {
+          errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+        }
+        return disponibles;
+    }
+
+    // </editor-fold>
+
 }

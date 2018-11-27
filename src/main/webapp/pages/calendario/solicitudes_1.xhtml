@@ -191,9 +191,6 @@
                         <f:attribute name="fielddropdown" value="false"/>
                         <f:attribute name="fieldquerylenth" value="0"/>
                         <p:ajax event="itemSelect" listener="#{calendarioSolicitudController.handleSelect}"
-                                update="eventDetails"    />
-                        <p:ajax event="itemUnselect"  listener="#{calendarioSolicitudController.handleSelect}"
-                                update="eventDetails"
                                 />
                         <f:facet name="itemtip">
                             <h:panelGrid columns="1" cellpadding="5">
@@ -227,9 +224,6 @@
                         <f:attribute name="fielddropdown" value="false"/>
                         <f:attribute name="fieldquerylenth" value="0"/>
                         <p:ajax event="itemSelect" listener="#{calendarioSolicitudController.handleSelect}"
-                                update="eventDetails"   />
-                        <p:ajax event="itemUnselect"  listener="#{calendarioSolicitudController.handleSelect}"
-                                update="eventDetails"
                                 />
                         <f:facet name="itemtip">
                             <h:panelGrid columns="1" cellpadding="5">
@@ -252,12 +246,22 @@
                                 required="true"
                                 pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudController.viajesSelected.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
 
+<!--                    <p:outputLabel value="#{msg['field.solicitud']}"  rendered="#{calendarioSolicitudController.esAprobado}"/>
 
+                    <e:autocompletesolicitud listener="#{solicitudController.handleAutocompleteOfListXhtml}"
+                                             value="#{calendarioSolicitudController.solicitudList}"
+                                             itemLabel="#{p.idsolicitud}"
+                                             field="idsolicitud"
+                                             dropdown="true"
+                                             fromstart="true"
+                                             minQueryLength='0'
+                                             multiple="true"
+                                             rendered="#{calendarioSolicitudController.esAprobado}"
+                                             />-->
 
                     <p:outputLabel value="#{msg['field.solicitud']}"  rendered="#{calendarioSolicitudController.esAprobado}"/>
                     <p:autoComplete dropdown="true"
                                     multiple="true"
-                                    id="solicitud"
                                     rendered="#{calendarioSolicitudController.esAprobado}"
                                     scrollHeight="250"
                                     size="55"
@@ -266,103 +270,16 @@
                                     completeMethod="#{calendarioSolicitudController.completeSolicitudFiltrado}"
                                     var="p"
                                     required="false"
+                                  
 
-
-                                    itemLabel="( #{p.idsolicitud} ) #{p.usuario.get(1).nombre}"
+                                    itemLabel="#{p.idsolicitud}"
                                     itemValue="#{p}" forceSelection="true">
                         <f:converter binding="#{solicitudConverter}"/>
                         <f:attribute name="field" value="idsolicitud"/>
                         <f:attribute name="fielddropdown" value="false"/>
-                        <f:attribute name="fromstart" value="true"/>
-                        <f:attribute name="fieldquerylenth" value="0"/>
-
-                        <p:ajax event="itemSelect" listener="#{calendarioSolicitudController.handleSelect}"
-                                update="eventDetails"
-                                />
-                        <p:ajax event="itemUnselect"  listener="#{calendarioSolicitudController.handleSelect}"
-                                update="eventDetails"
-                                />
-
-                        <f:facet name="itemtip">
-                            <h:panelGrid columns="2" cellpadding="5">
+                        <f:attribute name="fieldquerylenth" value="1"/>
 
 
-                                <p:outputLabel  value="#{msg['field.lugares']}" />
-                                <p:chips value="#{p.lugares}" disabled="true"  title="#{msg['field.chips']}" />
-
-
-                                <h:outputText value="#{msg['field.fechapartida']}" />
-                                <h:panelGroup>
-                                    <p:calendar  disabled="true"  size="8"                                  
-                                                 style="background-color: grey;"
-                                                 pattern="dd/MM/yyyy" value="#{p.fechahorapartida}"  />
-                                    <p:calendar  disabled="true"    
-                                                 size="8" 
-                                                 pattern="HH:mm:ss a" value="#{p.fechahorapartida}"  />
-                                </h:panelGroup>
-
-                                <h:outputText value="#{msg['field.fecharegreso']}" />
-                                <h:panelGroup>
-                                    <p:calendar  disabled="true"    
-                                                 size="8" 
-                                                 pattern="dd/MM/yyyy" value="#{p.fechahoraregreso}"  />
-                                    <p:calendar  disabled="true"   
-                                                 size="8" 
-                                                 pattern="HH:mm:ss a" value="#{p.fechahoraregreso}"  />
-
-                                </h:panelGroup>
-
-
-
-                                <p:outputLabel  value="#{msg['field.solicitadopor']}" />
-                                <p:outputLabel  value="#{p.usuario.get(0).nombre}" />
-
-                                <p:outputLabel value="#{msg['field.responsable']}"/>
-                                <p:outputLabel  value="#{p.usuario.get(1).nombre}" />
-
-                                <p:outputLabel  value="#{msg['field.tiposolicitud']}" />
-                                <p:outputLabel  value="#{p.tiposolicitud.idtiposolicitud}" />
-
-  <p:outputLabel  value="#{msg['field.pasajeros']}" />
-  <p:outputLabel  value="#{p.pasajeros}" />
-  
-        <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
-                    <p:outputLabel  value="#{p.numerodevehiculos}" />
-
-
-
-                                <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
-                                <p:autoComplete dropdown="false"
-                                                multiple="true"
-                                                scrollHeight="250"
-                                                size="55"
-                                                emptyMessage="#{app['info.nohayregistros']}"
-                                                value="#{p.tipovehiculo}"
-                                                completeMethod="#{solicitudManualAdministrativoController.completeFiltradoTipovehiculo}"
-                                                var="p"
-                                                required="false"
-                                                disabled="true"
-
-                                                itemLabel="#{p.idtipovehiculo}"
-                                                itemValue="#{p}" forceSelection="true">
-                                    <f:converter binding="#{tipovehiculoConverter}"/>
-                                    <f:attribute name="field" value="idtipovehiculo"/>
-                                    <f:attribute name="fielddropdown" value="false"/>
-                                    <f:attribute name="fieldquerylenth" value="1"/>
-
-
-
-                                </p:autoComplete>
-
-
-
-                
-
-
-
-
-                            </h:panelGrid>
-                        </f:facet>
 
                     </p:autoComplete>
 
