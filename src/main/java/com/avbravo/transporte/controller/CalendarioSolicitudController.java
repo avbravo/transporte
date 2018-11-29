@@ -126,12 +126,15 @@ public class CalendarioSolicitudController implements Serializable, IController 
     Usuario responsable = new Usuario();
     Usuario responsableOld = new Usuario();
 
-    //List
+    //List  
+    List<Carrera> carreraList = new ArrayList<>();
+      List<Facultad> facultadList = new ArrayList<>();
     List<Solicitud> solicitudList = new ArrayList<>();
     List<Solicitud> solicitudFiltered = new ArrayList<>();
     List<Unidad> unidadList = new ArrayList<>();
-    List<Facultad> facultadList = new ArrayList<>();
-    List<Carrera> carreraList = new ArrayList<>();
+    List<Viajes> viajesList = new ArrayList<>();
+  
+ 
     List<Usuario> usuarioList = new ArrayList<>();
     List<Vehiculo> vehiculoList = new ArrayList<>();
     List<Conductor> conductorList = new ArrayList<>();
@@ -771,7 +774,7 @@ ErrorInfoTransporteejbServices errorServices;
                     viajes.setIdviaje(idviaje);
                     viajes.setConductor(conductorList);
                     viajes.setVehiculo(vehiculoList);
-                    viajes.setSolicitud(solicitudList);
+                   // viajes.setVehsolicitudList);
                     viajes.setNumerovehiculos(solicitud.getNumerodevehiculos());
 
                     viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
