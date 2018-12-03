@@ -42,6 +42,8 @@
                 <b:dropMenu value="#{msg['menubar.calendario']}" rendered="#{applicationMenu.menuBarCalendario}">
                     <b:navLink value="#{msg['menu.solicitudes']}" rendered="#{applicationMenu.calendariobuses.menu}" outcome="/pages/calendario/solicitudes" iconAwesome= "fa-calendar-o" />
                         <b:navLink value="#{msg['menu.viajes']}" rendered="#{applicationMenu.calendariobuses.menu}" outcome="/pages/calendario/viajes" iconAwesome= "fa-calendar-o" />
+                        
+                        
                     
                 </b:dropMenu>
                 
@@ -70,7 +72,8 @@
                     <b:navLink value="#{msg['menu.semestre']}" rendered="#{applicationMenu.semestre.menu}" outcome="/pages/semestre/list" iconAwesome= "fa-calendar-o" />
                     <b:navLink value="#{msg['menu.facultad']}" rendered="#{applicationMenu.facultad.menu}" outcome="/pages/facultad/list" iconAwesome= "fa-calendar-o" />
                     <b:navLink value="#{msg['menu.carrera']}" rendered="#{applicationMenu.carrera.menu}" outcome="/pages/carrera/list" iconAwesome= "fa-calendar-o" />
-
+                    <b:navLink/>
+<b:navLink value="#{msg['menu.viajes']}" rendered="#{applicationMenu.viajes.menu}" outcome="/pages/viajes/list" iconAwesome= "fa-calendar-o" />
 
                 </b:dropMenu>
 <!--                <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{applicationMenu.menuBarReportes}">

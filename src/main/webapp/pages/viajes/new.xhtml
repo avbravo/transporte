@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"> 
+    <ui:define name="content">
+        <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            }
+        </style>
+        
+         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.viajes.create}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+            <h:panelGroup id="content" layout="block"> 
+
+                <a:messages id="msg"/>
+                <a:new label="#{msg['field.idviaje']}"
+                       title="#{msg['titleview.viajes']}"
+                       value="#{viajesController.viajes.idviaje}"
+                       isnew="#{viajesController.isNew()}"
+                        disabled="#{viajesController.writable}"
+                       new="#{viajesController.prepare('new',viajesController.viajes)}"
+                       rendererList="#{applicationMenu.viajes.list}"
+                       list="#{viajesController.prepare('golist',viajesController.viajes)}"
+
+                       />
+                <b:panel title="#{app['title.data']}" look="primary" rendered="#{viajesController.writable}">
+
+
+
+                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{viajesController.writable}"> 
+
+
+                        <p:outputLabel  value="#{msg['field.activo']}" />
+                        <a:yesno value="#{viajesController.viajes.activo}" id="activo"  required="true"/>
+
+                        <a:save rendered="#{viajesController.writable and applicationMenu.viajes.create}"
+                                      save="#{viajesController.save()}" />
+
+
+                    </b:panelGrid>
+
+
+                </b:panel>
+            </h:panelGroup>
+        </b:form>
+        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.viajes.create}" />
+
+        <br/><br/><br/>
+    </ui:define>
+</ui:composition>
