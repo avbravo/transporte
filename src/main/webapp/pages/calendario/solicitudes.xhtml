@@ -67,88 +67,91 @@
                     <!--</b:panelGrid>-->                    
 
                 </b:panel>
-                
-                
-                
-                 <b:panel id="dataTable" look="primary">
-                <a:paginator 
-                    rowPage="#{viajesController.rowPage}"
-                    clear="#{viajesController.clear()}"
-                    first="#{viajesController.first()}"
-                    back="#{viajesController.back()}"
-                    next="#{viajesController.next()}"
-                    last="#{viajesController.last()}"
-                    page="#{viajesController.page}"
-                    pages="#{viajesController.pages}"
-                 skip="ajax:viajesController.skip(viajesController.page)" 
-                    new="#{viajesController.prepare('gonew',viajesController.viajes)}"
-                    printAll="#{viajesController.printAll()}"
-                    />
-                <b:dataTable value="#{viajesController.viajesDataModel}"
-                             var="item"
-                             id="dataTable2"
-                             paginated="false"
-                             onpage="console.log('page');">
 
-                    <b:dataTableColumn value="#{item.idviaje}" label="#{msg['field.idviaje']}"/>
 
-                    
-                     <b:dataTableColumn label="#{msg['field.fechapartida']}" >
-                        <p:calendar  disabled="true"  size="8"                                  
-                                     style="background-color: grey;"
-                                    pattern="dd/MM/yyyy" value="#{item.fechahorainicioreserva}"  />
-                      
-                        
-                    </b:dataTableColumn> 
-                    <b:dataTableColumn label="#{msg['field.horapartida']}" >
-                        <p:calendar  disabled="true"    
-                                     size="8" 
-                                    pattern="HH:mm:ss a" value="#{item.fechahorainicioreserva}"  />
-                      
-                    </b:dataTableColumn> 
-                    <b:dataTableColumn label="#{msg['field.fecharegreso']}" >
-                        <p:calendar  disabled="true"    
-                                     size="8" 
-                                    pattern="dd/MM/yyyy" value="#{item.fechahorafinreserva}"  />
-                      
-                    </b:dataTableColumn> 
-                    <b:dataTableColumn label="#{msg['field.horaregreso']}" >
-                        <p:calendar  disabled="true"   
-                                     size="8" 
-                                    pattern="HH:mm:ss a" value="#{item.fechahorafinreserva}"  />
-                      
-                    </b:dataTableColumn> 
-                    
-                     <b:dataTableColumn label="#{msg['field.vehiculos']}">
-                        <p:panelGrid columns="2" styleClass="form-group ui-panelgrid-blank" layout="grid">
 
-                            <p:repeat value="#{item.vehiculo}" var="car">
-                                <p:outputLabel value="(#{car.marca} #{car.modelo})"/>
-                            </p:repeat>
-                        </p:panelGrid>
-                    </b:dataTableColumn>
-                     <b:dataTableColumn label="#{msg['field.conductores']}">
-                        <p:panelGrid columns="2" styleClass="form-group ui-panelgrid-blank" layout="grid">
+                <b:panel id="dataTable" look="primary">
+                    <p:commandButton value="Modal" type="button" 
+                                     onclick="PF('viajesDialog').show();" />
 
-                            <p:repeat value="#{item.conductor}" var="var2">
-                                <p:outputLabel value="(#{var2.nombre})"/>
-                            </p:repeat>
-                        </p:panelGrid>
-                    </b:dataTableColumn>
-                    <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
-                  
-                    <b:dataTableColumn label="">
+                    <a:paginator 
+                        rowPage="#{viajesController.rowPage}"
+                        clear="#{viajesController.clear()}"
+                        first="#{viajesController.first()}"
+                        back="#{viajesController.back()}"
+                        next="#{viajesController.next()}"
+                        last="#{viajesController.last()}"
+                        page="#{viajesController.page}"
+                        pages="#{viajesController.pages}"
+                        skip="ajax:viajesController.skip(viajesController.page)" 
+                        new="#{viajesController.prepare('gonew',viajesController.viajes)}"
+                        printAll="#{viajesController.printAll()}"
+                        />
+                    <b:dataTable value="#{viajesController.viajesDataModel}"
+                                 var="item"
+                                 id="dataTable2"
+                                 paginated="false"
+                                 onpage="console.log('page');">
 
-                        <a:column
+                        <b:dataTableColumn value="#{item.idviaje}" label="#{msg['field.idviaje']}"/>
 
-                            edit="#{viajesController.prepare('view',item)}"
-                            delete="#{viajesController.delete(item,false)}"
-                            rendered="#{applicationMenu.viajes.delete}"
-                            />
-                    </b:dataTableColumn>
 
-                </b:dataTable>
-            </b:panel>
+                        <b:dataTableColumn label="#{msg['field.fechapartida']}" >
+                            <p:calendar  disabled="true"  size="8"                                  
+                                         style="background-color: grey;"
+                                         pattern="dd/MM/yyyy" value="#{item.fechahorainicioreserva}"  />
+
+
+                        </b:dataTableColumn> 
+                        <b:dataTableColumn label="#{msg['field.horapartida']}" >
+                            <p:calendar  disabled="true"    
+                                         size="8" 
+                                         pattern="HH:mm:ss a" value="#{item.fechahorainicioreserva}"  />
+
+                        </b:dataTableColumn> 
+                        <b:dataTableColumn label="#{msg['field.fecharegreso']}" >
+                            <p:calendar  disabled="true"    
+                                         size="8" 
+                                         pattern="dd/MM/yyyy" value="#{item.fechahorafinreserva}"  />
+
+                        </b:dataTableColumn> 
+                        <b:dataTableColumn label="#{msg['field.horaregreso']}" >
+                            <p:calendar  disabled="true"   
+                                         size="8" 
+                                         pattern="HH:mm:ss a" value="#{item.fechahorafinreserva}"  />
+
+                        </b:dataTableColumn> 
+
+                        <b:dataTableColumn label="#{msg['field.vehiculos']}">
+                            <p:panelGrid columns="2" styleClass="form-group ui-panelgrid-blank" layout="grid">
+
+                                <p:repeat value="#{item.vehiculo}" var="car">
+                                    <p:outputLabel value="(#{car.marca} #{car.modelo})"/>
+                                </p:repeat>
+                            </p:panelGrid>
+                        </b:dataTableColumn>
+                        <b:dataTableColumn label="#{msg['field.conductores']}">
+                            <p:panelGrid columns="2" styleClass="form-group ui-panelgrid-blank" layout="grid">
+
+                                <p:repeat value="#{item.conductor}" var="var2">
+                                    <p:outputLabel value="(#{var2.nombre})"/>
+                                </p:repeat>
+                            </p:panelGrid>
+                        </b:dataTableColumn>
+                        <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
+
+                        <b:dataTableColumn label="">
+
+                            <a:column
+
+                                edit="#{viajesController.prepare('view',item)}"
+                                delete="#{viajesController.delete(item,false)}"
+                                rendered="#{applicationMenu.viajes.delete}"
+                                />
+                        </b:dataTableColumn>
+
+                    </b:dataTable>
+                </b:panel>
             </h:panelGroup>
 
             <p:dialog widgetVar="eventDialog" header="#{msg['dialogo.solicitud']}" 
@@ -250,12 +253,12 @@
 
 
                     <p:outputLabel value="#{msg['field.vehiculo']}"
-                                   id="vehiculolabel"
+                                   id="vehiculolabel2"
 
                                    rendered="#{calendarioSolicitudController.esAprobado}"/>
 
                     <p:autoComplete dropdown="true"
-                                    id="vehiculo"
+                                    id="vehiculo2"
                                     multiple="true"
                                     scrollHeight="250"
                                     size="25"
@@ -323,16 +326,6 @@
 
 
 
-                    <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}" rendered="#{calendarioSolicitudController.esAprobado}" />
-                    <a:calendar rendered="#{calendarioSolicitudController.esAprobado}"
-                                required="true"
-                                pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudController.viajesSelected.fechahorainicioreserva}"   label="#{msg['field.fechahorainicioreserva']}" />
-
-
-                    <p:outputLabel  value="#{msg['field.fechahorafinreserva']}" rendered="#{calendarioSolicitudController.esAprobado}" />
-                    <a:calendar rendered="#{calendarioSolicitudController.esAprobado}"
-                                required="true"
-                                pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudController.viajesSelected.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
 
 
 
@@ -405,11 +398,11 @@
                                 <p:outputLabel  value="#{msg['field.tiposolicitud']}" />
                                 <p:outputLabel  value="#{p.tiposolicitud.idtiposolicitud}" />
 
-  <p:outputLabel  value="#{msg['field.pasajeros']}" />
-  <p:outputLabel  value="#{p.pasajeros}" />
-  
-        <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
-                    <p:outputLabel  value="#{p.numerodevehiculos}" />
+                                <p:outputLabel  value="#{msg['field.pasajeros']}" />
+                                <p:outputLabel  value="#{p.pasajeros}" />
+
+                                <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
+                                <p:outputLabel  value="#{p.numerodevehiculos}" />
 
 
 
@@ -438,7 +431,7 @@
 
 
 
-                
+
 
 
 
@@ -646,6 +639,216 @@
                         />
 
                     <b:growl id="growl"/>
+
+                </b:panelGrid>
+            </p:dialog>
+
+
+            <p:dialog widgetVar="viajesDialog" header="#{msg['dialogo.solicitud']}" 
+                      width="650" height="450"
+                      styleClass="customDialog"
+
+                      responsive="true"
+
+                      showEffect="clip" hideEffect="clip">
+                <b:panelGrid id="viajesDetails" colSpans="2,10" size="xs" > 
+
+
+                    <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
+                    <p:outputPanel>
+                        <a:calendar mode="inline"
+                                    required="true"
+                                    pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudController.viajesSelected.fechahorainicioreserva}"   
+                                    label="#{msg['field.fechahorainicioreserva']}" />
+
+
+                        <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
+                        <a:calendar mode="inline"
+                                    required="true"
+                                    pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudController.viajesSelected.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
+
+                    </p:outputPanel>
+
+
+                    <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+                    <a:inputText value="#{calendarioSolicitudController.solicitud.lugarpartida}"    />
+
+                    <p:outputLabel  value="#{msg['field.lugarregreso']}" />
+                    <a:inputText value="#{calendarioSolicitudController.solicitud.lugarpartida}"    />
+
+
+
+                    <p:outputLabel value="#{msg['field.vehiculo']}"
+                                   id="vehiculolabel" />
+
+
+
+                    <p:autoComplete dropdown="true"
+                                    id="vehiculo"
+                                    multiple="true"
+                                    scrollHeight="250"
+                                    size="25"
+
+                                    emptyMessage="#{app['info.nohayregistros']}"
+                                    value="#{calendarioSolicitudController.vehiculoList}"
+                                    completeMethod="#{calendarioSolicitudController.completeVehiculoFiltrado}"
+                                    var="p"
+                                    required="true"
+                                    requiredMessage="#{msg['field.vehiculo']}"
+                                    itemLabel=" #{p.marca}"
+                                    itemValue="#{p}" forceSelection="true">
+                        <f:converter binding="#{vehiculoConverter}"/>
+                        <f:attribute name="field" value="marca"/>
+                        <f:attribute name="fielddropdown" value="false"/>
+                        <f:attribute name="fieldquerylenth" value="0"/>
+                        <p:ajax event="itemSelect" listener="#{calendarioSolicitudController.handleSelect}"
+                                update="eventDetails"    />
+                        <p:ajax event="itemUnselect"  listener="#{calendarioSolicitudController.handleSelect}"
+                                update="eventDetails"
+                                />
+                        <f:facet name="itemtip">
+                            <h:panelGrid columns="1" cellpadding="5">
+                                <h:outputText value="#{msg['field.idvehiculo']} #{p.idvehiculo}" />
+                                <h:outputText value="#{msg['field.marca']} #{p.marca}" />
+                                <h:outputText value="#{msg['field.modelo']} #{p.modelo}" />
+
+                            </h:panelGrid>
+                        </f:facet>
+                    </p:autoComplete>
+
+
+                    <p:outputLabel value="#{msg['field.conductor']}"  />
+
+
+                    <p:autoComplete dropdown="true"
+                                    multiple="true"
+                                    scrollHeight="250"
+                                    size="25"
+
+                                    emptyMessage="#{app['info.nohayregistros']}"
+                                    value="#{calendarioSolicitudController.conductorList}"
+                                    completeMethod="#{calendarioSolicitudController.completeConductorFiltrado}"
+                                    var="p"
+                                    required="true"
+                                    requiredMessage="#{msg['field.conductor']}"
+                                    itemLabel="#{p.nombre}"
+                                    itemValue="#{p}" forceSelection="true">
+                        <f:converter binding="#{conductorConverter}"/>
+                        <f:attribute name="field" value="nombre"/>
+                        <f:attribute name="fielddropdown" value="false"/>
+                        <f:attribute name="fieldquerylenth" value="0"/>
+                        <p:ajax event="itemSelect" listener="#{calendarioSolicitudController.handleSelect}"
+                                update="eventDetails"   />
+                        <p:ajax event="itemUnselect"  listener="#{calendarioSolicitudController.handleSelect}"
+                                update="eventDetails"
+                                />
+                        <f:facet name="itemtip">
+                            <h:panelGrid columns="1" cellpadding="5">
+                                <h:outputText value="#{msg['field.cedula']} #{p.cedula}" />
+                                <h:outputText value="#{msg['field.nombre']} #{p.nombre}" />
+                            </h:panelGrid>
+                        </f:facet>
+                    </p:autoComplete>
+
+
+
+
+                    <p:outputLabel value="#{msg['field.solicitud']}"  />
+                    <p:autoComplete dropdown="true"
+                                    multiple="true"
+                                    id="solicitud2"
+
+                                    scrollHeight="250"
+                                    size="55"
+                                    emptyMessage="#{app['info.nohayregistros']}"
+                                    value="#{calendarioSolicitudController.solicitudList}"
+                                    completeMethod="#{calendarioSolicitudController.completeSolicitudFiltrado}"
+                                    var="p"
+                                    required="false"
+
+
+                                    itemLabel="( #{p.idsolicitud} ) #{p.usuario.get(1).nombre}"
+                                    itemValue="#{p}" forceSelection="true">
+                        <f:converter binding="#{solicitudConverter}"/>
+                        <f:attribute name="field" value="idsolicitud"/>
+                        <f:attribute name="fielddropdown" value="false"/>
+                        <f:attribute name="fromstart" value="true"/>
+                        <f:attribute name="fieldquerylenth" value="0"/>
+
+                        <p:ajax event="itemSelect" listener="#{calendarioSolicitudController.handleSelect}"
+                                update="eventDetails"
+                                />
+                        <p:ajax event="itemUnselect"  listener="#{calendarioSolicitudController.handleSelect}"
+                                update="eventDetails"
+                                />
+
+                        <f:facet name="itemtip">
+                            <h:panelGrid columns="2" cellpadding="5">
+
+
+                                <p:outputLabel  value="#{msg['field.lugares']}" />
+                                <p:chips value="#{p.lugares}" disabled="true"  title="#{msg['field.chips']}" />
+
+
+                                <h:outputText value="#{msg['field.fechapartida']}" />
+                                <h:panelGroup>
+                                    <p:calendar  disabled="true"  size="8"                                  
+                                                 style="background-color: grey;"
+                                                 pattern="dd/MM/yyyy" value="#{p.fechahorapartida}"  />
+                                    <p:calendar  disabled="true"    
+                                                 size="8" 
+                                                 pattern="HH:mm:ss a" value="#{p.fechahorapartida}"  />
+                                </h:panelGroup>
+
+                                <h:outputText value="#{msg['field.fecharegreso']}" />
+                                <h:panelGroup>
+                                    <p:calendar  disabled="true"    
+                                                 size="8" 
+                                                 pattern="dd/MM/yyyy" value="#{p.fechahoraregreso}"  />
+                                    <p:calendar  disabled="true"   
+                                                 size="8" 
+                                                 pattern="HH:mm:ss a" value="#{p.fechahoraregreso}"  />
+
+                                </h:panelGroup>
+
+
+
+                            </h:panelGrid>
+                        </f:facet>
+
+                    </p:autoComplete>
+
+
+                    <p:outputLabel  value="#{msg['field.comentarios']}"/>
+                    <b:inputTextarea required="true" requiredMessage="#{msg['field.comentarios']}"
+                                     rows="2" value="#{calendarioSolicitudController.viajesSelected.comentarios}"  />
+
+
+                    <p:outputLabel  value="#{msg['field.kmestimados']}"  />
+                    <a:inputText span="5" value="#{calendarioSolicitudController.viajesSelected.kmestimados}"  />
+
+                    <p:outputLabel  value="#{msg['field.costocombustible']}"  />
+                    <a:inputText required="true"
+                                 label="#{msg['field.costocombustible']}"
+                                 span="5" value="#{calendarioSolicitudController.viajesSelected.costocombustible}"  />
+
+
+
+
+                    <b:commandButton value="#{app['button.close']}"
+                                     iconAwesome="fa-close"
+                                     oncomplete="PF('viajesDialog').hide();"/>
+
+                    <p:commandButton
+                        rendered="#{applicationMenu.menuBarAdministracion}"
+                        value="#{app['button.edit']}"
+                        update="growl"
+                        oncomplete="PF('myschedule').update(); "
+                        actionListener="#{calendarioSolicitudController.edit}"                     
+
+                        />
+
+
 
                 </b:panelGrid>
             </p:dialog>

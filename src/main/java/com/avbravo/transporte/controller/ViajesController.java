@@ -607,6 +607,7 @@ ErrorInfoTransporteejbServices errorServices;
             viajesFiltered = viajesList;
 
             viajesDataModel = new ViajesDataModel(viajesList);
+            
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
