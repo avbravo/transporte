@@ -49,14 +49,12 @@
                               name="remoteshowall" />
             <p:remoteCommand  update=":form:content"
                               name="remotecontent" />
-            <b:commandButton    
-                 look="primary"
-                iconAwesome="fa-step-backward"
-                oncomplete="remoteshowall();"
-                action="#{cc.attrs.first}"
-                update=":form:dataTable " />
-
-            <b:commandButton   iconAwesome="fa-caret-left"  
+       
+            
+            
+            <b:commandButton   iconAwesome="fa-caret-left" 
+                               icon="fa fa-save"
+                             styleClass="ui-priority-primary"
                                look="primary"
                                oncomplete="remoteshowall();"
                                action="#{cc.attrs.back}"
