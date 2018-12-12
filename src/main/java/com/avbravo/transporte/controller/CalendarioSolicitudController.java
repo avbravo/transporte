@@ -1592,7 +1592,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
                 return suggestions;
             } else {
                 List<Vehiculo> validos = temp.stream()
-                        .filter(x -> isVehiculoValid(x)).collect(Collectors.toList());
+                        .filter(x -> isVehiculoActivo(x)).collect(Collectors.toList());
                 if (validos.isEmpty()) {
                     return suggestions;
                 }
@@ -1724,12 +1724,34 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+//            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorDialog(nameOfClass(),nameOfMethod(), "isVehiculoValid()",e.getLocalizedMessage());
         }
         return valid;
     }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="isVehiculoValido(Vehiculo vehiculo)">
+    public Boolean isVehiculoActivo(Vehiculo vehiculo) {
+        Boolean valid = false;
+        try {
+
+            if (vehiculo.getActivo().equals("si") && vehiculo.getEnreparacion().equals("no")) {
+
+               
+                        valid = true;
+               
+                    
+                
+            }
+
+        } catch (Exception e) {
+//            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorDialog(nameOfClass(),nameOfMethod(), "isVehiculoValid()",e.getLocalizedMessage());
+        }
+        return valid;
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isSolicitudValid(Vehiculo vehiculo)">
     public Boolean isSolicitudValid(Solicitud solicitud) {
         Boolean valid = false;
         try {
