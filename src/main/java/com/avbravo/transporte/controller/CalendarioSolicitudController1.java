@@ -82,7 +82,7 @@ import org.primefaces.model.ScheduleModel;
  */
 @Named
 @ViewScoped
-public class CalendarioSolicitudController implements Serializable, IController {
+public class CalendarioSolicitudController1 implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -472,7 +472,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public CalendarioSolicitudController() {
+    public CalendarioSolicitudController1() {
     }
 
     // </editor-fold>
@@ -820,92 +820,6 @@ public class CalendarioSolicitudController implements Serializable, IController 
             solicitudRepository.update(solicitud);
 
             JsfUtil.infoDialog(rf.getAppMessage("info.view"), rf.getAppMessage("info.update"));
-        } catch (Exception e) {
-
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="saveViaje()">
-
-    public String saveViaje() {
-        try {
-            //Si era apronado para editar
-
-//            if (esAprobado) {
-//                if (JsfUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
-//
-//                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechainicioreservamayorfechapartida"));
-//                    return "";
-//                }
-//                if (JsfUtil.fechaMenor(viajes.getFechahorafinreserva(), solicitud.getFechahoraregreso())) {
-//
-//                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechafinreservamenorfecharegreso"));
-//                    return "";
-//                }
-//
-//                if (solicitud.getNumerodevehiculos() != vehiculoList.size()) {
-//                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodevehiculosnoigualvehiculos"));
-//                    return "";
-//                }
-                if (conductorList.size() != vehiculoList.size()) {
-                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
-                    return "";
-                }
-//                if (!esAprobadoParaEditar) {
-                    viajes = viajesSelected;
-                    Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
-                    viajes.setActivo("si");
-                    viajes.setIdviaje(idviaje);
-                    viajes.setConductor(conductorList);
-                    viajes.setVehiculo(vehiculoList);
-                    // viajes.setVehsolicitudList);
-                    viajes.setNumerovehiculos(solicitud.getNumerodevehiculos());
-
-                    viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
-
-                    if (viajesRepository.save(viajes)) {
-                        revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajes.getIdviaje().toString(), loginController.getUsername(),
-                                "create", "viajes", viajesRepository.toDocument(viajes).toString()));
-                        JsfUtil.successMessage(rf.getAppMessage("info.save"));
-
-                    } else {
-                        JsfUtil.errorDialog("save() " , viajesRepository.getException().toString());
-                        return "";
-                    }
-//                } else {
-//                    viajes = viajesSelected;
-//                    viajes.setConductor(conductorList);
-//                    viajes.setVehiculo(vehiculoList);
-//                    viajesSelected.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "update"));
-//                    if (viajesRepository.update(viajesSelected)) {
-//                        revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajesSelected.getIdviaje().toString(), loginController.getUsername(),
-//                                "update", "viajes", viajesRepository.toDocument(viajesSelected).toString()));
-//
-//                    }
-//                }
-
-//            } else {
-//                //Si era apronado para editar y se cambio el estatus se coloca activo = no
-//                if (esAprobadoParaEditar) {
-//                    viajesSelected.setActivo("no");
-//                    viajesSelected.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "update"));
-//                    if (viajesRepository.update(viajesSelected)) {
-//                        revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajesSelected.getIdviaje().toString(), loginController.getUsername(),
-//                                "update", "viajes", viajesRepository.toDocument(viajesSelected).toString()));
-//
-//                    }
-//                }
-//            }
-
-           // solicitud.setEstatus(estatusSelected);
-
-//            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
-//                    "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
-
-         //   solicitudRepository.update(solicitud);
-
-       //     JsfUtil.infoDialog(rf.getAppMessage("info.view"), rf.getAppMessage("info.update"));
         } catch (Exception e) {
 
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1699,7 +1613,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
                         if (esMismoDiaSolicitud()) {
                             //SI LA SOLICITUD(salida y regreso es el mismo dia)
                             //BUSCAR LOS REGISTROS DE VIAJES DEL VEHICULO ESE DIA
-                            viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", viajesSelected.getFechahorainicioreserva());
+                            viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
                             if (viajesList.isEmpty()) {
                                 // INDICA QUE ESE VEHICULO ESTA DISPONIBLE NO TIENE NINGUN VIAJE
                                 disponibles.add(v);
@@ -2066,21 +1980,5 @@ public class CalendarioSolicitudController implements Serializable, IController 
         return disponibles;
     }
 
-    // </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
-    public String inicializarViaje(){
-        try {
-            viajesSelected = new Viajes();
-            viajesSelected.setFechahorainicioreserva(JsfUtil.getFechaHoraActual());
-            viajesSelected.setFechahorafinreserva(JsfUtil.getFechaHoraActual());
-            viajesSelected.setLugarpartida("UTP Azuero");
-            conductorList = new ArrayList<>();
-            vehiculoList = new ArrayList<>();
-        } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }
     // </editor-fold>
 }

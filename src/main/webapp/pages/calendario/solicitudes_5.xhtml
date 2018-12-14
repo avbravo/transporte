@@ -99,8 +99,8 @@
 
                 <b:panel id="dataTable" look="primary">
                     <p:commandButton value="#{app['button.new']}" 
-                                     update="viajesDetails"
-                                    
+                                     type="button" 
+                                     
                                      onclick="PF('viajesDialog').show();" />
 
                     <a:paginator 
@@ -870,7 +870,7 @@
                     <p:commandButton
                         rendered="#{applicationMenu.menuBarAdministracion}"
                         value="#{app['button.save']}"
-                        update="growl, dataTable2, content"
+                        update="growl, dataTable2"
                         oncomplete="PF('myschedule').update(); "
                         actionListener="#{calendarioSolicitudController.saveViaje}"                     
 

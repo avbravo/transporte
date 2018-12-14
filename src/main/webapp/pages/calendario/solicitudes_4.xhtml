@@ -20,34 +20,34 @@
             }
 
         </style>
-        <script type="text/javascript">
-            PrimeFaces.locales['es'] = {
-                closeText: 'Cerrar',
-                prevText: 'Anterior',
-                nextText: 'Siguiente',
-                monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'September', 'Octubre', 'Noviembre', 'Diciembre'],
-                monthNamesShort: ['Ene', 'Feb', 'Marz', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
-                dayNamesShort: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
-                dayNamesMin: ['S', 'M', 'D', 'M ', 'D', 'F ', 'S'],
-                weekHeader: 'Woche',
-                FirstDay: 1,
-                isRTL: false,
-                showMonthAfterYear: false,
-                yearSuffix: '',
-                timeOnlyTitle: 'Nur Zeit',
-                timeText: 'Zeit',
-                hourText: 'Stunde',
-                minuteText: 'Minuto',
-                secondText: 'Seguendo',
-                currentText: 'Aktuelles Datum',
-                ampm: false,
-                month: 'Mes',
-                week: 'Semana',
-                day: 'Dia',
-                allDayText: 'Ganzer Tag'
-            };
-        </script>
+<script type="text/javascript">    
+    PrimeFaces.locales['es'] = {
+        closeText: 'Cerrar',
+        prevText: 'Anterior',
+        nextText: 'Siguiente',
+        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'September', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthNamesShort: ['Ene', 'Feb', 'Marz', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+        dayNamesShort: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
+        dayNamesMin: ['S', 'M', 'D', 'M ', 'D', 'F ', 'S'],
+        weekHeader: 'Woche',
+        FirstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: '',
+        timeOnlyTitle: 'Nur Zeit',
+        timeText: 'Zeit',
+        hourText: 'Stunde',
+        minuteText: 'Minuto',
+        secondText: 'Seguendo',
+        currentText: 'Aktuelles Datum',
+        ampm: false,
+        month: 'Mes',
+        week: 'Semana',
+        day: 'Dia',
+        allDayText: 'Ganzer Tag'
+    };
+</script>
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.calendariobuses.list}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -98,9 +98,7 @@
 
 
                 <b:panel id="dataTable" look="primary">
-                    <p:commandButton value="#{app['button.new']}" 
-                                     update="viajesDetails"
-                                    
+                    <p:commandButton value="Modal" type="button" 
                                      onclick="PF('viajesDialog').show();" />
 
                     <a:paginator 
@@ -191,6 +189,7 @@
 
                       showEffect="clip" hideEffect="clip">
                 <b:panelGrid id="eventDetails" colSpans="2,10" size="xs" > 
+
                     <p:outputLabel  value="#{msg['field.idsolicitud']}" />
                     <p:outputLabel  value="#{calendarioSolicitudController.solicitud.idsolicitud}" id="idsolicitud"   />
 
@@ -265,16 +264,16 @@
 
                     <p:outputLabel value="#{msg['field.idestatus']}" />
 
-                    <e:autocompleteestatus  listener="#{calendarioSolicitudController.handleSelectEstatus}"
-                                            value="#{calendarioSolicitudController.estatusSelected}"
-                                            rendered="#{applicationMenu.menuBarAdministracion}"
-                                            itemLabel=" #{p.idestatus}"
-                                            field="idestatus"
-                                            dropdown="true"
-                                            fromstart="true"
-                                            minQueryLength="0"
-                                            update=":form:vehiculolabel, :form:vehiculo: eventDetails"
-                                            />
+                    <e:autocompleteestatus listener="#{calendarioSolicitudController.handleSelectEstatus}"
+                                           value="#{calendarioSolicitudController.estatusSelected}"
+                                           rendered="#{applicationMenu.menuBarAdministracion}"
+                                           itemLabel=" #{p.idestatus}"
+                                           field="idestatus"
+                                           dropdown="true"
+                                           fromstart="true"
+                                           minQueryLength="0"
+                                           update=":form:vehiculolabel, :form:vehiculo: eventDetails"
+                                           />
 
 
 
@@ -669,11 +668,10 @@
                     <b:growl id="growl"/>
 
                 </b:panelGrid>
-
             </p:dialog>
 
 
-            <p:dialog widgetVar="viajesDialog" header="#{msg['dialogo.viajes']}" 
+            <p:dialog widgetVar="viajesDialog" header="#{msg['dialogo.solicitud']}" 
                       width="650" height="450"
                       styleClass="customDialog"
 
@@ -684,14 +682,13 @@
                     <p:growl id="growl2"/>
                     <p:spacer/>
 
-                  
                     <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
                     <p:outputPanel>
                         <a:calendar 
-                            mode="inline"
-                            required="true"
-                            pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudController.viajesSelected.fechahorainicioreserva}"   
-                            label="#{msg['field.fechahorainicioreserva']}" />
+                                    mode="inline"
+                                    required="true"
+                                    pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudController.viajesSelected.fechahorainicioreserva}"   
+                                    label="#{msg['field.fechahorainicioreserva']}" />
 
 
                         <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
@@ -703,10 +700,10 @@
 
 
                     <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                    <a:inputText value="#{calendarioSolicitudController.viajesSelected.lugarpartida}"    />
+                    <a:inputText value="#{calendarioSolicitudController.solicitud.lugarpartida}"    />
 
                     <p:outputLabel  value="#{msg['field.lugarregreso']}" />
-                    <a:inputText value="#{calendarioSolicitudController.viajesSelected.lugarregreso}"    />
+                    <a:inputText value="#{calendarioSolicitudController.solicitud.lugarpartida}"    />
 
 
 
@@ -739,14 +736,10 @@
                                 update="eventDetails"
                                 />
                         <f:facet name="itemtip">
-                            <h:panelGrid columns="2" cellpadding="5">
-                                <h:outputText value="#{msg['field.idvehiculo']}" />
-                                <h:outputText value="#{p.idvehiculo}" />
-                                <h:outputText value="#{msg['field.marca']}" />
-                                <h:outputText value="#{p.marca}" />
-                                <h:outputText value="#{msg['field.modelo']}" />
-                                <h:outputText value="#{p.modelo}" />
-
+                            <h:panelGrid columns="1" cellpadding="5">
+                                <h:outputText value="#{msg['field.idvehiculo']} #{p.idvehiculo}" />
+                                <h:outputText value="#{msg['field.marca']} #{p.marca}" />
+                                <h:outputText value="#{msg['field.modelo']} #{p.modelo}" />
 
                             </h:panelGrid>
                         </f:facet>
@@ -860,6 +853,14 @@
                                      rows="2" value="#{calendarioSolicitudController.viajesSelected.comentarios}"  />
 
 
+                    <p:outputLabel  value="#{msg['field.kmestimados']}"  />
+                    <a:inputText span="5" value="#{calendarioSolicitudController.viajesSelected.kmestimados}"  />
+
+                    <p:outputLabel  value="#{msg['field.costocombustible']}"  />
+                    <a:inputText required="true"
+                                 label="#{msg['field.costocombustible']}"
+                                 span="5" value="#{calendarioSolicitudController.viajesSelected.costocombustible}"  />
+
 
 
 
@@ -869,10 +870,10 @@
 
                     <p:commandButton
                         rendered="#{applicationMenu.menuBarAdministracion}"
-                        value="#{app['button.save']}"
-                        update="growl, dataTable2, content"
+                        value="#{app['button.edit']}"
+                        update="growl"
                         oncomplete="PF('myschedule').update(); "
-                        actionListener="#{calendarioSolicitudController.saveViaje}"                     
+                        actionListener="#{calendarioSolicitudController.edit}"                     
 
                         />
 
