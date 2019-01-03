@@ -20,6 +20,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.bson.Document;
+import org.primefaces.model.chart.PieChartModel;
 
 
 // </editor-fold>
@@ -35,7 +36,8 @@ public class DashboardIndexController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
 
-
+  private PieChartModel pieModelSolicitud;
+  
     @Inject
     SolicitudRepository solicitudRepository;
     @Inject
@@ -57,6 +59,14 @@ ErrorInfoTransporteejbServices errorServices;
     Integer totalVehiculosInActivos;
     Integer totalVehiculosEnReparacion;
     // </editor-fold>
+
+    public PieChartModel getPieModelSolicitud() {
+        return pieModelSolicitud;
+    }
+
+    public void setPieModelSolicitud(PieChartModel pieModelSolicitud) {
+        this.pieModelSolicitud = pieModelSolicitud;
+    }
 
   
     
@@ -144,13 +154,14 @@ ErrorInfoTransporteejbServices errorServices;
     // <editor-fold defaultstate="collapsed" desc="init">
     @PostConstruct
     public void init() {
-
+ 
         calcularTotales();
     } // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="calcularTotales()">
     public void calcularTotales() {
         try {
+             pieModelSolicitud= new PieChartModel();
             switch (loginController.getRol().getIdrol()) {
                 case "ADMINISTRADOR":
                 case "SECRETARIA":
@@ -171,9 +182,22 @@ ErrorInfoTransporteejbServices errorServices;
             }
             totales = totalAprobado + totalCancelado + totalRechazado + totalSolicitado;
             
-            
+             pieModelSolicitud.set("Solicitado", totalSolicitado);
+             pieModelSolicitud.set("Aprobado", totalAprobado);
+             pieModelSolicitud.set("Rechazado", totalRechazado);
+             pieModelSolicitud.set("Cancelado", totalCancelado);
          
-        
+       
+             pieModelSolicitud.setTitle("Solicitudes");
+     pieModelSolicitud.setLegendPosition("w");
+     pieModelSolicitud.setShowDatatip(true);
+        //    pieModelSolicitud.setFill(false);
+        pieModelSolicitud.setShowDataLabels(true);
+     //  pieModelSolicitud.setDiameter(150);
+        pieModelSolicitud.setShadow(false);
+               
+                
+                
             //Vehiculos
             totalVehiculos = vehiculoRepository.findAll().size();
             totalVehiculosActivos = vehiculoRepository.count(new Document("activo","si"));
