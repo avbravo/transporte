@@ -25,11 +25,11 @@
                 <b:dropMenu value="#{msg['menubar.solicitud']}" rendered="#{applicationMenu.menuBarSolicitud}">
 
 
-                  
-                 
-                        <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="/pages/solicitudmanualdocente/list" iconAwesome= "fa-calendar-o" />
-                        <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{applicationMenu.solicitudAdministrativoPorAdministrador.menu}" outcome="/pages/solicitudmanualadministrativo/list" iconAwesome= "fa-calendar-o" />
-                 
+
+
+                    <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="/pages/solicitudmanualdocente/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{applicationMenu.solicitudAdministrativoPorAdministrador.menu}" outcome="/pages/solicitudmanualadministrativo/list" iconAwesome= "fa-calendar-o" />
+
 
                     <b:navLink value="#{msg['menu.solicituddocente']}" rendered="#{applicationMenu.solicitudDocente.menu}" outcome="/pages/solicituddocente/list" iconAwesome= "fa-calendar-o" />                   
                     <b:navLink value="#{msg['menu.solicitudadministrativo']}" rendered="#{applicationMenu.solicitudAdministrativo.menu}" outcome="/pages/solicitudadministrativo/list" iconAwesome= "fa-calendar-o" />
@@ -38,18 +38,19 @@
 
 
                 </b:dropMenu>
-                
+
                 <b:dropMenu value="#{msg['menubar.calendario']}" rendered="#{applicationMenu.menuBarCalendario}">
+                    <b:navLink value="#{msg['menu.viajes']}" rendered="#{applicationMenu.calendariobuses.menu}" outcome="/pages/calendario/viajes" iconAwesome= "fa-calendar-o" />
                     <b:navLink value="#{msg['menu.solicitudes']}" rendered="#{applicationMenu.calendariobuses.menu}" outcome="/pages/calendario/solicitudes" iconAwesome= "fa-calendar-o" />
-                        <b:navLink value="#{msg['menu.viajes']}" rendered="#{applicationMenu.calendariobuses.menu}" outcome="/pages/calendario/viajes" iconAwesome= "fa-calendar-o" />
-                        
-                        
                     
+
+
+
                 </b:dropMenu>
-                
+
                 <b:dropMenu value="#{msg['menubar.mantenimiento']}" rendered="#{applicationMenu.menuBarMantenimiento}">
                     <b:dropMenu value="#{msg['menubar.combustible']}" rendered="#{applicationMenu.menuBarCombustible}">
-                </b:dropMenu>
+                    </b:dropMenu>
                 </b:dropMenu>
 
                 <b:dropMenu value="#{msg['menubar.registros']}" rendered="#{applicationMenu.menuBarRegistros}">
@@ -64,16 +65,16 @@
                     <b:navLink value="#{msg['menu.tipovehiculo']}" rendered="#{applicationMenu.tipovehiculo.menu}" outcome="/pages/tipovehiculo/list" iconAwesome= "fa-calendar-o" />
                     <b:navLink value="#{msg['menu.tiposolicitud']}" rendered="#{applicationMenu.tiposolicitud.menu}" outcome="/pages/tiposolicitud/list" iconAwesome= "fa-calendar-o" />
                     <b:navLink value="#{msg['menu.sugerencia']}" rendered="#{applicationMenu.sugerencia.menu}" outcome="/pages/sugerencia/list" iconAwesome= "fa-comments-o" />
-       
+
                     <b:navLink/>
-                     <b:navLink value="#{msg['menu.tipogira']}" rendered="#{applicationMenu.tipogira.menu}" outcome="/pages/tipogira/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.tipogira']}" rendered="#{applicationMenu.tipogira.menu}" outcome="/pages/tipogira/list" iconAwesome= "fa-calendar-o" />
                     <b:navLink value="#{msg['menu.unidad']}" rendered="#{applicationMenu.unidad.menu}" outcome="/pages/unidad/list" iconAwesome= "fa-calendar-o" />
                     <b:navLink/>
                     <b:navLink value="#{msg['menu.semestre']}" rendered="#{applicationMenu.semestre.menu}" outcome="/pages/semestre/list" iconAwesome= "fa-calendar-o" />
                     <b:navLink value="#{msg['menu.facultad']}" rendered="#{applicationMenu.facultad.menu}" outcome="/pages/facultad/list" iconAwesome= "fa-calendar-o" />
                     <b:navLink value="#{msg['menu.carrera']}" rendered="#{applicationMenu.carrera.menu}" outcome="/pages/carrera/list" iconAwesome= "fa-calendar-o" />
                     <b:navLink/>
-<b:navLink value="#{msg['menu.viajes']}" rendered="#{applicationMenu.viajes.menu}" outcome="/pages/viajes/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.viajes']}" rendered="#{applicationMenu.viajes.menu}" outcome="/pages/viajes/list" iconAwesome= "fa-calendar-o" />
 
                 </b:dropMenu>
 <!--                <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{applicationMenu.menuBarReportes}">
