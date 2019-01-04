@@ -1108,7 +1108,8 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-    }// </editor-fold>
+    }
+// </editor-fold>
 
     public String recorrerEventModel(ScheduleModel eventModel) {
         try {
