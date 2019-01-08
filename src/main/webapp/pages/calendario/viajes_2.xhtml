@@ -25,7 +25,6 @@
 
             .schedule-orange, .schedule-orange .fc-event-skin, .schedule-orange a{
                 background-color: orange; 
-                icon: url("../resources/images/box.png") !important;                
                 color: black;
                 border-color: darkorange;
             }
@@ -40,7 +39,7 @@
                 border-color: darkblue;
             }
 
-            .schedule-gray, .schedule-gray .fc-event-skin, .schedule-gray a{
+            .schedule-gris, .schedule-gris .fc-event-skin, .schedule-gris a{
                 background-color: #d4d0c8; 
                 color: black;
                 border-color: darkgray;
@@ -51,15 +50,10 @@
                 color: black;
                 border-color: darkmagenta;
             }
-            .schedule-green, .schedule-green .fc-event-skin, .schedule-green a{
+            .schedule-verde, .schedule-verde .fc-event-skin, .schedule-verde a{
                 background-color: green; 
                 color: black;
                 border-color: darkgreen;
-            }
-            .schedule-red, .schedule-red .fc-event-skin, .schedule-red a{
-                background-color: red; 
-                color: black;
-                border-color: darkred;
             }
         </style>
         <script type="text/javascript">
@@ -118,24 +112,22 @@
                     <!--</b:panelGrid>-->                    
 
                 </b:panel>
-                  <b:panel id="colores">
+                  <b:panel >
                       <b:row>
                          
                           <b:column span="2">
-                              
-                              <b:label text="#{msg['label.solicitado']} #{calendarioSolicitudViajesController.totalSolicitado}" severity="warning"/>
+                        <b:label text="Solicitado" severity="warning"/>
                               </b:column>
                             <b:column span="2">
-                                <b:label text="#{msg['label.aprobado']} #{calendarioSolicitudViajesController.totalAprobado}" severity="success"/>
+                                <b:label text="Aprobado" severity="success"/>
                               </b:column>
                             <b:column span="2">
-                                <b:label text="#{msg['label.rechazadocancelado']} #{calendarioSolicitudViajesController.totalRechazadoCancelado}" severity="danger"/>
+                                 <b:label text="Rechazado" severity="danger"/>
                               </b:column>
                            <b:column span="2">
-                               <b:label text="#{msg['label.viaje']} #{calendarioSolicitudViajesController.totalViajes}" severity="primary"/>
+                                  <b:label text="Viaje" severity="primary"/>
             
                               </b:column>
-                          
 <!--                           <b:column span="2">
                                   <b:label text="Default"/>
                           </b:column>
@@ -335,6 +327,86 @@
                                             />
 
 
+
+
+
+                    <p:outputLabel value="#{msg['field.vehiculo']}"
+                                   id="vehiculolabel2"
+
+                                   rendered="#{calendarioSolicitudViajesController.esAprobado}"/>
+
+                    <p:autoComplete dropdown="true"
+                                    id="vehiculo2"
+                                    multiple="true"
+                                    scrollHeight="250"
+                                    size="25"
+                                    rendered="#{calendarioSolicitudViajesController.esAprobado}"
+                                    emptyMessage="#{app['info.nohayregistros']}"
+                                    value="#{calendarioSolicitudViajesController.vehiculoList}"
+                                    completeMethod="#{calendarioSolicitudViajesController.completeVehiculoFiltrado}"
+                                    var="p"
+                                    required="true"
+                                    requiredMessage="#{msg['field.vehiculo']}"
+                                    itemLabel=" #{p.marca}"
+                                    itemValue="#{p}" forceSelection="true">
+                        <f:converter binding="#{vehiculoConverter}"/>
+                        <f:attribute name="field" value="marca"/>
+                        <f:attribute name="fielddropdown" value="false"/>
+                        <f:attribute name="fieldquerylenth" value="0"/>
+                        <p:ajax event="itemSelect" listener="#{calendarioSolicitudViajesController.handleSelect}"
+                                update="eventDetails"    />
+                        <p:ajax event="itemUnselect"  listener="#{calendarioSolicitudViajesController.handleSelect}"
+                                update="eventDetails"
+                                />
+                        <f:facet name="itemtip">
+                            <h:panelGrid columns="1" cellpadding="5">
+                                <h:outputText value="#{msg['field.idvehiculo']} #{p.idvehiculo}" />
+                                <h:outputText value="#{msg['field.marca']} #{p.marca}" />
+                                <h:outputText value="#{msg['field.modelo']} #{p.modelo}" />
+
+                            </h:panelGrid>
+                        </f:facet>
+                    </p:autoComplete>
+
+
+                    <p:outputLabel value="#{msg['field.conductor']}"  rendered="#{calendarioSolicitudViajesController.esAprobado}"/>
+
+
+                    <p:autoComplete dropdown="true"
+                                    multiple="true"
+                                    scrollHeight="250"
+                                    size="25"
+                                    rendered="#{calendarioSolicitudViajesController.esAprobado}"
+                                    emptyMessage="#{app['info.nohayregistros']}"
+                                    value="#{calendarioSolicitudViajesController.conductorList}"
+                                    completeMethod="#{calendarioSolicitudViajesController.completeConductorFiltrado}"
+                                    var="p"
+                                    required="true"
+                                    requiredMessage="#{msg['field.conductor']}"
+                                    itemLabel="#{p.nombre}"
+                                    itemValue="#{p}" forceSelection="true">
+                        <f:converter binding="#{conductorConverter}"/>
+                        <f:attribute name="field" value="nombre"/>
+                        <f:attribute name="fielddropdown" value="false"/>
+                        <f:attribute name="fieldquerylenth" value="0"/>
+                        <p:ajax event="itemSelect" listener="#{calendarioSolicitudViajesController.handleSelect}"
+                                update="eventDetails"   />
+                        <p:ajax event="itemUnselect"  listener="#{calendarioSolicitudViajesController.handleSelect}"
+                                update="eventDetails"
+                                />
+                        <f:facet name="itemtip">
+                            <h:panelGrid columns="1" cellpadding="5">
+                                <h:outputText value="#{msg['field.cedula']} #{p.cedula}" />
+                                <h:outputText value="#{msg['field.nombre']} #{p.nombre}" />
+                            </h:panelGrid>
+                        </f:facet>
+                    </p:autoComplete>
+
+
+
+
+
+
                     <p:outputLabel value="#{msg['field.solicitud']}"  rendered="#{calendarioSolicitudViajesController.esAprobado}"/>
                     <p:autoComplete dropdown="true"
                                     multiple="true"
@@ -347,6 +419,7 @@
                                     completeMethod="#{calendarioSolicitudViajesController.completeSolicitudFiltrado}"
                                     var="p"
                                     required="false"
+
 
                                     itemLabel="( #{p.idsolicitud} ) #{p.usuario.get(1).nombre}"
                                     itemValue="#{p}" forceSelection="true">
@@ -435,13 +508,31 @@
                                 </p:autoComplete>
 
 
+
+
+
+
+
+
                             </h:panelGrid>
                         </f:facet>
 
                     </p:autoComplete>
 
 
-               
+                    <p:outputLabel  value="#{msg['field.comentarios']}" rendered="#{calendarioSolicitudViajesController.esAprobado}"/>
+                    <b:inputTextarea required="true" requiredMessage="#{msg['field.comentarios']}"
+                                     rows="2" value="#{calendarioSolicitudViajesController.viajesSelected.comentarios}" rendered="#{calendarioSolicitudViajesController.esAprobado}" />
+
+
+                    <p:outputLabel  value="#{msg['field.kmestimados']}"  rendered="#{calendarioSolicitudViajesController.esAprobado}"/>
+                    <a:inputText span="5" value="#{calendarioSolicitudViajesController.viajesSelected.kmestimados}" rendered="#{calendarioSolicitudViajesController.esAprobado}"  />
+
+                    <p:outputLabel  value="#{msg['field.costocombustible']}"  rendered="#{calendarioSolicitudViajesController.esAprobado}"/>
+                    <a:inputText required="true"
+                                 label="#{msg['field.costocombustible']}"
+                                 span="5" value="#{calendarioSolicitudViajesController.viajesSelected.costocombustible}" rendered="#{calendarioSolicitudViajesController.esAprobado}"  />
+
 
 
                     <p:outputLabel  value="#{msg['field.tiposolicitud']}" />
@@ -648,24 +739,24 @@
                     <p:outputPanel>
                         <a:calendar 
                             mode="inline"
-                            required="false"
+                            required="true"
                             pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudViajesController.viajesSelected.fechahorainicioreserva}"   
                             label="#{msg['field.fechahorainicioreserva']}" />
 
 
                         <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
                         <a:calendar mode="inline"
-                                    required="false"
+                                    required="true"
                                     pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudViajesController.viajesSelected.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
 
                     </p:outputPanel>
 
 
                     <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                    <a:inputText  required="false" value="#{calendarioSolicitudViajesController.viajesSelected.lugarpartida}"    />
+                    <a:inputText value="#{calendarioSolicitudViajesController.viajesSelected.lugarpartida}"    />
 
                     <p:outputLabel  value="#{msg['field.lugarregreso']}" />
-                    <a:inputText required="false" value="#{calendarioSolicitudViajesController.viajesSelected.lugarregreso}"    />
+                    <a:inputText value="#{calendarioSolicitudViajesController.viajesSelected.lugarregreso}"    />
 
 
 
@@ -684,7 +775,7 @@
                                     value="#{calendarioSolicitudViajesController.vehiculoList}"
                                     completeMethod="#{calendarioSolicitudViajesController.completeVehiculoFiltrado}"
                                     var="p"
-                                    required="false"
+                                    required="true"
                                     requiredMessage="#{msg['field.vehiculo']}"
                                     itemLabel=" #{p.marca}"
                                     itemValue="#{p}" forceSelection="true">
@@ -724,7 +815,7 @@
                                     value="#{calendarioSolicitudViajesController.conductorList}"
                                     completeMethod="#{calendarioSolicitudViajesController.completeConductorFiltrado}"
                                     var="p"
-                                    required="false"
+                                    required="true"
                                     requiredMessage="#{msg['field.conductor']}"
                                     itemLabel="#{p.nombre}"
                                     itemValue="#{p}" forceSelection="true">
@@ -748,22 +839,77 @@
 
 
 
-                    
+                    <p:outputLabel value="#{msg['field.solicitud']}"  />
+                    <p:autoComplete dropdown="true"
+                                    multiple="true"
+                                    id="solicitud2"
+
+                                    scrollHeight="250"
+                                    size="55"
+                                    emptyMessage="#{app['info.nohayregistros']}"
+                                    value="#{calendarioSolicitudViajesController.solicitudList}"
+                                    completeMethod="#{calendarioSolicitudViajesController.completeSolicitudFiltrado}"
+                                    var="p"
+                                    required="false"
+
+
+                                    itemLabel="( #{p.idsolicitud} ) #{p.usuario.get(1).nombre}"
+                                    itemValue="#{p}" forceSelection="true">
+                        <f:converter binding="#{solicitudConverter}"/>
+                        <f:attribute name="field" value="idsolicitud"/>
+                        <f:attribute name="fielddropdown" value="false"/>
+                        <f:attribute name="fromstart" value="true"/>
+                        <f:attribute name="fieldquerylenth" value="0"/>
+
+                        <p:ajax event="itemSelect" listener="#{calendarioSolicitudViajesController.handleSelect}"
+                                update="eventDetails"
+                                />
+                        <p:ajax event="itemUnselect"  listener="#{calendarioSolicitudViajesController.handleSelect}"
+                                update="eventDetails"
+                                />
+
+                        <f:facet name="itemtip">
+                            <h:panelGrid columns="2" cellpadding="5">
+
+
+                                <p:outputLabel  value="#{msg['field.lugares']}" />
+                                <p:chips value="#{p.lugares}" disabled="true"  title="#{msg['field.chips']}" />
+
+
+                                <h:outputText value="#{msg['field.fechapartida']}" />
+                                <h:panelGroup>
+                                    <p:calendar  disabled="true"  size="8"                                  
+                                                 style="background-color: grey;"
+                                                 pattern="dd/MM/yyyy" value="#{p.fechahorapartida}"  />
+                                    <p:calendar  disabled="true"    
+                                                 size="8" 
+                                                 pattern="HH:mm:ss a" value="#{p.fechahorapartida}"  />
+                                </h:panelGroup>
+
+                                <h:outputText value="#{msg['field.fecharegreso']}" />
+                                <h:panelGroup>
+                                    <p:calendar  disabled="true"    
+                                                 size="8" 
+                                                 pattern="dd/MM/yyyy" value="#{p.fechahoraregreso}"  />
+                                    <p:calendar  disabled="true"   
+                                                 size="8" 
+                                                 pattern="HH:mm:ss a" value="#{p.fechahoraregreso}"  />
+
+                                </h:panelGroup>
+
+
+
+                            </h:panelGrid>
+                        </f:facet>
+
+                    </p:autoComplete>
 
 
                     <p:outputLabel  value="#{msg['field.comentarios']}"/>
-                    <b:inputTextarea required="false" requiredMessage="#{msg['field.comentarios']}"
+                    <b:inputTextarea required="true" requiredMessage="#{msg['field.comentarios']}"
                                      rows="2" value="#{calendarioSolicitudViajesController.viajesSelected.comentarios}"  />
 
 
-
-                    <p:outputLabel  value="#{msg['field.kmestimados']}" />
-                    <a:inputText required="false" span="5" value="#{calendarioSolicitudViajesController.viajesSelected.kmestimados}"  />
-
-                    <p:outputLabel  value="#{msg['field.costocombustible']}"  />
-                    <a:inputText required="false"
-                                 label="#{msg['field.costocombustible']}"
-                                 span="5" value="#{calendarioSolicitudViajesController.viajesSelected.costocombustible}"   />
 
 
 
@@ -775,7 +921,7 @@
                         rendered="#{applicationMenu.menuBarAdministracion}"
                         value="#{app['button.save']}"
                         update="growl, dataTable2, content"
-                        oncomplete="PF('myschedule').update(); PF('colores').update(); "
+                        oncomplete="PF('myschedule').update(); "
                         actionListener="#{calendarioSolicitudViajesController.saveViaje}"                     
 
                         />

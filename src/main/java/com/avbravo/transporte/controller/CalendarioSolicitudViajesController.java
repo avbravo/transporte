@@ -106,6 +106,11 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     Viajes viajes = new Viajes();
     Viajes viajesSelected = new Viajes();
 
+    private Integer totalAprobado=0;
+    private Integer totalSolicitado=0;
+    private Integer totalRechazadoCancelado=0;
+    private Integer totalViajes=0;
+    
     private ScheduleModel eventModel;
 
     private ScheduleModel lazyEventModel;
@@ -470,6 +475,48 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
         this.writable = writable;
     }
 
+    public Integer getTotalAprobado() {
+        return totalAprobado;
+    }
+
+    public void setTotalAprobado(Integer totalAprobado) {
+        this.totalAprobado = totalAprobado;
+    }
+
+    public Integer getTotalSolicitado() {
+        return totalSolicitado;
+    }
+
+    public void setTotalSolicitado(Integer totalSolicitado) {
+        this.totalSolicitado = totalSolicitado;
+    }
+
+    public Integer getTotalRechazadoCancelado() {
+        return totalRechazadoCancelado;
+    }
+
+    public void setTotalRechazadoCancelado(Integer totalRechazadoCancelado) {
+        this.totalRechazadoCancelado = totalRechazadoCancelado;
+    }
+
+    public Integer getTotalViajes() {
+        return totalViajes;
+    }
+
+    public void setTotalViajes(Integer totalViajes) {
+        this.totalViajes = totalViajes;
+    }
+
+    public TipovehiculoServices getTipovehiculoServices() {
+        return tipovehiculoServices;
+    }
+
+    public void setTipovehiculoServices(TipovehiculoServices tipovehiculoServices) {
+        this.tipovehiculoServices = tipovehiculoServices;
+    }
+    
+    
+
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
     public CalendarioSolicitudViajesController() {
@@ -488,6 +535,10 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     @PostConstruct
     public void init() {
         try {
+         totalAprobado=0;
+   totalSolicitado=0;
+   totalRechazadoCancelado=0;
+   totalViajes=0;
             esAprobadoParaEditar = false;
             String action = loginController.get("solicitud");
             String id = loginController.get("idsolicitud");
@@ -1044,14 +1095,18 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
 
     public void cargarSchedule(Boolean start) {
         try {
+                  totalAprobado=0;
+   totalSolicitado=0;
+   totalRechazadoCancelado=0;
+   totalViajes=0;
             Document doc;
             Document docViajes = new Document("activo", "si");
-            if (start) {
-                doc = new Document("tipovehiculo.idtipovehiculo", tipovehiculo.getIdtipovehiculo()).append("estatus.idestatus", estatus.getIdestatus()).append("activo", "si");
-
-            } else {
+//            if (start) {
+//                doc = new Document("tipovehiculo.idtipovehiculo", tipovehiculo.getIdtipovehiculo()).append("estatus.idestatus", estatus.getIdestatus()).append("activo", "si");
+//
+//            } else {
                 doc = new Document("activo", "si");
-            }
+//            }
             List<Viajes> list = viajesRepository.findBy(docViajes, new Document("fecha", 1));
 
             solicitudList = solicitudRepository.findBy(doc, new Document("fecha", 1));
@@ -1059,24 +1114,30 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             if (!solicitudList.isEmpty()) {
                 solicitudList.forEach((a) -> {
                     String car = "{ ";
-                    for (Tipovehiculo t : a.getTipovehiculo()) {
-                        car += t.getIdtipovehiculo() + " ";
-                    }
+                    car = a.getTipovehiculo().stream().map((t) -> t.getIdtipovehiculo() + " ").reduce(car, String::concat);
                     car += " }";
                     String tema="schedule-blue";
                     switch(a.getEstatus().getIdestatus()){
                         case "SOLICITADO":
+                            totalSolicitado++;
                             tema="schedule-orange";
 //                            tema="schedule-blue";
                             break;
                         case "APROBADO":
-                            tema="scheduleg-green";
+                            totalAprobado++;
+                            String viajest="{";
+                               viajest=     a.getViajes().stream().map((t)->t.getIdviaje()+" ").reduce(viajest,String::concat);
+                               viajest="}";
+                               car += viajest;
+                            tema="schedule-green";
                             break;
                         case "RECHAZADO":
-                           tema="scheduleg-red";
+                            totalRechazadoCancelado++;
+                           tema="schedule-red";
                             break;
                         case "CANCELADO":
-                         tema="scheduleg-red";
+                            totalRechazadoCancelado++;
+                         tema="schedule-red";
                             break;
                     }
                     
@@ -1093,6 +1154,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             
             if(!list.isEmpty()){
                 list.forEach((v)->{
+                    totalViajes++;
                     String car = "";
                     car = v.getVehiculo().stream().map((t) -> t.getMarca()+ " "+t.getModelo()+ " "+t.getPlaca()).reduce(car, String::concat);
                     String chofer="{";
@@ -1100,12 +1162,13 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                     chofer += " }";
                     eventModel.addEvent(
                     new DefaultScheduleEvent("#"+v.getIdviaje() + " "+car + " "+chofer,
-                    v.getFechahorainicioreserva(),v.getFechahorafinreserva(),"schedule-green")
+                    v.getFechahorainicioreserva(),v.getFechahorafinreserva(),"schedule-blue")
                     );
                 }
                 );
 
             }
+
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
