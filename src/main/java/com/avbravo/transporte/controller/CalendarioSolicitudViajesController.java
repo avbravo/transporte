@@ -1066,7 +1066,8 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                     String tema="schedule-blue";
                     switch(a.getEstatus().getIdestatus()){
                         case "SOLICITADO":
-                            tema="schedule-blue";
+                            tema="schedule-orange";
+//                            tema="schedule-blue";
                             break;
                         case "APROBADO":
                             tema="scheduleg-green";
@@ -1099,10 +1100,11 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                     chofer += " }";
                     eventModel.addEvent(
                     new DefaultScheduleEvent("#"+v.getIdviaje() + " "+car + " "+chofer,
-                    v.getFechahorainicioreserva(),v.getFechahorafinreserva(),"schedule-orange")
+                    v.getFechahorainicioreserva(),v.getFechahorafinreserva(),"schedule-green")
                     );
                 }
                 );
+
             }
 
         } catch (Exception e) {

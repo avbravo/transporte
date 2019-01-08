@@ -22,7 +22,7 @@
         </style>
 
         <style type="text/css">
-         
+
             .schedule-orange, .schedule-orange .fc-event-skin, .schedule-orange a{
                 background-color: orange; 
                 color: black;
@@ -81,7 +81,7 @@
                 month: 'Mes',
                 week: 'Semana',
                 day: 'Dia',
-                agenda:'Agenda',
+                agenda: 'Agenda',
                 allDayText: 'Dia entero'
             };
         </script>
@@ -112,8 +112,36 @@
                     <!--</b:panelGrid>-->                    
 
                 </b:panel>
-                <b:panel>
-
+                  <b:panel >
+                      <b:row>
+                         
+                          <b:column span="2">
+                        <b:label text="Solicitado" severity="warning"/>
+                              </b:column>
+                            <b:column span="2">
+                                <b:label text="Aprobado" severity="success"/>
+                              </b:column>
+                            <b:column span="2">
+                                 <b:label text="Rechazado" severity="danger"/>
+                              </b:column>
+                           <b:column span="2">
+                                  <b:label text="Viaje" severity="primary"/>
+            
+                              </b:column>
+<!--                           <b:column span="2">
+                                  <b:label text="Default"/>
+                          </b:column>
+                          
+                          
+                        
+                        
+                          <b:column span="2">
+                                   <b:label text="Info" severity="info"/>
+                              </b:column>-->
+                         
+                      </b:row>
+                 
+          
 
                 </b:panel>
 
