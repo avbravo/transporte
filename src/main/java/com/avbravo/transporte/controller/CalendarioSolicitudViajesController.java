@@ -563,7 +563,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             solicitudFiltered = new ArrayList<>();
             solicitud = new Solicitud();
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-
+vehiculoList = new ArrayList<>();
             tipovehiculo = tipovehiculoServices.findById(loginController.get("calendariotipovehiculo"));
             estatus = estatusServices.findById(loginController.get("calendarioestatus"));
             esDocente = true;
@@ -883,22 +883,6 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
         try {
             //Si era apronado para editar
 
-//            if (esAprobado) {
-//                if (JsfUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
-//
-//                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechainicioreservamayorfechapartida"));
-//                    return "";
-//                }
-//                if (JsfUtil.fechaMenor(viajes.getFechahorafinreserva(), solicitud.getFechahoraregreso())) {
-//
-//                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechafinreservamenorfecharegreso"));
-//                    return "";
-//                }
-//
-//                if (solicitud.getNumerodevehiculos() != vehiculoList.size()) {
-//                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodevehiculosnoigualvehiculos"));
-//                    return "";
-//                }
             if (conductorList.size() != vehiculoList.size()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
                 return "";
@@ -907,6 +891,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             viajes = viajesSelected;
             Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
             viajes.setActivo("si");
+            viajes.setRealizado("no");
             viajes.setIdviaje(idviaje);
             viajes.setConductor(conductorList);
             viajes.setVehiculo(vehiculoList);
@@ -924,35 +909,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                 JsfUtil.errorDialog("save() ", viajesRepository.getException().toString());
                 return "";
             }
-//                } else {
-//                    viajes = viajesSelected;
-//                    viajes.setConductor(conductorList);
-//                    viajes.setVehiculo(vehiculoList);
-//                    viajesSelected.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "update"));
-//                    if (viajesRepository.update(viajesSelected)) {
-//                        revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajesSelected.getIdviaje().toString(), loginController.getUsername(),
-//                                "update", "viajes", viajesRepository.toDocument(viajesSelected).toString()));
-//
-//                    }
-//                }
 
-//            } else {
-//                //Si era apronado para editar y se cambio el estatus se coloca activo = no
-//                if (esAprobadoParaEditar) {
-//                    viajesSelected.setActivo("no");
-//                    viajesSelected.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "update"));
-//                    if (viajesRepository.update(viajesSelected)) {
-//                        revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajesSelected.getIdviaje().toString(), loginController.getUsername(),
-//                                "update", "viajes", viajesRepository.toDocument(viajesSelected).toString()));
-//
-//                    }
-//                }
-//            }
-            // solicitud.setEstatus(estatusSelected);
-//            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
-//                    "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
-            //   solicitudRepository.update(solicitud);
-            //     JsfUtil.infoDialog(rf.getAppMessage("info.view"), rf.getAppMessage("info.update"));
         } catch (Exception e) {
 
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1787,7 +1744,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                 if (validos.isEmpty()) {
                     return suggestions;
                 }
-                if (vehiculoList.isEmpty()) {
+                if (vehiculoList== null || vehiculoList.isEmpty()) {
                     return validos;
                 } else {
 // REMOVERLOS SI YA ESTAN EN EL LISTADO
@@ -1869,7 +1826,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = conductorRepository.findRegex(field, query, true, new Document(field, 1));
 
-            if (conductorList.isEmpty()) {
+            if (conductorList == null ||conductorList.isEmpty()) {
                 if (!temp.isEmpty()) {
                     suggestions = temp;
                 }
@@ -2086,6 +2043,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     }
     // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="completeSolicitudFiltrado(String query)">
     /**
      * Se usa para los autocomplete filtrando
      *
@@ -2177,7 +2135,100 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="completeSolicitudFiltrado(String query)">
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
+    public List<Viajes> completeViajes(String query) {
+       List<Viajes> suggestions = new ArrayList<>();
+       List<Viajes> disponibles = new ArrayList<>();
+        List<Viajes> temp = new ArrayList<>();
+       try {
+//            Boolean found = false;
+//            query = query.trim();
+//
+//            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+//            // temp = solicitudRepository.findRegex(field, query, true, new Document(field, 1));
+//            Document doc = new Document();
+//            doc.append("activo", "si").append("realizado", "no");
+//            temp = viajesRepository.findBy(doc, new Document("idsolicitud", -1));
+//
+//            if (temp.isEmpty()) {
+//                return suggestions;
+//            } else {
+//                List<Solicitud> validos = temp.stream()
+//                        .filter(x -> isSolicitudValid(x)).collect(Collectors.toList());
+//                if (validos.isEmpty()) {
+//                    return suggestions;
+//                }
+//
+//                if (solicitudList.isEmpty()) {
+//                    return validos;
+//                } else {
+//// REMOVERLOS SI YA ESTAN EN EL LISTADO
+//
+//                    validos.forEach((v) -> {
+//                        Optional<Solicitud> optional = solicitudList.stream()
+//                                .filter(v2 -> v2.getIdsolicitud() == v.getIdsolicitud())
+//                                .findAny();
+//                        if (!optional.isPresent()) {
+//                            suggestions.add(v);
+//                        }
+//                    });
+//                    disponibles = suggestions;
+
+//                    for (Solicitud v : suggestions) {
+//
+//                        List<Viajes> viajesList;
+//                        if (esMismoDiaSolicitud()) {
+//                            //SI LA SOLICITUD(salida y regreso es el mismo dia)
+//                            //BUSCAR LOS REGISTROS DE VIAJES DEL VEHICULO ESE DIA
+//                            viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdsolicitud(), "fechahorainicioreserva", solicitud.getFechahorapartida());
+//                            if (viajesList.isEmpty()) {
+//                                // INDICA QUE ESE VEHICULO ESTA DISPONIBLE NO TIENE NINGUN VIAJE
+//                                disponibles.add(v);
+//                            } else {
+//                                // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
+//                                if (!tieneDisponibilidadViaje(viajesList)) {
+//                                    disponibles.add(v);
+//                                }
+//
+//                            }
+//                        } else {
+//                            // ABARCA VARIOS DIAS 
+//                            // OBTENER LOS VIAJES ENTRE ESOS DIAS
+//
+//                            viajesList = viajesVariosDias(v);
+//                            if (viajesList.isEmpty()) {
+//                                //SI ESTA VACIO INDICA QUE ESTA DISPONIBLE NO TIENE VIAJES EN ESA FECHA
+//                                disponibles.add(v);
+//                            } else {
+//                                // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
+//                                if (!tieneDisponibilidadViaje(viajesList)) {
+//                                    disponibles.add(v);
+//                                }
+//                            }
+////                     
+//                        }
+//                    }
+                    // VERIRIFICAR SI TIENE VIAJES
+                    // List<Viajes> viajesList = viajesRepository.fi
+                    //si el dia y mes
+//                }
+//            }
+//
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return disponibles;
+}
+
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="inicializarViaje()">
     public String inicializarViaje() {
         try {
             viajesSelected = new Viajes();

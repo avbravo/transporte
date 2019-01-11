@@ -361,6 +361,7 @@ ErrorInfoTransporteejbServices errorServices;
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
+            viajes.setRealizado("no");
 
             //Lo datos del usuario
             viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
