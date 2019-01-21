@@ -6,6 +6,7 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
+import com.avbravo.avbravoutils.DateUtil;
 import com.avbravo.avbravoutils.JsfUtil;
 import com.avbravo.avbravoutils.printer.Printer;
 import com.avbravo.commonejb.entity.Carrera;
@@ -607,7 +608,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
             solicitud.setIdsolicitud(id);
             solicitud.setFecha(idsecond);
             solicitud.setMision("---");
-            solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
+            solicitud.setFechaestatus(DateUtil.getFechaHoraActual());
             solicita = loginController.getUsuario();
             responsable = solicita;
             responsableOld = responsable;
@@ -617,14 +618,14 @@ public class CalendarioSolicitudController implements Serializable, IController 
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
 
-            solicitud.setPeriodoacademico(JsfUtil.getAnioActual().toString());
+            solicitud.setPeriodoacademico(DateUtil.getAnioActual().toString());
             solicitud.setFechahorapartida(solicitud.getFecha());
             solicitud.setFechahoraregreso(solicitud.getFecha());
             unidadList = new ArrayList<>();
             unidadList.add(loginController.getUsuario().getUnidad());
 
             viajesSelected = new Viajes();
-            Integer mes = JsfUtil.getMesDeUnaFecha(solicitud.getFecha());
+            Integer mes = DateUtil.getMesDeUnaFecha(solicitud.getFecha());
 
             String idsemestre = "V";
             if (mes <= 3) {
@@ -675,7 +676,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
 
-            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+            if (DateUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
                 return "";
@@ -688,13 +689,13 @@ public class CalendarioSolicitudController implements Serializable, IController 
                 return "";
             }
 
-            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
-                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
+            if (DateUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
+                    && DateUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horapartidaescero"));
                 return "";
             }
-            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
-                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
+            if (DateUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
+                    && DateUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
             }
 
@@ -747,12 +748,12 @@ public class CalendarioSolicitudController implements Serializable, IController 
             //Si era apronado para editar
 
             if (esAprobado) {
-                if (JsfUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
+                if (DateUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
 
                     JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechainicioreservamayorfechapartida"));
                     return "";
                 }
-                if (JsfUtil.fechaMenor(viajes.getFechahorafinreserva(), solicitud.getFechahoraregreso())) {
+                if (DateUtil.fechaMenor(viajes.getFechahorafinreserva(), solicitud.getFechahoraregreso())) {
 
                     JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechafinreservamenorfecharegreso"));
                     return "";
@@ -833,12 +834,12 @@ public class CalendarioSolicitudController implements Serializable, IController 
             //Si era apronado para editar
 
 //            if (esAprobado) {
-//                if (JsfUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
+//                if (DateUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
 //
 //                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechainicioreservamayorfechapartida"));
 //                    return "";
 //                }
-//                if (JsfUtil.fechaMenor(viajes.getFechahorafinreserva(), solicitud.getFechahoraregreso())) {
+//                if (DateUtil.fechaMenor(viajes.getFechahorafinreserva(), solicitud.getFechahoraregreso())) {
 //
 //                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechafinreservamenorfecharegreso"));
 //                    return "";
@@ -1551,7 +1552,7 @@ public class CalendarioSolicitudController implements Serializable, IController 
     // <editor-fold defaultstate="collapsed" desc="onDateSelect(SelectEvent event)">
     public String onDateSelect(SelectEvent event) {
         try {
-            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+            if (DateUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
                 return "";
@@ -1859,12 +1860,12 @@ public class CalendarioSolicitudController implements Serializable, IController 
     private Boolean esMismoDiaSolicitud() {
         try {
 
-            Integer dia = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
-            Integer mes = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
-            Integer anio = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
-            Integer diaf = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
-            Integer mesf = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
-            Integer aniof = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
+            Integer dia = DateUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer mes = DateUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer anio = DateUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer diaf = DateUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
+            Integer mesf = DateUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
+            Integer aniof = DateUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
 // ES EN LA MISMA FECHA
 
             if (anio == aniof && mes == mesf && dia == diaf) {
@@ -1911,8 +1912,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
      */
     public Boolean esOcupadoEseDiaHora(Solicitud solicitud, Viajes viajes) {
         try {
-            if (JsfUtil.dateBetween(solicitud.getFechahorapartida(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())
-                    || JsfUtil.dateBetween(solicitud.getFechahoraregreso(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())) {
+            if (DateUtil.dateBetween(solicitud.getFechahorapartida(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())
+                    || DateUtil.dateBetween(solicitud.getFechahoraregreso(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())) {
                 return true;
             }
         } catch (Exception e) {
@@ -2072,8 +2073,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
     public String inicializarViaje(){
         try {
             viajesSelected = new Viajes();
-            viajesSelected.setFechahorainicioreserva(JsfUtil.getFechaHoraActual());
-            viajesSelected.setFechahorafinreserva(JsfUtil.getFechaHoraActual());
+            viajesSelected.setFechahorainicioreserva(DateUtil.getFechaHoraActual());
+            viajesSelected.setFechahorafinreserva(DateUtil.getFechaHoraActual());
             viajesSelected.setLugarpartida("UTP Azuero");
             conductorList = new ArrayList<>();
             vehiculoList = new ArrayList<>();

@@ -6,6 +6,7 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
+import com.avbravo.avbravoutils.DateUtil;
 import com.avbravo.avbravoutils.JsfUtil;
 import com.avbravo.avbravoutils.printer.Printer;
 import com.avbravo.commonejb.entity.Carrera;
@@ -41,6 +42,7 @@ import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
+import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -138,6 +140,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     List<Solicitud> solicitudFiltered = new ArrayList<>();
     List<Unidad> unidadList = new ArrayList<>();
     List<Viajes> viajesList = new ArrayList<>();
+    List<Viajes> viajesDisponiblesList = new ArrayList<>();
 
     List<Usuario> usuarioList = new ArrayList<>();
     List<Vehiculo> vehiculoList = new ArrayList<>();
@@ -211,6 +214,16 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
         this.pages = pages;
     }
 
+    public List<Viajes> getViajesDisponiblesList() {
+        return viajesDisponiblesList;
+    }
+
+    public void setViajesDisponiblesList(List<Viajes> viajesDisponiblesList) {
+        this.viajesDisponiblesList = viajesDisponiblesList;
+    }
+
+    
+    
     public Viajes getViajesSelected() {
         return viajesSelected;
     }
@@ -658,7 +671,7 @@ vehiculoList = new ArrayList<>();
             solicitud.setIdsolicitud(id);
             solicitud.setFecha(idsecond);
             solicitud.setMision("---");
-            solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
+            solicitud.setFechaestatus(DateUtil.getFechaHoraActual());
             solicita = loginController.getUsuario();
             responsable = solicita;
             responsableOld = responsable;
@@ -668,14 +681,14 @@ vehiculoList = new ArrayList<>();
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
 
-            solicitud.setPeriodoacademico(JsfUtil.getAnioActual().toString());
+            solicitud.setPeriodoacademico(DateUtil.getAnioActual().toString());
             solicitud.setFechahorapartida(solicitud.getFecha());
             solicitud.setFechahoraregreso(solicitud.getFecha());
             unidadList = new ArrayList<>();
             unidadList.add(loginController.getUsuario().getUnidad());
 
             viajesSelected = new Viajes();
-            Integer mes = JsfUtil.getMesDeUnaFecha(solicitud.getFecha());
+            Integer mes = DateUtil.getMesDeUnaFecha(solicitud.getFecha());
 
             String idsemestre = "V";
             if (mes <= 3) {
@@ -726,7 +739,7 @@ vehiculoList = new ArrayList<>();
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
 
-            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+            if (DateUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
                 return "";
@@ -739,13 +752,13 @@ vehiculoList = new ArrayList<>();
                 return "";
             }
 
-            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
-                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
+            if (DateUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
+                    && DateUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horapartidaescero"));
                 return "";
             }
-            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
-                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
+            if (DateUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
+                    && DateUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
             }
 
@@ -798,12 +811,12 @@ vehiculoList = new ArrayList<>();
             //Si era apronado para editar
 
             if (esAprobado) {
-                if (JsfUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
+                if (DateUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
 
                     JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechainicioreservamayorfechapartida"));
                     return "";
                 }
-                if (JsfUtil.fechaMenor(viajes.getFechahorafinreserva(), solicitud.getFechahoraregreso())) {
+                if (DateUtil.fechaMenor(viajes.getFechahorafinreserva(), solicitud.getFechahoraregreso())) {
 
                     JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechafinreservamenorfecharegreso"));
                     return "";
@@ -1618,7 +1631,7 @@ vehiculoList = new ArrayList<>();
     // <editor-fold defaultstate="collapsed" desc="onDateSelect(SelectEvent event)">
     public String onDateSelect(SelectEvent event) {
         try {
-            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+            if (DateUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
                 return "";
@@ -1916,6 +1929,22 @@ vehiculoList = new ArrayList<>();
         return valid;
     }
     // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isViajesDisponibleValid(Viajes viajes)">
+    public Boolean isViajesDisponibleValid(Viajes viajes) {
+        Boolean valid = false;
+        try {
+
+            if (viajes.getActivo().equals("si") ) {
+
+                valid = true;
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    }
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Boolean esMismoDiaSolicitud()">
     /**
@@ -1926,12 +1955,12 @@ vehiculoList = new ArrayList<>();
     private Boolean esMismoDiaSolicitud() {
         try {
 
-            Integer dia = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
-            Integer mes = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
-            Integer anio = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
-            Integer diaf = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
-            Integer mesf = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
-            Integer aniof = JsfUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
+            Integer dia = DateUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer mes = DateUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer anio = DateUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer diaf = DateUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
+            Integer mesf = DateUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
+            Integer aniof = DateUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
 // ES EN LA MISMA FECHA
 
             if (anio == aniof && mes == mesf && dia == diaf) {
@@ -1978,8 +2007,8 @@ vehiculoList = new ArrayList<>();
      */
     public Boolean esOcupadoEseDiaHora(Solicitud solicitud, Viajes viajes) {
         try {
-            if (JsfUtil.dateBetween(solicitud.getFechahorapartida(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())
-                    || JsfUtil.dateBetween(solicitud.getFechahoraregreso(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())) {
+            if (DateUtil.dateBetween(solicitud.getFechahorapartida(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())
+                    || DateUtil.dateBetween(solicitud.getFechahoraregreso(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())) {
                 return true;
             }
         } catch (Exception e) {
@@ -2142,6 +2171,98 @@ vehiculoList = new ArrayList<>();
      * @param query
      * @return
      */
+    public List<Viajes> completeViajesDisponibles(String query) {
+        List<Viajes> suggestions = new ArrayList<>();
+        List<Viajes> disponibles = new ArrayList<>();
+        List<Viajes> temp = new ArrayList<>();
+        try {
+            Boolean found = false;
+            query = query.trim();
+
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            // temp = solicitudRepository.findRegex(field, query, true, new Document(field, 1));
+//            Document doc = new Document();
+//            doc.append("relactivo", "si")
+            temp = viajesRepository.findBy(eq("realizado","no"), new Document("idviaje", -1));
+
+            if (temp.isEmpty()) {
+                return suggestions;
+            } else {
+                List<Viajes> validos = temp.stream()
+                        .filter(x -> isViajesDisponibleValid(x)).collect(Collectors.toList());
+                if (validos.isEmpty()) {
+                    return suggestions;
+                }
+
+                if (solicitudList.isEmpty()) {
+                    return validos;
+                } else {
+// REMOVERLOS SI YA ESTAN EN EL LISTADO
+
+                    validos.forEach((v) -> {
+                        Optional<Viajes> optional = viajesDisponiblesList.stream()
+                                .filter(v2 -> v2.getIdviaje()== v.getIdviaje())
+                                .findAny();
+                        if (!optional.isPresent()) {
+                            suggestions.add(v);
+                        }
+                    });
+                    disponibles = suggestions;
+
+//                    for (Viajes v : suggestions) {
+//
+//                        List<Viajes> viajesList;
+//                        if (esMismoDiaViajes()) {
+//                            //SI LA SOLICITUD(salida y regreso es el mismo dia)
+//                            //BUSCAR LOS REGISTROS DE VIAJES DEL VEHICULO ESE DIA
+//                            viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdsolicitud(), "fechahorainicioreserva", solicitud.getFechahorapartida());
+//                            if (viajesList.isEmpty()) {
+//                                // INDICA QUE ESE VEHICULO ESTA DISPONIBLE NO TIENE NINGUN VIAJE
+//                                disponibles.add(v);
+//                            } else {
+//                                // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
+//                                if (!tieneDisponibilidadViaje(viajesList)) {
+//                                    disponibles.add(v);
+//                                }
+//
+//                            }
+//                        } else {
+//                            // ABARCA VARIOS DIAS 
+//                            // OBTENER LOS VIAJES ENTRE ESOS DIAS
+//
+//                            viajesList = viajesVariosDias(v);
+//                            if (viajesList.isEmpty()) {
+//                                //SI ESTA VACIO INDICA QUE ESTA DISPONIBLE NO TIENE VIAJES EN ESA FECHA
+//                                disponibles.add(v);
+//                            } else {
+//                                // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
+//                                if (!tieneDisponibilidadViaje(viajesList)) {
+//                                    disponibles.add(v);
+//                                }
+//                            }
+////                     
+//                        }
+//                    }
+                    // VERIRIFICAR SI TIENE VIAJES
+                    // List<Viajes> viajesList = viajesRepository.fi
+                    //si el dia y mes
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return disponibles;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="completeSolicitudFiltrado(String query)">
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
     public List<Viajes> completeViajes(String query) {
        List<Viajes> suggestions = new ArrayList<>();
        List<Viajes> disponibles = new ArrayList<>();
@@ -2232,8 +2353,8 @@ vehiculoList = new ArrayList<>();
     public String inicializarViaje() {
         try {
             viajesSelected = new Viajes();
-            viajesSelected.setFechahorainicioreserva(JsfUtil.getFechaHoraActual());
-            viajesSelected.setFechahorafinreserva(JsfUtil.getFechaHoraActual());
+            viajesSelected.setFechahorainicioreserva(DateUtil.getFechaHoraActual());
+            viajesSelected.setFechahorafinreserva(DateUtil.getFechaHoraActual());
             viajesSelected.setLugarpartida("UTP Azuero");
             conductorList = new ArrayList<>();
             vehiculoList = new ArrayList<>();

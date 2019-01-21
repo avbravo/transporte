@@ -6,6 +6,7 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
+import com.avbravo.avbravoutils.DateUtil;
 import com.avbravo.avbravoutils.JsfUtil;
 import com.avbravo.avbravoutils.printer.Printer;
 import com.avbravo.commonejb.entity.Carrera;
@@ -503,7 +504,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (!list.isEmpty()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yasolicitoviajeenestafecha"));
             }
-            if (JsfUtil.fechaMenor(solicitud.getFecha(), JsfUtil.getFechaActual())) {
+            if (DateUtil.fechaMenor(solicitud.getFecha(),DateUtil.getFechaActual())) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechasolicitudmenorqueactual"));
                 writable = false;
 
@@ -516,7 +517,7 @@ ErrorInfoTransporteejbServices errorServices;
             solicitud.setLugarpartida("UTP-AZUERO");
             solicitud.setNumerodevehiculos(1);
             solicitud.setPasajeros(25);
-            solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
+            solicitud.setFechaestatus(DateUtil.getFechaHoraActual());
             solicita = loginController.getUsuario();
             responsable = solicita;
             responsableOld = responsable;
@@ -526,13 +527,13 @@ ErrorInfoTransporteejbServices errorServices;
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
 
-            solicitud.setPeriodoacademico(JsfUtil.getAnioActual().toString());
+            solicitud.setPeriodoacademico(DateUtil.getAnioActual().toString());
             solicitud.setFechahorapartida(solicitud.getFecha());
             solicitud.setFechahoraregreso(solicitud.getFecha());
             unidadList = new ArrayList<>();
             unidadList.add(loginController.getUsuario().getUnidad());
 
-            Integer mes = JsfUtil.getMesDeUnaFecha(solicitud.getFecha());
+            Integer mes = DateUtil.getMesDeUnaFecha(solicitud.getFecha());
 
             String idsemestre = "V";
             if (mes <= 3) {
@@ -1266,7 +1267,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
     // <editor-fold defaultstate="collapsed" desc="onDateSelect(SelectEvent event)">
     public String onDateSelect(SelectEvent event) {
         try {
-            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+            if (DateUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
                 return "";

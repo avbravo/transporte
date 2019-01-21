@@ -110,7 +110,7 @@
                                 rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
                                 value="#{calendarioSolicitudViajesController.eventModel}" widgetVar="myschedule" timeZone="GMT-5" locale="es">
 
-                        <p:ajax  event="eventSelect"  listener="#{calendarioSolicitudViajesController.onEventSelect}" update="eventDetails" oncomplete="PF('solicitudDialog').show();" />                      
+                        <p:ajax  event="eventSelect"  listener="#{calendarioSolicitudViajesController.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
                         <!--<p:ajax  event="dateSelect" listener="#{calendarioSolicitudViajesController.onDateSelectCalendar}" update="newDetails" oncomplete="PF('newDialog').show();" />-->
                     </p:schedule>
 
@@ -230,7 +230,7 @@
                 </b:panel>
             </h:panelGroup>
 
-            <p:dialog widgetVar="solicitudDialog" header="#{msg['dialogo.solicitud']}" 
+            <p:dialog widgetVar="eventDialog" header="#{msg['dialogo.solicitud']} #{calendarioSolicitudViajesController.solicitud.idsolicitud}" 
                       width="850" height="480"
                       styleClass="customDialog"
 
@@ -498,12 +498,12 @@
                                             />
 
 
-                    <p:outputLabel value="#{msg['field.viajes']}"  rendered="#{calendarioSolicitudViajesController.esAprobado}"/>
-                    <e:autocompleteviajes_disponibles/>
+                    <p:outputLabel value="#{msg['field.solicitud']}"  rendered="#{calendarioSolicitudViajesController.esAprobado}"/>
+                    <e:autocompletesolicitud_viajes/>
 
                     <b:commandButton value="#{app['button.close']}"
                                      iconAwesome="fa-close"
-                                     oncomplete="PF('solicitudDialog').hide();"/>
+                                     oncomplete="PF('eventDialog').hide();"/>
 
                     <p:commandButton
                         rendered="#{applicationMenu.menuBarAdministracion}"

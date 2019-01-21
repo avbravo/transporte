@@ -6,6 +6,7 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
+import com.avbravo.avbravoutils.DateUtil;
 import com.avbravo.avbravoutils.JsfUtil;
 import com.avbravo.avbravoutils.printer.Printer;
 import com.avbravo.commonejb.entity.Carrera;
@@ -553,7 +554,7 @@ ErrorInfoTransporteejbServices errorServices;
             solicitud.setIdsolicitud(id);
             solicitud.setFecha(idsecond);
             solicitud.setMision("---");
-            solicitud.setFechaestatus(JsfUtil.getFechaHoraActual());
+            solicitud.setFechaestatus(DateUtil.getFechaHoraActual());
             solicita = loginController.getUsuario();
             responsable = solicita;
             responsableOld = responsable;
@@ -563,13 +564,13 @@ ErrorInfoTransporteejbServices errorServices;
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
 
-            solicitud.setPeriodoacademico(JsfUtil.getAnioActual().toString());
+            solicitud.setPeriodoacademico(DateUtil.getAnioActual().toString());
             solicitud.setFechahorapartida(solicitud.getFecha());
             solicitud.setFechahoraregreso(solicitud.getFecha());
             unidadList = new ArrayList<>();
             unidadList.add(loginController.getUsuario().getUnidad());
 
-            Integer mes = JsfUtil.getMesDeUnaFecha(solicitud.getFecha());
+            Integer mes = DateUtil.getMesDeUnaFecha(solicitud.getFecha());
 
             String idsemestre = "V";
             if (mes <= 3) {
@@ -626,7 +627,7 @@ ErrorInfoTransporteejbServices errorServices;
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
 
-            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+            if (DateUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
                 return "";
@@ -639,13 +640,13 @@ ErrorInfoTransporteejbServices errorServices;
                 return "";
             }
 
-            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
-                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
+            if (DateUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
+                    && DateUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horapartidaescero"));
                 return "";
             }
-            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
-                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
+            if (DateUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
+                    && DateUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
             }
 
@@ -693,18 +694,18 @@ ErrorInfoTransporteejbServices errorServices;
 //            solicitud.setFacultad(facultadList);
 //            solicitud.setCarrera(carreraList);
 //            //guarda el contenido actualizado
-//            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+//            if (DateUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
 //
 //                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
 //                return "";
 //            }
-//            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
-//                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
+//            if (DateUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
+//                    && DateUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
 //                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horapartidaescero"));
 //                return "";
 //            }
-//            if (JsfUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
-//                    && JsfUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
+//            if (DateUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
+//                    && DateUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
 //                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
 //            }
 //
@@ -1344,7 +1345,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
     // <editor-fold defaultstate="collapsed" desc="onDateSelect(SelectEvent event)">
     public String onDateSelect(SelectEvent event) {
         try {
-            if (JsfUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
+            if (DateUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
                 return "";
