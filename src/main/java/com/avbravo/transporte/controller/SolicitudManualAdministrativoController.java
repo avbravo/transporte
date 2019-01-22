@@ -79,7 +79,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
 
     //    private String stmpPort="80";
     private String stmpPort = "25";
-   
+
     private Date _old;
     private Boolean writable = false;
     //DataModel
@@ -96,7 +96,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
     Usuario solicita = new Usuario();
     Usuario responsable = new Usuario();
     Usuario responsableOld = new Usuario();
-       Solicitud solicitudCopiar = new Solicitud();
+    Solicitud solicitudCopiar = new Solicitud();
 
     //List
     List<Solicitud> solicitudList = new ArrayList<>();
@@ -108,8 +108,8 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
     List<Tiposolicitud> tiposolicitudList = new ArrayList<>();
     List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
     List<Tipovehiculo> suggestionsTipovehiculo = new ArrayList<>();
-    
-     List<Facultad> suggestionsFacultad = new ArrayList<>();
+
+    List<Facultad> suggestionsFacultad = new ArrayList<>();
     List<Carrera> suggestionsCarrera = new ArrayList<>();
     List<Unidad> suggestionsUnidad = new ArrayList<>();
     List<Tiposolicitud> suggestionsTiposolicitud = new ArrayList<>();
@@ -137,11 +137,10 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
     @Inject
     AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
 
-
     @Inject
     LookupServices lookupServices;
-   @Inject
-ErrorInfoTransporteejbServices errorServices;
+    @Inject
+    ErrorInfoTransporteejbServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -192,9 +191,6 @@ ErrorInfoTransporteejbServices errorServices;
     public void setSolicitudCopiar(Solicitud solicitudCopiar) {
         this.solicitudCopiar = solicitudCopiar;
     }
-    
-    
-    
 
     public List<Tiposolicitud> getTiposolicitudList() {
         return tiposolicitudList;
@@ -203,9 +199,6 @@ ErrorInfoTransporteejbServices errorServices;
     public void setTiposolicitudList(List<Tiposolicitud> tiposolicitudList) {
         this.tiposolicitudList = tiposolicitudList;
     }
-    
-    
-    
 
     public List<Usuario> getUsuarioList() {
         return usuarioList;
@@ -427,7 +420,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="reset">
@@ -475,7 +468,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
 
         return url;
@@ -492,7 +485,7 @@ ErrorInfoTransporteejbServices errorServices;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -510,22 +503,21 @@ ErrorInfoTransporteejbServices errorServices;
             if (!list.isEmpty()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yasolicitoviajeenestafecha"));
             }
-              if (DateUtil.fechaMenor(solicitud.getFecha(), DateUtil.getFechaActual())) {
+            if (DateUtil.fechaMenor(solicitud.getFecha(), DateUtil.getFechaActual())) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechasolicitudmenorqueactual"));
-                writable =false;
-                       
+                writable = false;
+
             }
             solicitud = new Solicitud();
             solicitudSelected = new Solicitud();
             solicitud.setIdsolicitud(id);
             solicitud.setFecha(idsecond);
-              solicitud.setNumerodevehiculos(1);
+            solicitud.setNumerodevehiculos(1);
             solicitud.setPasajeros(25);
             solicitud.setLugarpartida("UTP-AZUERO");
-       
-     List<String> numeroGrupoList = new ArrayList<>();
-            solicitud.setNumerogrupo(numeroGrupoList);
 
+            List<String> numeroGrupoList = new ArrayList<>();
+            solicitud.setNumerogrupo(numeroGrupoList);
 
             solicitud.setObjetivo("---");
             solicitud.setFechaestatus(DateUtil.getFechaHoraActual());
@@ -560,9 +552,9 @@ ErrorInfoTransporteejbServices errorServices;
                 }
             }
             solicitud.setSemestre(semestreServices.findById(idsemestre));
-  List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
-                    
-                    tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+            List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+
+            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
             solicitud.setTipovehiculo(tipovehiculoList);
 
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
@@ -573,7 +565,7 @@ ErrorInfoTransporteejbServices errorServices;
             solicitudSelected = solicitud;
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -582,14 +574,11 @@ ErrorInfoTransporteejbServices errorServices;
     @Override
     public String save() {
         try {
-          
 
-              if(!solicitudServices.isValid(solicitud)){
-              return "";
-          }
+            if (!solicitudServices.isValid(solicitud)) {
+                return "";
+            }
 
-            
-            
             solicitud.setActivo("si");
             solicitud.setUnidad(unidadList);
             solicitud.setFacultad(facultadList);
@@ -599,46 +588,55 @@ ErrorInfoTransporteejbServices errorServices;
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
 
-          solicitud.setTipovehiculo(tipovehiculoList);
+            solicitud.setTipovehiculo(tipovehiculoList);
             //Verificar si tiene un viaje en esas fechas
+            Integer solicitudesGuardadas = 0;
+                        solicitud.setSolicitudpadre(0);
+            for (Integer index = 0; index < solicitud.getNumerodevehiculos(); index++) {
+                //Verificar si tiene un viaje en esas fechas
+//                Optional<Solicitud> optionalRango = solicitudServices.coincidenciaResponsableEnRango(solicitud);
+//            if (optionalRango.isPresent()) {
+//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.solicitudnumero") + " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
+//                return "";
+//            }
 
-            Optional<Solicitud> optionalRango = solicitudServices.coincidenciaResponsableEnRango(solicitud);
-            if (optionalRango.isPresent()) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.solicitudnumero") + " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
-                return "";
-            }
-
-              Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
-            solicitud.setIdsolicitud(idsolicitud);
-            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
-            if (optional.isPresent()) {
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return null;
-            }
-            //Lo datos del usuario
-            solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
-            if (solicitudRepository.save(solicitud)) {
-                //guarda el contenido anterior
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
-                        "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
-//enviarEmails();
-                //si cambia el email o celular del responsable actualizar ese usuario
-
-                if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
-                    usuarioRepository.update(responsable);
-                    //actuliza el que esta en el login
-                    if (responsable.getUsername().equals(loginController.getUsuario().getUsername())) {
-                        loginController.setUsuario(responsable);
-                    }
+                Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
+                solicitud.setIdsolicitud(idsolicitud);
+                Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
+                if (optional.isPresent()) {
+                    JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
+                    return null;
                 }
-                JsfUtil.successMessage(rf.getAppMessage("info.save"));
-                reset();
-            } else {
-                JsfUtil.successMessage("save() " + solicitudRepository.getException().toString());
-            }
+                //Lo datos del usuario
+                solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+                if (solicitudRepository.save(solicitud)) {
+                    //guarda el contenido anterior
+                    revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
+                            "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+//enviarEmails();
+                    //si cambia el email o celular del responsable actualizar ese usuario
 
+                    if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
+                        usuarioRepository.update(responsable);
+                        //actuliza el que esta en el login
+                        if (responsable.getUsername().equals(loginController.getUsuario().getUsername())) {
+                            loginController.setUsuario(responsable);
+                        }
+                    }
+//                JsfUtil.successMessage(rf.getAppMessage("info.save"));
+//                reset();
+                } else {
+                    JsfUtil.successMessage("save() " + solicitudRepository.getException().toString());
+                }
+                 //Asigna la solicitud padre para las demas solicitudes
+                if (index.equals(0)) {
+                    solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
+                }
+            }
+            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") + " : " + solicitudesGuardadas.toString() + " " + rf.getMessage("info.solicitudesde") + solicitud.getNumerodevehiculos());
+            reset();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -652,9 +650,9 @@ ErrorInfoTransporteejbServices errorServices;
             solicitud.setUnidad(unidadList);
             solicitud.setFacultad(facultadList);
             solicitud.setCarrera(carreraList);
-               if(!solicitudServices.isValid(solicitud)){
-              return "";
-          }
+            if (!solicitudServices.isValid(solicitud)) {
+                return "";
+            }
             usuarioList = new ArrayList<>();
             usuarioList.add(solicita);
             usuarioList.add(responsable);
@@ -680,7 +678,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -717,7 +715,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         // path = deleteonviewpage ? "/pages/solicitud/list.xhtml" : "";
         path = "";
@@ -745,7 +743,7 @@ ErrorInfoTransporteejbServices errorServices;
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -762,7 +760,7 @@ ErrorInfoTransporteejbServices errorServices;
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -770,24 +768,24 @@ ErrorInfoTransporteejbServices errorServices;
 
     public void handleSelect(SelectEvent event) {
         try {
-          
+
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
-    
-      // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
+
+    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
     public void handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-              solicitudList.removeAll(solicitudList);
+            solicitudList.removeAll(solicitudList);
             solicitudList.add(solicitudSelected);
             solicitudFiltered = solicitudList;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-            
+
             loginController.put("searchsolicitud", "idsolicitud");
             lookupServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -798,7 +796,7 @@ ErrorInfoTransporteejbServices errorServices;
             page = solicitudRepository.sizeOfPage(rowPage);
             move();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -810,7 +808,7 @@ ErrorInfoTransporteejbServices errorServices;
             page = 1;
             move();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -824,7 +822,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             move();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -838,7 +836,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             move();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -850,7 +848,7 @@ ErrorInfoTransporteejbServices errorServices;
             this.page = page;
             move();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -889,7 +887,7 @@ ErrorInfoTransporteejbServices errorServices;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -901,7 +899,7 @@ ErrorInfoTransporteejbServices errorServices;
             page = 1;
             move();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -917,7 +915,7 @@ ErrorInfoTransporteejbServices errorServices;
             move();
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -950,7 +948,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return suggestionsUnidad;
     }// </editor-fold>
@@ -984,7 +982,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return suggestionsFacultad;
     }// </editor-fold>
@@ -1013,7 +1011,7 @@ ErrorInfoTransporteejbServices errorServices;
                 }
             }
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return suggestionsCarrera;
     }// </editor-fold>
@@ -1041,7 +1039,7 @@ ErrorInfoTransporteejbServices errorServices;
             });
 
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return list;
     }
@@ -1055,7 +1053,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -1073,7 +1071,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return _found;
     }
@@ -1091,7 +1089,7 @@ ErrorInfoTransporteejbServices errorServices;
                 _found = false;
             }
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return _found;
     }
@@ -1110,7 +1108,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return _found;
     }
@@ -1123,7 +1121,7 @@ ErrorInfoTransporteejbServices errorServices;
                 suggestionsFacultad.add(facultad);
             }
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
     }
@@ -1136,7 +1134,7 @@ ErrorInfoTransporteejbServices errorServices;
                 suggestionsCarrera.add(carrera);
             }
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
     }
@@ -1149,14 +1147,13 @@ ErrorInfoTransporteejbServices errorServices;
                 suggestionsUnidad.add(unidad);
             }
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
     }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="enviarEmails()">
-   
     public String enviarEmails() {
         try {
             Boolean enviados = false;
@@ -1205,7 +1202,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     } // </editor-fold>
@@ -1225,7 +1222,7 @@ ErrorInfoTransporteejbServices errorServices;
                     color = "black";
             }
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return color;
     } // </editor-fold>
@@ -1245,7 +1242,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return editable;
     } // </editor-fold>
@@ -1260,7 +1257,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
         // </editor-fold>
@@ -1272,13 +1269,11 @@ ErrorInfoTransporteejbServices errorServices;
 
             responsableOld = responsable;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
-    
-    
-       // <editor-fold defaultstate="collapsed" desc="completeFiltradoTipovehiculo(String query)">
+    // <editor-fold defaultstate="collapsed" desc="completeFiltradoTipovehiculo(String query)">
     public List<Tipovehiculo> completeFiltradoTipovehiculo(String query) {
 
         suggestionsTipovehiculo = new ArrayList<>();
@@ -1304,27 +1299,25 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return suggestionsTipovehiculo;
     }// </editor-fold>
-    
-    
-      // <editor-fold defaultstate="collapsed" desc="addTipovehiculo(Tipovehiculo tipovehiculo)">
+
+    // <editor-fold defaultstate="collapsed" desc="addTipovehiculo(Tipovehiculo tipovehiculo)">
     private Boolean addTipovehiculo(Tipovehiculo tipovehiculo) {
         try {
             if (!foundTipovehiculo(tipovehiculo.getIdtipovehiculo())) {
                 suggestionsTipovehiculo.add(tipovehiculo);
             }
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
     }
 
     // </editor-fold>
-    
-     // <editor-fold defaultstate="collapsed" desc="foundTipovehiculo(String idtipovehiculo)">
+    // <editor-fold defaultstate="collapsed" desc="foundTipovehiculo(String idtipovehiculo)">
     private Boolean foundTipovehiculo(String idtipovehiculo) {
         Boolean _found = true;
         try {
@@ -1338,54 +1331,49 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return _found;
     }
     // </editor-fold>
 
- // <editor-fold defaultstate="collapsed" desc="completeSolicitudParaCopiar(String query)">
-
+    // <editor-fold defaultstate="collapsed" desc="completeSolicitudParaCopiar(String query)">
     public List<Solicitud> completeSolicitudParaCopiar(String query) {
         List<Solicitud> suggestions = new ArrayList<>();
         try {
             List<Solicitud> list = new ArrayList<>();
             list = solicitudRepository.complete(query);
-            if(!list.isEmpty()){
-                for(Solicitud s:list){
-                    if(s.getTiposolicitud().getIdtiposolicitud().equals("ADMINISTRATIVO")){
+            if (!list.isEmpty()) {
+                for (Solicitud s : list) {
+                    if (s.getTiposolicitud().getIdtiposolicitud().equals("ADMINISTRATIVO")) {
                         suggestions.add(s);
                     }
                 }
             }
-            if(!suggestions.isEmpty()){
-                 Collections.sort(suggestions,
+            if (!suggestions.isEmpty()) {
+                Collections.sort(suggestions,
                         (Solicitud a, Solicitud b) -> a.getIdsolicitud().compareTo(b.getIdsolicitud()));
             }
-            
-            
+
         } catch (Exception e) {
-errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
 
         return suggestions;
     }
-        // </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="handleSelectCopiarDesde(SelectEvent event)">
+    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="handleSelectCopiarDesde(SelectEvent event)">
     public void handleSelectCopiarDesde(SelectEvent event) {
         try {
 
-
-      
-         solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
+            solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
 
             facultadList = solicitud.getFacultad();
             carreraList = solicitud.getCarrera();
             tipovehiculoList = solicitud.getTipovehiculo();
         } catch (Exception e) {
-errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 }

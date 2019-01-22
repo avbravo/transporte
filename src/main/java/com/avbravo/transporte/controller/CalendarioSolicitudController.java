@@ -104,6 +104,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
     Tipovehiculo tipovehiculo = new Tipovehiculo();
     Vehiculo vehiculo = new Vehiculo();
     Conductor conductor = new Conductor();
+    Vehiculo vehiculoSelected = new Vehiculo();
+    Conductor conductorSelected = new Conductor();
     Viajes viajes = new Viajes();
     Viajes viajesSelected = new Viajes();
 
@@ -207,6 +209,25 @@ public class CalendarioSolicitudController implements Serializable, IController 
         this.pages = pages;
     }
 
+    public Vehiculo getVehiculoSelected() {
+        return vehiculoSelected;
+    }
+
+    public void setVehiculoSelected(Vehiculo vehiculoSelected) {
+        this.vehiculoSelected = vehiculoSelected;
+    }
+
+    public Conductor getConductorSelected() {
+        return conductorSelected;
+    }
+
+    public void setConductorSelected(Conductor conductorSelected) {
+        this.conductorSelected = conductorSelected;
+    }
+
+    
+    
+    
     public Viajes getViajesSelected() {
         return viajesSelected;
     }
@@ -772,8 +793,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
                     Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
                     viajes.setActivo("si");
                     viajes.setIdviaje(idviaje);
-                    viajes.setConductor(conductorList);
-                    viajes.setVehiculo(vehiculoList);
+                    viajes.setConductor(conductorSelected);
+                    viajes.setVehiculo(vehiculoSelected);
                     // viajes.setVehsolicitudList);
                     viajes.setNumerovehiculos(solicitud.getNumerodevehiculos());
 
@@ -790,8 +811,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
                     }
                 } else {
                     viajes = viajesSelected;
-                    viajes.setConductor(conductorList);
-                    viajes.setVehiculo(vehiculoList);
+                    viajes.setConductor(conductorSelected);
+                    viajes.setVehiculo(vehiculoSelected);
                     viajesSelected.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "update"));
                     if (viajesRepository.update(viajesSelected)) {
                         revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajesSelected.getIdviaje().toString(), loginController.getUsername(),
@@ -858,8 +879,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
                     Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
                     viajes.setActivo("si");
                     viajes.setIdviaje(idviaje);
-                    viajes.setConductor(conductorList);
-                    viajes.setVehiculo(vehiculoList);
+                    viajes.setConductor(conductorSelected);
+                    viajes.setVehiculo(vehiculoSelected);
                     // viajes.setVehsolicitudList);
                     viajes.setNumerovehiculos(solicitud.getNumerodevehiculos());
 
@@ -1603,8 +1624,8 @@ public class CalendarioSolicitudController implements Serializable, IController 
                         JsfUtil.warningMessage(rf.getMessage("warning.notexitsviajeconesasolicitud"));
                     } else {
                         viajesSelected = list.get(0);
-                        vehiculoList = viajesSelected.getVehiculo();
-                        conductorList = viajesSelected.getConductor();
+                        vehiculoSelected= viajesSelected.getVehiculo();
+                        conductorSelected = viajesSelected.getConductor();
                     }
                 } else {
                     viajesSelected.setActivo("si");

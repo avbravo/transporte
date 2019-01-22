@@ -587,13 +587,15 @@ ErrorInfoTransporteejbServices errorServices;
             if (!solicitudServices.isValid(solicitud)) {
                 return "";
             }
-
+                        solicitud.setSolicitudpadre(0);
+Integer solicitudesGuardadas = 0;
+            for (Integer index = 0; index < solicitud.getNumerodevehiculos(); index++) {
             //Verificar si tiene un viaje en esas fechas
-            Optional<Solicitud> optionalRango = solicitudServices.coincidenciaResponsableEnRango(solicitud);
-            if (optionalRango.isPresent()) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.solicitudnumero") + " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
-                return "";
-            }
+//            Optional<Solicitud> optionalRango = solicitudServices.coincidenciaResponsableEnRango(solicitud);
+//            if (optionalRango.isPresent()) {
+//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.solicitudnumero") + " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
+//                return "";
+//            }
 
             Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
             solicitud.setIdsolicitud(idsolicitud);
@@ -619,12 +621,18 @@ ErrorInfoTransporteejbServices errorServices;
                         loginController.setUsuario(responsable);
                     }
                 }
-                JsfUtil.successMessage(rf.getAppMessage("info.save"));
-                reset();
+//                JsfUtil.successMessage(rf.getAppMessage("info.save"));
+//                reset();
             } else {
                 JsfUtil.successMessage("save() " + solicitudRepository.getException().toString());
             }
-
+             //Asigna la solicitud padre para las demas solicitudes
+                if (index.equals(0)) {
+                    solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
+                }
+            }
+              JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") + " : "+solicitudesGuardadas.toString() + " "+rf.getMessage("info.solicitudesde")+solicitud.getNumerodevehiculos());
+                reset();
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }

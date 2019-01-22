@@ -98,6 +98,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     private Date _old;
     private Boolean writable = false;
     private Boolean esDocente = true;
+    private Boolean esSolicitud = true;
     //DataModel
     private SolicitudDataModel solicitudDataModel;
     Estatus estatus = new Estatus();
@@ -105,14 +106,16 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     Tipovehiculo tipovehiculo = new Tipovehiculo();
     Vehiculo vehiculo = new Vehiculo();
     Conductor conductor = new Conductor();
+    Vehiculo vehiculoSelected = new Vehiculo();
+    Conductor conductorSelected = new Conductor();
     Viajes viajes = new Viajes();
     Viajes viajesSelected = new Viajes();
 
-    private Integer totalAprobado=0;
-    private Integer totalSolicitado=0;
-    private Integer totalRechazadoCancelado=0;
-    private Integer totalViajes=0;
-    
+    private Integer totalAprobado = 0;
+    private Integer totalSolicitado = 0;
+    private Integer totalRechazadoCancelado = 0;
+    private Integer totalViajes = 0;
+
     private ScheduleModel eventModel;
 
     private ScheduleModel lazyEventModel;
@@ -214,6 +217,30 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
         this.pages = pages;
     }
 
+    public Boolean getEsSolicitud() {
+        return esSolicitud;
+    }
+
+    public void setEsSolicitud(Boolean esSolicitud) {
+        this.esSolicitud = esSolicitud;
+    }
+
+    public Vehiculo getVehiculoSelected() {
+        return vehiculoSelected;
+    }
+
+    public void setVehiculoSelected(Vehiculo vehiculoSelected) {
+        this.vehiculoSelected = vehiculoSelected;
+    }
+
+    public Conductor getConductorSelected() {
+        return conductorSelected;
+    }
+
+    public void setConductorSelected(Conductor conductorSelected) {
+        this.conductorSelected = conductorSelected;
+    }
+
     public List<Viajes> getViajesDisponiblesList() {
         return viajesDisponiblesList;
     }
@@ -222,8 +249,6 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
         this.viajesDisponiblesList = viajesDisponiblesList;
     }
 
-    
-    
     public Viajes getViajesSelected() {
         return viajesSelected;
     }
@@ -527,8 +552,6 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     public void setTipovehiculoServices(TipovehiculoServices tipovehiculoServices) {
         this.tipovehiculoServices = tipovehiculoServices;
     }
-    
-    
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
@@ -548,11 +571,14 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     @PostConstruct
     public void init() {
         try {
-         totalAprobado=0;
-   totalSolicitado=0;
-   totalRechazadoCancelado=0;
-   totalViajes=0;
+            esSolicitud = true;
+            totalAprobado = 0;
+            totalSolicitado = 0;
+            totalRechazadoCancelado = 0;
+            totalViajes = 0;
             esAprobadoParaEditar = false;
+            conductorSelected = new Conductor();
+            vehiculoSelected = new Vehiculo();
             String action = loginController.get("solicitud");
             String id = loginController.get("idsolicitud");
             String pageSession = loginController.get("pagesolicitud");
@@ -576,7 +602,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             solicitudFiltered = new ArrayList<>();
             solicitud = new Solicitud();
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-vehiculoList = new ArrayList<>();
+            vehiculoList = new ArrayList<>();
             tipovehiculo = tipovehiculoServices.findById(loginController.get("calendariotipovehiculo"));
             estatus = estatusServices.findById(loginController.get("calendarioestatus"));
             esDocente = true;
@@ -835,8 +861,8 @@ vehiculoList = new ArrayList<>();
                     Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
                     viajes.setActivo("si");
                     viajes.setIdviaje(idviaje);
-                    viajes.setConductor(conductorList);
-                    viajes.setVehiculo(vehiculoList);
+                    viajes.setConductor(conductorSelected);
+                    viajes.setVehiculo(vehiculoSelected);
                     // viajes.setVehsolicitudList);
                     viajes.setNumerovehiculos(solicitud.getNumerodevehiculos());
 
@@ -853,8 +879,8 @@ vehiculoList = new ArrayList<>();
                     }
                 } else {
                     viajes = viajesSelected;
-                    viajes.setConductor(conductorList);
-                    viajes.setVehiculo(vehiculoList);
+                    viajes.setConductor(conductorSelected);
+                    viajes.setVehiculo(vehiculoSelected);
                     viajesSelected.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "update"));
                     if (viajesRepository.update(viajesSelected)) {
                         revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajesSelected.getIdviaje().toString(), loginController.getUsername(),
@@ -906,8 +932,8 @@ vehiculoList = new ArrayList<>();
             viajes.setActivo("si");
             viajes.setRealizado("no");
             viajes.setIdviaje(idviaje);
-            viajes.setConductor(conductorList);
-            viajes.setVehiculo(vehiculoList);
+            viajes.setConductor(conductorSelected);
+            viajes.setVehiculo(vehiculoSelected);
             // viajes.setVehsolicitudList);
             viajes.setNumerovehiculos(solicitud.getNumerodevehiculos());
 
@@ -1065,17 +1091,17 @@ vehiculoList = new ArrayList<>();
 
     public void cargarSchedule(Boolean start) {
         try {
-                  totalAprobado=0;
-   totalSolicitado=0;
-   totalRechazadoCancelado=0;
-   totalViajes=0;
+            totalAprobado = 0;
+            totalSolicitado = 0;
+            totalRechazadoCancelado = 0;
+            totalViajes = 0;
             Document doc;
             Document docViajes = new Document("activo", "si");
 //            if (start) {
 //                doc = new Document("tipovehiculo.idtipovehiculo", tipovehiculo.getIdtipovehiculo()).append("estatus.idestatus", estatus.getIdestatus()).append("activo", "si");
 //
 //            } else {
-                doc = new Document("activo", "si");
+            doc = new Document("activo", "si");
 //            }
             List<Viajes> list = viajesRepository.findBy(docViajes, new Document("fecha", 1));
 
@@ -1086,59 +1112,55 @@ vehiculoList = new ArrayList<>();
                     String car = "{ ";
                     car = a.getTipovehiculo().stream().map((t) -> t.getIdtipovehiculo() + " ").reduce(car, String::concat);
                     car += " }";
-                    String tema="schedule-blue";
-                    switch(a.getEstatus().getIdestatus()){
+                    String tema = "schedule-blue";
+                    switch (a.getEstatus().getIdestatus()) {
                         case "SOLICITADO":
                             totalSolicitado++;
-                            tema="schedule-orange";
+                            tema = "schedule-orange";
 //                            tema="schedule-blue";
                             break;
                         case "APROBADO":
                             totalAprobado++;
-                            String viajest="{";
-                               viajest=     a.getViajes().stream().map((t)->t.getIdviaje()+" ").reduce(viajest,String::concat);
-                               viajest="}";
-                               car += viajest;
-                            tema="schedule-green";
+                            String viajest = "{";
+                            viajest = a.getViajes().stream().map((t) -> t.getIdviaje() + " ").reduce(viajest, String::concat);
+                            viajest = "}";
+                            car += viajest;
+                            tema = "schedule-green";
                             break;
                         case "RECHAZADO":
                             totalRechazadoCancelado++;
-                           tema="schedule-red";
+                            tema = "schedule-red";
                             break;
                         case "CANCELADO":
                             totalRechazadoCancelado++;
-                         tema="schedule-red";
+                            tema = "schedule-red";
                             break;
                     }
-                    
-                    
+
                     eventModel.addEvent(
-                            
-                            new DefaultScheduleEvent("# " + a.getIdsolicitud() +  " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus()
+                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision: " + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus()
                                     + car,
-                                    a.getFechahorapartida(), a.getFechahoraregreso(),tema)
+                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
                     );
                 });
             }
             //Viajes
-            
-            if(!list.isEmpty()){
-                list.forEach((v)->{
+
+            if (!list.isEmpty()) {
+                list.forEach((v) -> {
                     totalViajes++;
-                    String car = "";
-                    car = v.getVehiculo().stream().map((t) -> t.getMarca()+ " "+t.getModelo()+ " "+t.getPlaca()).reduce(car, String::concat);
-                    String chofer="{";
-                    chofer = v.getConductor().stream().map((c) -> c.getNombre() + "").reduce(chofer, String::concat);
+                    String car = v.getVehiculo().getMarca() + " " + v.getVehiculo().getModelo() + " " + v.getVehiculo().getPlaca();
+                    String chofer = "{";
+                    chofer = v.getConductor().getNombre();
                     chofer += " }";
                     eventModel.addEvent(
-                    new DefaultScheduleEvent("#"+v.getIdviaje() + " "+car + " "+chofer,
-                    v.getFechahorainicioreserva(),v.getFechahorafinreserva(),"schedule-blue")
+                            new DefaultScheduleEvent("#" + v.getIdviaje() + " Viaje: " + car + " " + chofer,
+                                    v.getFechahorainicioreserva(), v.getFechahorafinreserva(), "schedule-blue")
                     );
                 }
                 );
 
             }
-
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1146,17 +1168,20 @@ vehiculoList = new ArrayList<>();
     }
 // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="recorrerEventModel(ScheduleModel eventModel)">
     public String recorrerEventModel(ScheduleModel eventModel) {
         try {
 
             String title = event.getTitle();
-            System.out.println("----> " + eventModel.toString());
+
         } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }
-// <editor-fold defaultstate="collapsed" desc="handleSelectResponsable(SelectEvent event)">
+    // </editor-fold>
 
+// <editor-fold defaultstate="collapsed" desc="handleSelectResponsable(SelectEvent event)">
     public void handleSelectResponsable(SelectEvent event) {
         try {
 
@@ -1648,6 +1673,7 @@ vehiculoList = new ArrayList<>();
     public void onEventSelect(SelectEvent selectEvent) {
         try {
             // esnuevo = false;
+            esSolicitud = true;
             esAprobadoParaEditar = false;
             viajesSelected = new Viajes();
             esDocente = false;
@@ -1658,37 +1684,56 @@ vehiculoList = new ArrayList<>();
 
             Integer idsolicitud = 0;
             if (i != -1) {
-                idsolicitud = Integer.parseInt(title.substring(1, i).trim());
-            }
-            solicitud.setIdsolicitud(idsolicitud);
-            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
-            if (optional.isPresent()) {
-                solicitud = optional.get();
 
-                solicita = solicitud.getUsuario().get(0);
-                responsable = solicitud.getUsuario().get(1);
-                facultadList = solicitud.getFacultad();
-                unidadList = solicitud.getUnidad();
-                carreraList = solicitud.getCarrera();
-                solicitudSelected = solicitud;
-                estatusSelected = solicitud.getEstatus();
-                esDocente = solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE");
-                if (solicitud.getEstatus().getIdestatus().equals("APROBADO")) {
-                    esAprobado = true;
-                    esAprobadoParaEditar = true;
-                    List<Viajes> list = new ArrayList<>();
-                    list = viajesRepository.findBy(new Document("solicitud.idsolicitud", solicitud.getIdsolicitud()));
-                    if (list.isEmpty()) {
-                        JsfUtil.warningMessage(rf.getMessage("warning.notexitsviajeconesasolicitud"));
+                idsolicitud = Integer.parseInt(title.substring(1, i).trim());
+
+                solicitud.setIdsolicitud(idsolicitud);
+                Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
+                if (optional.isPresent()) {
+                    solicitud = optional.get();
+
+                    solicita = solicitud.getUsuario().get(0);
+                    responsable = solicitud.getUsuario().get(1);
+                    facultadList = solicitud.getFacultad();
+                    unidadList = solicitud.getUnidad();
+                    carreraList = solicitud.getCarrera();
+                    solicitudSelected = solicitud;
+                    estatusSelected = solicitud.getEstatus();
+                    esDocente = solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE");
+                    if (solicitud.getEstatus().getIdestatus().equals("APROBADO")) {
+                        esAprobado = true;
+                        esAprobadoParaEditar = true;
+                        List<Viajes> list = new ArrayList<>();
+                        list = viajesRepository.findBy(new Document("solicitud.idsolicitud", solicitud.getIdsolicitud()));
+                        if (list.isEmpty()) {
+                            JsfUtil.warningMessage(rf.getMessage("warning.notexitsviajeconesasolicitud"));
+                        } else {
+                            viajesSelected = list.get(0);
+                            vehiculoSelected = viajesSelected.getVehiculo();
+                            conductorSelected = viajesSelected.getConductor();
+                        }
                     } else {
-                        viajesSelected = list.get(0);
-                        vehiculoList = viajesSelected.getVehiculo();
-                        conductorList = viajesSelected.getConductor();
+                        viajesSelected.setActivo("si");
+                        viajesSelected.setFechahorainicioreserva(solicitud.getFechahorapartida());
+                        viajesSelected.setFechahorafinreserva(solicitud.getFechahoraregreso());
                     }
-                } else {
-                    viajesSelected.setActivo("si");
-                    viajesSelected.setFechahorainicioreserva(solicitud.getFechahorapartida());
-                    viajesSelected.setFechahorafinreserva(solicitud.getFechahoraregreso());
+                }
+
+            } else {
+                //Viajes
+                i = title.indexOf("V");
+
+                Integer idviaje = 0;
+                if (i != -1) {
+                     esSolicitud = false;
+                    idviaje = Integer.parseInt(title.substring(1, i).trim());
+
+                    viajesSelected.setIdviaje(idviaje);
+                    Optional<Viajes> optional = viajesRepository.findById(viajesSelected);
+                    if (optional.isPresent()) {
+                       viajesSelected = optional.get();
+
+                    }
                 }
             }
 
@@ -1757,7 +1802,7 @@ vehiculoList = new ArrayList<>();
                 if (validos.isEmpty()) {
                     return suggestions;
                 }
-                if (vehiculoList== null || vehiculoList.isEmpty()) {
+                if (vehiculoList == null || vehiculoList.isEmpty()) {
                     return validos;
                 } else {
 // REMOVERLOS SI YA ESTAN EN EL LISTADO
@@ -1839,7 +1884,7 @@ vehiculoList = new ArrayList<>();
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = conductorRepository.findRegex(field, query, true, new Document(field, 1));
 
-            if (conductorList == null ||conductorList.isEmpty()) {
+            if (conductorList == null || conductorList.isEmpty()) {
                 if (!temp.isEmpty()) {
                     suggestions = temp;
                 }
@@ -1928,13 +1973,14 @@ vehiculoList = new ArrayList<>();
         }
         return valid;
     }
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="isViajesDisponibleValid(Viajes viajes)">
     public Boolean isViajesDisponibleValid(Viajes viajes) {
         Boolean valid = false;
         try {
 
-            if (viajes.getActivo().equals("si") ) {
+            if (viajes.getActivo().equals("si")) {
 
                 valid = true;
             }
@@ -2183,7 +2229,7 @@ vehiculoList = new ArrayList<>();
             // temp = solicitudRepository.findRegex(field, query, true, new Document(field, 1));
 //            Document doc = new Document();
 //            doc.append("relactivo", "si")
-            temp = viajesRepository.findBy(eq("realizado","no"), new Document("idviaje", -1));
+            temp = viajesRepository.findBy(eq("realizado", "no"), new Document("idviaje", -1));
 
             if (temp.isEmpty()) {
                 return suggestions;
@@ -2201,7 +2247,7 @@ vehiculoList = new ArrayList<>();
 
                     validos.forEach((v) -> {
                         Optional<Viajes> optional = viajesDisponiblesList.stream()
-                                .filter(v2 -> v2.getIdviaje()== v.getIdviaje())
+                                .filter(v2 -> v2.getIdviaje() == v.getIdviaje())
                                 .findAny();
                         if (!optional.isPresent()) {
                             suggestions.add(v);
@@ -2264,10 +2310,10 @@ vehiculoList = new ArrayList<>();
      * @return
      */
     public List<Viajes> completeViajes(String query) {
-       List<Viajes> suggestions = new ArrayList<>();
-       List<Viajes> disponibles = new ArrayList<>();
+        List<Viajes> suggestions = new ArrayList<>();
+        List<Viajes> disponibles = new ArrayList<>();
         List<Viajes> temp = new ArrayList<>();
-       try {
+        try {
 //            Boolean found = false;
 //            query = query.trim();
 //
@@ -2335,9 +2381,9 @@ vehiculoList = new ArrayList<>();
 ////                     
 //                        }
 //                    }
-                    // VERIRIFICAR SI TIENE VIAJES
-                    // List<Viajes> viajesList = viajesRepository.fi
-                    //si el dia y mes
+            // VERIRIFICAR SI TIENE VIAJES
+            // List<Viajes> viajesList = viajesRepository.fi
+            //si el dia y mes
 //                }
 //            }
 //
@@ -2345,10 +2391,9 @@ vehiculoList = new ArrayList<>();
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return disponibles;
-}
+    }
 
     // </editor-fold>
-    
     // <editor-fold defaultstate="collapsed" desc="inicializarViaje()">
     public String inicializarViaje() {
         try {

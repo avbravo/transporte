@@ -59,7 +59,11 @@
                              paginated="false"
                              onpage="console.log('page');">
 
-                    <b:dataTableColumn value="#{item.idsolicitud}" label="#{msg['field.idsolicitud']}"/>
+                 <b:dataTableColumn value="#{item.idsolicitud}" label="#{msg['field.idsolicitud']}"/>
+ <b:dataTableColumn  label="#{msg['field.solicitudpadre']}">
+                        <p:outputLabel value="#{item.solicitudpadre}" style="color: #009900;" rendered="#{item.solicitudpadre gt 0}"/>
+                    </b:dataTableColumn>
+
 
                   <b:dataTableColumn label="#{msg['field.fechapartida']}" >
                         <p:calendar  disabled="true"  size="8"                                  

@@ -19,7 +19,7 @@
                 border-color: #428BCA;
             } 
         </style>
-       
+
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudDocente.list}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -60,40 +60,43 @@
                              onpage="console.log('page');">
 
                     <b:dataTableColumn value="#{item.idsolicitud}" label="#{msg['field.idsolicitud']}"/>
+                   <b:dataTableColumn  label="#{msg['field.solicitudpadre']}">
+                        <p:outputLabel value="#{item.solicitudpadre}" style="color: #009900;" rendered="#{item.solicitudpadre gt 0}"/>
+                    </b:dataTableColumn>
 
-                  <b:dataTableColumn label="#{msg['field.fechapartida']}" >
+                    <b:dataTableColumn label="#{msg['field.fechapartida']}" >
                         <p:calendar  disabled="true"  size="8"                                  
                                      style="background-color: grey;"
-                                    pattern="dd/MM/yyyy" value="#{item.fechahorapartida}"  />
-                      
-                        
+                                     pattern="dd/MM/yyyy" value="#{item.fechahorapartida}"  />
+
+
                     </b:dataTableColumn> 
                     <b:dataTableColumn label="#{msg['field.horapartida']}" >
                         <p:calendar  disabled="true"    
                                      size="8" 
-                                    pattern="HH:mm:ss a" value="#{item.fechahorapartida}"  />
-                      
+                                     pattern="HH:mm:ss a" value="#{item.fechahorapartida}"  />
+
                     </b:dataTableColumn> 
                     <b:dataTableColumn label="#{msg['field.fecharegreso']}" >
                         <p:calendar  disabled="true"    
                                      size="8" 
-                                    pattern="dd/MM/yyyy" value="#{item.fechahoraregreso}"  />
-                      
+                                     pattern="dd/MM/yyyy" value="#{item.fechahoraregreso}"  />
+
                     </b:dataTableColumn> 
                     <b:dataTableColumn label="#{msg['field.horaregreso']}" >
                         <p:calendar  disabled="true"   
                                      size="8" 
-                                    pattern="HH:mm:ss a" value="#{item.fechahoraregreso}"  />
-                      
-                    </b:dataTableColumn> 
-                    
+                                     pattern="HH:mm:ss a" value="#{item.fechahoraregreso}"  />
 
-                    
-                    
+                    </b:dataTableColumn> 
+
+
+
+
                     <b:dataTableColumn value="#{item.objetivo}" label="#{msg['field.objetivo']}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
                     <b:dataTableColumn value="#{item.lugares}" label="#{msg['field.lugares']}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
                     <b:dataTableColumn value="#{item.estatus.idestatus}" label="#{msg['field.estatus']}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
-                    
+
 
                     <b:dataTableColumn label="">
 
