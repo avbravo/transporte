@@ -926,7 +926,42 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
                 return "";
             }
-//                if (!esAprobadoParaEditar) {
+if(viajes.getFechahorainicioreserva()==null){
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+                return "";
+}
+if(viajes.getFechahorafinreserva()==null){
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+                return "";
+}
+
+if(JsfUtil.isVacio(viajes.getLugarpartida())){
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+                return "";
+}
+if(JsfUtil.isVacio(viajes.getLugarregreso())){
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+                return "";
+}
+if(JsfUtil.isVacio(viajes.getVehiculo().getPlaca())){
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+                return "";
+}
+if(JsfUtil.isVacio(viajes.getConductor().getNombre())){
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+                return "";
+}
+if(JsfUtil.isNegativo(viajes.getKmestimados())){
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+                return "";
+}
+if(JsfUtil.isNegativo(viajes.getCostocombustible())){
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+                return "";
+}
+
+
+
             viajes = viajesSelected;
             Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
             viajes.setActivo("si");
