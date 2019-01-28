@@ -922,41 +922,42 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
         try {
             //Si era apronado para editar
 
-            if (conductorList.size() != vehiculoList.size()) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
-                return "";
-            }
+//            if (conductorList.size() != vehiculoList.size()) {
+//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), 
+//                        rf.getMessage("warning.conductoresnoigualvehiculos"));
+//                return "";
+//            }
 if(viajes.getFechahorainicioreserva()==null){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechahorainicioreservavacio"));
                 return "";
 }
 if(viajes.getFechahorafinreserva()==null){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechahorafinreservavacio"));
                 return "";
 }
 
 if(JsfUtil.isVacio(viajes.getLugarpartida())){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.lugarpartidavacio"));
                 return "";
 }
 if(JsfUtil.isVacio(viajes.getLugarregreso())){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.lugarregresovacio"));
                 return "";
 }
 if(JsfUtil.isVacio(viajes.getVehiculo().getPlaca())){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.vehiculovacio"));
                 return "";
 }
 if(JsfUtil.isVacio(viajes.getConductor().getNombre())){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.chofernoseleccionado"));
                 return "";
 }
 if(JsfUtil.isNegativo(viajes.getKmestimados())){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.kmestimadosvacio"));
                 return "";
 }
 if(JsfUtil.isNegativo(viajes.getCostocombustible())){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.costocombustiblevacio"));
                 return "";
 }
 
