@@ -146,94 +146,89 @@
 
 
                 <b:panel title="#{msg['titleview.viajes']}" id="dataTable" look="primary">
+                    <p:commandButton value="#{app['button.new']}" 
+                                     update="viajesDetails"
 
-                    <p:tabView>
-                        <p:tab title="#{msg['tab.viajes']}">
-                            <a:paginator 
-                                rowPage="#{viajesController.rowPage}"
-                                clear="#{viajesController.clear()}"
-                                first="#{viajesController.first()}"
-                                back="#{viajesController.back()}"
-                                next="#{viajesController.next()}"
-                                last="#{viajesController.last()}"
-                                page="#{viajesController.page}"
-                                pages="#{viajesController.pages}"
-                                skip="ajax:viajesController.skip(viajesController.page)" 
-                                new="#{viajesController.prepare('gonew',viajesController.viajes)}"
-                                printAll="#{viajesController.printAll()}"
+                                     onclick="PF('viajesDialog').show();" />
+
+                    <a:paginator 
+                        rowPage="#{viajesController.rowPage}"
+                        clear="#{viajesController.clear()}"
+                        first="#{viajesController.first()}"
+                        back="#{viajesController.back()}"
+                        next="#{viajesController.next()}"
+                        last="#{viajesController.last()}"
+                        page="#{viajesController.page}"
+                        pages="#{viajesController.pages}"
+                        skip="ajax:viajesController.skip(viajesController.page)" 
+                        new="#{viajesController.prepare('gonew',viajesController.viajes)}"
+                        printAll="#{viajesController.printAll()}"
+                        />
+                    <b:dataTable value="#{viajesController.viajesDataModel}"
+                                 var="item"
+                                 id="dataTable2"
+                                 paginated="false"
+                                 onpage="console.log('page');">
+
+                        <b:dataTableColumn value="#{item.idviaje}" label="#{msg['field.idviaje']}"/>
+
+
+                        <b:dataTableColumn label="#{msg['field.fechapartida']}" >
+                            <p:calendar  disabled="true"  size="8"                                  
+                                         style="background-color: grey;"
+                                         pattern="dd/MM/yyyy" value="#{item.fechahorainicioreserva}"  />
+
+
+                        </b:dataTableColumn> 
+                        <b:dataTableColumn label="#{msg['field.horapartida']}" >
+                            <p:calendar  disabled="true"    
+                                         size="8" 
+                                         pattern="HH:mm:ss a" value="#{item.fechahorainicioreserva}"  />
+
+                        </b:dataTableColumn> 
+                        <b:dataTableColumn label="#{msg['field.fecharegreso']}" >
+                            <p:calendar  disabled="true"    
+                                         size="8" 
+                                         pattern="dd/MM/yyyy" value="#{item.fechahorafinreserva}"  />
+
+                        </b:dataTableColumn> 
+                        <b:dataTableColumn label="#{msg['field.horaregreso']}" >
+                            <p:calendar  disabled="true"   
+                                         size="8" 
+                                         pattern="HH:mm:ss a" value="#{item.fechahorafinreserva}"  />
+
+                        </b:dataTableColumn> 
+
+                        <b:dataTableColumn label="#{msg['field.vehiculos']}">
+                            <p:panelGrid columns="2" styleClass="form-group ui-panelgrid-blank" layout="grid">
+
+                                <p:repeat value="#{item.vehiculo}" var="car">
+                                    <p:outputLabel value="(#{car.marca} #{car.modelo})"/>
+                                </p:repeat>
+                            </p:panelGrid>
+                        </b:dataTableColumn>
+                        <b:dataTableColumn label="#{msg['field.conductores']}">
+                            <p:panelGrid columns="2" styleClass="form-group ui-panelgrid-blank" layout="grid">
+
+                                <p:repeat value="#{item.conductor}" var="var2">
+                                    <p:outputLabel value="(#{var2.nombre})"/>
+                                </p:repeat>
+                            </p:panelGrid>
+                        </b:dataTableColumn>
+                        <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
+                        <b:dataTableColumn value="#{item.realizado}" label="#{msg['field.realizado']}" />
+
+                        <b:dataTableColumn label="">
+
+                            <a:column
+
+                                edit="#{viajesController.prepare('view',item)}"
+                                delete="#{viajesController.delete(item,false)}"
+                                rendered="#{applicationMenu.viajes.delete}"
                                 />
-                            <b:dataTable value="#{viajesController.viajesDataModel}"
-                                         var="item"
-                                         id="dataTable2"
-                                         paginated="false"
-                                         onpage="console.log('page');">
+                        </b:dataTableColumn>
 
-                                <b:dataTableColumn value="#{item.idviaje}" label="#{msg['field.idviaje']}"/>
-
-
-                                <b:dataTableColumn label="#{msg['field.fechapartida']}" >
-                                    <p:calendar  disabled="true"  size="8"                                  
-                                                 style="background-color: grey;"
-                                                 pattern="dd/MM/yyyy" value="#{item.fechahorainicioreserva}"  />
-
-
-                                </b:dataTableColumn> 
-                                <b:dataTableColumn label="#{msg['field.horapartida']}" >
-                                    <p:calendar  disabled="true"    
-                                                 size="8" 
-                                                 pattern="HH:mm:ss a" value="#{item.fechahorainicioreserva}"  />
-
-                                </b:dataTableColumn> 
-                                <b:dataTableColumn label="#{msg['field.fecharegreso']}" >
-                                    <p:calendar  disabled="true"    
-                                                 size="8" 
-                                                 pattern="dd/MM/yyyy" value="#{item.fechahorafinreserva}"  />
-
-                                </b:dataTableColumn> 
-                                <b:dataTableColumn label="#{msg['field.horaregreso']}" >
-                                    <p:calendar  disabled="true"   
-                                                 size="8" 
-                                                 pattern="HH:mm:ss a" value="#{item.fechahorafinreserva}"  />
-
-                                </b:dataTableColumn> 
-
-                                <b:dataTableColumn label="#{msg['field.vehiculos']}">
-                                    <p:panelGrid columns="2" styleClass="form-group ui-panelgrid-blank" layout="grid">
-
-                                        <p:repeat value="#{item.vehiculo}" var="car">
-                                            <p:outputLabel value="(#{car.marca} #{car.modelo})"/>
-                                        </p:repeat>
-                                    </p:panelGrid>
-                                </b:dataTableColumn>
-                                <b:dataTableColumn label="#{msg['field.conductores']}">
-                                    <p:panelGrid columns="2" styleClass="form-group ui-panelgrid-blank" layout="grid">
-
-                                        <p:repeat value="#{item.conductor}" var="var2">
-                                            <p:outputLabel value="(#{var2.nombre})"/>
-                                        </p:repeat>
-                                    </p:panelGrid>
-                                </b:dataTableColumn>
-                                <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
-                                <b:dataTableColumn value="#{item.realizado}" label="#{msg['field.realizado']}" />
-
-                                <b:dataTableColumn label="">
-
-                                    <a:column
-
-                                        edit="#{viajesController.prepare('view',item)}"
-                                        delete="#{viajesController.delete(item,false)}"
-                                        rendered="#{applicationMenu.viajes.delete}"
-                                        />
-                                </b:dataTableColumn>
-
-                            </b:dataTable>
-                        </p:tab>
-                    
-
-                    </p:tabView>
-
-
-
+                    </b:dataTable>
                 </b:panel>
             </h:panelGroup>
 
@@ -245,7 +240,7 @@
 
                       showEffect="clip" hideEffect="clip">
                 <h:panelGroup id="eventDetails"> 
-                    <b:panelGrid  colSpans="2,4,2,4" size="xs"  rendered="#{calendarioSolicitudViajesController.esSolicitud}" > 
+           <b:panelGrid  colSpans="2,4,2,4" size="xs"  rendered="#{calendarioSolicitudViajesController.esSolicitud}" > 
 
                         <p:outputLabel  value="#{msg['field.idsolicitud']}" />
                         <p:outputLabel  value="#{calendarioSolicitudViajesController.solicitud.idsolicitud}" id="idsolicitud"   />
@@ -383,7 +378,7 @@
                                                 dropdown="true"
                                                 fromstart="true"
                                                 minQueryLength="0"
-                                                update=""
+                                                update=":form:vehiculolabel, :form:vehiculo: eventDetails"
                                                 />
 
 
@@ -483,7 +478,85 @@
                       responsive="true"
 
                       showEffect="clip" hideEffect="clip">
+                <b:panelGrid id="viajesDetails" colSpans="2,10" size="xs" > 
+                    <p:growl id="growl2"/>
+                    <p:spacer/>
 
+
+                    <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
+                    <p:outputPanel>
+                        <a:calendar 
+                            mode="inline"
+                            required="false"
+                            pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudViajesController.viajesSelected.fechahorainicioreserva}"   
+                            label="#{msg['field.fechahorainicioreserva']}" />
+
+
+                        <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
+                        <a:calendar mode="inline"
+                                    required="false"
+                                    pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudViajesController.viajesSelected.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
+
+                    </p:outputPanel>
+
+
+                    <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+                    <a:inputText  required="false" value="#{calendarioSolicitudViajesController.viajesSelected.lugarpartida}"    />
+
+                    <p:outputLabel  value="#{msg['field.lugarregreso']}" />
+                    <a:inputText required="false" value="#{calendarioSolicitudViajesController.viajesSelected.lugarregreso}"    />
+
+
+
+                    <p:outputLabel value="#{msg['field.vehiculo']}"
+                                   id="vehiculolabel" />
+                    <extensionviajes:autocompletevehiculos id="vehiculo"/>
+
+
+
+
+                    <p:outputLabel value="#{msg['field.conductor']}"  />
+
+                    <extensionviajes:autocompleteconductor/>
+
+
+
+
+
+
+                    <p:outputLabel  value="#{msg['field.comentarios']}"/>
+                    <b:inputTextarea required="false" requiredMessage="#{msg['field.comentarios']}"
+                                     rows="2" value="#{calendarioSolicitudViajesController.viajesSelected.comentarios}"  />
+
+
+
+                    <p:outputLabel  value="#{msg['field.kmestimados']}" />
+                    <a:inputText required="false" span="5" value="#{calendarioSolicitudViajesController.viajesSelected.kmestimados}"  />
+
+                    <p:outputLabel  value="#{msg['field.costocombustible']}"  />
+                    <a:inputText required="false"
+                                 label="#{msg['field.costocombustible']}"
+                                 span="5" value="#{calendarioSolicitudViajesController.viajesSelected.costocombustible}"   />
+
+
+
+                    <b:commandButton value="#{app['button.close']}"
+                                     iconAwesome="fa-close"
+                                     oncomplete="PF('viajesDialog').hide();"/>
+
+                    <p:commandButton
+                        rendered="#{applicationMenu.menuBarAdministracion}"
+                        value="#{app['button.save']}"
+                    
+                        update="growl, dataTable2, content"
+                        oncomplete="PF('myschedule').update(); PF('colores').update(); "
+                        actionListener="#{calendarioSolicitudViajesController.saveViaje}"                     
+
+                        />
+
+
+
+                </b:panelGrid>
             </p:dialog>
 
             <p:dialog widgetVar="newDialog" header="#{msg['dialogo.nuevasolicitud']}" 

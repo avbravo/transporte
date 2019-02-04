@@ -228,7 +228,92 @@
 
                             </b:dataTable>
                         </p:tab>
-                    
+                        <p:tab title="#{msg['tab.new']}">
+                            <p:commandButton value="#{app['button.new']}" 
+                                             update="viajesDetails"
+
+                                             onclick="PF('viajesDialog').show();" />
+
+                            <b:panelGrid id="viajesDetails" colSpans="2,10" size="xs" > 
+                                <p:growl id="growl2"/>
+                                <p:spacer/>
+
+
+                                <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
+                                <p:outputPanel>
+                                    <a:calendar 
+                                        mode="inline"
+                                        required="false"
+                                        pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudViajesController.viajesSelected.fechahorainicioreserva}"   
+                                        label="#{msg['field.fechahorainicioreserva']}" />
+
+
+                                    <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
+                                    <a:calendar mode="inline"
+                                                required="false"
+                                                pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudViajesController.viajesSelected.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
+
+                                </p:outputPanel>
+
+
+                                <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+                                <a:inputText  required="false" value="#{calendarioSolicitudViajesController.viajesSelected.lugarpartida}"    />
+
+                                <p:outputLabel  value="#{msg['field.lugarregreso']}" />
+                                <a:inputText required="false" value="#{calendarioSolicitudViajesController.viajesSelected.lugarregreso}"    />
+
+
+
+                                <p:outputLabel value="#{msg['field.vehiculo']}"
+                                               id="vehiculolabel" />
+                                <extensionviajes:autocompletevehiculos id="vehiculo"/>
+
+
+
+
+                                <p:outputLabel value="#{msg['field.conductor']}"  />
+
+                                <extensionviajes:autocompleteconductor/>
+
+
+
+
+
+
+                                <p:outputLabel  value="#{msg['field.comentarios']}"/>
+                                <b:inputTextarea required="false" requiredMessage="#{msg['field.comentarios']}"
+                                                 rows="2" value="#{calendarioSolicitudViajesController.viajesSelected.comentarios}"  />
+
+
+
+                                <p:outputLabel  value="#{msg['field.kmestimados']}" />
+                                <a:inputText required="false" span="5" value="#{calendarioSolicitudViajesController.viajesSelected.kmestimados}"  />
+
+                                <p:outputLabel  value="#{msg['field.costocombustible']}"  />
+                                <a:inputText required="false"
+                                             label="#{msg['field.costocombustible']}"
+                                             span="5" value="#{calendarioSolicitudViajesController.viajesSelected.costocombustible}"   />
+
+
+
+                                <b:commandButton value="#{app['button.close']}"
+                                                 iconAwesome="fa-close"
+                                                 oncomplete="PF('viajesDialog').hide();"/>
+
+                                <p:commandButton
+                                    rendered="#{applicationMenu.menuBarAdministracion}"
+                                    value="#{app['button.save']}"
+
+                                    update="content"
+                                    oncomplete="PF('viajesDetails').update();"
+                                    actionListener="#{calendarioSolicitudViajesController.saveViaje}"                     
+
+                                    />
+
+
+
+                            </b:panelGrid>
+                        </p:tab>
 
                     </p:tabView>
 

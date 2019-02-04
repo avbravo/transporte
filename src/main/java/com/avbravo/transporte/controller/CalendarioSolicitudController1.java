@@ -795,7 +795,6 @@ public class CalendarioSolicitudController1 implements Serializable, IController
                     viajes.setConductor(conductorSelected);
                     viajes.setVehiculo(vehiculoSelected);
                     // viajes.setVehsolicitudList);
-                    viajes.setNumerovehiculos(solicitud.getNumerodevehiculos());
 
                     viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
 

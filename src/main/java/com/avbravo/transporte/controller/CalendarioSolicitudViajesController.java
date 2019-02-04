@@ -42,11 +42,11 @@ import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
+import com.avbravo.transporteejb.services.ViajesServices;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -169,9 +169,9 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     @Inject
     ViajesRepository viajesRepository;
     @Inject
-    VehiculoRepository vehiculoRepository;
-    @Inject
     ConductorRepository conductorRepository;
+    @Inject
+    VehiculoRepository vehiculoRepository;
 
     //Services
     //Atributos para busquedas
@@ -197,6 +197,8 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     TiposolicitudServices tiposolicitudServices;
     @Inject
     TipovehiculoServices tipovehiculoServices;
+    @Inject
+    ViajesServices viajesServices;
     @Inject
     ResourcesFiles rf;
     @Inject
@@ -579,6 +581,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             esAprobadoParaEditar = false;
             conductorSelected = new Conductor();
             vehiculoSelected = new Vehiculo();
+            viajesSelected = new Viajes();
             String action = loginController.get("solicitud");
             String id = loginController.get("idsolicitud");
             String pageSession = loginController.get("pagesolicitud");
@@ -864,7 +867,6 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                     viajes.setConductor(conductorSelected);
                     viajes.setVehiculo(vehiculoSelected);
                     // viajes.setVehsolicitudList);
-                    viajes.setNumerovehiculos(solicitud.getNumerodevehiculos());
 
                     viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
 
@@ -918,80 +920,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="saveViaje()">
 
-    public String saveViaje() {
-        try {
-            //Si era apronado para editar
-
-//            if (conductorList.size() != vehiculoList.size()) {
-//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), 
-//                        rf.getMessage("warning.conductoresnoigualvehiculos"));
-//                return "";
-//            }
-if(viajes.getFechahorainicioreserva()==null){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechahorainicioreservavacio"));
-                return "";
-}
-if(viajes.getFechahorafinreserva()==null){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechahorafinreservavacio"));
-                return "";
-}
-
-if(JsfUtil.isVacio(viajes.getLugarpartida())){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.lugarpartidavacio"));
-                return "";
-}
-if(JsfUtil.isVacio(viajes.getLugarregreso())){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.lugarregresovacio"));
-                return "";
-}
-if(JsfUtil.isVacio(viajes.getVehiculo().getPlaca())){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.vehiculovacio"));
-                return "";
-}
-if(JsfUtil.isVacio(viajes.getConductor().getNombre())){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.chofernoseleccionado"));
-                return "";
-}
-if(JsfUtil.isNegativo(viajes.getKmestimados())){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.kmestimadosvacio"));
-                return "";
-}
-if(JsfUtil.isNegativo(viajes.getCostocombustible())){
-      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.costocombustiblevacio"));
-                return "";
-}
-
-
-
-            viajes = viajesSelected;
-            Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
-            viajes.setActivo("si");
-            viajes.setRealizado("no");
-            viajes.setIdviaje(idviaje);
-            viajes.setConductor(conductorSelected);
-            viajes.setVehiculo(vehiculoSelected);
-            // viajes.setVehsolicitudList);
-            viajes.setNumerovehiculos(solicitud.getNumerodevehiculos());
-
-            viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
-
-            if (viajesRepository.save(viajes)) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajes.getIdviaje().toString(), loginController.getUsername(),
-                        "create", "viajes", viajesRepository.toDocument(viajes).toString()));
-                JsfUtil.successMessage(rf.getAppMessage("info.save"));
-
-            } else {
-                JsfUtil.errorDialog("save() ", viajesRepository.getException().toString());
-                return "";
-            }
-
-        } catch (Exception e) {
-
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="delete(Object item, Boolean deleteonviewpage)">
+   // <editor-fold defaultstate="collapsed" desc="delete(Object item, Boolean deleteonviewpage)">
 
     @Override
     public String delete(Object item, Boolean deleteonviewpage) {
@@ -1199,7 +1128,7 @@ if(JsfUtil.isNegativo(viajes.getCostocombustible())){
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "cargarSchedule", e.getLocalizedMessage());
         }
     }
 // </editor-fold>
@@ -1761,13 +1690,13 @@ if(JsfUtil.isNegativo(viajes.getCostocombustible())){
 
                 Integer idviaje = 0;
                 if (i != -1) {
-                     esSolicitud = false;
+                    esSolicitud = false;
                     idviaje = Integer.parseInt(title.substring(1, i).trim());
 
                     viajesSelected.setIdviaje(idviaje);
                     Optional<Viajes> optional = viajesRepository.findById(viajesSelected);
                     if (optional.isPresent()) {
-                       viajesSelected = optional.get();
+                        viajesSelected = optional.get();
 
                     }
                 }
@@ -1812,7 +1741,7 @@ if(JsfUtil.isNegativo(viajes.getCostocombustible())){
 //        addMessage(message);
     } // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="completeFiltrado(String query)">
+    // <editor-fold defaultstate="collapsed" desc="completeVehiculoFiltrado(String query)">
     /**
      * Se usa para los autocomplete filtrando
      *
@@ -1857,7 +1786,7 @@ if(JsfUtil.isNegativo(viajes.getCostocombustible())){
                     for (Vehiculo v : suggestions) {
 
                         List<Viajes> viajesList;
-                        if (esMismoDiaSolicitud()) {
+                        if (solicitudServices.esMismoDiaSolicitud(solicitud)) {
                             //SI LA SOLICITUD(salida y regreso es el mismo dia)
                             //BUSCAR LOS REGISTROS DE VIAJES DEL VEHICULO ESE DIA
                             viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", viajesSelected.getFechahorainicioreserva());
@@ -1866,7 +1795,7 @@ if(JsfUtil.isNegativo(viajes.getCostocombustible())){
                                 disponibles.add(v);
                             } else {
                                 // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
-                                if (!tieneDisponibilidadViaje(viajesList)) {
+                                if (!viajesServices.tieneDisponibilidadViaje(viajesList, solicitud)) {
                                     disponibles.add(v);
                                 }
 
@@ -1881,7 +1810,7 @@ if(JsfUtil.isNegativo(viajes.getCostocombustible())){
                                 disponibles.add(v);
                             } else {
                                 // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
-                                if (!tieneDisponibilidadViaje(viajesList)) {
+                                if (!viajesServices.tieneDisponibilidadViaje(viajesList, solicitud)) {
                                     disponibles.add(v);
                                 }
                             }
@@ -1901,7 +1830,7 @@ if(JsfUtil.isNegativo(viajes.getCostocombustible())){
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="completeFiltrado(String query)">
+    // <editor-fold defaultstate="collapsed" desc="completeConductorFiltrado(String query)">
     /**
      * Se usa para los autocomplete filtrando
      *
@@ -1952,7 +1881,7 @@ if(JsfUtil.isNegativo(viajes.getCostocombustible())){
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="isVehiculoValido(Vehiculo vehiculo)">
+    // <editor-fold defaultstate="collapsed" desc="isVehiculoValid(Vehiculo vehiculo)">
     public Boolean isVehiculoValid(Vehiculo vehiculo) {
         Boolean valid = false;
         try {
@@ -1975,7 +1904,7 @@ if(JsfUtil.isNegativo(viajes.getCostocombustible())){
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="isVehiculoValido(Vehiculo vehiculo)">
+    // <editor-fold defaultstate="collapsed" desc="isVehiculoActivo(Vehiculo vehiculo)">
     public Boolean isVehiculoActivo(Vehiculo vehiculo) {
         Boolean valid = false;
         try {
@@ -2028,79 +1957,7 @@ if(JsfUtil.isNegativo(viajes.getCostocombustible())){
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Boolean esMismoDiaSolicitud()">
-    /**
-     * si el dia de partida es el mismo que el de regreso
-     *
-     * @return
-     */
-    private Boolean esMismoDiaSolicitud() {
-        try {
-
-            Integer dia = DateUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
-            Integer mes = DateUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
-            Integer anio = DateUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
-            Integer diaf = DateUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
-            Integer mesf = DateUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
-            Integer aniof = DateUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
-// ES EN LA MISMA FECHA
-
-            if (anio == aniof && mes == mesf && dia == diaf) {
-                return true;
-            }
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return false;
-    }
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="tieneDisponibilidadViaje(List<Viajes> viajesList)">
-    /**
-     * recorre el list de viajes y verifica si esta ocupado
-     *
-     * @param viajesList
-     * @return
-     */
-    public Boolean tieneDisponibilidadViaje(List<Viajes> viajesList) {
-        Boolean disponible = true;
-        try {
-
-            for (Viajes vj : viajesList) {
-                if (esOcupadoEseDiaHora(solicitud, vj)) {
-                    disponible = false;
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return disponible;
-    }
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="esOcupadoEseDiaHora()">
-    /**
-     * verifica si esa solicitud esta ocupada
-     *
-     * @param solicitud
-     * @param viajes
-     * @return
-     */
-    public Boolean esOcupadoEseDiaHora(Solicitud solicitud, Viajes viajes) {
-        try {
-            if (DateUtil.dateBetween(solicitud.getFechahorapartida(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())
-                    || DateUtil.dateBetween(solicitud.getFechahoraregreso(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())) {
-                return true;
-            }
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return false;
-    }
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="viajesVariosDias()">
+    // <editor-fold defaultstate="collapsed" desc="viajesVariosDias(Vehiculo v) ">
     /**
      * devuelve la lista de viajes entre varios dias considerar que el busca
      * entre la fecha de partida y la fecha de regreso por lo que muchos viajes
@@ -2112,41 +1969,7 @@ if(JsfUtil.isNegativo(viajes.getCostocombustible())){
     private List<Viajes> viajesVariosDias(Vehiculo v) {
         List<Viajes> viajesList = new ArrayList<>();
         try {
-            viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
-            List<Viajes> viajesStart = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
-            List<Viajes> viajesEnd = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorafinreserva", solicitud.getFechahoraregreso());
-            viajesList = new ArrayList<>();
-            if (viajesStart.isEmpty() && viajesEnd.isEmpty()) {
-                // NO HAY VIAJES EN ESAS FECHAS
-
-            } else {
-                if (!viajesStart.isEmpty() && !viajesEnd.isEmpty()) {
-                    viajesList = viajesStart;
-                    for (Viajes vjs : viajesEnd) {
-                        Boolean foundv = false;
-                        for (Viajes vje : viajesList) {
-                            if (vjs.getIdviaje() == vje.getIdviaje()) {
-                                foundv = true;
-                                break;
-                            }
-                        }
-                        if (!foundv) {
-                            viajesList.add(vjs);
-                        }
-                    }
-                } else {
-                    if (viajesStart.isEmpty() && !viajesEnd.isEmpty()) {
-                        viajesList = viajesEnd;
-                    } else {
-                        if (!viajesStart.isEmpty() && viajesEnd.isEmpty()) {
-                            viajesList = viajesStart;
-                        }
-                    }
-                }
-                Collections.sort(viajesList,
-                        (Viajes a, Viajes b) -> a.getIdviaje().compareTo(b.getIdviaje()));
-            }
-
+            return viajesServices.viajesVariosDias(v, solicitud);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -2246,7 +2069,7 @@ if(JsfUtil.isNegativo(viajes.getCostocombustible())){
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="completeSolicitudFiltrado(String query)">
+    // <editor-fold defaultstate="collapsed" desc="completeViajesDisponibles(String query)">
     /**
      * Se usa para los autocomplete filtrando
      *
@@ -2338,7 +2161,7 @@ if(JsfUtil.isNegativo(viajes.getCostocombustible())){
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="completeSolicitudFiltrado(String query)">
+    // <editor-fold defaultstate="collapsed" desc="completeViajes(String query">
     /**
      * Se usa para los autocomplete filtrando
      *
@@ -2445,4 +2268,5 @@ if(JsfUtil.isNegativo(viajes.getCostocombustible())){
         return "";
     }
     // </editor-fold>
+
 }

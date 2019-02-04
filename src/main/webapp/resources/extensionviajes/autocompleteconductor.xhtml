@@ -31,10 +31,10 @@
                                     scrollHeight="250"
                                     size="25"
                                     emptyMessage="#{app['info.nohayregistros']}"
-                                    value="#{calendarioSolicitudViajesController.conductorSelected}"
-                                    completeMethod="#{calendarioSolicitudViajesController.completeConductorFiltrado}"
+                                    value="#{viajesController.viajes.conductor}"
+                                    completeMethod="#{viajesController.completeConductorFiltrado}"
                                     var="p"
-                                    required="false"
+                                    required="true"
                                     requiredMessage="#{msg['field.conductor']}"
                                     itemLabel="#{p.nombre}"
                                     itemValue="#{p}" forceSelection="true">
@@ -42,10 +42,10 @@
                         <f:attribute name="field" value="nombre"/>
                         <f:attribute name="fielddropdown" value="false"/>
                         <f:attribute name="fieldquerylenth" value="0"/>
-                        <p:ajax event="itemSelect" listener="#{calendarioSolicitudViajesController.handleSelect}"
-                                update="eventDetails"   />
-                        <p:ajax event="itemUnselect"  listener="#{calendarioSolicitudViajesController.handleSelect}"
-                                update="eventDetails"
+                        <p:ajax event="itemSelect" listener="#{viajesController.handleSelect}"
+                                update=""   />
+                        <p:ajax event="itemUnselect"  listener="#{viajesController.handleSelect}"
+                                update=""
                                 />
                         <f:facet name="itemtip">
                             <h:panelGrid columns="1" cellpadding="5">

@@ -7,7 +7,8 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:extensionviajes="http://xmlns.jcp.org/jsf/composite/extensionviajes">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -30,8 +31,58 @@
                         <p:outputLabel  value="#{msg['field.idviaje']}" />
                         <p:outputLabel  value="#{viajesController.viajes.idviaje}" id="idviaje"   />
 
-                     <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{viajesController.viajes.activo}" id="activo"  required="true"/>
+                    <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
+                                <p:outputPanel>
+                                    <a:calendar 
+                                        mode="inline"
+                                        required="false"
+                                        pattern="dd/MM/yyyy HH:mm a" value="#{viajesController.viajes.fechahorainicioreserva}"   
+                                        label="#{msg['field.fechahorainicioreserva']}" />
+
+
+                                    <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
+                                    <a:calendar mode="inline"
+                                                required="false"
+                                                pattern="dd/MM/yyyy HH:mm a" value="#{viajesController.viajes.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
+
+                                </p:outputPanel>
+
+
+                                <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+                                <a:inputText  required="false" value="#{viajesController.viajes.lugarpartida}"    />
+
+                                <p:outputLabel  value="#{msg['field.lugarregreso']}" />
+                                <a:inputText required="false" value="#{viajesController.viajes.lugarregreso}"    />
+
+
+    <p:outputLabel value="#{msg['field.vehiculo']}"
+                                               id="vehiculolabel" />
+                                <extensionviajes:autocompletevehiculos id="vehiculo"/>
+
+
+
+                                <p:outputLabel value="#{msg['field.conductor']}"  />
+
+                                <extensionviajes:autocompleteconductor/>
+
+
+
+
+
+
+                                <p:outputLabel  value="#{msg['field.comentarios']}"/>
+                                <b:inputTextarea required="false" requiredMessage="#{msg['field.comentarios']}"
+                                                 rows="2" value="#{viajesController.viajes.comentarios}"  />
+
+
+
+                                <p:outputLabel  value="#{msg['field.kmestimados']}" />
+                                <a:inputText required="false" span="5" value="#{viajesController.viajes.kmestimados}"  />
+
+                                <p:outputLabel  value="#{msg['field.costocombustible']}"  />
+                                <a:inputText required="false"
+                                             label="#{msg['field.costocombustible']}"
+                                             span="5" value="#{viajesController.viajes.costocombustible}"   />
 
                     </b:panelGrid>
                     <a:view 
