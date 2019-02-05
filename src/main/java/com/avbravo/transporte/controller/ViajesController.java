@@ -271,6 +271,8 @@ public class ViajesController implements Serializable, IController {
                         viajes = new Viajes();
                         viajes.setFechahorainicioreserva(DateUtil.getFechaHoraActual());
                         viajes.setFechahorafinreserva(DateUtil.getFechaHoraActual());
+                        viajes.setActivo("si");
+                        viajes.setLugarpartida("UTP-AZUERO");
                         viajesSelected = viajes;
 
                         writable = false;

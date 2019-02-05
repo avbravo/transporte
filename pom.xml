@@ -12,17 +12,17 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-           <version.payara.micro>5.182</version.payara.micro>
+        <version.payara.micro>5.182</version.payara.micro>
     </properties>
     
     <dependencies>
         
         <dependency>
-    <groupId>org.webjars</groupId>
-    <artifactId>font-awesome</artifactId>
-    <version>4.7.0</version>
-</dependency>
-       <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>4.7.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
             <version>6.2</version>
@@ -50,21 +50,21 @@
             <version>8.0</version>
             <scope>provided</scope>
         </dependency>
-           <dependency>
+        <dependency>
             <groupId>net.bootsfaces</groupId>
             <artifactId>bootsfaces</artifactId>
             <version>1.4.0</version>
         </dependency>
         <dependency>
-	    <groupId>com.github.avbravo</groupId>
-	    <artifactId>avbravosecurity</artifactId>
-	    <version>0.4</version>
-	</dependency>
+            <groupId>com.github.avbravo</groupId>
+            <artifactId>avbravosecurity</artifactId>
+            <version>0.4</version>
+        </dependency>
     </dependencies>
 
     <build>
-         <finalName>transporte</finalName>
-         <plugins>
+        <finalName>transporte</finalName>
+        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -138,7 +138,7 @@
             <layout>default</layout>
             <name>Repository for library PrimeFaces-maven-lib</name>
         </repository>
-             <repository>
+        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
