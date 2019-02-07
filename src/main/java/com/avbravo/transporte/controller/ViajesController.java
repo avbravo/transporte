@@ -404,15 +404,18 @@ public class ViajesController implements Serializable, IController {
                 return "";
             }
 
-           if(viajesServices.vehiculoTieneViajeFecha(viajes)){
+           if(!viajesServices.vehiculoDisponible(viajes)){
                             JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
                 return null;
             }
 
-             if(viajesServices.conductorTieneViajeFecha(viajes)){
+           if(!viajes.getConductor().getEscontrol().equals("no")){
+               if(!viajesServices.conductorDisponible(viajes)){
                 JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
                 return null;
             }
+           }
+             
 
             Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
             viajes.setIdviaje(idviaje);

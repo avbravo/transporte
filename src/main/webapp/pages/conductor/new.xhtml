@@ -51,10 +51,13 @@
                         <p:outputLabel  value="#{msg['field.email']}" />
                         <a:email value="#{conductorController.conductor.email}" id="email"  label="#{msg['field.email']}" />
 
+                        
                      
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <a:yesno value="#{conductorController.conductor.activo}" id="activo"  required="true"/>
+                        <p:outputLabel  value="#{msg['field.escontrol']}" />
+                        <a:noyes value="#{conductorController.conductor.escontrol}" id="escontrol"  required="true"/>
 
                         <a:save rendered="#{conductorController.writable and applicationMenu.conductor.create}"
                                       save="#{conductorController.save()}" />

@@ -21,6 +21,7 @@ import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.services.ConductorServices;
+import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -355,6 +356,7 @@ ErrorInfoTransporteejbServices errorServices;
                 String id = conductor.getCedula();
                 conductor = new Conductor();
                 conductor.setCedula(id);
+                conductor.setEscontrol("no");
                 conductorSelected = new Conductor();
             }
 
@@ -374,6 +376,14 @@ ErrorInfoTransporteejbServices errorServices;
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
+            
+            Integer numeroescontrol = conductorRepository.count(eq("escontrol","si"));
+            if(numeroescontrol >= 1){
+                  JsfUtil.warningMessage(rf.getMessage("warning.conductorcontrolyaexiste"));
+                return "";
+            }
+            
+            
             Integer id = autoincrementableTransporteejbServices.getContador("conductor");
             conductor.setIdconductor(id);
             //Lo datos del usuario
@@ -400,6 +410,26 @@ ErrorInfoTransporteejbServices errorServices;
     public String edit() {
         try {
 
+            if(conductor.getEscontrol().equals("si")){
+                 List<Conductor> list = conductorRepository.findBy(eq("escontrol","si"));
+            if(!list.isEmpty()){
+                Boolean found =false;
+                for(Conductor c:list){
+                    if(c.getCedula().equals(conductor.getCedula())){
+                        found=true;
+                    }
+                }
+                if(list.size()<=1 &&found){
+                    
+                }else{
+                    JsfUtil.warningMessage(rf.getMessage("warning.conductorcontrolyaexiste"));
+                return "";
+                }
+                  
+            }
+            }
+           
+            
             conductor.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
             //guarda el contenido actualizado

@@ -19,14 +19,14 @@
                 border-color: #428BCA;
             }
         </style>
-        
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.viajes.create}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
+
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.viajes.create}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <a:messages id="msg"/>
-       
+
                 <b:panel title="#{msg['titleview.viajes']}" look="primary" >
 
 
@@ -34,67 +34,65 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" > 
 
 
-                      
-                        
-                                <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
-                             
-                                    <a:calendar 
-                                     
-                                      
-                                        pattern="dd/MM/yyyy HH:mm a" value="#{viajesController.viajes.fechahorainicioreserva}"   
-                                        label="#{msg['field.fechahorainicioreserva']}" />
 
 
-                                 
-                       
-   <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
-                                    <a:calendar 
-                                          
-                                                pattern="dd/MM/yyyy HH:mm a" value="#{viajesController.viajes.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
+                        <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
+
+                        <a:calendar 
 
 
-                                <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                                <a:inputText   value="#{viajesController.viajes.lugarpartida}"    />
-
-                                <p:outputLabel  value="#{msg['field.lugarregreso']}" />
-                                <a:inputText  value="#{viajesController.viajes.lugarregreso}"    />
-
-
-    <p:outputLabel value="#{msg['field.vehiculo']}"
-                                               id="vehiculolabel" />
-                                <extensionviajes:autocompletevehiculos id="vehiculo"/>
+                            pattern="dd/MM/yyyy HH:mm a" value="#{viajesController.viajes.fechahorainicioreserva}"   
+                            label="#{msg['field.fechahorainicioreserva']}" />
 
 
 
-                                <p:outputLabel value="#{msg['field.conductor']}"  />
 
-                                <extensionviajes:autocompleteconductor/>
+                        <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
+                        <a:calendar  pattern="dd/MM/yyyy HH:mm a" value="#{viajesController.viajes.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
+
+
+                        <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+                        <a:inputText   value="#{viajesController.viajes.lugarpartida}"    />
+
+                        <p:outputLabel  value="#{msg['field.lugarregreso']}" />
+                        <a:inputText  value="#{viajesController.viajes.lugarregreso}"    />
+
+
+                        <p:outputLabel value="#{msg['field.vehiculo']}"
+                                       id="vehiculolabel" />
+                        <extensionviajes:autocompletevehiculos id="vehiculo"/>
+
+
+
+                        <p:outputLabel value="#{msg['field.conductor']}"  />
+
+                        <extensionviajes:autocompleteconductor/>
 
 
 
 
 
 
-                                <p:outputLabel  value="#{msg['field.comentarios']}"/>
-                                <b:inputTextarea  requiredMessage="#{msg['field.comentarios']}"
-                                                  required="true"
-                                                 rows="2" value="#{viajesController.viajes.comentarios}"  />
+                        <p:outputLabel  value="#{msg['field.comentarios']}"/>
+                        <b:inputTextarea  requiredMessage="#{msg['field.comentarios']}"
+                                          required="true"
+                                          rows="2" value="#{viajesController.viajes.comentarios}"  />
 
 
 
-                                <p:outputLabel  value="#{msg['field.kmestimados']}" />
-                                <a:inputText  span="5" value="#{viajesController.viajes.kmestimados}"  />
+                        <p:outputLabel  value="#{msg['field.kmestimados']}" />
+                        <a:inputText  span="5" value="#{viajesController.viajes.kmestimados}"  />
 
-                                <p:outputLabel  value="#{msg['field.costocombustible']}"  />
-                                <a:inputText 
-                                             label="#{msg['field.costocombustible']}"
-                                             span="5" value="#{viajesController.viajes.costocombustible}"   />
+                        <p:outputLabel  value="#{msg['field.costocombustible']}"  />
+                        <a:inputText 
+                            label="#{msg['field.costocombustible']}"
+                            span="5" value="#{viajesController.viajes.costocombustible}"   />
 
-                        
-                        
+
+
                         <a:save rendered="#{applicationMenu.viajes.create}"
-                                      save="#{viajesController.save()}" />
-                        
+                                save="#{viajesController.save()}" />
+
                         <b:commandButton immediate="true"
                                          look="primary"
                                          iconAwesome="fa-share" 

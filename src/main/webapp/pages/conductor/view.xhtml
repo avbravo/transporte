@@ -46,6 +46,10 @@
                      <p:outputLabel  value="#{msg['field.activo']}" />
                         <a:yesno value="#{conductorController.conductor.activo}" id="activo"  required="true"/>
 
+                        
+                         <p:outputLabel  value="#{msg['field.escontrol']}" />
+                        <a:noyes value="#{conductorController.conductor.escontrol}" id="escontrol"  required="true"/>
+
                     </b:panelGrid>
                     <a:view 
                         renderedDelete="#{applicationMenu.conductor.delete and conductorController.writable }"
