@@ -3,13 +3,13 @@
 <ui:composition template="/layout/template.xhtml" 
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
-                xmlns:extensionviajes="http://xmlns.jcp.org/jsf/composite/extensionviajes"> 
+                xmlns:extensionviajes="http://xmlns.jcp.org/jsf/composite/extensionviajes"
+                xmlns:extensionviaje="http://xmlns.jcp.org/jsf/composite/extensionviaje"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -150,19 +150,19 @@
                     <p:tabView>
                         <p:tab title="#{msg['tab.viajes']}">
                             <a:paginator 
-                                rowPage="#{viajesController.rowPage}"
-                                clear="#{viajesController.clear()}"
-                                first="#{viajesController.first()}"
-                                back="#{viajesController.back()}"
-                                next="#{viajesController.next()}"
-                                last="#{viajesController.last()}"
-                                page="#{viajesController.page}"
-                                pages="#{viajesController.pages}"
+                                rowPage="#{viajeController.rowPage}"
+                                clear="#{viajeController.clear()}"
+                                first="#{viajeController.first()}"
+                                back="#{viajeController.back()}"
+                                next="#{viajeController.next()}"
+                                last="#{viajeController.last()}"
+                                page="#{viajeController.page}"
+                                pages="#{viajeController.pages}"
                                 skip="ajax:viajesController.skip(viajesController.page)" 
-                                new="#{viajesController.prepare('gonew',viajesController.viajes)}"
-                                printAll="#{viajesController.printAll()}"
+                                new="#{viajeController.prepare('gonew',viajeController.viaje)}"
+                                printAll="#{viajeController.printAll()}"
                                 />
-                            <b:dataTable value="#{viajesController.viajesDataModel}"
+                            <b:dataTable value="#{viajeController.viajeDataModel}"
                                          var="item"
                                          id="dataTable2"
                                          paginated="false"
@@ -220,9 +220,9 @@
 
                                     <a:column
 
-                                        edit="#{viajesController.prepare('view',item)}"
-                                        delete="#{viajesController.delete(item,false)}"
-                                        rendered="#{applicationMenu.viajes.delete}"
+                                        edit="#{viajeController.prepare('view',item)}"
+                                        delete="#{viajeController.delete(item,false)}"
+                                        rendered="#{applicationMenu.viaje.delete}"
                                         />
                                 </b:dataTableColumn>
 
@@ -303,7 +303,7 @@
 
 
                         <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
-                        <extensionviajes:autocompletetipovehiculo/>
+                        <extensionviaje:autocompletetipovehiculo/>
 
 
 
@@ -337,19 +337,19 @@
 
 
                         <p:outputLabel  value="#{msg['field.facultad']}"  rendered="#{calendarioSolicitudViajesController.esDocente}" />
-                        <extensionviajes:autocompletefacultad/>
+                        <extensionviaje:autocompletefacultad/>
 
 
 
                         <p:outputLabel  value="#{msg['field.carrera']}" rendered="#{calendarioSolicitudViajesController.esDocente}" />
-                        <extensionviajes:autocompletecarrera/>  
+                        <extensionviaje:autocompletecarrera/>  
 
 
 
 
 
                         <p:outputLabel value="#{msg['field.idunidad']}" />
-                        <extensionviajes:autocompleteunidad/>
+                        <extensionviaje:autocompleteunidad/>
 
                         <p:outputLabel  value="#{msg['field.objetivo']}" rendered="#{calendarioSolicitudViajesController.esDocente}" />
                         <b:inputTextarea rows="2" disabled="true" rendered="#{calendarioSolicitudViajesController.esDocente}" value="#{calendarioSolicitudViajesController.solicitud.objetivo}"    />
@@ -388,7 +388,7 @@
 
 
                         <p:outputLabel value="#{msg['field.viajes']}"  rendered="#{calendarioSolicitudViajesController.esAprobado}"/>
-                        <e:autocompleteviajes_disponibles/>
+                        <e:autocompleteviaje_disponibles/>
 
                         <b:commandButton value="#{app['button.close']}"
                                          iconAwesome="fa-close"

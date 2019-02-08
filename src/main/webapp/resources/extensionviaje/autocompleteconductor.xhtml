@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <composite:interface >
+
+
+        <composite:attribute name="value" />
+            <composite:attribute name="disabled" default="false" />
+        <composite:attribute name="itemLabel" />
+        <composite:attribute name="multiple" default="false" />
+        <composite:attribute name="dropdown"  default="false"/>
+        <composite:attribute name="minQueryLength"  default="1"/>
+        <composite:attribute name="update" />
+        <composite:attribute name="rendered"/>
+        <composite:attribute name="required" default="false" />
+        <composite:attribute name="field"/>
+        <composite:attribute name="fromstart" default="true"/>
+        <composite:attribute name="size"  default="25"/>
+        <composite:attribute name="listener"  
+                             method-signature="void handleSelect(org.primefaces.event.SelectEvent)" />
+
+    </composite:interface>
+    <composite:implementation>
+
+                    <p:autoComplete dropdown="true"
+                                    multiple="false"
+                                    scrollHeight="250"
+                                    size="25"
+                                    emptyMessage="#{app['info.nohayregistros']}"
+                                    value="#{viajeController.viaje.conductor}"
+                                    completeMethod="#{viajeController.completeConductorFiltrado}"
+                                    var="p"
+                                    required="true"
+                                    requiredMessage="#{msg['field.conductor']}"
+                                    itemLabel="#{p.nombre}"
+                                    itemValue="#{p}" forceSelection="true">
+                        <f:converter binding="#{conductorConverter}"/>
+                        <f:attribute name="field" value="nombre"/>
+                        <f:attribute name="fielddropdown" value="false"/>
+                        <f:attribute name="fieldquerylenth" value="0"/>
+                        <p:ajax event="itemSelect" listener="#{viajeController.handleSelect}"
+                                update=""   />
+                        <p:ajax event="itemUnselect"  listener="#{viajeController.handleSelect}"
+                                update=""
+                                />
+                        <f:facet name="itemtip">
+                            <h:panelGrid columns="1" cellpadding="5">
+                                <h:outputText value="#{msg['field.cedula']} #{p.cedula}" />
+                                <h:outputText value="#{msg['field.nombre']} #{p.nombre}" />
+                            </h:panelGrid>
+                        </f:facet>
+                    </p:autoComplete>
+
+
+    </composite:implementation>
+
+</html>

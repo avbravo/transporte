@@ -26,7 +26,7 @@ import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
-import com.avbravo.transporteejb.entity.Viajes;
+import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 
 import com.avbravo.transporte.util.LookupServices;
@@ -100,7 +100,7 @@ public class CalendarioViajesController implements Serializable, IController {
     Tipovehiculo tipovehiculo = new Tipovehiculo();
     Vehiculo vehiculo = new Vehiculo();
     Conductor conductor = new Conductor();
-    Viajes viajes = new Viajes();
+    Viaje viajes = new Viaje();
 
     private ScheduleModel eventModel;
 
@@ -206,11 +206,11 @@ ErrorInfoTransporteejbServices errorServices;
         this.conductor = conductor;
     }
 
-    public Viajes getViajes() {
+    public Viaje getViajes() {
         return viajes;
     }
 
-    public void setViajes(Viajes viajes) {
+    public void setViajes(Viaje viajes) {
         this.viajes = viajes;
     }
 

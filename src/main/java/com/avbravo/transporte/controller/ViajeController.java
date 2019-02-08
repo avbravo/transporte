@@ -13,8 +13,8 @@ import com.avbravo.ejbjmoordb.interfaces.IController;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
-import com.avbravo.transporteejb.datamodel.ViajesDataModel;
-import com.avbravo.transporteejb.entity.Viajes;
+import com.avbravo.transporteejb.datamodel.ViajeDataModel;
+import com.avbravo.transporteejb.entity.Viaje;
 
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.entity.Conductor;
@@ -25,9 +25,9 @@ import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
-import com.avbravo.transporteejb.repository.ViajesRepository;
+import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.SolicitudServices;
-import com.avbravo.transporteejb.services.ViajesServices;
+import com.avbravo.transporteejb.services.ViajeServices;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gte;
@@ -57,7 +57,7 @@ import org.primefaces.event.SelectEvent;
  */
 @Named
 @ViewScoped
-public class ViajesController implements Serializable, IController {
+public class ViajeController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -66,7 +66,7 @@ public class ViajesController implements Serializable, IController {
 //private transient ExternalContext externalContext;
     private Boolean writable = false;
     //DataModel
-    private ViajesDataModel viajesDataModel;
+    private ViajeDataModel viajeDataModel;
 
     Integer page = 1;
     Integer rowPage = 25;
@@ -75,19 +75,19 @@ public class ViajesController implements Serializable, IController {
     //
 
     //Entity
-    Viajes viajes;
-    Viajes viajesSelected;
+    Viaje viaje;
+    Viaje viajeSelected;
     Solicitud solicitud;
 
     //List
-    List<Viajes> viajesList = new ArrayList<>();
-    List<Viajes> viajesFiltered = new ArrayList<>();
+    List<Viaje> viajeList = new ArrayList<>();
+    List<Viaje> viajeFiltered = new ArrayList<>();
     List<Vehiculo> vehiculoList = new ArrayList<>();
     List<Conductor> conductorList = new ArrayList<>();
 
     //Repository
     @Inject
-    ViajesRepository viajesRepository;
+    ViajeRepository viajeRepository;
     @Inject
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
     @Inject
@@ -110,7 +110,7 @@ public class ViajesController implements Serializable, IController {
     @Inject
     UserInfoServices userInfoServices;
     @Inject
-    ViajesServices viajesServices;
+    ViajeServices viajeServices;
     @Inject
     ResourcesFiles rf;
     @Inject
@@ -124,7 +124,7 @@ public class ViajesController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="getter/setter">
     public List<Integer> getPages() {
 
-        return viajesRepository.listOfPage(rowPage);
+        return viajeRepository.listOfPage(rowPage);
     }
 
     public void setPages(List<Integer> pages) {
@@ -171,54 +171,57 @@ public class ViajesController implements Serializable, IController {
         this.rowPage = rowPage;
     }
 
-    public ViajesServices getViajesServices() {
-        return viajesServices;
+    public ViajeServices getViajeServices() {
+        return viajeServices;
     }
 
-    public void setViajesServices(ViajesServices viajesServices) {
-        this.viajesServices = viajesServices;
+    public void setViajeServices(ViajeServices viajeServices) {
+        this.viajeServices = viajeServices;
     }
 
-    public List<Viajes> getViajesList() {
-        return viajesList;
+    public List<Viaje> getViajeList() {
+        return viajeList;
     }
 
-    public void setViajesList(List<Viajes> viajesList) {
-        this.viajesList = viajesList;
+    public void setViajeList(List<Viaje> viajeList) {
+        this.viajeList = viajeList;
     }
 
-    public List<Viajes> getViajesFiltered() {
-        return viajesFiltered;
+    public List<Viaje> getViajeFiltered() {
+        return viajeFiltered;
     }
 
-    public void setViajesFiltered(List<Viajes> viajesFiltered) {
-        this.viajesFiltered = viajesFiltered;
+    public void setViajeFiltered(List<Viaje> viajeFiltered) {
+        this.viajeFiltered = viajeFiltered;
     }
 
-    public Viajes getViajes() {
-        return viajes;
+    public ViajeDataModel getViajeDataModel() {
+        return viajeDataModel;
     }
 
-    public void setViajes(Viajes viajes) {
-        this.viajes = viajes;
+    public void setViajeDataModel(ViajeDataModel viajeDataModel) {
+        this.viajeDataModel = viajeDataModel;
     }
 
-    public Viajes getViajesSelected() {
-        return viajesSelected;
+    public Viaje getViaje() {
+        return viaje;
     }
 
-    public void setViajesSelected(Viajes viajesSelected) {
-        this.viajesSelected = viajesSelected;
+    public void setViaje(Viaje viaje) {
+        this.viaje = viaje;
     }
 
-    public ViajesDataModel getViajesDataModel() {
-        return viajesDataModel;
+    public Viaje getViajeSelected() {
+        return viajeSelected;
     }
 
-    public void setViajesDataModel(ViajesDataModel viajesDataModel) {
-        this.viajesDataModel = viajesDataModel;
+    public void setViajeSelected(Viaje viajeSelected) {
+        this.viajeSelected = viajeSelected;
     }
 
+  
+
+   
     public Boolean getWritable() {
         return writable;
     }
@@ -229,7 +232,7 @@ public class ViajesController implements Serializable, IController {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public ViajesController() {
+    public ViajeController() {
     }
 
     // </editor-fold>
@@ -245,44 +248,44 @@ public class ViajesController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-            String action = loginController.get("viajes");
-            String id = loginController.get("idviajes");
-            String pageSession = loginController.get("pageviajes");
+            String action = loginController.get("viaje");
+            String id = loginController.get("idviaje");
+            String pageSession = loginController.get("pageviaje");
             //Search
 
-            if (loginController.get("searchviajes") == null || loginController.get("searchviajes").equals("")) {
-                loginController.put("searchviajes", "_init");
+            if (loginController.get("searchviaje") == null || loginController.get("searchviaje").equals("")) {
+                loginController.put("searchviaje", "_init");
             }
             writable = false;
 
-            viajesList = new ArrayList<>();
-            viajesFiltered = new ArrayList<>();
-            viajes = new Viajes();
-            viajesDataModel = new ViajesDataModel(viajesList);
+            viajeList = new ArrayList<>();
+            viajeFiltered = new ArrayList<>();
+            viaje = new Viaje();
+            viajeDataModel = new ViajeDataModel(viajeList);
 
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
-            Integer c = viajesRepository.sizeOfPage(rowPage);
+            Integer c = viajeRepository.sizeOfPage(rowPage);
             page = page > c ? c : page;
             if (action != null) {
                 switch (action) {
                     case "gonew":
-                        viajes = new Viajes();
-                        viajes.setFechahorainicioreserva(DateUtil.getFechaHoraActual());
-                        viajes.setFechahorafinreserva(DateUtil.getFechaHoraActual());
-                        viajes.setActivo("si");
-                        viajes.setLugarpartida("UTP-AZUERO");
-                        viajesSelected = viajes;
+                        viaje = new Viaje();
+                        viaje.setFechahorainicioreserva(DateUtil.getFechaHoraActual());
+                        viaje.setFechahorafinreserva(DateUtil.getFechaHoraActual());
+                        viaje.setActivo("si");
+                        viaje.setLugarpartida("UTP-AZUERO");
+                        viajeSelected = viaje;
 
                         writable = false;
                         break;
                     case "view":
                         if (id != null) {
-                            Optional<Viajes> optional = viajesRepository.find("idviajes", id);
+                            Optional<Viaje> optional = viajeRepository.find("idviaje", id);
                             if (optional.isPresent()) {
-                                viajes = optional.get();
-                                viajesSelected = viajes;
+                                viaje = optional.get();
+                                viajeSelected = viaje;
                                 writable = true;
 
                             }
@@ -306,40 +309,40 @@ public class ViajesController implements Serializable, IController {
     public void reset() {
 
         RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new", viajes);
+        prepare("new", viaje);
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-    public String prepare(String action, Viajes item) {
+    public String prepare(String action, Viaje item) {
         String url = "";
         try {
-            loginController.put("pageviajes", page.toString());
-            loginController.put("viajes", action);
+            loginController.put("pageviaje", page.toString());
+            loginController.put("viaje", action);
 
             switch (action) {
                 case "new":
-                    viajes = new Viajes();
-                    viajesSelected = new Viajes();
+                    viaje = new Viaje();
+                    viajeSelected = new Viaje();
 
                     writable = false;
                     break;
 
                 case "view":
 
-                    viajesSelected = item;
-                    viajes = viajesSelected;
-                    loginController.put("idviajes", viajes.getIdviaje().toString());
+                    viajeSelected = item;
+                    viaje = viajeSelected;
+                    loginController.put("idviaje", viaje.getIdviaje().toString());
 
-                    url = "/pages/viajes/view.xhtml";
+                    url = "/pages/viaje/view.xhtml";
                     break;
 
                 case "golist":
-                    url = "/pages/viajes/list.xhtml";
+                    url = "/pages/viaje/list.xhtml";
                     break;
 
                 case "gonew":
 
-                    url = "/pages/viajes/new.xhtml";
+                    url = "/pages/viaje/new.xhtml";
                     break;
 
             }
@@ -355,11 +358,11 @@ public class ViajesController implements Serializable, IController {
     @Override
     public String showAll() {
         try {
-            viajesList = new ArrayList<>();
-            viajesFiltered = new ArrayList<>();
-            viajesList = viajesRepository.findAll();
-            viajesFiltered = viajesList;
-            viajesDataModel = new ViajesDataModel(viajesList);
+            viajeList = new ArrayList<>();
+            viajeFiltered = new ArrayList<>();
+            viajeList = viajeRepository.findAll();
+            viajeFiltered = viajeList;
+            viajeDataModel = new ViajeDataModel(viajeList);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -372,22 +375,22 @@ public class ViajesController implements Serializable, IController {
     public String isNew() {
         try {
             writable = true;
-            if (JsfUtil.isVacio(viajes.getIdviaje())) {
+            if (JsfUtil.isVacio(viaje.getIdviaje())) {
                 writable = false;
                 return "";
             }
-            //viajes.setIdviajes(viajes.getIdviaje().toUpperCase());
-            Optional<Viajes> optional = viajesRepository.findById(viajes);
+            //viaje.setIdviaje(viaje.getIdviaje().toUpperCase());
+            Optional<Viaje> optional = viajeRepository.findById(viaje);
             if (optional.isPresent()) {
                 writable = false;
 
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return "";
             } else {
-                Integer id = viajes.getIdviaje();
-                viajes = new Viajes();
-                viajes.setIdviaje(id);
-                viajesSelected = new Viajes();
+                Integer id = viaje.getIdviaje();
+                viaje = new Viaje();
+                viaje.setIdviaje(id);
+                viajeSelected = new Viaje();
             }
 
         } catch (Exception e) {
@@ -400,39 +403,39 @@ public class ViajesController implements Serializable, IController {
     @Override
     public String save() {
         try {
-            if (!viajesServices.isValid(viajes)) {
+            if (!viajeServices.isValid(viaje)) {
                 return "";
             }
 
-           if(!viajesServices.vehiculoDisponible(viajes)){
+           if(!viajeServices.vehiculoDisponible(viaje)){
                             JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
                 return null;
             }
 
-           if(!viajes.getConductor().getEscontrol().equals("no")){
-               if(!viajesServices.conductorDisponible(viajes)){
+           if(!viaje.getConductor().getEscontrol().equals("no")){
+               if(!viajeServices.conductorDisponible(viaje)){
                 JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
                 return null;
             }
            }
              
 
-            Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
-            viajes.setIdviaje(idviaje);
-            viajes.setRealizado("no");
-            viajes.setActivo("si");
+            Integer idviaje = autoincrementableTransporteejbServices.getContador("viaje");
+            viaje.setIdviaje(idviaje);
+            viaje.setRealizado("no");
+            viaje.setActivo("si");
 
             //Lo datos del usuario
-            viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
-            if (viajesRepository.save(viajes)) {
+            viaje.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+            if (viajeRepository.save(viaje)) {
                 //guarda el contenido anterior
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajes.getIdviaje().toString(), loginController.getUsername(),
-                        "create", "viajes", viajesRepository.toDocument(viajes).toString()));
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(),
+                        "create", "viaje", viajeRepository.toDocument(viaje).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
             } else {
-                JsfUtil.successMessage("save() " + viajesRepository.getException().toString());
+                JsfUtil.successMessage("save() " + viajeRepository.getException().toString());
             }
 
         } catch (Exception e) {
@@ -446,13 +449,13 @@ public class ViajesController implements Serializable, IController {
     public String edit() {
         try {
 
-            viajes.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
+            viaje.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
             //guarda el contenido actualizado
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajes.getIdviaje().toString(), loginController.getUsername(),
-                    "update", "viajes", viajesRepository.toDocument(viajes).toString()));
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(),
+                    "update", "viaje", viajeRepository.toDocument(viaje).toString()));
 
-            viajesRepository.update(viajes);
+            viajeRepository.update(viaje);
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -465,27 +468,27 @@ public class ViajesController implements Serializable, IController {
     public String delete(Object item, Boolean deleteonviewpage) {
         String path = "";
         try {
-            viajes = (Viajes) item;
+            viaje = (Viaje) item;
 
-            if (!viajesServices.isDeleted(viajes)) {
+            if (!viajeServices.isDeleted(viaje)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
             }
-            viajesSelected = viajes;
-            if (viajesRepository.delete("idviajes", viajes.getIdviaje())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajes.getIdviaje().toString(), loginController.getUsername(), "delete", "viajes", viajesRepository.toDocument(viajes).toString()));
+            viajeSelected = viaje;
+            if (viajeRepository.delete("idviaje", viaje.getIdviaje())) {
+                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(), "delete", "viaje", viajeRepository.toDocument(viaje).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
-                    viajesList.remove(viajes);
-                    viajesFiltered = viajesList;
-                    viajesDataModel = new ViajesDataModel(viajesList);
+                    viajeList.remove(viaje);
+                    viajeFiltered = viajeList;
+                    viajeDataModel = new ViajeDataModel(viajeList);
 
-                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageviajes", page.toString());
+                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageviaje", page.toString());
 
                 } else {
-                    viajes = new Viajes();
-                    viajesSelected = new Viajes();
+                    viaje = new Viaje();
+                    viajeSelected = new Viaje();
                     writable = false;
 
                 }
@@ -495,7 +498,7 @@ public class ViajesController implements Serializable, IController {
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-        // path = deleteonviewpage ? "/pages/viajes/list.xhtml" : "";
+        // path = deleteonviewpage ? "/pages/viaje/list.xhtml" : "";
         path = "";
         return path;
     }// </editor-fold>
@@ -503,7 +506,7 @@ public class ViajesController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="deleteAll">
     @Override
     public String deleteAll() {
-        if (viajesRepository.deleteAll() != 0) {
+        if (viajeRepository.deleteAll() != 0) {
             JsfUtil.successMessage(rf.getAppMessage("info.delete"));
         }
         return "";
@@ -513,10 +516,10 @@ public class ViajesController implements Serializable, IController {
     @Override
     public String print() {
         try {
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageviajes", page.toString());
-            List<Viajes> list = new ArrayList<>();
-            list.add(viajes);
-            String ruta = "/resources/reportes/viajes/details.jasper";
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageviaje", page.toString());
+            List<Viaje> list = new ArrayList<>();
+            list.add(viaje);
+            String ruta = "/resources/reportes/viaje/details.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
@@ -530,10 +533,10 @@ public class ViajesController implements Serializable, IController {
     @Override
     public String printAll() {
         try {
-            List<Viajes> list = new ArrayList<>();
-            list = viajesRepository.findAll(new Document("idviajes", 1));
+            List<Viaje> list = new ArrayList<>();
+            list = viajeRepository.findAll(new Document("idviaje", 1));
 
-            String ruta = "/resources/reportes/viajes/all.jasper";
+            String ruta = "/resources/reportes/viaje/all.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
@@ -555,13 +558,13 @@ public class ViajesController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
     public void handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-            viajesList.removeAll(viajesList);
-            viajesList.add(viajesSelected);
-            viajesFiltered = viajesList;
-            viajesDataModel = new ViajesDataModel(viajesList);
+            viajeList.removeAll(viajeList);
+            viajeList.add(viajeSelected);
+            viajeFiltered = viajeList;
+            viajeDataModel = new ViajeDataModel(viajeList);
 
-            loginController.put("searchviajes", "idviajes");
-            lookupServices.setIdviaje(viajesSelected.getIdviaje());
+            loginController.put("searchviaje", "idviaje");
+            lookupServices.setIdviaje(viajeSelected.getIdviaje());
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -571,7 +574,7 @@ public class ViajesController implements Serializable, IController {
     @Override
     public String last() {
         try {
-            page = viajesRepository.sizeOfPage(rowPage);
+            page = viajeRepository.sizeOfPage(rowPage);
             move();
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -595,7 +598,7 @@ public class ViajesController implements Serializable, IController {
     @Override
     public String next() {
         try {
-            if (page < (viajesRepository.sizeOfPage(rowPage))) {
+            if (page < (viajeRepository.sizeOfPage(rowPage))) {
                 page++;
             }
             move();
@@ -640,31 +643,31 @@ public class ViajesController implements Serializable, IController {
             Document doc;
             Document sort = new Document("idviaje", -1);
 
-            switch (loginController.get("searchviajes")) {
+            switch (loginController.get("searchviaje")) {
                 case "_init":
                 case "_autocomplete":
-                    viajesList = viajesRepository.findPagination(page, rowPage, sort);
+                    viajeList = viajeRepository.findPagination(page, rowPage, sort);
 
                     break;
 
-                case "idviajes":
+                case "idviaje":
                     if (lookupServices.getIdviaje() != null) {
-                        viajesList = viajesRepository.findRegexInTextPagination("idviajes", lookupServices.getIdviaje().toString(), true, page, rowPage, new Document("idviajes", -1));
+                        viajeList = viajeRepository.findRegexInTextPagination("idviaje", lookupServices.getIdviaje().toString(), true, page, rowPage, new Document("idviaje", -1));
                     } else {
-                        viajesList = viajesRepository.findPagination(page, rowPage, sort);
+                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
                     }
 
                     break;
 
                 default:
 
-                    viajesList = viajesRepository.findPagination(page, rowPage, sort);
+                    viajeList = viajeRepository.findPagination(page, rowPage, sort);
                     break;
             }
 
-            viajesFiltered = viajesList;
+            viajeFiltered = viajeList;
 
-            viajesDataModel = new ViajesDataModel(viajesList);
+            viajeDataModel = new ViajeDataModel(viajeList);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -675,7 +678,7 @@ public class ViajesController implements Serializable, IController {
     @Override
     public String clear() {
         try {
-            loginController.put("searchviajes", "_init");
+            loginController.put("searchviaje", "_init");
             page = 1;
             move();
         } catch (Exception e) {
@@ -689,7 +692,7 @@ public class ViajesController implements Serializable, IController {
     public String searchBy(String string) {
         try {
 
-            loginController.put("searchviajes", string);
+            loginController.put("searchviaje", string);
 
             writable = true;
             move();
@@ -740,21 +743,21 @@ public class ViajesController implements Serializable, IController {
                         }
                     });
                     /*
-                    Verificar si tiene viajes
+                    Verificar si tiene viaje
                      */
                     for (Vehiculo v : suggestions) {
 
-                        List<Viajes> viajesList;
+                        List<Viaje> viajeList;
                         if (solicitudServices.esMismoDiaSolicitud(solicitud)) {
                             //SI LA SOLICITUD(salida y regreso es el mismo dia)
                             //BUSCAR LOS REGISTROS DE VIAJES DEL VEHICULO ESE DIA
-                            viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", viajesSelected.getFechahorainicioreserva());
-                            if (viajesList.isEmpty()) {
+                            viajeList = viajeRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", viajeSelected.getFechahorainicioreserva());
+                            if (viajeList.isEmpty()) {
                                 // INDICA QUE ESE VEHICULO ESTA DISPONIBLE NO TIENE NINGUN VIAJE
                                 disponibles.add(v);
                             } else {
                                 // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
-                                if (!viajesServices.tieneDisponibilidadViaje(viajesList, solicitud)) {
+                                if (!viajeServices.tieneDisponibilidadViaje(viajeList, solicitud)) {
                                     disponibles.add(v);
                                 }
 
@@ -763,13 +766,13 @@ public class ViajesController implements Serializable, IController {
                             // ABARCA VARIOS DIAS 
                             // OBTENER LOS VIAJES ENTRE ESOS DIAS
 
-                            viajesList = viajesVariosDias(v);
-                            if (viajesList.isEmpty()) {
+                            viajeList = viajeVariosDias(v);
+                            if (viajeList.isEmpty()) {
                                 //SI ESTA VACIO INDICA QUE ESTA DISPONIBLE NO TIENE VIAJES EN ESA FECHA
                                 disponibles.add(v);
                             } else {
                                 // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
-                                if (!viajesServices.tieneDisponibilidadViaje(viajesList, solicitud)) {
+                                if (!viajeServices.tieneDisponibilidadViaje(viajeList, solicitud)) {
                                     disponibles.add(v);
                                 }
                             }
@@ -777,7 +780,7 @@ public class ViajesController implements Serializable, IController {
                         }
                     }
                     // VERIRIFICAR SI TIENE VIAJES
-                    // List<Viajes> viajesList = viajesRepository.fi
+                    // List<Viajes> viajeList = viajeRepository.fi
                     //si el dia y mes
                 }
             }
@@ -866,57 +869,57 @@ public class ViajesController implements Serializable, IController {
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="viajesVariosDias(Vehiculo v) ">
+    // <editor-fold defaultstate="collapsed" desc="viajeVariosDias(Vehiculo v) ">
     /**
-     * devuelve la lista de viajes entre varios dias considerar que el busca
-     * entre la fecha de partida y la fecha de regreso por lo que muchos viajes
-     * puede que tengan fecha de partida y no de regreso en viajess y en otros
+     * devuelve la lista de viaje entre varios dias considerar que el busca
+     * entre la fecha de partida y la fecha de regreso por lo que muchos viaje
+     * puede que tengan fecha de partida y no de regreso en viajes y en otros
      * casos no esten en la de partida y si en la de regreso
      *
      * @return
      */
-    private List<Viajes> viajesVariosDias(Vehiculo v) {
-        List<Viajes> viajesList = new ArrayList<>();
+    private List<Viaje> viajeVariosDias(Vehiculo v) {
+        List<Viaje> viajeList = new ArrayList<>();
         try {
-            viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
-            List<Viajes> viajesStart = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
-            List<Viajes> viajesEnd = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorafinreserva", solicitud.getFechahoraregreso());
-            viajesList = new ArrayList<>();
-            if (viajesStart.isEmpty() && viajesEnd.isEmpty()) {
+            viajeList = viajeRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
+            List<Viaje> viajeStart = viajeRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
+            List<Viaje> viajeEnd = viajeRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorafinreserva", solicitud.getFechahoraregreso());
+            viajeList = new ArrayList<>();
+            if (viajeStart.isEmpty() && viajeEnd.isEmpty()) {
                 // NO HAY VIAJES EN ESAS FECHAS
 
             } else {
-                if (!viajesStart.isEmpty() && !viajesEnd.isEmpty()) {
-                    viajesList = viajesStart;
-                    for (Viajes vjs : viajesEnd) {
+                if (!viajeStart.isEmpty() && !viajeEnd.isEmpty()) {
+                    viajeList = viajeStart;
+                    for (Viaje vjs : viajeEnd) {
                         Boolean foundv = false;
-                        for (Viajes vje : viajesList) {
+                        for (Viaje vje : viajeList) {
                             if (vjs.getIdviaje() == vje.getIdviaje()) {
                                 foundv = true;
                                 break;
                             }
                         }
                         if (!foundv) {
-                            viajesList.add(vjs);
+                            viajeList.add(vjs);
                         }
                     }
                 } else {
-                    if (viajesStart.isEmpty() && !viajesEnd.isEmpty()) {
-                        viajesList = viajesEnd;
+                    if (viajeStart.isEmpty() && !viajeEnd.isEmpty()) {
+                        viajeList = viajeEnd;
                     } else {
-                        if (!viajesStart.isEmpty() && viajesEnd.isEmpty()) {
-                            viajesList = viajesStart;
+                        if (!viajeStart.isEmpty() && viajeEnd.isEmpty()) {
+                            viajeList = viajeStart;
                         }
                     }
                 }
-                Collections.sort(viajesList,
-                        (Viajes a, Viajes b) -> a.getIdviaje().compareTo(b.getIdviaje()));
+                Collections.sort(viajeList,
+                        (Viaje a, Viaje b) -> a.getIdviaje().compareTo(b.getIdviaje()));
             }
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-        return viajesList;
+        return viajeList;
     }
     // </editor-fold>
 

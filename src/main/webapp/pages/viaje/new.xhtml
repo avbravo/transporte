@@ -8,7 +8,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
-                xmlns:extensionviajes="http://xmlns.jcp.org/jsf/composite/extensionviajes"> 
+                xmlns:extensionviaje="http://xmlns.jcp.org/jsf/composite/extensionviaje"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -20,14 +20,14 @@
             }
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.viajes.create}" onkeypress="if (event.keyCode == 13) {
-                     return false;
-                 }">
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.viaje.create}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
             <h:panelGroup id="content" layout="block"> 
 
                 <a:messages id="msg"/>
 
-                <b:panel title="#{msg['titleview.viajes']}" look="primary" >
+                <b:panel title="#{msg['titleview.viaje']}" look="primary" >
 
 
 
@@ -38,35 +38,37 @@
 
                         <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
 
-                        <a:calendar 
+                      
+                            <a:calendar 
+                              
+
+                                pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorainicioreserva}"   
+                                label="#{msg['field.fechahorainicioreserva']}" />
 
 
-                            pattern="dd/MM/yyyy HH:mm a" value="#{viajesController.viajes.fechahorainicioreserva}"   
-                            label="#{msg['field.fechahorainicioreserva']}" />
 
 
+                            <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
+                            <a:calendar  
+                                         pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
 
-
-                        <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
-                        <a:calendar  pattern="dd/MM/yyyy HH:mm a" value="#{viajesController.viajes.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
-
-
+                      
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <a:inputText   value="#{viajesController.viajes.lugarpartida}"    />
+                        <a:inputText   value="#{viajeController.viaje.lugarpartida}"    />
 
                         <p:outputLabel  value="#{msg['field.lugarregreso']}" />
-                        <a:inputText  value="#{viajesController.viajes.lugarregreso}"    />
+                        <a:inputText  value="#{viajeController.viaje.lugarregreso}"    />
 
 
                         <p:outputLabel value="#{msg['field.vehiculo']}"
                                        id="vehiculolabel" />
-                        <extensionviajes:autocompletevehiculos id="vehiculo"/>
+                        <extensionviaje:autocompletevehiculos id="vehiculo"/>
 
 
 
                         <p:outputLabel value="#{msg['field.conductor']}"  />
 
-                        <extensionviajes:autocompleteconductor/>
+                        <extensionviaje:autocompleteconductor/>
 
 
 
@@ -76,31 +78,31 @@
                         <p:outputLabel  value="#{msg['field.comentarios']}"/>
                         <b:inputTextarea  requiredMessage="#{msg['field.comentarios']}"
                                           required="true"
-                                          rows="2" value="#{viajesController.viajes.comentarios}"  />
+                                          rows="2" value="#{viajeController.viaje.comentarios}"  />
 
 
 
                         <p:outputLabel  value="#{msg['field.kmestimados']}" />
-                        <a:inputText  span="5" value="#{viajesController.viajes.kmestimados}"  />
+                        <a:inputText  span="5" value="#{viajeController.viaje.kmestimados}"  />
 
                         <p:outputLabel  value="#{msg['field.costocombustible']}"  />
                         <a:inputText 
                             label="#{msg['field.costocombustible']}"
-                            span="5" value="#{viajesController.viajes.costocombustible}"   />
+                            span="5" value="#{viajeController.viaje.costocombustible}"   />
 
 
 
-                        <a:save rendered="#{applicationMenu.viajes.create}"
-                                save="#{viajesController.save()}" />
+                        <a:save rendered="#{applicationMenu.viaje.create}"
+                                save="#{viajeController.save()}" />
 
                         <b:commandButton immediate="true"
                                          look="primary"
                                          iconAwesome="fa-share" 
 
 
-                                         rendered="#{applicationMenu.viajes.list}" 
+                                         rendered="#{applicationMenu.viaje.list}" 
                                          title="#{app['button.search']}" 
-                                         action="#{viajesController.prepare('golist',viajesController.viajes)}"/>
+                                         action="#{viajeController.prepare('golist',viajeController.viaje)}"/>
 
 
                     </b:panelGrid>
@@ -109,7 +111,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.viajes.create}" />
+        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.viaje.create}" />
 
         <br/><br/><br/>
     </ui:define>

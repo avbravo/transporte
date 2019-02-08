@@ -33,7 +33,7 @@ public class ApplicationMenu implements Serializable {
     private Boolean menuBarRegistros = false;
     private Boolean menuBarReportes = false;
 
-    private Boolean menuBarViajes = false;
+    private Boolean menuBarViaje = false;
 
     /*
      elementos
@@ -61,7 +61,7 @@ public class ApplicationMenu implements Serializable {
     MenuElement sugerencia = new MenuElement();
     MenuElement vehiculo = new MenuElement();
     MenuElement vehiculocambiarplaca = new MenuElement();
-    MenuElement viajes = new MenuElement();
+    MenuElement viaje = new MenuElement();
     MenuElement usuario = new MenuElement();
     MenuElement unidad = new MenuElement();
 
@@ -96,7 +96,7 @@ public class ApplicationMenu implements Serializable {
         solicitudAdministrativoPorAdministrador.initialize(activo);
         vehiculo.initialize(activo);
         vehiculocambiarplaca.initialize(activo);
-        viajes.initialize(activo);
+        viaje.initialize(activo);
         unidad.initialize(activo);
         usuario.initialize(activo);
 
@@ -218,13 +218,7 @@ public class ApplicationMenu implements Serializable {
         this.facultad = facultad;
     }
 
-    public Boolean getMenuBarViajes() {
-        return menuBarViajes;
-    }
-
-    public void setMenuBarViajes(Boolean menuBarViajes) {
-        this.menuBarViajes = menuBarViajes;
-    }
+   
 
     public MenuElement getSolicitudDocente() {
         return solicitudDocente;
@@ -306,13 +300,23 @@ public class ApplicationMenu implements Serializable {
         this.vehiculo = vehiculo;
     }
 
-    public MenuElement getViajes() {
-        return viajes;
+    public Boolean getMenuBarViaje() {
+        return menuBarViaje;
     }
 
-    public void setViajes(MenuElement viajes) {
-        this.viajes = viajes;
+    public void setMenuBarViaje(Boolean menuBarViaje) {
+        this.menuBarViaje = menuBarViaje;
     }
+
+    public MenuElement getViaje() {
+        return viaje;
+    }
+
+    public void setViaje(MenuElement viaje) {
+        this.viaje = viaje;
+    }
+
+   
 
     public Boolean getMenuBarSolicitud() {
         return menuBarSolicitud;

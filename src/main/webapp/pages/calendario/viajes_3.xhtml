@@ -152,19 +152,19 @@
                                      onclick="PF('viajesDialog').show();" />
 
                     <a:paginator 
-                        rowPage="#{viajesController.rowPage}"
-                        clear="#{viajesController.clear()}"
-                        first="#{viajesController.first()}"
-                        back="#{viajesController.back()}"
-                        next="#{viajesController.next()}"
-                        last="#{viajesController.last()}"
-                        page="#{viajesController.page}"
-                        pages="#{viajesController.pages}"
+                        rowPage="#{viajeController.rowPage}"
+                        clear="#{viajeController.clear()}"
+                        first="#{viajeController.first()}"
+                        back="#{viajeController.back()}"
+                        next="#{viajeController.next()}"
+                        last="#{viajeController.last()}"
+                        page="#{viajeController.page}"
+                        pages="#{viajeController.pages}"
                         skip="ajax:viajesController.skip(viajesController.page)" 
-                        new="#{viajesController.prepare('gonew',viajesController.viajes)}"
-                        printAll="#{viajesController.printAll()}"
+                        new="#{viajeController.prepare('gonew',viajeController.viajes)}"
+                        printAll="#{viajeController.printAll()}"
                         />
-                    <b:dataTable value="#{viajesController.viajesDataModel}"
+                    <b:dataTable value="#{viajeController.viajesDataModel}"
                                  var="item"
                                  id="dataTable2"
                                  paginated="false"
@@ -221,8 +221,8 @@
 
                             <a:column
 
-                                edit="#{viajesController.prepare('view',item)}"
-                                delete="#{viajesController.delete(item,false)}"
+                                edit="#{viajeController.prepare('view',item)}"
+                                delete="#{viajeController.delete(item,false)}"
                                 rendered="#{applicationMenu.viajes.delete}"
                                 />
                         </b:dataTableColumn>

@@ -27,7 +27,7 @@ import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
-import com.avbravo.transporteejb.entity.Viajes;
+import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 
@@ -37,12 +37,12 @@ import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
-import com.avbravo.transporteejb.repository.ViajesRepository;
+import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
-import com.avbravo.transporteejb.services.ViajesServices;
+import com.avbravo.transporteejb.services.ViajeServices;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
@@ -108,8 +108,8 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     Conductor conductor = new Conductor();
     Vehiculo vehiculoSelected = new Vehiculo();
     Conductor conductorSelected = new Conductor();
-    Viajes viajes = new Viajes();
-    Viajes viajesSelected = new Viajes();
+    Viaje viajes = new Viaje();
+    Viaje viajesSelected = new Viaje();
 
     private Integer totalAprobado = 0;
     private Integer totalSolicitado = 0;
@@ -142,8 +142,8 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     List<Solicitud> solicitudList = new ArrayList<>();
     List<Solicitud> solicitudFiltered = new ArrayList<>();
     List<Unidad> unidadList = new ArrayList<>();
-    List<Viajes> viajesList = new ArrayList<>();
-    List<Viajes> viajesDisponiblesList = new ArrayList<>();
+    List<Viaje> viajesList = new ArrayList<>();
+    List<Viaje> viajesDisponiblesList = new ArrayList<>();
 
     List<Usuario> usuarioList = new ArrayList<>();
     List<Vehiculo> vehiculoList = new ArrayList<>();
@@ -167,7 +167,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     @Inject
     UsuarioRepository usuarioRepository;
     @Inject
-    ViajesRepository viajesRepository;
+    ViajeRepository viajesRepository;
     @Inject
     ConductorRepository conductorRepository;
     @Inject
@@ -198,7 +198,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     @Inject
     TipovehiculoServices tipovehiculoServices;
     @Inject
-    ViajesServices viajesServices;
+    ViajeServices viajesServices;
     @Inject
     ResourcesFiles rf;
     @Inject
@@ -243,15 +243,15 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
         this.conductorSelected = conductorSelected;
     }
 
-    public List<Viajes> getViajesDisponiblesList() {
+    public List<Viaje> getViajesDisponiblesList() {
         return viajesDisponiblesList;
     }
 
-    public void setViajesDisponiblesList(List<Viajes> viajesDisponiblesList) {
+    public void setViajesDisponiblesList(List<Viaje> viajesDisponiblesList) {
         this.viajesDisponiblesList = viajesDisponiblesList;
     }
 
-    public Viajes getViajesSelected() {
+    public Viaje getViajesSelected() {
         return viajesSelected;
     }
 
@@ -263,7 +263,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
         this.esAprobadoParaEditar = esAprobadoParaEditar;
     }
 
-    public void setViajesSelected(Viajes viajesSelected) {
+    public void setViajesSelected(Viaje viajesSelected) {
         this.viajesSelected = viajesSelected;
     }
 
@@ -307,11 +307,11 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
         this.conductor = conductor;
     }
 
-    public Viajes getViajes() {
+    public Viaje getViajes() {
         return viajes;
     }
 
-    public void setViajes(Viajes viajes) {
+    public void setViajes(Viaje viajes) {
         this.viajes = viajes;
     }
 
@@ -581,7 +581,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             esAprobadoParaEditar = false;
             conductorSelected = new Conductor();
             vehiculoSelected = new Vehiculo();
-            viajesSelected = new Viajes();
+            viajesSelected = new Viaje();
             String action = loginController.get("solicitud");
             String id = loginController.get("idsolicitud");
             String pageSession = loginController.get("pagesolicitud");
@@ -716,7 +716,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             unidadList = new ArrayList<>();
             unidadList.add(loginController.getUsuario().getUnidad());
 
-            viajesSelected = new Viajes();
+            viajesSelected = new Viaje();
             Integer mes = DateUtil.getMesDeUnaFecha(solicitud.getFecha());
 
             String idsemestre = "V";
@@ -1068,7 +1068,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
 //            } else {
             doc = new Document("activo", "si");
 //            }
-            List<Viajes> list = viajesRepository.findBy(docViajes, new Document("fecha", 1));
+            List<Viaje> list = viajesRepository.findBy(docViajes, new Document("fecha", 1));
 
             solicitudList = solicitudRepository.findBy(doc, new Document("fecha", 1));
             eventModel = new DefaultScheduleModel();
@@ -1640,7 +1640,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             // esnuevo = false;
             esSolicitud = true;
             esAprobadoParaEditar = false;
-            viajesSelected = new Viajes();
+            viajesSelected = new Viaje();
             esDocente = false;
             event = (ScheduleEvent) selectEvent.getObject();
             esAprobado = false;
@@ -1668,7 +1668,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                     if (solicitud.getEstatus().getIdestatus().equals("APROBADO")) {
                         esAprobado = true;
                         esAprobadoParaEditar = true;
-                        List<Viajes> list = new ArrayList<>();
+                        List<Viaje> list = new ArrayList<>();
                         list = viajesRepository.findBy(new Document("solicitud.idsolicitud", solicitud.getIdsolicitud()));
                         if (list.isEmpty()) {
                             JsfUtil.warningMessage(rf.getMessage("warning.notexitsviajeconesasolicitud"));
@@ -1694,7 +1694,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                     idviaje = Integer.parseInt(title.substring(1, i).trim());
 
                     viajesSelected.setIdviaje(idviaje);
-                    Optional<Viajes> optional = viajesRepository.findById(viajesSelected);
+                    Optional<Viaje> optional = viajesRepository.findById(viajesSelected);
                     if (optional.isPresent()) {
                         viajesSelected = optional.get();
 
@@ -1785,7 +1785,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                      */
                     for (Vehiculo v : suggestions) {
 
-                        List<Viajes> viajesList;
+                        List<Viaje> viajesList;
                         if (solicitudServices.esMismoDiaSolicitud(solicitud)) {
                             //SI LA SOLICITUD(salida y regreso es el mismo dia)
                             //BUSCAR LOS REGISTROS DE VIAJES DEL VEHICULO ESE DIA
@@ -1941,7 +1941,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="isViajesDisponibleValid(Viajes viajes)">
-    public Boolean isViajesDisponibleValid(Viajes viajes) {
+    public Boolean isViajesDisponibleValid(Viaje viajes) {
         Boolean valid = false;
         try {
 
@@ -1966,8 +1966,8 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
      *
      * @return
      */
-    private List<Viajes> viajesVariosDias(Vehiculo v) {
-        List<Viajes> viajesList = new ArrayList<>();
+    private List<Viaje> viajesVariosDias(Vehiculo v) {
+        List<Viaje> viajesList = new ArrayList<>();
         try {
             return viajesServices.viajesVariosDias(v, solicitud);
         } catch (Exception e) {
@@ -2076,10 +2076,10 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
      * @param query
      * @return
      */
-    public List<Viajes> completeViajesDisponibles(String query) {
-        List<Viajes> suggestions = new ArrayList<>();
-        List<Viajes> disponibles = new ArrayList<>();
-        List<Viajes> temp = new ArrayList<>();
+    public List<Viaje> completeViajesDisponibles(String query) {
+        List<Viaje> suggestions = new ArrayList<>();
+        List<Viaje> disponibles = new ArrayList<>();
+        List<Viaje> temp = new ArrayList<>();
         try {
             Boolean found = false;
             query = query.trim();
@@ -2093,7 +2093,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             if (temp.isEmpty()) {
                 return suggestions;
             } else {
-                List<Viajes> validos = temp.stream()
+                List<Viaje> validos = temp.stream()
                         .filter(x -> isViajesDisponibleValid(x)).collect(Collectors.toList());
                 if (validos.isEmpty()) {
                     return suggestions;
@@ -2105,7 +2105,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
 // REMOVERLOS SI YA ESTAN EN EL LISTADO
 
                     validos.forEach((v) -> {
-                        Optional<Viajes> optional = viajesDisponiblesList.stream()
+                        Optional<Viaje> optional = viajesDisponiblesList.stream()
                                 .filter(v2 -> v2.getIdviaje() == v.getIdviaje())
                                 .findAny();
                         if (!optional.isPresent()) {
@@ -2168,10 +2168,10 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
      * @param query
      * @return
      */
-    public List<Viajes> completeViajes(String query) {
-        List<Viajes> suggestions = new ArrayList<>();
-        List<Viajes> disponibles = new ArrayList<>();
-        List<Viajes> temp = new ArrayList<>();
+    public List<Viaje> completeViajes(String query) {
+        List<Viaje> suggestions = new ArrayList<>();
+        List<Viaje> disponibles = new ArrayList<>();
+        List<Viaje> temp = new ArrayList<>();
         try {
 //            Boolean found = false;
 //            query = query.trim();
@@ -2256,7 +2256,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     // <editor-fold defaultstate="collapsed" desc="inicializarViaje()">
     public String inicializarViaje() {
         try {
-            viajesSelected = new Viajes();
+            viajesSelected = new Viaje();
             viajesSelected.setFechahorainicioreserva(DateUtil.getFechaHoraActual());
             viajesSelected.setFechahorafinreserva(DateUtil.getFechaHoraActual());
             viajesSelected.setLugarpartida("UTP Azuero");

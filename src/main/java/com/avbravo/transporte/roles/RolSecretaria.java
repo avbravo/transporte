@@ -68,7 +68,7 @@ applicationMenu.getCalendariobuses().initialize(Boolean.TRUE);
         applicationMenu.getTipovehiculo().initialize(Boolean.TRUE);
         applicationMenu.getVehiculo().initialize(Boolean.TRUE);
         applicationMenu.getVehiculocambiarplaca().initialize(Boolean.TRUE);
-        applicationMenu.getViajes().initialize(Boolean.TRUE);
+        applicationMenu.getViaje().initialize(Boolean.TRUE);
         applicationMenu.getUnidad().initialize(Boolean.TRUE);
         applicationMenu.getUsuario().initialize(Boolean.TRUE);
 

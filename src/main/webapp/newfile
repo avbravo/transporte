@@ -1,83 +1,31 @@
- public List<Viajes> completeViajesDisponibles(String query) {
-        List<Viajes> suggestions = new ArrayList<>();
-        List<Viajes> disponibles = new ArrayList<>();
-        List<Viajes> temp = new ArrayList<>();
-        try {
-            Boolean found = false;
-            query = query.trim();
-
-            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
-            // temp = solicitudRepository.findRegex(field, query, true, new Document(field, 1));
-            Document doc = new Document();
-            doc.append("activo", "si").append("estatus.idestatus", "SOLICITADO");
-            temp = solicitudRepository.findBy(doc, new Document("idsolicitud", -1));
-
-            if (temp.isEmpty()) {
-                return suggestions;
-            } else {
-                List<Viajes> validos = temp.stream()
-                        .filter(x -> isViajesValid(x)).collect(Collectors.toList());
-                if (validos.isEmpty()) {
-                    return suggestions;
-                }
-
-                if (solicitudList.isEmpty()) {
-                    return validos;
-                } else {
-// REMOVERLOS SI YA ESTAN EN EL LISTADO
-
-                    validos.forEach((v) -> {
-                        Optional<Viajes> optional = solicitudList.stream()
-                                .filter(v2 -> v2.getIdsolicitud() == v.getIdsolicitud())
-                                .findAny();
-                        if (!optional.isPresent()) {
-                            suggestions.add(v);
-                        }
-                    });
-                    disponibles = suggestions;
-
-//                    for (Viajes v : suggestions) {
-//
-//                        List<Viajes> viajesList;
-//                        if (esMismoDiaViajes()) {
-//                            //SI LA SOLICITUD(salida y regreso es el mismo dia)
-//                            //BUSCAR LOS REGISTROS DE VIAJES DEL VEHICULO ESE DIA
-//                            viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdsolicitud(), "fechahorainicioreserva", solicitud.getFechahorapartida());
-//                            if (viajesList.isEmpty()) {
-//                                // INDICA QUE ESE VEHICULO ESTA DISPONIBLE NO TIENE NINGUN VIAJE
-//                                disponibles.add(v);
-//                            } else {
-//                                // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
-//                                if (!tieneDisponibilidadViaje(viajesList)) {
-//                                    disponibles.add(v);
-//                                }
-//
-//                            }
-//                        } else {
-//                            // ABARCA VARIOS DIAS 
-//                            // OBTENER LOS VIAJES ENTRE ESOS DIAS
-//
-//                            viajesList = viajesVariosDias(v);
-//                            if (viajesList.isEmpty()) {
-//                                //SI ESTA VACIO INDICA QUE ESTA DISPONIBLE NO TIENE VIAJES EN ESA FECHA
-//                                disponibles.add(v);
-//                            } else {
-//                                // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
-//                                if (!tieneDisponibilidadViaje(viajesList)) {
-//                                    disponibles.add(v);
-//                                }
-//                            }
-////                     
-//                        }
-//                    }
-                    // VERIRIFICAR SI TIENE VIAJES
-                    // List<Viajes> viajesList = viajesRepository.fi
-                    //si el dia y mes
-                }
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return disponibles;
-    }
+filter And
+ Filter{
+filters=[Filter{fieldName='vehiculo.idvehiculo', value=2},
+ Or Filter{
+          filters=[
+           And Filter{
+              filters=[Operator Filter{fieldName='fechahorainicioreserva', operator='$gt', value=Fri Feb 08 01:00:00 EST 2019}, Operator Filter{fieldName='fechahorafinreserva', operator='$gt', value=Fri Feb 08 01:04:00 EST 2019}]
+           }, 
+           Or Filter{
+              filters=[
+                   Filter{fieldName='fechahorainicioreserva', value=Fri Feb 08 01:00:00 EST 2019},
+                   Filter{fieldName='fechahorainicioreserva', value=Fri Feb 08 01:04:00 EST 2019}, 
+                   Filter{fieldName='fechahoraifinreserva', value=Fri Feb 08 01:00:00 EST 2019}, 
+                   Filter{fieldName='fechahoraifinreserva', value=Fri Feb 08 01:04:00 EST 2019}
+                   ]
+           }, 
+           And Filter{
+              filters=[
+                   Operator Filter{fieldName='fechahorainicioreserva', operator='$gt', value=Fri Feb 08 01:00:00 EST 2019}, 
+                   Operator Filter{fieldName='fechahorafinreserva', operator='$lt', value=Fri Feb 08 01:04:00 EST 2019}
+               ]
+           }, 
+           And Filter{
+              filters=[
+                   Operator Filter{fieldName='fechahorainicioreserva', operator='$lt', value=Fri Feb 08 01:00:00 EST 2019},
+                   Operator Filter{fieldName='fechahorafinreserva', operator='$lt', value=Fri Feb 08 01:04:00 EST 2019}
+               ]
+           }
+         ]
+ }]
+}

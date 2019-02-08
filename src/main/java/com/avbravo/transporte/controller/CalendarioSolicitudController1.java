@@ -27,7 +27,7 @@ import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
-import com.avbravo.transporteejb.entity.Viajes;
+import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 
@@ -37,7 +37,7 @@ import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
-import com.avbravo.transporteejb.repository.ViajesRepository;
+import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
@@ -106,8 +106,8 @@ public class CalendarioSolicitudController1 implements Serializable, IController
     Conductor conductor = new Conductor();
     Vehiculo vehiculoSelected = new Vehiculo();
     Conductor conductorSelected = new Conductor();
-    Viajes viajes = new Viajes();
-    Viajes viajesSelected = new Viajes();
+    Viaje viajes = new Viaje();
+    Viaje viajesSelected = new Viaje();
 
     private ScheduleModel eventModel;
 
@@ -135,7 +135,7 @@ public class CalendarioSolicitudController1 implements Serializable, IController
     List<Solicitud> solicitudList = new ArrayList<>();
     List<Solicitud> solicitudFiltered = new ArrayList<>();
     List<Unidad> unidadList = new ArrayList<>();
-    List<Viajes> viajesList = new ArrayList<>();
+    List<Viaje> viajesList = new ArrayList<>();
 
     List<Usuario> usuarioList = new ArrayList<>();
     List<Vehiculo> vehiculoList = new ArrayList<>();
@@ -159,7 +159,7 @@ public class CalendarioSolicitudController1 implements Serializable, IController
     @Inject
     UsuarioRepository usuarioRepository;
     @Inject
-    ViajesRepository viajesRepository;
+    ViajeRepository viajesRepository;
     @Inject
     VehiculoRepository vehiculoRepository;
     @Inject
@@ -227,7 +227,7 @@ public class CalendarioSolicitudController1 implements Serializable, IController
 
     
     
-    public Viajes getViajesSelected() {
+    public Viaje getViajesSelected() {
         return viajesSelected;
     }
 
@@ -239,7 +239,7 @@ public class CalendarioSolicitudController1 implements Serializable, IController
         this.esAprobadoParaEditar = esAprobadoParaEditar;
     }
 
-    public void setViajesSelected(Viajes viajesSelected) {
+    public void setViajesSelected(Viaje viajesSelected) {
         this.viajesSelected = viajesSelected;
     }
 
@@ -283,11 +283,11 @@ public class CalendarioSolicitudController1 implements Serializable, IController
         this.conductor = conductor;
     }
 
-    public Viajes getViajes() {
+    public Viaje getViajes() {
         return viajes;
     }
 
-    public void setViajes(Viajes viajes) {
+    public void setViajes(Viaje viajes) {
         this.viajes = viajes;
     }
 
@@ -644,7 +644,7 @@ public class CalendarioSolicitudController1 implements Serializable, IController
             unidadList = new ArrayList<>();
             unidadList.add(loginController.getUsuario().getUnidad());
 
-            viajesSelected = new Viajes();
+            viajesSelected = new Viaje();
             Integer mes = DateUtil.getMesDeUnaFecha(solicitud.getFecha());
 
             String idsemestre = "V";
@@ -1503,7 +1503,7 @@ public class CalendarioSolicitudController1 implements Serializable, IController
         try {
             // esnuevo = false;
             esAprobadoParaEditar = false;
-            viajesSelected = new Viajes();
+            viajesSelected = new Viaje();
             esDocente = false;
             event = (ScheduleEvent) selectEvent.getObject();
             esAprobado = false;
@@ -1530,7 +1530,7 @@ public class CalendarioSolicitudController1 implements Serializable, IController
                 if (solicitud.getEstatus().getIdestatus().equals("APROBADO")) {
                     esAprobado = true;
                     esAprobadoParaEditar = true;
-                    List<Viajes> list = new ArrayList<>();
+                    List<Viaje> list = new ArrayList<>();
                     list = viajesRepository.findBy(new Document("solicitud.idsolicitud", solicitud.getIdsolicitud()));
                     if (list.isEmpty()) {
                         JsfUtil.warningMessage(rf.getMessage("warning.notexitsviajeconesasolicitud"));
@@ -1629,7 +1629,7 @@ public class CalendarioSolicitudController1 implements Serializable, IController
                      */
                     for (Vehiculo v : suggestions) {
 
-                        List<Viajes> viajesList;
+                        List<Viaje> viajesList;
                         if (esMismoDiaSolicitud()) {
                             //SI LA SOLICITUD(salida y regreso es el mismo dia)
                             //BUSCAR LOS REGISTROS DE VIAJES DEL VEHICULO ESE DIA
@@ -1818,11 +1818,11 @@ public class CalendarioSolicitudController1 implements Serializable, IController
      * @param viajesList
      * @return
      */
-    public Boolean tieneDisponibilidadViaje(List<Viajes> viajesList) {
+    public Boolean tieneDisponibilidadViaje(List<Viaje> viajesList) {
         Boolean disponible = true;
         try {
 
-            for (Viajes vj : viajesList) {
+            for (Viaje vj : viajesList) {
                 if (esOcupadoEseDiaHora(solicitud, vj)) {
                     disponible = false;
                     break;
@@ -1843,7 +1843,7 @@ public class CalendarioSolicitudController1 implements Serializable, IController
      * @param viajes
      * @return
      */
-    public Boolean esOcupadoEseDiaHora(Solicitud solicitud, Viajes viajes) {
+    public Boolean esOcupadoEseDiaHora(Solicitud solicitud, Viaje viajes) {
         try {
             if (DateUtil.dateBetween(solicitud.getFechahorapartida(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())
                     || DateUtil.dateBetween(solicitud.getFechahoraregreso(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())) {
@@ -1865,12 +1865,12 @@ public class CalendarioSolicitudController1 implements Serializable, IController
      *
      * @return
      */
-    private List<Viajes> viajesVariosDias(Vehiculo v) {
-        List<Viajes> viajesList = new ArrayList<>();
+    private List<Viaje> viajesVariosDias(Vehiculo v) {
+        List<Viaje> viajesList = new ArrayList<>();
         try {
             viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
-            List<Viajes> viajesStart = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
-            List<Viajes> viajesEnd = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorafinreserva", solicitud.getFechahoraregreso());
+            List<Viaje> viajesStart = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
+            List<Viaje> viajesEnd = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorafinreserva", solicitud.getFechahoraregreso());
             viajesList = new ArrayList<>();
             if (viajesStart.isEmpty() && viajesEnd.isEmpty()) {
                 // NO HAY VIAJES EN ESAS FECHAS
@@ -1878,9 +1878,9 @@ public class CalendarioSolicitudController1 implements Serializable, IController
             } else {
                 if (!viajesStart.isEmpty() && !viajesEnd.isEmpty()) {
                     viajesList = viajesStart;
-                    for (Viajes vjs : viajesEnd) {
+                    for (Viaje vjs : viajesEnd) {
                         Boolean foundv = false;
-                        for (Viajes vje : viajesList) {
+                        for (Viaje vje : viajesList) {
                             if (vjs.getIdviaje() == vje.getIdviaje()) {
                                 foundv = true;
                                 break;
@@ -1900,7 +1900,7 @@ public class CalendarioSolicitudController1 implements Serializable, IController
                     }
                 }
                 Collections.sort(viajesList,
-                        (Viajes a, Viajes b) -> a.getIdviaje().compareTo(b.getIdviaje()));
+                        (Viaje a, Viaje b) -> a.getIdviaje().compareTo(b.getIdviaje()));
             }
 
         } catch (Exception e) {
