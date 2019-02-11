@@ -19,13 +19,13 @@
                 border-color: #428BCA;
             } 
         </style>
-       
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.viaje.list}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
 
-          <b:growl  id="msgs"/>
-         
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.viaje.list}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
+
+            <b:growl  id="msgs"/>
+
             <b:panel title="#{msg['titlelist.viaje']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
@@ -34,18 +34,18 @@
 
                     <p:outputLabel value="#{msg['field.idviaje']}"/>
                     <e:autocompleteviaje listener="#{viajeController.handleAutocompleteOfListXhtml}"
-                                                  value="#{viajeController.viajeSelected}"
-                                                  itemLabel=" #{p.idviaje}"
-                                                  field="idviaje"
-                                                  update=" :form:dataTable"/>
+                                         value="#{viajeController.viajeSelected}"
+                                         itemLabel=" #{p.idviaje}"
+                                         field="idviaje"
+                                         update=" :form:dataTable"/>
 
-               
-                      
-                      
+
+
+
 
                 </b:panelGrid>
-                  <b:row>
-                  
+                <b:row>
+
                     <b:column medium-screen="6">
                         <a:search label="#{msg['field.viaje']}"
                                   value="#{viajeController.lookupServices.idviaje}"
@@ -65,7 +65,7 @@
                     last="#{viajeController.last()}"
                     page="#{viajeController.page}"
                     pages="#{viajeController.pages}"
-                 skip="ajax:viajeController.skip(viajeController.page)" 
+                    skip="ajax:viajeController.skip(viajeController.page)" 
                     new="#{viajeController.prepare('gonew',viajeController.viaje)}"
                     printAll="#{viajeController.printAll()}"
                     />
@@ -75,53 +75,58 @@
                              paginated="false"
                              onpage="console.log('page');">
 
-                    <b:dataTableColumn value="#{item.idviaje}" label="#{msg['field.idviaje']}"/>
+                    <b:dataTableColumn value="#{item.idviaje}" label="#{msg['field.idviaje']}"
+                                       style="color: #{viajeController.columnColor(item.realizado)}"/>
 
-                    
-                     <b:dataTableColumn label="#{msg['field.fechapartida']}" >
-                        <p:calendar  disabled="true"  size="8"                                  
-                                     style="background-color: grey;"
-                                    pattern="dd/MM/yyyy" value="#{item.fechahorainicioreserva}"  />
-                      
-                        
-                    </b:dataTableColumn> 
-                    <b:dataTableColumn label="#{msg['field.horapartida']}" >
+
+                    <b:dataTableColumn label="#{msg['field.fechapartida']}"   style="color: #{viajeController.columnColor(item.realizado)}">
+
+                        <p:calendar  disabled="true"  size="8"   
+                                     style="background-color: grey; color: #{viajeController.columnColor(item.realizado)}"
+                                    
+                                     pattern="dd/MM/yyyy" value="#{item.fechahorainicioreserva}"  />
+                        <br />
                         <p:calendar  disabled="true"    
+                                     style="background-color: grey;  color: #{viajeController.columnColor(item.realizado)}"
                                      size="8" 
-                                    pattern="HH:mm:ss a" value="#{item.fechahorainicioreserva}"  />
-                      
+                                     pattern="HH:mm:ss a" value="#{item.fechahorainicioreserva}"  />
+
+
+
                     </b:dataTableColumn> 
-                    <b:dataTableColumn label="#{msg['field.fecharegreso']}" >
+
+                    <b:dataTableColumn label="#{msg['field.fecharegreso']}"   style="color: #{viajeController.columnColor(item.realizado)}">
                         <p:calendar  disabled="true"    
+                                     style="background-color: grey;  color: #{viajeController.columnColor(item.realizado)}"
                                      size="8" 
-                                    pattern="dd/MM/yyyy" value="#{item.fechahorafinreserva}"  />
-                      
-                    </b:dataTableColumn> 
-                    <b:dataTableColumn label="#{msg['field.horaregreso']}" >
+                                     pattern="dd/MM/yyyy" value="#{item.fechahorafinreserva}"  />
+                        <br />
                         <p:calendar  disabled="true"   
+                                     style="background-color: grey;  color: #{viajeController.columnColor(item.realizado)}"
                                      size="8" 
-                                    pattern="HH:mm:ss a" value="#{item.fechahorafinreserva}"  />
-                      
+                                     pattern="HH:mm:ss a" value="#{item.fechahorafinreserva}"  />
+
                     </b:dataTableColumn> 
-                    
-                     <b:dataTableColumn label="#{msg['field.vehiculos']}">
-                        <p:panelGrid columns="2" styleClass="form-group ui-panelgrid-blank" layout="grid">
 
-                            <p:repeat value="#{item.vehiculo}" var="car">
-                                <p:outputLabel value="(#{car.marca} #{car.modelo})"/>
-                            </p:repeat>
-                        </p:panelGrid>
-                    </b:dataTableColumn>
-                     <b:dataTableColumn label="#{msg['field.conductores']}">
-                        <p:panelGrid columns="2" styleClass="form-group ui-panelgrid-blank" layout="grid">
 
-                            <p:repeat value="#{item.conductor}" var="var2">
-                                <p:outputLabel value="(#{var2.nombre})"/>
-                            </p:repeat>
-                        </p:panelGrid>
+                    <b:dataTableColumn label="#{msg['field.vehiculos']}"  style="color: #{viajeController.columnColor(item.realizado)}">
+
+                        <p:outputLabel value="#{item.vehiculo.marca} #{item.vehiculo.modelo}"/>
+
                     </b:dataTableColumn>
-                    <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
-                  
+                    <b:dataTableColumn label="#{msg['field.conductores']}"  style="color: #{viajeController.columnColor(item.realizado)}">
+
+                        <p:outputLabel value="#{item.conductor.nombre}"/>
+
+                    </b:dataTableColumn>
+
+                    <b:dataTableColumn label="#{msg['field.lugardestino']}" style="color: #{viajeController.columnColor(item.realizado)}">
+                        <p:outputLabel value="#{item.lugardestino}"  />
+
+                    </b:dataTableColumn> 
+
+                    <b:dataTableColumn value="#{item.realizado}" label="#{msg['field.realizado']}" style="color: #{viajeController.columnColor(item.realizado)}" />
+
                     <b:dataTableColumn label="">
 
                         <a:column

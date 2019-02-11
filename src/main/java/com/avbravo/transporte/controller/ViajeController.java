@@ -219,9 +219,6 @@ public class ViajeController implements Serializable, IController {
         this.viajeSelected = viajeSelected;
     }
 
-  
-
-   
     public Boolean getWritable() {
         return writable;
     }
@@ -407,18 +404,17 @@ public class ViajeController implements Serializable, IController {
                 return "";
             }
 
-           if(!viajeServices.vehiculoDisponible(viaje)){
-                            JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
+            if (!viajeServices.vehiculoDisponible(viaje)) {
+                JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
                 return null;
             }
 
-           if(!viaje.getConductor().getEscontrol().equals("no")){
-               if(!viajeServices.conductorDisponible(viaje)){
-                JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
-                return null;
+            if (!viaje.getConductor().getEscontrol().equals("no")) {
+                if (!viajeServices.conductorDisponible(viaje)) {
+                    JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
+                    return null;
+                }
             }
-           }
-             
 
             Integer idviaje = autoincrementableTransporteejbServices.getContador("viaje");
             viaje.setIdviaje(idviaje);
@@ -922,5 +918,26 @@ public class ViajeController implements Serializable, IController {
         return viajeList;
     }
     // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )"> 
+    public String columnColor(String realizado) {
+        String color = "";
+        try {
+            switch (realizado.toLowerCase()) {
+                case "si":
+                    color = "red";
+                    break;
+                case "no":
+                    color = "blue";
+                    break;
+                default:
+                    color = "black";
+            }
+        } catch (Exception e) {
+ errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return color;
+    }
+// </editor-fold>
 
 }

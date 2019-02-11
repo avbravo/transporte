@@ -1,31 +1,87 @@
-filter And
- Filter{
-filters=[Filter{fieldName='vehiculo.idvehiculo', value=2},
- Or Filter{
-          filters=[
-           And Filter{
-              filters=[Operator Filter{fieldName='fechahorainicioreserva', operator='$gt', value=Fri Feb 08 01:00:00 EST 2019}, Operator Filter{fieldName='fechahorafinreserva', operator='$gt', value=Fri Feb 08 01:04:00 EST 2019}]
-           }, 
-           Or Filter{
-              filters=[
-                   Filter{fieldName='fechahorainicioreserva', value=Fri Feb 08 01:00:00 EST 2019},
-                   Filter{fieldName='fechahorainicioreserva', value=Fri Feb 08 01:04:00 EST 2019}, 
-                   Filter{fieldName='fechahoraifinreserva', value=Fri Feb 08 01:00:00 EST 2019}, 
-                   Filter{fieldName='fechahoraifinreserva', value=Fri Feb 08 01:04:00 EST 2019}
-                   ]
-           }, 
-           And Filter{
-              filters=[
-                   Operator Filter{fieldName='fechahorainicioreserva', operator='$gt', value=Fri Feb 08 01:00:00 EST 2019}, 
-                   Operator Filter{fieldName='fechahorafinreserva', operator='$lt', value=Fri Feb 08 01:04:00 EST 2019}
-               ]
-           }, 
-           And Filter{
-              filters=[
-                   Operator Filter{fieldName='fechahorainicioreserva', operator='$lt', value=Fri Feb 08 01:00:00 EST 2019},
-                   Operator Filter{fieldName='fechahorafinreserva', operator='$lt', value=Fri Feb 08 01:04:00 EST 2019}
-               ]
-           }
-         ]
- }]
-}
+ // <editor-fold defaultstate="collapsed" desc="conductorDisponible(Viajes viajes)">
+    /**
+     * *
+     * busca si el conductor tiene un viaje en esas fechas
+     *
+     * @param viajes
+     * @return
+     */
+    public Boolean conductorDisponible(Viaje viajes) {
+        try {
+            //Conductors en viajes
+
+           return repository.isAvailableBetweenDateHour(eq("conductor.idconductor", viajes.getConductor().getIdconductor()),
+                   "fechahorainicioreserva", viajes.getFechahorainicioreserva(), "fechahorafinreserva", viajes.getFechahorafinreserva());
+            
+        } catch (Exception e) {
+            JsfUtil.errorDialog("conductorDisponible() ", e.getLocalizedMessage().toString());
+        }
+        return false;
+    }
+
+    // </editor-fold>
+   
+    // <editor-fold defaultstate="collapsed" desc="List<Viajes> viajesConductorChoques(Viajes viajes)">
+    /**
+     * *
+     * devuelve la lista de viajes en que choca el conductor
+     *
+     * @param viajes
+     * @return
+     */
+    public List<Viaje> viajesConductorChoques(Viaje viajes) {
+        List<Viaje> list = new ArrayList<>();
+        try {
+            return repository.notAvailableBetweenDateHour(eq("conductor.idconductor", viajes.getConductor().getIdconductor()),
+                   "fechahorainicioreserva", viajes.getFechahorainicioreserva(), "fechahorafinreserva", viajes.getFechahorafinreserva());
+            
+
+        } catch (Exception e) {
+            JsfUtil.errorDialog("viajesConductorChoques() ", e.getLocalizedMessage().toString());
+        }
+        return list;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="conductorDisponible(Conductor conductor, Date fechahorainicio, Date fechahorafin)">
+    /**
+     * *
+     * busca si el conductor tiene un viaje en esas fechas
+     *
+     * @param viajes
+     * @return
+     */
+    public Boolean conductorDisponible(Conductor conductor, Date fechahorainicioreserva, Date fechahorafinreserva) {
+        try {
+           
+              return repository.isAvailableBetweenDateHour(eq("conductor.idconductor", conductor.getIdconductor()),
+                   "fechahorainicioreserva", fechahorainicioreserva, "fechahorafinreserva", fechahorafinreserva);
+            
+        } catch (Exception e) {
+            JsfUtil.errorDialog("conductorDisponible() ", e.getLocalizedMessage().toString());
+        }
+        return false;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="List<Viajes> viajesConductorChoques(Conductor conductor, Date fechahorainicio, Date fechahorafin)">
+    /**
+     * *
+     * Devuelve la lista de viajes en que choca ese conductor
+     *
+     * @param viajes
+     * @return
+     */
+    public List<Viaje> viajesConductorChoques(Conductor conductor, Date fechahorainicioreserva, Date fechahorafinreserva) {
+        List<Viaje> list = new ArrayList<>();
+        try {
+             return repository.notAvailableBetweenDateHour(eq("conductor.idconductor", conductor.getIdconductor()),
+                   "fechahorainicioreserva", fechahorainicioreserva, "fechahorafinreserva", fechahorafinreserva);
+            
+
+        } catch (Exception e) {
+            JsfUtil.errorDialog("viajesConductorChoques() ", e.getLocalizedMessage().toString());
+        }
+        return list;
+    }
+    // </editor-fold>
