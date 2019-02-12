@@ -38,21 +38,18 @@
 
                         <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
 
-                      
-                            <a:calendar 
-                              
 
-                                pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorainicioreserva}"   
-                                label="#{msg['field.fechahorainicioreserva']}" />
+                        <extensionviaje:calendar   pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorainicioreserva}"   
+                            label="#{msg['field.fechahorainicioreserva']}" />
 
 
 
 
-                            <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
-                            <a:calendar  
-                                         pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
+                        <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
+                        <extensionviaje:calendar  
+                            pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
 
-                      
+
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <a:inputText   value="#{viajeController.viaje.lugarpartida}"    />
 
@@ -68,7 +65,7 @@
 
                         <p:outputLabel value="#{msg['field.conductor']}"  />
 
-                        <extensionviaje:autocompleteconductor/>
+                        <extensionviaje:autocompleteconductor id="conductor"/>
 
 
 

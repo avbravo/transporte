@@ -38,7 +38,7 @@
                                     var="p"
                                     required="true"
                                     requiredMessage="#{msg['field.vehiculo']}"
-                                    itemLabel=" #{p.marca}"
+                                    itemLabel=" #{p.marca} #{p.modelo} #{p.placa}"
                                     itemValue="#{p}" forceSelection="true">
                         <f:converter binding="#{vehiculoConverter}"/>
                         <f:attribute name="field" value="marca"/>
@@ -57,6 +57,8 @@
                                 <h:outputText value="#{p.marca}" />
                                 <h:outputText value="#{msg['field.modelo']}" />
                                 <h:outputText value="#{p.modelo}" />
+                                <h:outputText value="#{msg['field.placa']}" />
+                                <h:outputText value="#{p.placa}" />
 
 
                             </h:panelGrid>
