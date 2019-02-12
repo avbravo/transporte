@@ -768,7 +768,7 @@ public class ViajeController implements Serializable, IController {
      * @param query
      * @return
      */
-    public List<Conductor> completeConductorFiltrado(String query) {
+    public List<Conductor> completeConductorF2iltrado(String query) {
         suggestionsConductor = new ArrayList<>();
         List<Conductor> temp = new ArrayList<>();
         try {
