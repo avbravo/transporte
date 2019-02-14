@@ -28,14 +28,11 @@ import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.ViajeServices;
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.gte;
-import static com.mongodb.client.model.Filters.lte;
 
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -71,6 +68,8 @@ public class ViajeController implements Serializable, IController {
 
     Integer page = 1;
     Integer rowPage = 25;
+    Date fechaHoraInicioReservaanterior= new Date();
+    Date fechaHoraFinReservaAnterior= new Date();
 
     List<Integer> pages = new ArrayList<>();
     //
@@ -141,6 +140,24 @@ public class ViajeController implements Serializable, IController {
         return vehiculoList;
     }
 
+    public Date getFechaHoraInicioReservaanterior() {
+        return fechaHoraInicioReservaanterior;
+    }
+
+    public void setFechaHoraInicioReservaanterior(Date fechaHoraInicioReservaanterior) {
+        this.fechaHoraInicioReservaanterior = fechaHoraInicioReservaanterior;
+    }
+
+    public Date getFechaHoraFinReservaAnterior() {
+        return fechaHoraFinReservaAnterior;
+    }
+
+    public void setFechaHoraFinReservaAnterior(Date fechaHoraFinReservaAnterior) {
+        this.fechaHoraFinReservaAnterior = fechaHoraFinReservaAnterior;
+    }
+
+    
+    
     public void setVehiculoList(List<Vehiculo> vehiculoList) {
         this.vehiculoList = vehiculoList;
     }
@@ -311,6 +328,9 @@ public class ViajeController implements Serializable, IController {
                                 viajeSelected = viaje;
                                 vehiculoSelected = viaje.getVehiculo();
                                 conductorSelected = viaje.getConductor();
+                                
+                                 fechaHoraInicioReservaanterior= viaje.getFechahorainicioreserva();
+fechaHoraFinReservaAnterior= viaje.getFechahorafinreserva();
                                 _editable = true;
                                 writable = true;
 
@@ -517,27 +537,27 @@ public class ViajeController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="editDates">
 
 
-    public String editDates() {
+    public String editExcluyendoMismoViaje() {
         try {
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
             //si cambia el vehiculo
-            if (!viaje.getVehiculo().getIdvehiculo().equals(vehiculoSelected.getIdvehiculo())) {
-                if (!viajeServices.vehiculoDisponible(viaje)) {
+           
+                if (!viajeServices.vehiculoDisponibleExcluyendoMismoViaje(viaje)) {
                     JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
                     return null;
                 }
-            }
+          
             // si cambio el conductor
-            if (!viaje.getConductor().getIdconductor().equals(conductorSelected.getIdconductor())) {
+       
                 if (viaje.getConductor().getEscontrol().equals("no")) {
-                    if (!viajeServices.conductorDisponible(viaje)) {
+                    if (!viajeServices.conductorDisponibleExcluyendoMismoViaje(viaje)) {
                         JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
                         return null;
                     }
                 }
-            }
+         
 
             viaje.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 

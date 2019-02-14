@@ -32,21 +32,32 @@
 
                         <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
 
+                        <p:fieldset>
+                            <extensionviaje:calendar  
+                                pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorainicioreserva}"   
+                                label="#{msg['field.fechahorainicioreserva']}" />
+                            <p:spacer width="25"/>
+                            <extensionviaje:calendar  disabled="true"
+                                                      pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.fechaHoraInicioReservaanterior}"   
+                                                      label="#{msg['field.fechahorainicioreserva']}" />
 
-                        <extensionviaje:calendar  
-                            pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorainicioreserva}"   
-                                                   label="#{msg['field.fechahorainicioreserva']}" />
 
-
-
+                        </p:fieldset>
 
                         <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
-                        <extensionviaje:calendar  
-                            pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
+                        <p:fieldset>
+                            <extensionviaje:calendar 
+                                pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
+
+                            <p:spacer width="25"/>
+                            <extensionviaje:calendar  disabled="true"
+                                                      pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.fechaHoraFinReservaAnterior}"   
+                                                      label="#{msg['field.fechahorafinreserva']}" />
 
 
+                        </p:fieldset>
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                    <p:outputLabel     value="#{viajeController.viaje.lugarpartida}"    />
+                        <p:outputLabel     value="#{viajeController.viaje.lugarpartida}"    />
 
                         <p:outputLabel  value="#{msg['field.lugardestino']}" />
                         <p:outputLabel value="#{viajeController.viaje.lugardestino}"    />
@@ -54,10 +65,10 @@
 
                         <p:outputLabel value="#{msg['field.vehiculo']}"
                                        id="vehiculolabel" />                    
-                            <p:outputLabel id="vehiculo" value="#{viajeController.vehiculoSelected.marca}- #{viajeController.vehiculoSelected.modelo }-#{viajeController.vehiculoSelected.placa }" />
+                        <p:outputLabel id="vehiculo" value="#{viajeController.vehiculoSelected.marca}- #{viajeController.vehiculoSelected.modelo }-#{viajeController.vehiculoSelected.placa }" />
 
                         <p:outputLabel value="#{msg['field.conductor']}"  />                       
-                            <p:outputLabel id="conductor" value="#{viajeController.conductorSelected.nombre}- #{viajeController.conductorSelected.cedula }" />
+                        <p:outputLabel id="conductor" value="#{viajeController.conductorSelected.nombre}- #{viajeController.conductorSelected.cedula }" />
 
 
 
@@ -71,31 +82,39 @@
 
 
                         <p:outputLabel  value="#{msg['field.kmestimados']}" />
-                       <p:outputLabel   value="#{viajeController.viaje.kmestimados}"  />
+                        <p:outputLabel   value="#{viajeController.viaje.kmestimados}"  />
 
                         <p:outputLabel  value="#{msg['field.costocombustible']}"  />
-                      <p:outputLabel   
-                                      value="#{viajeController.viaje.costocombustible}"   />
+                        <p:outputLabel   
+                            value="#{viajeController.viaje.costocombustible}"   />
 
                         <p:outputLabel  value="#{msg['field.realizado']}" />
                         <p:outputLabel  value="#{viajeController.viaje.realizado}" id="realizado"  />
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                     <p:outputLabel  value="#{viajeController.viaje.activo}" id="activo" />
+                        <p:outputLabel  value="#{viajeController.viaje.activo}" id="activo" />
 
                     </b:panelGrid>
-                     <b:panelGrid id="panelEdit" colSpans="3,3,3,3" size="xs" > 
+                    <b:panelGrid id="panelEdit" colSpans="3,3,3,3" size="xs" > 
 
-            <b:commandButton rendered="#{applicationMenu.viaje.edit and viajeController.writable}"  
+                        <b:commandButton rendered="#{applicationMenu.viaje.edit and viajeController.writable}"  
 
-                             iconAwesome="fa-edit" 
-                             title="#{app['button.edit']}"  
-                             value="#{app['button.edit']}"  
-                             process=":form:content" 
-                             action="#{viajeController.editDates()}" 
-                             look="primary"
-                             update=":form:content" /> 
-                     </b:panelGrid>
-                    
+                                         iconAwesome="fa-edit" 
+                                         title="#{app['button.edit']}"  
+                                         value="#{app['button.edit']}"  
+                                         process=":form:content" 
+                                         action="#{viajeController.editExcluyendoMismoViaje()}" 
+                                         look="primary"
+                                         update=":form:content" /> 
+
+                        <b:commandButton immediate="true"
+                                         iconAwesome="fa-share" 
+
+                                         value="#{app['button.return']}" 
+                                         title="#{app['button.return']}" 
+                                         look="primary"
+                                         action="#{viajeController.prepare('golist',viajeController.viaje)}"/>
+                    </b:panelGrid>
+
                 </b:panel>
             </h:panelGroup>
         </b:form>
