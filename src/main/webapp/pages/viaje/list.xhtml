@@ -8,7 +8,8 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
-                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
+                xmlns:extensionviaje="http://xmlns.jcp.org/jsf/composite/extensionviaje">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -76,18 +77,18 @@
                              onpage="console.log('page');">
 
                     <b:dataTableColumn value="#{item.idviaje}" label="#{msg['field.idviaje']}"
-                                       style="color: #{viajeController.columnColor(item.realizado)}"/>
+                                       style="color: #{viajeController.columnColor(item.realizado,item.activo)}"/>
 
 
-                    <b:dataTableColumn label="#{msg['field.fechapartida']}"   style="color: #{viajeController.columnColor(item.realizado)}">
+                    <b:dataTableColumn label="#{msg['field.fechapartida']}"   style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
 
                         <p:calendar  disabled="true"  size="8"   
-                                     style="background-color: grey; color: #{viajeController.columnColor(item.realizado)}"
+                                     style="background-color: grey; color: #{viajeController.columnColor(item.realizado,item.activo)}"
                                     
                                      pattern="dd/MM/yyyy" value="#{item.fechahorainicioreserva}"  />
                         <br />
                         <p:calendar  disabled="true"    
-                                     style="background-color: grey;  color: #{viajeController.columnColor(item.realizado)}"
+                                     style="background-color: grey;  color: #{viajeController.columnColor(item.realizado,item.activo)}"
                                      size="8" 
                                      pattern="HH:mm:ss a" value="#{item.fechahorainicioreserva}"  />
 
@@ -95,37 +96,42 @@
 
                     </b:dataTableColumn> 
 
-                    <b:dataTableColumn label="#{msg['field.fecharegreso']}"   style="color: #{viajeController.columnColor(item.realizado)}">
+                    <b:dataTableColumn label="#{msg['field.fecharegreso']}"   style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
                         <p:calendar  disabled="true"    
-                                     style="background-color: grey;  color: #{viajeController.columnColor(item.realizado)}"
+                                     style="background-color: grey;  color: #{viajeController.columnColor(item.realizado,item.activo)}"
                                      size="8" 
                                      pattern="dd/MM/yyyy" value="#{item.fechahorafinreserva}"  />
                         <br />
                         <p:calendar  disabled="true"   
-                                     style="background-color: grey;  color: #{viajeController.columnColor(item.realizado)}"
+                                     style="background-color: grey;  color: #{viajeController.columnColor(item.realizado,item.activo)}"
                                      size="8" 
                                      pattern="HH:mm:ss a" value="#{item.fechahorafinreserva}"  />
 
                     </b:dataTableColumn> 
 
 
-                    <b:dataTableColumn label="#{msg['field.vehiculos']}"  style="color: #{viajeController.columnColor(item.realizado)}">
+                    <b:dataTableColumn label="#{msg['field.vehiculos']}"  style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
 
                         <p:outputLabel value="#{item.vehiculo.marca} #{item.vehiculo.modelo}"/>
 
                     </b:dataTableColumn>
-                    <b:dataTableColumn label="#{msg['field.conductores']}"  style="color: #{viajeController.columnColor(item.realizado)}">
+                    <b:dataTableColumn label="#{msg['field.conductores']}"  style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
 
                         <p:outputLabel value="#{item.conductor.nombre}"/>
 
                     </b:dataTableColumn>
 
-                    <b:dataTableColumn label="#{msg['field.lugardestino']}" style="color: #{viajeController.columnColor(item.realizado)}">
+                    <b:dataTableColumn label="#{msg['field.lugardestino']}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
                         <p:outputLabel value="#{item.lugardestino}"  />
 
                     </b:dataTableColumn> 
 
-                    <b:dataTableColumn value="#{item.realizado}" label="#{msg['field.realizado']}" style="color: #{viajeController.columnColor(item.realizado)}" />
+                    <b:dataTableColumn  label="#{msg['field.realizado']}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" >
+                        <p:outputLabel value="#{item.realizado}"/>
+                        <br />
+                             <p:outputLabel value="#{msg['field.activo']}:#{item.activo}"/>
+                           
+                    </b:dataTableColumn>
 
                     <b:dataTableColumn label="">
 
@@ -134,6 +140,14 @@
                             edit="#{viajeController.prepare('view',item)}"
                             delete="#{viajeController.delete(item,false)}"
                             rendered="#{applicationMenu.viaje.delete}"
+                            />
+                    </b:dataTableColumn>
+                    <b:dataTableColumn label="">
+
+                        <extensionviaje:columnviewfecha
+
+                            edit="#{viajeController.prepare('viewfecha',item)}"
+                            rendered="#{applicationMenu.viaje.edit}"
                             />
                     </b:dataTableColumn>
 

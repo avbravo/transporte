@@ -68,17 +68,21 @@ public class ViajeController implements Serializable, IController {
     private Boolean writable = false;
     //DataModel
     private ViajeDataModel viajeDataModel;
-    
+
     Integer page = 1;
     Integer rowPage = 25;
-    
+
     List<Integer> pages = new ArrayList<>();
     //
 
     //Entity
     Viaje viaje;
+
     Viaje viajeSelected;
     Solicitud solicitud;
+    Vehiculo vehiculoSelected;
+    Conductor conductorSelected;
+    Boolean _editable = false;
 
     //List
     List<Viaje> viajeList = new ArrayList<>();
@@ -99,12 +103,12 @@ public class ViajeController implements Serializable, IController {
     //Services
     @Inject
     ErrorInfoTransporteejbServices errorServices;
-    
+
     @Inject
     AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
     @Inject
     LookupServices lookupServices;
-    
+
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -125,108 +129,124 @@ public class ViajeController implements Serializable, IController {
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="getter/setter">
     public List<Integer> getPages() {
-        
+
         return viajeRepository.listOfPage(rowPage);
     }
-    
+
     public void setPages(List<Integer> pages) {
         this.pages = pages;
     }
-    
+
     public List<Vehiculo> getVehiculoList() {
         return vehiculoList;
     }
-    
+
     public void setVehiculoList(List<Vehiculo> vehiculoList) {
         this.vehiculoList = vehiculoList;
     }
-    
+
     public List<Conductor> getConductorList() {
         return conductorList;
     }
-    
+
     public void setConductorList(List<Conductor> conductorList) {
         this.conductorList = conductorList;
     }
-    
+
     public LookupServices getLookupServices() {
         return lookupServices;
     }
-    
+
     public void setLookupServices(LookupServices lookupServices) {
         this.lookupServices = lookupServices;
     }
-    
+
     public Integer getPage() {
         return page;
     }
-    
+
     public void setPage(Integer page) {
         this.page = page;
     }
-    
+
     public Integer getRowPage() {
         return rowPage;
     }
-    
+
     public void setRowPage(Integer rowPage) {
         this.rowPage = rowPage;
     }
-    
+
     public ViajeServices getViajeServices() {
         return viajeServices;
     }
-    
+
     public void setViajeServices(ViajeServices viajeServices) {
         this.viajeServices = viajeServices;
     }
-    
+
     public List<Viaje> getViajeList() {
         return viajeList;
     }
-    
+
     public void setViajeList(List<Viaje> viajeList) {
         this.viajeList = viajeList;
     }
-    
+
     public List<Viaje> getViajeFiltered() {
         return viajeFiltered;
     }
-    
+
     public void setViajeFiltered(List<Viaje> viajeFiltered) {
         this.viajeFiltered = viajeFiltered;
     }
-    
+
     public ViajeDataModel getViajeDataModel() {
         return viajeDataModel;
     }
-    
+
     public void setViajeDataModel(ViajeDataModel viajeDataModel) {
         this.viajeDataModel = viajeDataModel;
     }
-    
+
     public Viaje getViaje() {
         return viaje;
     }
-    
+
     public void setViaje(Viaje viaje) {
         this.viaje = viaje;
     }
-    
+
     public Viaje getViajeSelected() {
         return viajeSelected;
     }
-    
+
     public void setViajeSelected(Viaje viajeSelected) {
         this.viajeSelected = viajeSelected;
     }
-    
+
     public Boolean getWritable() {
         return writable;
     }
-    
+
     public void setWritable(Boolean writable) {
         this.writable = writable;
+    }
+
+    public Vehiculo getVehiculoSelected() {
+        return vehiculoSelected;
+    }
+
+    public void setVehiculoSelected(Vehiculo vehiculoSelected) {
+        this.vehiculoSelected = vehiculoSelected;
+    }
+
+    public Conductor getConductorSelected() {
+        return conductorSelected;
+    }
+
+    public void setConductorSelected(Conductor conductorSelected) {
+        this.conductorSelected = conductorSelected;
     }
 
     // </editor-fold>
@@ -247,6 +267,9 @@ public class ViajeController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
+            _editable = false;
+            vehiculoSelected = new Vehiculo();
+            conductorSelected = new Conductor();
             String action = loginController.get("viaje");
             String id = loginController.get("idviaje");
             String pageSession = loginController.get("pageviaje");
@@ -256,12 +279,12 @@ public class ViajeController implements Serializable, IController {
                 loginController.put("searchviaje", "_init");
             }
             writable = false;
-            
+
             viajeList = new ArrayList<>();
             viajeFiltered = new ArrayList<>();
             viaje = new Viaje();
             viajeDataModel = new ViajeDataModel(viajeList);
-            
+
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
             }
@@ -276,17 +299,21 @@ public class ViajeController implements Serializable, IController {
                         viaje.setActivo("si");
                         viaje.setLugarpartida("UTP-AZUERO");
                         viajeSelected = viaje;
-                        
+
                         writable = false;
                         break;
                     case "view":
+                    case "viewfecha":
                         if (id != null) {
-                            Optional<Viaje> optional = viajeRepository.find("idviaje", id);
+                            Optional<Viaje> optional = viajeRepository.find("idviaje", Integer.parseInt(id));
                             if (optional.isPresent()) {
                                 viaje = optional.get();
                                 viajeSelected = viaje;
+                                vehiculoSelected = viaje.getVehiculo();
+                                conductorSelected = viaje.getConductor();
+                                _editable = true;
                                 writable = true;
-                                
+
                             }
                         }
                         break;
@@ -297,7 +324,7 @@ public class ViajeController implements Serializable, IController {
             } else {
                 move();
             }
-            
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -306,7 +333,7 @@ public class ViajeController implements Serializable, IController {
 
     @Override
     public void reset() {
-        
+
         RequestContext.getCurrentInstance().reset(":form:content");
         prepare("new", viaje);
     }// </editor-fold>
@@ -317,39 +344,47 @@ public class ViajeController implements Serializable, IController {
         try {
             loginController.put("pageviaje", page.toString());
             loginController.put("viaje", action);
-            
+
             switch (action) {
                 case "new":
                     viaje = new Viaje();
                     viajeSelected = new Viaje();
-                    
+
                     writable = false;
                     break;
-                
+
                 case "view":
-                    
+
                     viajeSelected = item;
                     viaje = viajeSelected;
                     loginController.put("idviaje", viaje.getIdviaje().toString());
-                    
+
                     url = "/pages/viaje/view.xhtml";
                     break;
-                
+                case "viewfecha":
+
+                    viajeSelected = item;
+                    viaje = viajeSelected;
+                    loginController.put("idviaje", viaje.getIdviaje().toString());
+
+                    url = "/pages/viaje/viewfecha.xhtml";
+                    break;
+
                 case "golist":
                     url = "/pages/viaje/list.xhtml";
                     break;
-                
+
                 case "gonew":
-                    
+
                     url = "/pages/viaje/new.xhtml";
                     break;
-                
+
             }
-            
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-        
+
         return url;
     }// </editor-fold>
 
@@ -362,7 +397,7 @@ public class ViajeController implements Serializable, IController {
             viajeList = viajeRepository.findAll();
             viajeFiltered = viajeList;
             viajeDataModel = new ViajeDataModel(viajeList);
-            
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -382,7 +417,7 @@ public class ViajeController implements Serializable, IController {
             Optional<Viaje> optional = viajeRepository.findById(viaje);
             if (optional.isPresent()) {
                 writable = false;
-                
+
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return "";
             } else {
@@ -391,7 +426,7 @@ public class ViajeController implements Serializable, IController {
                 viaje.setIdviaje(id);
                 viajeSelected = new Viaje();
             }
-            
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -405,19 +440,19 @@ public class ViajeController implements Serializable, IController {
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
-            
+
             if (!viajeServices.vehiculoDisponible(viaje)) {
                 JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
                 return null;
             }
-            
+
             if (viaje.getConductor().getEscontrol().equals("no")) {
                 if (!viajeServices.conductorDisponible(viaje)) {
                     JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
                     return null;
                 }
             }
-            
+
             Integer idviaje = autoincrementableTransporteejbServices.getContador("viaje");
             viaje.setIdviaje(idviaje);
             viaje.setRealizado("no");
@@ -429,13 +464,13 @@ public class ViajeController implements Serializable, IController {
                 //guarda el contenido anterior
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(),
                         "create", "viaje", viajeRepository.toDocument(viaje).toString()));
-                
+
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
             } else {
                 JsfUtil.successMessage("save() " + viajeRepository.getException().toString());
             }
-            
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -446,13 +481,70 @@ public class ViajeController implements Serializable, IController {
     @Override
     public String edit() {
         try {
-            
+            if (!viajeServices.isValid(viaje)) {
+                return "";
+            }
+            //si cambia el vehiculo
+            if (!viaje.getVehiculo().getIdvehiculo().equals(vehiculoSelected.getIdvehiculo())) {
+                if (!viajeServices.vehiculoDisponible(viaje)) {
+                    JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
+                    return null;
+                }
+            }
+            // si cambio el conductor
+            if (!viaje.getConductor().getIdconductor().equals(conductorSelected.getIdconductor())) {
+                if (viaje.getConductor().getEscontrol().equals("no")) {
+                    if (!viajeServices.conductorDisponible(viaje)) {
+                        JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
+                        return null;
+                    }
+                }
+            }
+
             viaje.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
             //guarda el contenido actualizado
             revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(),
                     "update", "viaje", viajeRepository.toDocument(viaje).toString()));
-            
+
+            viajeRepository.update(viaje);
+            JsfUtil.successMessage(rf.getAppMessage("info.update"));
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="editDates">
+
+
+    public String editDates() {
+        try {
+            if (!viajeServices.isValid(viaje)) {
+                return "";
+            }
+            //si cambia el vehiculo
+            if (!viaje.getVehiculo().getIdvehiculo().equals(vehiculoSelected.getIdvehiculo())) {
+                if (!viajeServices.vehiculoDisponible(viaje)) {
+                    JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
+                    return null;
+                }
+            }
+            // si cambio el conductor
+            if (!viaje.getConductor().getIdconductor().equals(conductorSelected.getIdconductor())) {
+                if (viaje.getConductor().getEscontrol().equals("no")) {
+                    if (!viajeServices.conductorDisponible(viaje)) {
+                        JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
+                        return null;
+                    }
+                }
+            }
+
+            viaje.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
+
+            //guarda el contenido actualizado
+            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(),
+                    "update", "viaje", viajeRepository.toDocument(viaje).toString()));
+
             viajeRepository.update(viaje);
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
@@ -467,7 +559,7 @@ public class ViajeController implements Serializable, IController {
         String path = "";
         try {
             viaje = (Viaje) item;
-            
+
             if (!viajeServices.isDeleted(viaje)) {
                 JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
                 return "";
@@ -476,23 +568,23 @@ public class ViajeController implements Serializable, IController {
             if (viajeRepository.delete("idviaje", viaje.getIdviaje())) {
                 revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(), "delete", "viaje", viajeRepository.toDocument(viaje).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
-                
+
                 if (!deleteonviewpage) {
                     viajeList.remove(viaje);
                     viajeFiltered = viajeList;
                     viajeDataModel = new ViajeDataModel(viajeList);
-                    
+
                     FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageviaje", page.toString());
-                    
+
                 } else {
                     viaje = new Viaje();
                     viajeSelected = new Viaje();
                     writable = false;
-                    
+
                 }
-                
+
             }
-            
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -533,7 +625,7 @@ public class ViajeController implements Serializable, IController {
         try {
             List<Viaje> list = new ArrayList<>();
             list = viajeRepository.findAll(new Document("idviaje", 1));
-            
+
             String ruta = "/resources/reportes/viaje/all.jasper";
             HashMap parameters = new HashMap();
             // parameters.put("P_parametro", "valor");
@@ -549,7 +641,6 @@ public class ViajeController implements Serializable, IController {
         try {
             viajeServices.isValidDate(viaje);
 
-            
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -558,7 +649,7 @@ public class ViajeController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="itemUnselect">
     public void itemUnselect(UnselectEvent event) {
         try {
-            
+
         } catch (Exception ex) {
             JsfUtil.errorMessage("itemUnselec() " + ex.getLocalizedMessage());
         }
@@ -571,7 +662,7 @@ public class ViajeController implements Serializable, IController {
             viajeList.add(viajeSelected);
             viajeFiltered = viajeList;
             viajeDataModel = new ViajeDataModel(viajeList);
-            
+
             loginController.put("searchviaje", "idviaje");
             lookupServices.setIdviaje(viajeSelected.getIdviaje());
         } catch (Exception e) {
@@ -646,38 +737,38 @@ public class ViajeController implements Serializable, IController {
 
     @Override
     public void move() {
-        
+
         try {
-            
+
             Document doc;
             Document sort = new Document("idviaje", -1);
-            
+
             switch (loginController.get("searchviaje")) {
                 case "_init":
                 case "_autocomplete":
                     viajeList = viajeRepository.findPagination(page, rowPage, sort);
-                    
+
                     break;
-                
+
                 case "idviaje":
                     if (lookupServices.getIdviaje() != null) {
                         viajeList = viajeRepository.findRegexInTextPagination("idviaje", lookupServices.getIdviaje().toString(), true, page, rowPage, new Document("idviaje", -1));
                     } else {
                         viajeList = viajeRepository.findPagination(page, rowPage, sort);
                     }
-                    
+
                     break;
-                
+
                 default:
-                    
+
                     viajeList = viajeRepository.findPagination(page, rowPage, sort);
                     break;
             }
-            
+
             viajeFiltered = viajeList;
-            
+
             viajeDataModel = new ViajeDataModel(viajeList);
-            
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -700,12 +791,12 @@ public class ViajeController implements Serializable, IController {
     @Override
     public String searchBy(String string) {
         try {
-            
+
             loginController.put("searchviaje", string);
-            
+
             writable = true;
             move();
-            
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -719,27 +810,39 @@ public class ViajeController implements Serializable, IController {
      * @param query
      * @return
      */
-    public List<Vehiculo> completeVehiculoFiltrado(String query) {
+    public List<Vehiculo> completeVehiculo(String query) {
         List<Vehiculo> suggestions = new ArrayList<>();
 //        List<Vehiculo> disponibles = new ArrayList<>();
         List<Vehiculo> temp = new ArrayList<>();
-        
+
         try {
             Boolean found = false;
             query = query.trim();
-            
+
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = vehiculoRepository.findRegex(field, query, true, new Document(field, 1));
-            
+
             if (temp.isEmpty()) {
+                //Solo para el caso que necesite editar y debe mostrar el original en la lista
+                // debido a que el filtro lo excluira porque ya esta registrado
+                if (_editable) {
+                    suggestions.add(vehiculoSelected);
+                }
+
                 return suggestions;
             } else {
                 List<Vehiculo> validos = temp.stream()
                         .filter(x -> isVehiculoActivoDisponible(x)).collect(Collectors.toList());
                 if (validos.isEmpty()) {
+                    if (_editable) {
+                        suggestions.add(vehiculoSelected);
+                    }
                     return suggestions;
                 }
                 if (vehiculoList == null || vehiculoList.isEmpty()) {
+                    if (_editable) {
+                        validos.add(vehiculoSelected);
+                    }
                     return validos;
                 } else {
 // REMOVERLOS SI YA ESTAN EN EL LISTADO
@@ -752,10 +855,13 @@ public class ViajeController implements Serializable, IController {
                             suggestions.add(v);
                         }
                     });
-                    
+                    if (_editable) {
+                        suggestions.add(vehiculoSelected);
+                    }
+
                 }
             }
-            
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -770,7 +876,7 @@ public class ViajeController implements Serializable, IController {
      * @param query
      * @return
      */
-    public List<Conductor> completeConductorF2iltrado(String query) {
+    public List<Conductor> completeConductor(String query) {
         suggestionsConductor = new ArrayList<>();
         List<Conductor> temp = new ArrayList<>();
         try {
@@ -779,29 +885,44 @@ public class ViajeController implements Serializable, IController {
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = conductorRepository.findRegex(field, query, true, new Document(field, 1));
             if (temp.isEmpty()) {
+                if (_editable && conductorSelected.getEscontrol().equals("no")) {
+                    suggestionsConductor.add(conductorSelected);
+                }
                 return suggestionsConductor;
             } else {
-                
+
                 List<Conductor> validos = temp.stream()
                         .filter(x -> isConductorActivoDisponible(x)).collect(Collectors.toList());
                 if (validos.isEmpty()) {
+                    if (_editable && conductorSelected.getEscontrol().equals("no")) {
+                        suggestionsConductor.add(conductorSelected);
+                    }
                     return suggestionsConductor;
                 }
-                
-                validos.forEach((v) -> {
-                    Optional<Conductor> optional = conductorList.stream()
-                            .filter(v2 -> v2.getIdconductor() == v.getIdconductor())
-                            .findAny();
-                    if (!optional.isPresent()) {
-                        suggestionsConductor.add(v);
+                if (conductorList == null || conductorList.isEmpty()) {
+                    if (_editable && conductorSelected.getEscontrol().equals("no")) {
+                        validos.add(conductorSelected);
                     }
-                });
-                
+                    return validos;
+                } else {
+                    validos.forEach((v) -> {
+                        Optional<Conductor> optional = conductorList.stream()
+                                .filter(v2 -> v2.getIdconductor() == v.getIdconductor())
+                                .findAny();
+                        if (!optional.isPresent()) {
+                            if (_editable && conductorSelected.getEscontrol().equals("no")) {
+                                suggestionsConductor.add(conductorSelected);
+                            }
+                            suggestionsConductor.add(v);
+                        }
+                    });
+                }
+
             }
-            
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-            
+
         }
         return suggestionsConductor;
     }
@@ -810,7 +931,7 @@ public class ViajeController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="isVehiculoValid(Vehiculo vehiculo)">
     public Boolean isVehiculoValid(Vehiculo vehiculo) {
         return vehiculo.getActivo().equals("si") && vehiculo.getEnreparacion().equals("no");
-        
+
     }
 
     // </editor-fold>
@@ -818,13 +939,13 @@ public class ViajeController implements Serializable, IController {
     public Boolean isVehiculoActivo(Vehiculo vehiculo) {
         Boolean valid = false;
         try {
-            
+
             if (vehiculo.getActivo().equals("si") && vehiculo.getEnreparacion().equals("no")) {
-                
+
                 valid = true;
-                
+
             }
-            
+
         } catch (Exception e) {
 //            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
             errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isVehiculoValid()", e.getLocalizedMessage());
@@ -837,15 +958,15 @@ public class ViajeController implements Serializable, IController {
     public Boolean isVehiculoActivoDisponible(Vehiculo vehiculo) {
         Boolean valid = false;
         try {
-            
+
             if (vehiculo.getActivo().equals("no") && vehiculo.getEnreparacion().equals("si")) {
-                
+
             } else {
                 if (viajeServices.vehiculoDisponible(vehiculo, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva())) {
                     valid = true;
                 }
             }
-            
+
         } catch (Exception e) {
             errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isVehiculoValid()", e.getLocalizedMessage());
         }
@@ -860,11 +981,11 @@ public class ViajeController implements Serializable, IController {
             if (conductor.getActivo().equals("si") && conductor.getEscontrol().equals("si")) {
                 return true;
             }
-            
+
             if (viajeServices.conductorDisponible(conductor, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva())) {
                 valid = true;
             }
-            
+
         } catch (Exception e) {
             errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isConductorActivoDisponible", e.getLocalizedMessage());
         }
@@ -918,7 +1039,7 @@ public class ViajeController implements Serializable, IController {
                 Collections.sort(viajeList,
                         (Viaje a, Viaje b) -> a.getIdviaje().compareTo(b.getIdviaje()));
             }
-            
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -927,18 +1048,21 @@ public class ViajeController implements Serializable, IController {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )"> 
-    public String columnColor(String realizado) {
+    public String columnColor(String realizado, String activo) {
         String color = "";
         try {
             switch (realizado.toLowerCase()) {
                 case "si":
-                    color = "red";
+                    color = "green";
                     break;
                 case "no":
-                    color = "blue";
+                    color = "black";
                     break;
                 default:
-                    color = "black";
+                    color = "blue";
+            }
+            if(activo.equals("no")){
+                color ="red";
             }
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -947,4 +1071,31 @@ public class ViajeController implements Serializable, IController {
     }
 // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="String vehiculoPredeterminado(">
+    /**
+     * desde el panel al editar permite colocar el vehiculo predeterminado en el
+     * autocomplete
+     *
+     * @return
+     */
+    public String vehiculoPredeterminado() {
+        try {
+            //    viaje.setVehiculo(viajeOld.getVehiculo());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String conductorPredeterminado(">
+    public String conductorPredeterminado() {
+        try {
+            //         viaje.setConductor(viajeOld.getConductor());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+    // </editor-fold>
 }
