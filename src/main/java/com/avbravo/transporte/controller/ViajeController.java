@@ -68,8 +68,8 @@ public class ViajeController implements Serializable, IController {
 
     Integer page = 1;
     Integer rowPage = 25;
-    Date fechaHoraInicioReservaanterior= new Date();
-    Date fechaHoraFinReservaAnterior= new Date();
+    Date fechaHoraInicioReservaanterior = new Date();
+    Date fechaHoraFinReservaAnterior = new Date();
 
     List<Integer> pages = new ArrayList<>();
     //
@@ -156,8 +156,6 @@ public class ViajeController implements Serializable, IController {
         this.fechaHoraFinReservaAnterior = fechaHoraFinReservaAnterior;
     }
 
-    
-    
     public void setVehiculoList(List<Vehiculo> vehiculoList) {
         this.vehiculoList = vehiculoList;
     }
@@ -328,9 +326,9 @@ public class ViajeController implements Serializable, IController {
                                 viajeSelected = viaje;
                                 vehiculoSelected = viaje.getVehiculo();
                                 conductorSelected = viaje.getConductor();
-                                
-                                 fechaHoraInicioReservaanterior= viaje.getFechahorainicioreserva();
-fechaHoraFinReservaAnterior= viaje.getFechahorafinreserva();
+
+                                fechaHoraInicioReservaanterior = viaje.getFechahorainicioreserva();
+                                fechaHoraFinReservaAnterior = viaje.getFechahorafinreserva();
                                 _editable = true;
                                 writable = true;
 
@@ -504,17 +502,35 @@ fechaHoraFinReservaAnterior= viaje.getFechahorafinreserva();
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
-            //si cambia el vehiculo
-            if (!viaje.getVehiculo().getIdvehiculo().equals(vehiculoSelected.getIdvehiculo())) {
-                if (!viajeServices.vehiculoDisponible(viaje)) {
+            if (fechaHoraInicioReservaanterior.equals(viaje.getFechahorainicioreserva()) && fechaHoraFinReservaAnterior.equals(viaje.getFechahorafinreserva())) {
+
+                //si cambia el vehiculo
+                if (!viaje.getVehiculo().getIdvehiculo().equals(vehiculoSelected.getIdvehiculo())) {
+                    if (!viajeServices.vehiculoDisponible(viaje)) {
+                        JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
+                        return null;
+                    }
+                }
+                // si cambio el conductor
+                if (!viaje.getConductor().getIdconductor().equals(conductorSelected.getIdconductor())) {
+                    if (viaje.getConductor().getEscontrol().equals("no")) {
+                        if (!viajeServices.conductorDisponible(viaje)) {
+                            JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
+                            return null;
+                        }
+                    }
+                }
+
+            } else {
+                //si cambia el vehiculo
+                if (!viajeServices.vehiculoDisponibleExcluyendoMismoViaje(viaje)) {
                     JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
                     return null;
                 }
-            }
-            // si cambio el conductor
-            if (!viaje.getConductor().getIdconductor().equals(conductorSelected.getIdconductor())) {
+
+                // si cambio el conductor
                 if (viaje.getConductor().getEscontrol().equals("no")) {
-                    if (!viajeServices.conductorDisponible(viaje)) {
+                    if (!viajeServices.conductorDisponibleExcluyendoMismoViaje(viaje)) {
                         JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
                         return null;
                     }
@@ -536,28 +552,29 @@ fechaHoraFinReservaAnterior= viaje.getFechahorafinreserva();
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="editDates">
 
-
     public String editExcluyendoMismoViaje() {
         try {
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
+            if (fechaHoraInicioReservaanterior.equals(viaje.getFechahorainicioreserva()) && fechaHoraFinReservaAnterior.equals(viaje.getFechahorafinreserva())) {
+                JsfUtil.warningMessage(rf.getMessage("warning.nohaycambiosenfechasiniciofin"));
+                return null;
+            }
+
             //si cambia el vehiculo
-           
-                if (!viajeServices.vehiculoDisponibleExcluyendoMismoViaje(viaje)) {
-                    JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
+            if (!viajeServices.vehiculoDisponibleExcluyendoMismoViaje(viaje)) {
+                JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
+                return null;
+            }
+
+            // si cambio el conductor
+            if (viaje.getConductor().getEscontrol().equals("no")) {
+                if (!viajeServices.conductorDisponibleExcluyendoMismoViaje(viaje)) {
+                    JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
                     return null;
                 }
-          
-            // si cambio el conductor
-       
-                if (viaje.getConductor().getEscontrol().equals("no")) {
-                    if (!viajeServices.conductorDisponibleExcluyendoMismoViaje(viaje)) {
-                        JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
-                        return null;
-                    }
-                }
-         
+            }
 
             viaje.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
 
@@ -832,38 +849,37 @@ fechaHoraFinReservaAnterior= viaje.getFechahorafinreserva();
      */
     public List<Vehiculo> completeVehiculo(String query) {
         List<Vehiculo> suggestions = new ArrayList<>();
-//        List<Vehiculo> disponibles = new ArrayList<>();
         List<Vehiculo> temp = new ArrayList<>();
 
         try {
             Boolean found = false;
             query = query.trim();
-
+            if (_editable) {
+                suggestions.add(vehiculoSelected);
+            }
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = vehiculoRepository.findRegex(field, query, true, new Document(field, 1));
 
-            if (temp.isEmpty()) {
-                //Solo para el caso que necesite editar y debe mostrar el original en la lista
-                // debido a que el filtro lo excluira porque ya esta registrado
-                if (_editable) {
-                    suggestions.add(vehiculoSelected);
-                }
-
-                return suggestions;
-            } else {
+//            if (temp.isEmpty()) {
+//                //Solo para el caso que necesite editar y debe mostrar el original en la lista
+//                // debido a que el filtro lo excluira porque ya esta registrado
+//
+//                return suggestions;
+//            } else {
+            if (!temp.isEmpty()) {
                 List<Vehiculo> validos = temp.stream()
                         .filter(x -> isVehiculoActivoDisponible(x)).collect(Collectors.toList());
                 if (validos.isEmpty()) {
-                    if (_editable) {
-                        suggestions.add(vehiculoSelected);
-                    }
+
                     return suggestions;
                 }
                 if (vehiculoList == null || vehiculoList.isEmpty()) {
-                    if (_editable) {
-                        validos.add(vehiculoSelected);
-                    }
-                    return validos;
+
+                    validos.forEach((v) -> {
+                        suggestions.add(v);
+                    }); //  validos.add(vehiculoSelected);
+
+                    //   return validos;
                 } else {
 // REMOVERLOS SI YA ESTAN EN EL LISTADO
 
@@ -875,9 +891,6 @@ fechaHoraFinReservaAnterior= viaje.getFechahorafinreserva();
                             suggestions.add(v);
                         }
                     });
-                    if (_editable) {
-                        suggestions.add(vehiculoSelected);
-                    }
 
                 }
             }
@@ -902,28 +915,27 @@ fechaHoraFinReservaAnterior= viaje.getFechahorafinreserva();
         try {
             Boolean found = false;
             query = query.trim();
+            if (_editable && conductorSelected.getEscontrol().equals("no")) {
+                suggestionsConductor.add(conductorSelected);
+            }
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = conductorRepository.findRegex(field, query, true, new Document(field, 1));
-            if (temp.isEmpty()) {
-                if (_editable && conductorSelected.getEscontrol().equals("no")) {
-                    suggestionsConductor.add(conductorSelected);
-                }
-                return suggestionsConductor;
-            } else {
-
+//            if (temp.isEmpty()) {
+//
+//                return suggestionsConductor;
+//            } else {
+            if (!temp.isEmpty()) {
                 List<Conductor> validos = temp.stream()
                         .filter(x -> isConductorActivoDisponible(x)).collect(Collectors.toList());
                 if (validos.isEmpty()) {
-                    if (_editable && conductorSelected.getEscontrol().equals("no")) {
-                        suggestionsConductor.add(conductorSelected);
-                    }
+
                     return suggestionsConductor;
                 }
                 if (conductorList == null || conductorList.isEmpty()) {
-                    if (_editable && conductorSelected.getEscontrol().equals("no")) {
-                        validos.add(conductorSelected);
-                    }
-                    return validos;
+                    validos.forEach((v) -> {
+                        suggestionsConductor.add(v);
+                    });
+
                 } else {
                     validos.forEach((v) -> {
                         Optional<Conductor> optional = conductorList.stream()
@@ -1081,8 +1093,8 @@ fechaHoraFinReservaAnterior= viaje.getFechahorafinreserva();
                 default:
                     color = "blue";
             }
-            if(activo.equals("no")){
-                color ="red";
+            if (activo.equals("no")) {
+                color = "red";
             }
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
