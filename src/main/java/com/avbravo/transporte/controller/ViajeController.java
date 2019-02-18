@@ -502,8 +502,8 @@ public class ViajeController implements Serializable, IController {
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
-            if (fechaHoraInicioReservaanterior.equals(viaje.getFechahorainicioreserva()) && fechaHoraFinReservaAnterior.equals(viaje.getFechahorafinreserva())) {
-
+//            if (fechaHoraInicioReservaanterior.equals(viaje.getFechahorainicioreserva()) && fechaHoraFinReservaAnterior.equals(viaje.getFechahorafinreserva())) {
+            if (noHayCambioFechaHoras()) {
                 //si cambia el vehiculo
                 if (!viaje.getVehiculo().getIdvehiculo().equals(vehiculoSelected.getIdvehiculo())) {
                     if (!viajeServices.vehiculoDisponible(viaje)) {
@@ -840,7 +840,7 @@ public class ViajeController implements Serializable, IController {
         return "";
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="completeVehiculoFiltrado(String query)">
+    // <editor-fold defaultstate="collapsed" desc="completeVehiculo(String query)">
     /**
      * Se usa para los autocomplete filtrando
      *
@@ -854,21 +854,25 @@ public class ViajeController implements Serializable, IController {
         try {
             Boolean found = false;
             query = query.trim();
-            if (_editable) {
+            if (_editable && noHayCambioFechaHoras()) {
                 suggestions.add(vehiculoSelected);
             }
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = vehiculoRepository.findRegex(field, query, true, new Document(field, 1));
 
-//            if (temp.isEmpty()) {
-//                //Solo para el caso que necesite editar y debe mostrar el original en la lista
-//                // debido a que el filtro lo excluira porque ya esta registrado
-//
-//                return suggestions;
-//            } else {
             if (!temp.isEmpty()) {
-                List<Vehiculo> validos = temp.stream()
-                        .filter(x -> isVehiculoActivoDisponible(x)).collect(Collectors.toList());
+                List<Vehiculo> validos = new ArrayList<>();
+                if (noHayCambioFechaHoras()) {
+                    validos = temp.stream()
+                            .filter(x -> isVehiculoActivoDisponible(x)).collect(Collectors.toList());
+
+                } else {
+                    validos = temp.stream()
+                            .filter(x -> isVehiculoActivoDisponibleExcluyendoMismoViaje(x)).collect(Collectors.toList());
+                    //si cambia el vehiculo
+
+                }
+
                 if (validos.isEmpty()) {
 
                     return suggestions;
@@ -902,7 +906,7 @@ public class ViajeController implements Serializable, IController {
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="completeConductorFiltrado(String query)">
+    // <editor-fold defaultstate="collapsed" desc="completeConductor(String query)">
     /**
      * Se usa para los autocomplete filtrando
      *
@@ -915,18 +919,22 @@ public class ViajeController implements Serializable, IController {
         try {
             Boolean found = false;
             query = query.trim();
-            if (_editable && conductorSelected.getEscontrol().equals("no")) {
+            if (_editable && conductorSelected.getEscontrol().equals("no") && noHayCambioFechaHoras()) {
                 suggestionsConductor.add(conductorSelected);
             }
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = conductorRepository.findRegex(field, query, true, new Document(field, 1));
-//            if (temp.isEmpty()) {
-//
-//                return suggestionsConductor;
-//            } else {
+
             if (!temp.isEmpty()) {
-                List<Conductor> validos = temp.stream()
-                        .filter(x -> isConductorActivoDisponible(x)).collect(Collectors.toList());
+                List<Conductor> validos = new ArrayList<>();
+                if (noHayCambioFechaHoras()) {
+                    validos = temp.stream()
+                            .filter(x -> isConductorActivoDisponible(x)).collect(Collectors.toList());
+                } else {
+ validos = temp.stream()
+                            .filter(x -> isConductorActivoDisponibleExcluyendoMismoViaje(x)).collect(Collectors.toList());
+                }
+
                 if (validos.isEmpty()) {
 
                     return suggestionsConductor;
@@ -1006,6 +1014,26 @@ public class ViajeController implements Serializable, IController {
     }
 
     // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isVehiculoActivoDisponibleExcluyendoMismoViaje(Vehiculo vehiculo)">
+    public Boolean isVehiculoActivoDisponibleExcluyendoMismoViaje(Vehiculo vehiculo) {
+        Boolean valid = false;
+        try {
+
+            if (vehiculo.getActivo().equals("no") && vehiculo.getEnreparacion().equals("si")) {
+
+            } else {
+                if (viajeServices.vehiculoDisponibleExcluyendoMismoViaje(vehiculo, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva(), viaje.getIdviaje())) {
+                    valid = true;
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isVehiculoValid()", e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="isConductorActivoDisponible(Conductor conductor)">
     public Boolean isConductorActivoDisponible(Conductor conductor) {
         Boolean valid = false;
@@ -1020,6 +1048,25 @@ public class ViajeController implements Serializable, IController {
 
         } catch (Exception e) {
             errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isConductorActivoDisponible", e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isConductorActivoDisponibleExcluyendoMismoViaje(Conductor conductor)">
+    public Boolean isConductorActivoDisponibleExcluyendoMismoViaje(Conductor conductor) {
+        Boolean valid = false;
+        try {
+            if (conductor.getActivo().equals("si") && conductor.getEscontrol().equals("si")) {
+                return true;
+            }
+
+            if (viajeServices.conductorDisponibleExcluyendoMismoViaje(conductor, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva(),viaje.getIdviaje())) {
+                valid = true;
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
         }
         return valid;
     }
@@ -1128,6 +1175,13 @@ public class ViajeController implements Serializable, IController {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    private Boolean noHayCambioFechaHoras() {
+        return fechaHoraInicioReservaanterior.equals(viaje.getFechahorainicioreserva()) && fechaHoraFinReservaAnterior.equals(viaje.getFechahorafinreserva());
+
     }
     // </editor-fold>
 }

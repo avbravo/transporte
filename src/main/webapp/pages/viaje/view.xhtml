@@ -32,19 +32,26 @@
 
                         <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
 
+                        <p:fieldset>
+                            <extensionviaje:calendar  disabled="false"
+                                                      pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorainicioreserva}"   
+                                                      label="#{msg['field.fechahorainicioreserva']}" />
+                            <p:spacer width="25"/>
+                            <extensionviaje:calendar  disabled="true"
+                                                      pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.fechaHoraInicioReservaanterior}"   
+                                                      label="#{msg['field.fechahorainicioreserva']}" />
 
-                        <extensionviaje:calendar  disabled="false"
-                            pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorainicioreserva}"   
-                                                   label="#{msg['field.fechahorainicioreserva']}" />
-
-
-
+                        </p:fieldset>
 
                         <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
+                        <p:fieldset>
                         <extensionviaje:calendar  disabled="false"
-                            pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
+                                                  pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
+                        <p:spacer width="25"/>
+                        <extensionviaje:calendar  disabled="true"
+                                                  pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.fechaHoraFinReservaAnterior}"  label="#{msg['field.fechahorafinreserva']}" />
 
-
+</p:fieldset>
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <a:inputText   value="#{viajeController.viaje.lugarpartida}"    />
 
@@ -54,10 +61,10 @@
 
                         <p:outputLabel value="#{msg['field.vehiculo']}"
                                        id="vehiculolabel" />
-                  
-  <p:fieldset>
+
+                        <p:fieldset>
                             <extensionviaje:autocompletevehiculos id="vehiculo"/>
-                           
+
                             <p:spacer width="25"/>
                             <p:outputLabel value="#{viajeController.vehiculoSelected.marca}- #{viajeController.vehiculoSelected.modelo }-#{viajeController.vehiculoSelected.placa }" />
 
@@ -68,6 +75,7 @@
 
 
                             <extensionviaje:autocompleteconductor id="conductor"/>
+                            <p:spacer width="25"/>
                             <p:outputLabel value="#{viajeController.conductorSelected.nombre}- #{viajeController.conductorSelected.cedula }" />
 
                         </p:fieldset>
