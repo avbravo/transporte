@@ -22,8 +22,8 @@
         </style>
 
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.viaje.list}" onkeypress="if (event.keyCode == 13) {
-                     return false;
-                 }">
+                    return false;
+                }">
 
             <b:growl  id="msgs"/>
 
@@ -84,7 +84,7 @@
 
                         <p:calendar  disabled="true"  size="8"   
                                      style="background-color: grey; color: #{viajeController.columnColor(item.realizado,item.activo)}"
-                                    
+
                                      pattern="dd/MM/yyyy" value="#{item.fechahorainicioreserva}"  />
                         <br />
                         <p:calendar  disabled="true"    
@@ -126,11 +126,15 @@
 
                     </b:dataTableColumn> 
 
-                    <b:dataTableColumn  label="#{msg['field.realizado']}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" >
+                    <b:dataTableColumn  label="#{msg['field.r']}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" >
                         <p:outputLabel value="#{item.realizado}"/>
-                        <br />
-                             <p:outputLabel value="#{msg['field.activo']}:#{item.activo}"/>
-                           
+
+                    </b:dataTableColumn>
+                    <b:dataTableColumn  label="#{msg['field.a']}"  
+                                        style="color: #{viajeController.columnColor(item.realizado,item.activo)}" >
+
+                        <p:outputLabel value="#{item.activo}"/>
+
                     </b:dataTableColumn>
 
                     <b:dataTableColumn label="">
@@ -142,14 +146,7 @@
                             rendered="#{applicationMenu.viaje.delete}"
                             />
                     </b:dataTableColumn>
-                    <b:dataTableColumn label="">
 
-                        <extensionviaje:columnviewfecha
-
-                            edit="#{viajeController.prepare('viewfecha',item)}"
-                            rendered="#{applicationMenu.viaje.edit}"
-                            />
-                    </b:dataTableColumn>
 
                 </b:dataTable>
             </b:panel>

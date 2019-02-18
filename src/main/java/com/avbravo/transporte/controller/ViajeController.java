@@ -81,7 +81,7 @@ public class ViajeController implements Serializable, IController {
     Solicitud solicitud;
     Vehiculo vehiculoSelected;
     Conductor conductorSelected;
-    Boolean _editable = false;
+    Boolean iseditable = false;
 
     //List
     List<Viaje> viajeList = new ArrayList<>();
@@ -282,7 +282,7 @@ public class ViajeController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-            _editable = false;
+            iseditable = false;
             vehiculoSelected = new Vehiculo();
             conductorSelected = new Conductor();
             String action = loginController.get("viaje");
@@ -318,7 +318,6 @@ public class ViajeController implements Serializable, IController {
                         writable = false;
                         break;
                     case "view":
-                    case "viewfecha":
                         if (id != null) {
                             Optional<Viaje> optional = viajeRepository.find("idviaje", Integer.parseInt(id));
                             if (optional.isPresent()) {
@@ -329,7 +328,7 @@ public class ViajeController implements Serializable, IController {
 
                                 fechaHoraInicioReservaanterior = viaje.getFechahorainicioreserva();
                                 fechaHoraFinReservaAnterior = viaje.getFechahorafinreserva();
-                                _editable = true;
+                                iseditable = true;
                                 writable = true;
 
                             }
@@ -502,7 +501,7 @@ public class ViajeController implements Serializable, IController {
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
-//            if (fechaHoraInicioReservaanterior.equals(viaje.getFechahorainicioreserva()) && fechaHoraFinReservaAnterior.equals(viaje.getFechahorafinreserva())) {
+
             if (noHayCambioFechaHoras()) {
                 //si cambia el vehiculo
                 if (!viaje.getVehiculo().getIdvehiculo().equals(vehiculoSelected.getIdvehiculo())) {
@@ -550,47 +549,8 @@ public class ViajeController implements Serializable, IController {
         }
         return "";
     }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="editDates">
 
-    public String editExcluyendoMismoViaje() {
-        try {
-            if (!viajeServices.isValid(viaje)) {
-                return "";
-            }
-            if (fechaHoraInicioReservaanterior.equals(viaje.getFechahorainicioreserva()) && fechaHoraFinReservaAnterior.equals(viaje.getFechahorafinreserva())) {
-                JsfUtil.warningMessage(rf.getMessage("warning.nohaycambiosenfechasiniciofin"));
-                return null;
-            }
-
-            //si cambia el vehiculo
-            if (!viajeServices.vehiculoDisponibleExcluyendoMismoViaje(viaje)) {
-                JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
-                return null;
-            }
-
-            // si cambio el conductor
-            if (viaje.getConductor().getEscontrol().equals("no")) {
-                if (!viajeServices.conductorDisponibleExcluyendoMismoViaje(viaje)) {
-                    JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
-                    return null;
-                }
-            }
-
-            viaje.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
-
-            //guarda el contenido actualizado
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(),
-                    "update", "viaje", viajeRepository.toDocument(viaje).toString()));
-
-            viajeRepository.update(viaje);
-            JsfUtil.successMessage(rf.getAppMessage("info.update"));
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="delete(Object item, Boolean deleteonviewpage)">
-
     @Override
     public String delete(Object item, Boolean deleteonviewpage) {
         String path = "";
@@ -854,7 +814,7 @@ public class ViajeController implements Serializable, IController {
         try {
             Boolean found = false;
             query = query.trim();
-            if (_editable && noHayCambioFechaHoras()) {
+            if (iseditable && noHayCambioFechaHoras()) {
                 suggestions.add(vehiculoSelected);
             }
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
@@ -919,7 +879,7 @@ public class ViajeController implements Serializable, IController {
         try {
             Boolean found = false;
             query = query.trim();
-            if (_editable && conductorSelected.getEscontrol().equals("no") && noHayCambioFechaHoras()) {
+            if (iseditable && conductorSelected.getEscontrol().equals("no") && noHayCambioFechaHoras()) {
                 suggestionsConductor.add(conductorSelected);
             }
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
@@ -931,7 +891,7 @@ public class ViajeController implements Serializable, IController {
                     validos = temp.stream()
                             .filter(x -> isConductorActivoDisponible(x)).collect(Collectors.toList());
                 } else {
- validos = temp.stream()
+                    validos = temp.stream()
                             .filter(x -> isConductorActivoDisponibleExcluyendoMismoViaje(x)).collect(Collectors.toList());
                 }
 
@@ -950,7 +910,7 @@ public class ViajeController implements Serializable, IController {
                                 .filter(v2 -> v2.getIdconductor() == v.getIdconductor())
                                 .findAny();
                         if (!optional.isPresent()) {
-                            if (_editable && conductorSelected.getEscontrol().equals("no")) {
+                            if (iseditable && conductorSelected.getEscontrol().equals("no")) {
                                 suggestionsConductor.add(conductorSelected);
                             }
                             suggestionsConductor.add(v);
@@ -1008,7 +968,7 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isVehiculoValid()", e.getLocalizedMessage());
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
         }
         return valid;
     }
@@ -1061,7 +1021,7 @@ public class ViajeController implements Serializable, IController {
                 return true;
             }
 
-            if (viajeServices.conductorDisponibleExcluyendoMismoViaje(conductor, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva(),viaje.getIdviaje())) {
+            if (viajeServices.conductorDisponibleExcluyendoMismoViaje(conductor, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva(), viaje.getIdviaje())) {
                 valid = true;
             }
 

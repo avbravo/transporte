@@ -105,7 +105,7 @@
                     </b:panelGrid>
                     <a:view 
                         renderedDelete="#{applicationMenu.viaje.delete and viajeController.writable }"
-                        renderedEdit="#{applicationMenu.viaje.edit and viajeController.writable}" 
+                        renderedEdit="#{applicationMenu.viaje.edit and viajeController.writable and !viajeController.viaje.realizado eq 'si'}" 
                         renderedList="#{applicationMenu.viaje.list and viajeController.writable}"
                         edit="#{viajeController.edit()}"
                         delete="#{viajeController.delete(viajeController.viaje,true)}"
