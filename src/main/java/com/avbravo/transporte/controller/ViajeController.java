@@ -19,11 +19,13 @@ import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Solicitud;
+import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.ConductorRepository;
+import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.SolicitudServices;
@@ -47,6 +49,9 @@ import org.bson.Document;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
+import org.primefaces.model.DefaultScheduleEvent;
+import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.ScheduleModel;
 // </editor-fold>
 
 /**
@@ -90,6 +95,15 @@ public class ViajeController implements Serializable, IController {
     List<Conductor> conductorList = new ArrayList<>();
     List<Conductor> suggestionsConductor = new ArrayList<>();
 
+    //Schedule
+    private ScheduleModel vehiculoScheduleModel;
+    private ScheduleModel conductorScheduleModel;
+    private ScheduleModel solicitudScheduleModel;
+    private ScheduleModel viajeScheduleModel;
+
+//    private ScheduleModel lazyEventModel;
+//
+//    private ScheduleEvent event = new DefaultScheduleEvent();
     //Repository
     @Inject
     ViajeRepository viajeRepository;
@@ -97,6 +111,8 @@ public class ViajeController implements Serializable, IController {
     RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
     @Inject
     ConductorRepository conductorRepository;
+    @Inject
+    SolicitudRepository solicitudRepository;
     @Inject
     VehiculoRepository vehiculoRepository;
     //Services
@@ -134,6 +150,14 @@ public class ViajeController implements Serializable, IController {
 
     public void setPages(List<Integer> pages) {
         this.pages = pages;
+    }
+
+    public ScheduleModel getVehiculoScheduleModel() {
+        return vehiculoScheduleModel;
+    }
+
+    public void setVehiculoScheduleModel(ScheduleModel vehiculoScheduleModel) {
+        this.vehiculoScheduleModel = vehiculoScheduleModel;
     }
 
     public List<Vehiculo> getVehiculoList() {
@@ -264,6 +288,30 @@ public class ViajeController implements Serializable, IController {
         this.conductorSelected = conductorSelected;
     }
 
+    public ScheduleModel getConductorScheduleModel() {
+        return conductorScheduleModel;
+    }
+
+    public void setConductorScheduleModel(ScheduleModel conductorScheduleModel) {
+        this.conductorScheduleModel = conductorScheduleModel;
+    }
+
+    public ScheduleModel getSolicitudScheduleModel() {
+        return solicitudScheduleModel;
+    }
+
+    public void setSolicitudScheduleModel(ScheduleModel solicitudScheduleModel) {
+        this.solicitudScheduleModel = solicitudScheduleModel;
+    }
+
+    public ScheduleModel getViajeScheduleModel() {
+        return viajeScheduleModel;
+    }
+
+    public void setViajeScheduleModel(ScheduleModel viajeScheduleModel) {
+        this.viajeScheduleModel = viajeScheduleModel;
+    }
+
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
     public ViajeController() {
@@ -282,6 +330,10 @@ public class ViajeController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
+            vehiculoScheduleModel = new DefaultScheduleModel();
+            conductorScheduleModel = new DefaultScheduleModel();
+            solicitudScheduleModel = new DefaultScheduleModel();
+            viajeScheduleModel = new DefaultScheduleModel();
             iseditable = false;
             vehiculoSelected = new Vehiculo();
             conductorSelected = new Conductor();
@@ -1138,10 +1190,144 @@ public class ViajeController implements Serializable, IController {
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="Boolean noHayCambioFechaHoras()">
     private Boolean noHayCambioFechaHoras() {
         return fechaHoraInicioReservaanterior.equals(viaje.getFechahorainicioreserva()) && fechaHoraFinReservaAnterior.equals(viaje.getFechahorafinreserva());
 
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="prepareScheduleVehiculo()">
+    public String prepareScheduleVehiculo() {
+        try {
+            Document doc;
+            Document docViajes = new Document("activo", "si");
+            doc = new Document("activo", "si");
+            List<Viaje> list = viajeRepository.findBy(docViajes, new Document("fecha", 1));
+
+            vehiculoScheduleModel = new DefaultScheduleModel();
+
+            if (!list.isEmpty()) {
+                list.forEach((a) -> {
+
+                    String tema = "schedule-blue";
+                    switch (a.getRealizado()) {
+//                        case "si":                            
+//                            tema = "schedule-orange";
+//                            break;
+                        case "si":
+
+                            tema = "schedule-green";
+                            break;
+                        case "no":
+
+                            tema = "schedule-red";
+                            break;
+//                        case "talvez":
+//
+//                            tema = "schedule-red";
+//                            break;
+                    }
+
+                    vehiculoScheduleModel.addEvent(
+                            new DefaultScheduleEvent(a.getVehiculo().getMarca()
+                                    + " " + a.getVehiculo().getModelo() +  " Placa: "+
+                                    a.getVehiculo().getPlaca() + "# " + a.getIdviaje() + " Destino " + a.getLugardestino()
+                                    + " Conductor "+a.getConductor().getNombre(),
+                                    a.getFechahorainicioreserva(), a.getFechahorafinreserva(), tema)
+                    );
+                });
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="prepareScheduleConductor()">
+    public String prepareScheduleConductor() {
+        try {
+            Document doc;
+            Document docViajes = new Document("activo", "si");
+            doc = new Document("activo", "si");
+            List<Viaje> list = viajeRepository.findBy(docViajes, new Document("fecha", 1));
+
+            conductorScheduleModel = new DefaultScheduleModel();
+
+            if (!list.isEmpty()) {
+                list.forEach((a) -> {
+
+                    String tema = "schedule-blue";
+                    switch (a.getRealizado()) {
+//                        case "si":                            
+//                            tema = "schedule-orange";
+//                            break;
+                        case "si":
+
+                            tema = "schedule-green";
+                            break;
+                        case "no":
+
+                            tema = "schedule-red";
+                            break;
+//                        case "talvez":
+//
+//                            tema = "schedule-red";
+//                            break;
+                    }
+
+                    conductorScheduleModel.addEvent(
+                            new DefaultScheduleEvent(a.getConductor().getNombre() + " " + a.getConductor().getCedula()
+                                    + "# " + a.getIdviaje() + " Destino " + a.getLugardestino()
+                                    +" "+a.getVehiculo().getMarca() + " "+a.getVehiculo().getModelo(),
+                                    a.getFechahorainicioreserva(), a.getFechahorafinreserva(), tema)
+                    );
+                });
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="prepareScheduleSolicitud(()">
+    public String prepareScheduleSolicitud() {
+        try {
+            Document doc;
+            Document docViajes = new Document("activo", "si").append("estatus.idestatus", "SOLICITADO");
+            doc = new Document("activo", "si");
+            List<Solicitud> list = solicitudRepository.findBy(docViajes, new Document("fecha", 1));
+           // String tema = "schedule-orange";
+            solicitudScheduleModel = new DefaultScheduleModel();
+
+            if (!list.isEmpty()) {
+                list.forEach((a) -> {
+                    String tipovehiculo = "";
+                    tipovehiculo = a.getTipovehiculo().stream().map((tv) -> tv.getIdtipovehiculo()).reduce(tipovehiculo, String::concat);
+String tema="";
+                    if (a.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
+                        tema = "schedule-green";
+                    } else {
+                        tema = "schedule-orange";
+                    }
+                    solicitudScheduleModel.addEvent(
+                            new DefaultScheduleEvent(a.getUsuario().get(0).getNombre() + " " + a.getUsuario().get(0).getCedula()
+                                    + "Tipo vehiculo " + tipovehiculo
+                                    + "Solicitud " + a.getTiposolicitud().getIdtiposolicitud()
+                                    + " Destino " + a.getLugarllegada(),
+                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
+                    );
+                });
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
     }
     // </editor-fold>
 }
