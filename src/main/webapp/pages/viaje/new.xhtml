@@ -59,10 +59,17 @@
 
                         <p:outputLabel value="#{msg['field.vehiculo']}"
                                        id="vehiculolabel" />
+                        <p:fieldset>
                         <extensionviaje:autocompletevehiculos id="vehiculo"/>
+                        <p:spacer width="25"/>
+                          <b:commandButton immediate="true"
+                                         look="primary"
+                                         iconAwesome="fa-calendar" 
+                                         title="#{app['button.search']}" 
+                                         action="#{viajeController.prepare('golist',viajeController.viaje)}"/>
 
 
-
+</p:fieldset>
                         <p:outputLabel value="#{msg['field.conductor']}"  />
 
                         <extensionviaje:autocompleteconductor id="conductor"/>
