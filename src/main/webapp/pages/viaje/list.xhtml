@@ -48,13 +48,32 @@
                 <b:row>
 
                     <b:column medium-screen="6">
-                        <a:search label="#{msg['field.viaje']}"
+                        <a:search label="#{msg['field.idviaje']}"
                                   value="#{viajeController.lookupServices.idviaje}"
                                   renderedList="#{applicationMenu.viaje.list}"  
                                   search="#{viajeController.searchBy('idviaje')}"
                                   />
                     </b:column>
+                    <b:column medium-screen="6">
+                        <a:search label="#{msg['field.lugardestino']}"
+                                  value="#{viajeController.lookupServices.lugardestino}"
+                                  renderedList="#{applicationMenu.viaje.list}"  
+                                  search="#{viajeController.searchBy('lugardestino')}"
+                                  />
+                    </b:column>
                 </b:row>
+                <b:row>
+
+                    <b:column medium-screen="6">
+                        <a:search label="#{msg['field.comentarios']}"
+                                  value="#{viajeController.lookupServices.comentarios}"
+                                  renderedList="#{applicationMenu.viaje.list}"  
+                                  search="#{viajeController.searchBy('comentarios')}"
+                                  />
+                    </b:column>
+                   
+                </b:row>
+                
             </b:panel>
             <b:panel id="dataTable" look="primary">
                 <a:paginator 

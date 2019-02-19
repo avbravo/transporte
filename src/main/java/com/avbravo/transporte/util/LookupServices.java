@@ -54,6 +54,8 @@ private String idsugerencia;
     private String banco;
     private String cuenta;
     private String sucursal;
+    private String lugardestino;
+    private String comentarios;
 
     //fechas
     private Date fecha;
@@ -109,6 +111,22 @@ private String idsugerencia;
 
     public void setIdsugerencia(String idsugerencia) {
         this.idsugerencia = idsugerencia;
+    }
+
+    public String getLugardestino() {
+        return lugardestino;
+    }
+
+    public void setLugardestino(String lugardestino) {
+        this.lugardestino = lugardestino;
+    }
+
+    public String getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(String comentarios) {
+        this.comentarios = comentarios;
     }
 
     

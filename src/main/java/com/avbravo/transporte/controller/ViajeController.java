@@ -30,6 +30,7 @@ import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.ViajeServices;
+import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -801,7 +802,23 @@ public class ViajeController implements Serializable, IController {
 
                 case "idviaje":
                     if (lookupServices.getIdviaje() != null) {
-                        viajeList = viajeRepository.findRegexInTextPagination("idviaje", lookupServices.getIdviaje().toString(), true, page, rowPage, new Document("idviaje", -1));
+                        viajeList = viajeRepository.findPagination(new Document("idviaje",lookupServices.getIdviaje()),  page, rowPage, new Document("idviaje", -1));
+                    } else {
+                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
+                    }
+
+                    break;
+                case "lugardestino":
+                    if (lookupServices.getLugardestino() != null) {
+                        viajeList = viajeRepository.findRegexInTextPagination("lugardestino", lookupServices.getLugardestino(), true, page, rowPage, new Document("idviaje", -1));
+                    } else {
+                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
+                    }
+
+                    break;
+                case "comentarios":
+                    if (lookupServices.getComentarios()!= null) {
+                        viajeList = viajeRepository.findRegexInTextPagination("comentarios", lookupServices.getComentarios(), true, page, rowPage, new Document("idviaje", -1));
                     } else {
                         viajeList = viajeRepository.findPagination(page, rowPage, sort);
                     }

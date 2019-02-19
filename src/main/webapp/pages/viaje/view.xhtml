@@ -40,7 +40,14 @@
                             <extensionviaje:calendar  disabled="true"
                                                       pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.fechaHoraInicioReservaanterior}"   
                                                       label="#{msg['field.fechahorainicioreserva']}" />
-
+ <p:spacer width="25"/>
+      <b:commandButton  look="success"
+                                             title="#{msg['label.solicitudpendiente']}"
+                                              immediate="true"
+                                              iconAwesome="fa-calendar" 
+                                              update="solicitudDetails"
+                                              action="#{viajeController.prepareScheduleSolicitud()}"
+                                              oncomplete="PF('solicitudDialog').show();" />
                         </p:fieldset>
 
                         <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
@@ -67,6 +74,14 @@
 
                             <p:spacer width="25"/>
                             <p:outputLabel value="#{viajeController.vehiculoSelected.marca}- #{viajeController.vehiculoSelected.modelo }-#{viajeController.vehiculoSelected.placa }" />
+<p:spacer width="25"/>
+<b:commandButton  look="primary"
+                                              immediate="true"
+                                               title="#{msg['label.viajevehiculo']}"
+                                              iconAwesome="fa-calendar" 
+                                              update="vehiculoDetails"
+                                              action="#{viajeController.prepareScheduleVehiculo()}"
+                                              oncomplete="PF('vehiculoDialog').show();" />
 
                         </p:fieldset>
 
@@ -77,6 +92,15 @@
                             <extensionviaje:autocompleteconductor id="conductor"/>
                             <p:spacer width="25"/>
                             <p:outputLabel value="#{viajeController.conductorSelected.nombre}- #{viajeController.conductorSelected.cedula }" />
+ <p:spacer width="25"/>
+   <b:commandButton  look="primary"
+                                              immediate="true"
+                                              title="#{msg['label.viajeconductor']}"
+                                              iconAwesome="fa-calendar" 
+                                              update="conductorDetails"
+                                              action="#{viajeController.prepareScheduleConductor()}"
+                                              oncomplete="PF('conductorDialog').show();" />
+
 
                         </p:fieldset>
 
@@ -104,8 +128,8 @@
 
                     </b:panelGrid>
                     <a:view 
-                        renderedDelete="#{applicationMenu.viaje.delete and viajeController.writable }"
-                        renderedEdit="#{applicationMenu.viaje.edit and viajeController.writable and !viajeController.viaje.realizado eq 'si'}" 
+                        renderedDelete="#{applicationMenu.viaje.delete and viajeController.writable and viajeController.viaje.realizado eq 'no'}"
+                        renderedEdit="#{applicationMenu.viaje.edit and viajeController.writable and viajeController.viaje.realizado eq 'no'}" 
                         renderedList="#{applicationMenu.viaje.list and viajeController.writable}"
                         edit="#{viajeController.edit()}"
                         delete="#{viajeController.delete(viajeController.viaje,true)}"
@@ -114,6 +138,67 @@
                         />
                 </b:panel>
             </h:panelGroup>
+            
+              <p:dialog widgetVar="vehiculoDialog" header="#{msg['dialogo.viajevehiculos']}" 
+                      width="850" height="450"
+                      styleClass="customDialog"
+
+                      responsive="true"
+
+                      showEffect="clip" hideEffect="clip">
+                <b:panelGrid id="vehiculoDetails" colSpans="12" size="xs" > 
+                    <p:schedule id="vehiculoSchedule"       
+                                rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
+                                value="#{viajeController.vehiculoScheduleModel}" widgetVar="vehiculoSchedule" timeZone="GMT-5" locale="es">
+
+
+                    </p:schedule>
+                    <b:commandButton value="#{app['button.close']}"
+                                     iconAwesome="fa-close"
+                                     oncomplete="PF('vehiculoDialog').hide();"/>
+
+                </b:panelGrid>
+            </p:dialog>
+            <p:dialog widgetVar="conductorDialog" header="#{msg['dialogo.viajeconductor']}" 
+                      width="850" height="450"
+                      styleClass="customDialog"
+
+                      responsive="true"
+
+                      showEffect="clip" hideEffect="clip">
+                <b:panelGrid id="conductorDetails" colSpans="12" size="xs" > 
+                    <p:schedule id="conductorSchedule"       
+                                rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
+                                value="#{viajeController.conductorScheduleModel}" widgetVar="conductorSchedule" timeZone="GMT-5" locale="es">
+
+
+                    </p:schedule>
+                    <b:commandButton value="#{app['button.close']}"
+                                     iconAwesome="fa-close"
+                                     oncomplete="PF('conductorDialog').hide();"/>
+
+                </b:panelGrid>
+            </p:dialog>
+            <p:dialog widgetVar="solicitudDialog" header="#{msg['dialogo.viajesolicitud']}" 
+                      width="850" height="450"
+                      styleClass="customDialog"
+
+                      responsive="true"
+
+                      showEffect="clip" hideEffect="clip">
+                <b:panelGrid id="solicitudDetails" colSpans="12" size="xs" > 
+                    <p:schedule id="solicitudSchedule"       
+                                rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
+                                value="#{viajeController.solicitudScheduleModel}" widgetVar="solicitudSchedule" timeZone="GMT-5" locale="es">
+
+
+                    </p:schedule>
+                    <b:commandButton value="#{app['button.close']}"
+                                     iconAwesome="fa-close"
+                                     oncomplete="PF('solicitudDialog').hide();"/>
+
+                </b:panelGrid>
+            </p:dialog>
         </b:form>
         <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.viaje.query}" />
         <br/><br/><br/>
