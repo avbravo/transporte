@@ -34,6 +34,7 @@ import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -802,7 +803,7 @@ public class ViajeController implements Serializable, IController {
 
                 case "idviaje":
                     if (lookupServices.getIdviaje() != null) {
-                        viajeList = viajeRepository.findPagination(new Document("idviaje",lookupServices.getIdviaje()),  page, rowPage, new Document("idviaje", -1));
+                        viajeList = viajeRepository.findPagination(new Document("idviaje", lookupServices.getIdviaje()), page, rowPage, new Document("idviaje", -1));
                     } else {
                         viajeList = viajeRepository.findPagination(page, rowPage, sort);
                     }
@@ -817,14 +818,17 @@ public class ViajeController implements Serializable, IController {
 
                     break;
                 case "comentarios":
-                    if (lookupServices.getComentarios()!= null) {
+                    if (lookupServices.getComentarios() != null) {
                         viajeList = viajeRepository.findRegexInTextPagination("comentarios", lookupServices.getComentarios(), true, page, rowPage, new Document("idviaje", -1));
                     } else {
                         viajeList = viajeRepository.findPagination(page, rowPage, sort);
                     }
 
                     break;
+                case "_betweendates":
+                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("activo", "si", "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
 
+                    break;
                 default:
 
                     viajeList = viajeRepository.findPagination(page, rowPage, sort);
@@ -844,6 +848,7 @@ public class ViajeController implements Serializable, IController {
     @Override
     public String clear() {
         try {
+            reset();
             loginController.put("searchviaje", "_init");
             page = 1;
             move();
@@ -1248,9 +1253,9 @@ public class ViajeController implements Serializable, IController {
 
                     vehiculoScheduleModel.addEvent(
                             new DefaultScheduleEvent(a.getVehiculo().getMarca()
-                                    + " " + a.getVehiculo().getModelo() +  " Placa: "+
-                                    a.getVehiculo().getPlaca() + "# " + a.getIdviaje() + " Destino " + a.getLugardestino()
-                                    + " Conductor "+a.getConductor().getNombre(),
+                                    + " " + a.getVehiculo().getModelo() + " Placa: "
+                                    + a.getVehiculo().getPlaca() + "# " + a.getIdviaje() + " Destino " + a.getLugardestino()
+                                    + " Conductor " + a.getConductor().getNombre(),
                                     a.getFechahorainicioreserva(), a.getFechahorafinreserva(), tema)
                     );
                 });
@@ -1298,7 +1303,7 @@ public class ViajeController implements Serializable, IController {
                     conductorScheduleModel.addEvent(
                             new DefaultScheduleEvent(a.getConductor().getNombre() + " " + a.getConductor().getCedula()
                                     + "# " + a.getIdviaje() + " Destino " + a.getLugardestino()
-                                    +" "+a.getVehiculo().getMarca() + " "+a.getVehiculo().getModelo(),
+                                    + " " + a.getVehiculo().getMarca() + " " + a.getVehiculo().getModelo(),
                                     a.getFechahorainicioreserva(), a.getFechahorafinreserva(), tema)
                     );
                 });
@@ -1318,14 +1323,14 @@ public class ViajeController implements Serializable, IController {
             Document docViajes = new Document("activo", "si").append("estatus.idestatus", "SOLICITADO");
             doc = new Document("activo", "si");
             List<Solicitud> list = solicitudRepository.findBy(docViajes, new Document("fecha", 1));
-           // String tema = "schedule-orange";
+            // String tema = "schedule-orange";
             solicitudScheduleModel = new DefaultScheduleModel();
 
             if (!list.isEmpty()) {
                 list.forEach((a) -> {
                     String tipovehiculo = "";
                     tipovehiculo = a.getTipovehiculo().stream().map((tv) -> tv.getIdtipovehiculo()).reduce(tipovehiculo, String::concat);
-String tema="";
+                    String tema = "";
                     if (a.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
                         tema = "schedule-green";
                     } else {
@@ -1347,4 +1352,7 @@ String tema="";
         return "";
     }
     // </editor-fold>
+    
+    
+    
 }

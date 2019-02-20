@@ -71,9 +71,26 @@
                                   search="#{viajeController.searchBy('comentarios')}"
                                   />
                     </b:column>
-                   
+
                 </b:row>
-                
+
+                <b:row>
+                    <b:column medium-screen="25" >
+
+
+
+                        <a:searchBetweenDate
+                            renderedMove="true"
+                            labelDesde="#{msg['field.fechainicio']}"
+                            valueDesde="#{viajeController.lookupServices.fechaDesde}"
+                            labelHasta="#{msg['field.fechafin']}"
+                            valueHasta="#{viajeController.lookupServices.fechaHasta}"
+                            renderedList="#{applicationMenu.viaje.list}"
+                            search="#{viajeController.searchBy('_betweendates')}"
+                            />
+                    </b:column>
+                </b:row>
+
             </b:panel>
             <b:panel id="dataTable" look="primary">
                 <a:paginator 
