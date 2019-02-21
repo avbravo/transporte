@@ -41,10 +41,24 @@
                                          update=" :form:dataTable"/>
 
 
-
-
-
+  
                 </b:panelGrid>
+                
+                <b:row>
+
+                    <b:column medium-screen="6">
+                    <p:outputLabel value="#{msg['field.conductor']}"/>
+                    <e:autocompleteconductor listener="#{viajeController.searchBy('conductor')}"
+                                             value="#{viajeController.lookupServices.conductor}"
+                                                  itemLabel=" #{p.nombre}"
+                                                  dropdown="true"
+                                                  minQueryLength="0"
+                                                  field="nombre"
+                                                  update=" :form:dataTable"/>
+
+
+                    </b:column>
+                </b:row>
                 <b:row>
 
                     <b:column medium-screen="6">

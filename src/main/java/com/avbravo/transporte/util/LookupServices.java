@@ -5,6 +5,7 @@
  */
 package com.avbravo.transporte.util;
 
+import com.avbravo.transporteejb.entity.Conductor;
 import java.util.Date;
 import javax.ejb.Stateless;
 
@@ -101,10 +102,24 @@ private String idsugerencia;
     private Double sueldoneto;
     private Double exoneracion;
     private Double totalexoneracion;
+    
+    //
+    private Conductor conductor;
+    
 
     public LookupServices() {
     }
 
+    public Conductor getConductor() {
+        return conductor;
+    }
+
+    public void setConductor(Conductor conductor) {
+        this.conductor = conductor;
+    }
+
+    
+    
     public String getIdsugerencia() {
         return idsugerencia;
     }

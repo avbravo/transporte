@@ -800,7 +800,26 @@ public class ViajeController implements Serializable, IController {
                     viajeList = viajeRepository.findPagination(page, rowPage, sort);
 
                     break;
+                case "_betweendates":
+                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("activo", "si", "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
 
+                    break;
+                case "comentarios":
+                    if (lookupServices.getComentarios() != null) {
+                        viajeList = viajeRepository.findRegexInTextPagination("comentarios", lookupServices.getComentarios(), true, page, rowPage, new Document("idviaje", -1));
+                    } else {
+                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
+                    }
+
+                    break;
+                case "conductor":
+                    if (lookupServices.getConductor().getIdconductor()!= null) {
+                        viajeList = viajeRepository.findPagination(new Document("conductor.idconductor", lookupServices.getConductor().getIdconductor()),  page, rowPage, new Document("idviaje", -1));
+                    } else {
+                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
+                    }
+
+                    break;
                 case "idviaje":
                     if (lookupServices.getIdviaje() != null) {
                         viajeList = viajeRepository.findPagination(new Document("idviaje", lookupServices.getIdviaje()), page, rowPage, new Document("idviaje", -1));
@@ -817,18 +836,7 @@ public class ViajeController implements Serializable, IController {
                     }
 
                     break;
-                case "comentarios":
-                    if (lookupServices.getComentarios() != null) {
-                        viajeList = viajeRepository.findRegexInTextPagination("comentarios", lookupServices.getComentarios(), true, page, rowPage, new Document("idviaje", -1));
-                    } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
-                    }
 
-                    break;
-                case "_betweendates":
-                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("activo", "si", "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
-
-                    break;
                 default:
 
                     viajeList = viajeRepository.findPagination(page, rowPage, sort);
@@ -840,7 +848,7 @@ public class ViajeController implements Serializable, IController {
             viajeDataModel = new ViajeDataModel(viajeList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorDialog(nameOfClass(),nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -1352,7 +1360,5 @@ public class ViajeController implements Serializable, IController {
         return "";
     }
     // </editor-fold>
-    
-    
-    
+
 }
