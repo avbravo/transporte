@@ -836,7 +836,14 @@ public class ViajeController implements Serializable, IController {
                     }
 
                     break;
+ case "vehiculo":
+                    if (lookupServices.getVehiculo().getPlaca()!= null) {
+                        viajeList = viajeRepository.findPagination(new Document("vehiculo.idvehiculo", lookupServices.getVehiculo().getIdvehiculo()),  page, rowPage, new Document("idviaje", -1));
+                    } else {
+                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
+                    }
 
+                    break;
                 default:
 
                     viajeList = viajeRepository.findPagination(page, rowPage, sort);

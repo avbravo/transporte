@@ -29,33 +29,32 @@
 
             <b:panel title="#{msg['titlelist.viaje']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-                <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
 
 
-
-                    <p:outputLabel value="#{msg['field.idviaje']}"/>
-                    <e:autocompleteviaje listener="#{viajeController.handleAutocompleteOfListXhtml}"
-                                         value="#{viajeController.viajeSelected}"
-                                         itemLabel=" #{p.idviaje}"
-                                         field="idviaje"
-                                         update=" :form:dataTable"/>
-
-
-  
-                </b:panelGrid>
-                
                 <b:row>
 
                     <b:column medium-screen="6">
-                    <p:outputLabel value="#{msg['field.conductor']}"/>
-                    <e:autocompleteconductor listener="#{viajeController.searchBy('conductor')}"
-                                             value="#{viajeController.lookupServices.conductor}"
-                                                  itemLabel=" #{p.nombre}"
-                                                  dropdown="true"
-                                                  minQueryLength="0"
-                                                  field="nombre"
-                                                  update=" :form:dataTable"/>
+                        <p:outputLabel value="#{msg['field.conductor']}"/>
+                        <e:autocompleteconductor listener="#{viajeController.searchBy('conductor')}"
+                                                 value="#{viajeController.lookupServices.conductor}"
+                                                 itemLabel=" #{p.nombre}"
+                                                 dropdown="true"
+                                                 minQueryLength="0"
+                                                 field="nombre"
+                                                 update=" :form:dataTable"/>
 
+
+                    </b:column>
+                    <b:column medium-screen="6">
+
+                        <p:outputLabel value="#{msg['field.vehiculo']}"/>
+                        <e:autocompletevehiculo listener="#{viajeController.searchBy('vehiculo')}"
+                                                value="#{vehiculoController.lookupServices.vehiculo}"
+                                                itemLabel=" #{p.marca}"
+                                                dropdown="true"
+                                                minQueryLength="0"
+                                                field="marca"
+                                                update=" :form:dataTable"/>
 
                     </b:column>
                 </b:row>
@@ -104,6 +103,16 @@
                             />
                     </b:column>
                 </b:row>
+                <b:row>
+                    <b:column medium-screen="6" >
+                            <p:outputLabel  value="#{msg['field.activo']}" />
+                            <a:yesno value="#{viajeController.lookupServices.activo}" id="activo"  required="true"/>
+
+                    </b:column>
+                    <b:column medium-screen="6" >
+                    </b:column>
+                </b:row>
+
 
             </b:panel>
             <b:panel id="dataTable" look="primary">

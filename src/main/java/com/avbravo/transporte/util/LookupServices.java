@@ -6,6 +6,7 @@
 package com.avbravo.transporte.util;
 
 import com.avbravo.transporteejb.entity.Conductor;
+import com.avbravo.transporteejb.entity.Vehiculo;
 import java.util.Date;
 import javax.ejb.Stateless;
 
@@ -28,6 +29,7 @@ public class LookupServices {
     private String idestatus;
 private String idsugerencia;
     private String idrol;
+    private String activo;
 
     private String nombre;
     private String pais;
@@ -48,7 +50,7 @@ private String idsugerencia;
     private String planeta;
     private String marca;
     private String placa;
-    private String vehiculo;
+   
     private String agente;
     private String comprador;
     private String vendedor;
@@ -105,6 +107,8 @@ private String idsugerencia;
     
     //
     private Conductor conductor;
+    private Vehiculo vehiculo;
+
     
 
     public LookupServices() {
@@ -116,6 +120,14 @@ private String idsugerencia;
 
     public void setConductor(Conductor conductor) {
         this.conductor = conductor;
+    }
+
+    public String getActivo() {
+        return activo;
+    }
+
+    public void setActivo(String activo) {
+        this.activo = activo;
     }
 
     
@@ -443,13 +455,15 @@ private String idsugerencia;
         this.placa = placa;
     }
 
-    public String getVehiculo() {
+    public Vehiculo getVehiculo() {
         return vehiculo;
     }
 
-    public void setVehiculo(String vehiculo) {
+    public void setVehiculo(Vehiculo vehiculo) {
         this.vehiculo = vehiculo;
     }
+
+   
 
     public String getAgente() {
         return agente;
