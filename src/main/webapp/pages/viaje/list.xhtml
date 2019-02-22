@@ -105,11 +105,18 @@
                 </b:row>
                 <b:row>
                     <b:column medium-screen="6" >
-                            <p:outputLabel  value="#{msg['field.activo']}" />
-                            <a:yesno value="#{viajeController.lookupServices.activo}" id="activo"  required="true"/>
-
+             
+                            <a:searchYesNo label="#{msg['field.activo']}" 
+                                           
+                                           value="#{viajeController.lookupServices.activo}"
+                                           id="activo"  required="false"
+                                           renderedList="#{applicationMenu.viaje.list}"
+                                           search="#{viajeController.searchBy('activo')}"
+                                           />
+  
                     </b:column>
                     <b:column medium-screen="6" >
+                        no se
                     </b:column>
                 </b:row>
 

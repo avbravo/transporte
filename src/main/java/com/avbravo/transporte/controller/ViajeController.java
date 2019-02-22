@@ -800,6 +800,16 @@ public class ViajeController implements Serializable, IController {
                     viajeList = viajeRepository.findPagination(page, rowPage, sort);
 
                     break;
+                    
+                     case "activo":
+                    if (lookupServices.getActivo() != null) {
+                        System.out.println("activo "+lookupServices.getActivo());
+                        viajeList = viajeRepository.findPagination(new Document("activo", lookupServices.getActivo()),  page, rowPage, new Document("idviaje", -1));
+                    } else {
+                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
+                    }
+
+                    break;
                 case "_betweendates":
                     viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("activo", "si", "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
 
