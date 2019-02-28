@@ -19,7 +19,6 @@ import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Solicitud;
-import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
@@ -30,11 +29,11 @@ import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.ViajeServices;
+import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,6 +47,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -800,11 +800,11 @@ public class ViajeController implements Serializable, IController {
                     viajeList = viajeRepository.findPagination(page, rowPage, sort);
 
                     break;
-                    
-                     case "activo":
+
+                case "activo":
                     if (lookupServices.getActivo() != null) {
-                        System.out.println("activo "+lookupServices.getActivo());
-                        viajeList = viajeRepository.findPagination(new Document("activo", lookupServices.getActivo()),  page, rowPage, new Document("idviaje", -1));
+
+                        viajeList = viajeRepository.findPagination(new Document("activo", lookupServices.getActivo()), page, rowPage, new Document("idviaje", -1));
                     } else {
                         viajeList = viajeRepository.findPagination(page, rowPage, sort);
                     }
@@ -823,8 +823,32 @@ public class ViajeController implements Serializable, IController {
 
                     break;
                 case "conductor":
-                    if (lookupServices.getConductor().getIdconductor()!= null) {
-                        viajeList = viajeRepository.findPagination(new Document("conductor.idconductor", lookupServices.getConductor().getIdconductor()),  page, rowPage, new Document("idviaje", -1));
+                    if (lookupServices.getConductor().getIdconductor() != null) {
+                        viajeList = viajeRepository.findPagination(new Document("conductor.idconductor", lookupServices.getConductor().getIdconductor()), page, rowPage, new Document("idviaje", -1));
+                    } else {
+                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
+                    }
+
+                    break;
+
+                case "conconductor":
+                    if (lookupServices.getConconductor() != null) {
+                   
+                        Optional<Conductor> optional = conductorRepository.find(eq("escontrol", "si"));
+                        Conductor c = new Conductor();
+                        if (optional.isPresent()) {
+                            c = optional.get();
+                        } else {
+                            JsfUtil.warningMessage(rf.getMessage("warning.nohayconductorcontrol"));
+                            return;
+                        }
+                        if (lookupServices.getConconductor().equals("si")) {
+Bson filter =Filters.ne("conductor.idconductor", c.getIdconductor());
+                            viajeList = viajeRepository.filtersPagination(filter,  page, rowPage, new Document("idviaje", -1));
+                        } else {
+                            viajeList = viajeRepository.findPagination(new Document("conductor.idconductor", c.getIdconductor()),  page, rowPage, new Document("idviaje", -1));
+                        }
+
                     } else {
                         viajeList = viajeRepository.findPagination(page, rowPage, sort);
                     }
@@ -846,9 +870,19 @@ public class ViajeController implements Serializable, IController {
                     }
 
                     break;
- case "vehiculo":
-                    if (lookupServices.getVehiculo().getPlaca()!= null) {
-                        viajeList = viajeRepository.findPagination(new Document("vehiculo.idvehiculo", lookupServices.getVehiculo().getIdvehiculo()),  page, rowPage, new Document("idviaje", -1));
+                case "realizado":
+                    if (lookupServices.getRealizado() != null) {
+
+                        viajeList = viajeRepository.findPagination(new Document("realizado", lookupServices.getRealizado()), page, rowPage, new Document("idviaje", -1));
+                    } else {
+                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
+                    }
+
+                    break;
+
+                case "vehiculo":
+                    if (lookupServices.getVehiculo().getPlaca() != null) {
+                        viajeList = viajeRepository.findPagination(new Document("vehiculo.idvehiculo", lookupServices.getVehiculo().getIdvehiculo()), page, rowPage, new Document("idviaje", -1));
                     } else {
                         viajeList = viajeRepository.findPagination(page, rowPage, sort);
                     }
@@ -865,7 +899,7 @@ public class ViajeController implements Serializable, IController {
             viajeDataModel = new ViajeDataModel(viajeList);
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(),nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 

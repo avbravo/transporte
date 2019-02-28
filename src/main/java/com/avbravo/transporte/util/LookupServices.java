@@ -19,7 +19,15 @@ public class LookupServices {
 
     private String text;
     private String id;
-
+ private String agente;
+    private String comprador;
+    private String conconductor;
+    private String vendedor;
+    private String banco;
+    private String cuenta;
+    private String sucursal;
+    private String lugardestino;
+    private String comentarios;
     private String idunidad;
     private String idsemestre;
     private String username;
@@ -50,15 +58,10 @@ private String idsugerencia;
     private String planeta;
     private String marca;
     private String placa;
+    //R
+    private String realizado;
    
-    private String agente;
-    private String comprador;
-    private String vendedor;
-    private String banco;
-    private String cuenta;
-    private String sucursal;
-    private String lugardestino;
-    private String comentarios;
+   
 
     //fechas
     private Date fecha;
@@ -114,6 +117,25 @@ private String idsugerencia;
     public LookupServices() {
     }
 
+    public String getRealizado() {
+        return realizado;
+    }
+
+    public void setRealizado(String realizado) {
+        this.realizado = realizado;
+    }
+
+    public String getConconductor() {
+        return conconductor;
+    }
+
+    public void setConconductor(String conconductor) {
+        this.conconductor = conconductor;
+    }
+
+    
+    
+    
     public Conductor getConductor() {
         return conductor;
     }

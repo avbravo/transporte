@@ -104,9 +104,14 @@
 
                     <b:row/>
                     <b:row/>
+                    
+                   
 
                     <!--                    <b:panelGrid id="panel" colSpans="2,10" size="xs" > -->
-
+ <p:commandButton id="toPrint"  ajax="false"
+                 icon="fa fa-print">
+        <p:printer target="schedule" />
+    </p:commandButton>  
                     <p:schedule id="schedule"       
                                 rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
                                 value="#{calendarioSolicitudViajesController.eventModel}" widgetVar="myschedule" timeZone="GMT-5" locale="es">

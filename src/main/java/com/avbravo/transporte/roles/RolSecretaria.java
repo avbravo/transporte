@@ -40,6 +40,7 @@ public class RolSecretaria implements Serializable {
         applicationMenu.setMenuBarSolicitud(Boolean.TRUE);
         applicationMenu.setMenuBarRegistros(Boolean.TRUE);
         applicationMenu.setMenuBarReportes(Boolean.TRUE);
+        applicationMenu.setMenuBarViaje(Boolean.TRUE);
 
         /*
          *menu

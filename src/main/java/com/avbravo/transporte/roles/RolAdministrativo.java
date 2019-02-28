@@ -40,6 +40,7 @@ applicationMenu.setMenuBarCalendario(Boolean.FALSE);
         applicationMenu.setMenuBarSolicitud(Boolean.TRUE);
         applicationMenu.setMenuBarRegistros(Boolean.FALSE);
         applicationMenu.setMenuBarReportes(Boolean.FALSE);
+        applicationMenu.setMenuBarViaje(Boolean.FALSE);
         
  
         /*

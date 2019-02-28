@@ -73,6 +73,7 @@ public class ApplicationMenu implements Serializable {
         menuBarSolicitud = activo;
         menuBarRegistros = activo;
         menuBarReportes = activo;
+        menuBarViaje = activo;
 
         calendario.initialize(activo);
         calendarioautos.initialize(activo);

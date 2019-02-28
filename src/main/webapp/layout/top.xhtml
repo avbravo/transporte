@@ -47,16 +47,28 @@
 
                 </b:dropMenu>
 
-                <b:dropMenu value="#{msg['menubar.mantenimiento']}" rendered="#{applicationMenu.menuBarMantenimiento}">
+                <b:dropMenu value="#{msg['menubar.viaje']}" rendered="#{applicationMenu.menuBarViaje}">
+                     <b:navLink value="#{msg['menu.viajes']}" rendered="#{applicationMenu.viaje.menu}" outcome="/pages/viaje/list" iconAwesome= "fa-book" />
+                        <b:navLink/>
+                </b:dropMenu>
+                <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{applicationMenu.menuBarReportes}">
+                    <b:navLink value="#{msg['menu.viajesporvehiculo']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/viaje/list" iconAwesome= "fa-car" />
+                    <b:navLink value="#{msg['menu.viajesporconductor']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/viaje/list" iconAwesome= "fa-drivers-license-o" />
+                      <b:navLink/>
+                    <b:navLink value="#{msg['menu.viajessinchofer']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/viaje/list" iconAwesome= "fa-book" />
+                    <b:navLink value="#{msg['menu.viajespendientes']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/viaje/list" iconAwesome= "fa-book" />
+                    <b:navLink value="#{msg['menu.viajessinsolicitud']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/viaje/list" iconAwesome= "fa-book" />
+                      
+                </b:dropMenu>
+<!--                <b:dropMenu value="#{msg['menubar.mantenimiento']}" rendered="#{applicationMenu.menuBarMantenimiento}">
                     <b:dropMenu value="#{msg['menubar.combustible']}" rendered="#{applicationMenu.menuBarCombustible}">
                     </b:dropMenu>
-                </b:dropMenu>
+                </b:dropMenu>-->
 
                 <b:dropMenu value="#{msg['menubar.registros']}" rendered="#{applicationMenu.menuBarRegistros}">
                     
                                     
-                    <b:navLink value="#{msg['menu.viajes']}" rendered="#{applicationMenu.viaje.menu}" outcome="/pages/viaje/list" iconAwesome= "fa-book" />
-                        <b:navLink/>
+                  
                     <b:navLink value="#{msg['menu.vehiculo']}" rendered="#{applicationMenu.vehiculo.menu}" outcome="/pages/vehiculo/list" iconAwesome= "fa-car" />
                     <b:navLink value="#{msg['menu.vehiculocambiarplaca']}" rendered="#{applicationMenu.vehiculocambiarplaca.menu}" outcome="/pages/vehiculo/cambiarplaca" iconAwesome="fa-pencil-square-o" />
                     <b:navLink />

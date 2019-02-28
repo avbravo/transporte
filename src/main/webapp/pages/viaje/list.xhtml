@@ -76,7 +76,17 @@
                     </b:column>
                 </b:row>
                 <b:row>
-
+ <b:column medium-screen="6" >
+             
+                            <a:searchYesNo label="#{msg['field.conconductor']}" 
+                                           
+                                           value="#{viajeController.lookupServices.conconductor}"
+                                           id="sinconductor"  
+                                           renderedList="#{applicationMenu.viaje.list}"
+                                           search="#{viajeController.searchBy('conconductor')}"
+                                           />
+  
+                    </b:column>
                     <b:column medium-screen="6">
                         <a:search label="#{msg['field.comentarios']}"
                                   value="#{viajeController.lookupServices.comentarios}"
@@ -106,17 +116,23 @@
                 <b:row>
                     <b:column medium-screen="6" >
              
-                            <a:searchYesNo label="#{msg['field.activo']}" 
+                            <a:searchYesNo label="#{msg['field.realizado']}" 
                                            
-                                           value="#{viajeController.lookupServices.activo}"
-                                           id="activo"  required="false"
+                                           value="#{viajeController.lookupServices.realizado}"
+                                           id="realizado"  
                                            renderedList="#{applicationMenu.viaje.list}"
-                                           search="#{viajeController.searchBy('activo')}"
+                                           search="#{viajeController.searchBy('realizado')}"
                                            />
   
                     </b:column>
                     <b:column medium-screen="6" >
-                        no se
+                           <a:searchYesNo label="#{msg['field.activo']}" 
+                                           
+                                           value="#{viajeController.lookupServices.activo}"
+                                           id="activo"  
+                                           renderedList="#{applicationMenu.viaje.list}"
+                                           search="#{viajeController.searchBy('activo')}"
+                                           />
                     </b:column>
                 </b:row>
 
