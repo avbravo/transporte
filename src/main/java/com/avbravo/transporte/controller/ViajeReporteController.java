@@ -62,7 +62,7 @@ import org.primefaces.model.ScheduleModel;
  */
 @Named
 @ViewScoped
-public class ViajeController implements Serializable, IController {
+public class ViajeReporteController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -316,7 +316,7 @@ public class ViajeController implements Serializable, IController {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public ViajeController() {
+    public ViajeReporteController() {
     }
 
     // </editor-fold>
@@ -813,6 +813,9 @@ public class ViajeController implements Serializable, IController {
             Document sort = new Document("idviaje", -1);
 
             switch (loginController.get("searchviaje")) {
+                case "_startReport":
+                    viajeList = new ArrayList<>();
+                    break;
                 case "_init":
                 case "_autocomplete":
                     viajeList = viajeRepository.findPagination(page, rowPage, sort);
