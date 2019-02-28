@@ -27,26 +27,11 @@
 
             <b:growl  id="msgs"/>
 
-            <b:panel title="#{msg['titlelist.reporteviajeporconductor']}" id="content"   look="primary" > 
+            <b:panel title="#{msg['titlelist.reporteviajerealizado']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
 
 
-                <b:row>
-                   
-                    <b:column medium-screen="6">
-
-                        <p:outputLabel value="#{msg['field.conductor']}"/>
-                        <e:autocompleteconductor 
-                                                 value="#{viajeReporteController.lookupServices.conductor}"
-                                                 itemLabel=" #{p.nombre}"
-                                                 dropdown="true"
-                                                 minQueryLength="0"
-                                                 field="nombre"
-                                                 update=" :form:dataTable"/>
-
-
-                    </b:column>
-                </b:row>
+              
               
 
                 <b:row>
@@ -61,7 +46,7 @@
                             labelHasta="#{msg['field.fechafin']}"
                             valueHasta="#{viajeReporteController.lookupServices.fechaHasta}"
                             renderedList="#{applicationMenu.viaje.list}"
-                            search="#{viajeReporteController.searchBy('viajeporconductor')}"
+                            search="#{viajeReporteController.searchBy('viajerealizado')}"
                             />
                     </b:column>
                 </b:row>
@@ -79,7 +64,7 @@
                     last="#{viajeReporteController.last()}"
                     page="#{viajeReporteController.page}"
                     pages="#{viajeReporteController.pages}"
-                      renderedClear="false"
+                    renderedClear="false"
                     skip="ajax:viajeReporteController.skip(viajeReporteController.page)" 
                     new="#{viajeReporteController.prepare('gonew',viajeReporteController.viaje)}"
                     printAll="#{viajeReporteController.printAll()}"

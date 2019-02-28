@@ -345,8 +345,8 @@ public class ViajeReporteController implements Serializable, IController {
             String pageSession = loginController.get("pageviaje");
             //Search
 
-            if (loginController.get("searchviaje") == null || loginController.get("searchviaje").equals("")) {
-                loginController.put("searchviaje", "_init");
+            if (loginController.get("searchviajereporte") == null || loginController.get("searchviaje").equals("")) {
+                loginController.put("searchviajereporte", "_init");
             }
             writable = false;
 
@@ -732,7 +732,7 @@ public class ViajeReporteController implements Serializable, IController {
             viajeFiltered = viajeList;
             viajeDataModel = new ViajeDataModel(viajeList);
 
-            loginController.put("searchviaje", "idviaje");
+            loginController.put("searchviajereporte", "idviaje");
             lookupServices.setIdviaje(viajeSelected.getIdviaje());
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -812,11 +812,11 @@ public class ViajeReporteController implements Serializable, IController {
             Document doc;
             Document sort = new Document("idviaje", -1);
 
-            switch (loginController.get("searchviaje")) {
-                case "_startReport":
+            switch (loginController.get("searchviajereporte")) {
+                case "_init":
                     viajeList = new ArrayList<>();
                     break;
-                case "_init":
+
                 case "_autocomplete":
                     viajeList = viajeRepository.findPagination(page, rowPage, sort);
 
@@ -909,6 +909,12 @@ public class ViajeReporteController implements Serializable, IController {
                     }
 
                     break;
+                case "viajerealizado":
+
+                    Bson filter1 = Filters.eq("realizado", "si");
+                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours(filter1, "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
+
+                    break;
                 case "viajeporconductor":
 
                     if (lookupServices.getConductor().getIdconductor() != null) {
@@ -918,10 +924,27 @@ public class ViajeReporteController implements Serializable, IController {
                     }
 
                     break;
+                case "viajesinconductor":
+                    if (lookupServices.getConconductor() != null) {
+
+                        Optional<Conductor> optional = conductorRepository.find(eq("escontrol", "si"));
+                        Conductor c = new Conductor();
+                        if (optional.isPresent()) {
+                            c = optional.get();
+                        } else {
+                            JsfUtil.warningMessage(rf.getMessage("warning.nohayconductorcontrol"));
+                            return;
+                        }
+
+                        viajeList = viajeRepository.findPagination(new Document("conductor.idconductor", c.getIdconductor()), page, rowPage, new Document("idviaje", -1));
+
+                    }
+
+                    break;
                 case "viajependiente":
 
-                    Bson filter1 = Filters.eq("realizado", "no");
-                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours(filter1, "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
+                    Bson filter2 = Filters.eq("realizado", "no");
+                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours(filter2, "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
 
                     break;
                 case "viajeporvehiculo":
@@ -953,7 +976,7 @@ public class ViajeReporteController implements Serializable, IController {
     public String clear() {
         try {
             reset();
-            loginController.put("searchviaje", "_init");
+            loginController.put("searchviajereporte", "_init");
             page = 1;
             move();
         } catch (Exception e) {
@@ -967,7 +990,7 @@ public class ViajeReporteController implements Serializable, IController {
     public String searchBy(String string) {
         try {
 
-            loginController.put("searchviaje", string);
+            loginController.put("searchviajereporte", string);
 
             writable = true;
             move();
