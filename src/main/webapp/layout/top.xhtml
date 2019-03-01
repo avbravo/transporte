@@ -52,7 +52,7 @@
                         <b:navLink/>
                 </b:dropMenu>
                 <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{applicationMenu.menuBarReportes}">
-                    <b:navLink value="#{msg['menu.solicitudespendientes']}" rendered="#{applicationMenu.solicitud.list}" outcome="/pages/reportes/viajeporvehiculo" iconAwesome= "fa-battery-empty" />
+                    <b:navLink value="#{msg['menu.solicitudpendiente']}" rendered="#{applicationMenu.solicitud.list}" outcome="/pages/reportes/solicitudpendiente" iconAwesome= "fa-battery-empty" />
                     <b:navLink value="#{msg['menu.viajesporvehiculo']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajeporvehiculo" iconAwesome= "fa-car" />
                     <b:navLink value="#{msg['menu.viajesporconductor']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajeporconductor" iconAwesome= "fa-drivers-license-o" />
                     <b:navLink value="#{msg['menu.viajespendientes']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajependiente" iconAwesome= "fa-book" />

@@ -3,15 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.avbravo.transporte.controller;
+package com.avbravo.transporte.reportes;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.avbravoutils.DateUtil;
 import com.avbravo.avbravoutils.JsfUtil;
+import static com.avbravo.avbravoutils.JsfUtil.nameOfClass;
+import static com.avbravo.avbravoutils.JsfUtil.nameOfMethod;
 import com.avbravo.avbravoutils.printer.Printer;
-import com.avbravo.ejbjmoordb.interfaces.IController;
+import com.avbravo.ejbjmoordb.interfaces.IError;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
+import com.avbravo.transporte.controller.LoginController;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
 import com.avbravo.transporteejb.entity.Viaje;
@@ -63,7 +66,7 @@ import org.primefaces.model.ScheduleModel;
  */
 @Named
 @ViewScoped
-public class ViajeReporteController implements Serializable, IController {
+public class ViajeReporteController implements Serializable, IError {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -322,7 +325,7 @@ public class ViajeReporteController implements Serializable, IController {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="preRenderView()">
-    @Override
+     
     public String preRenderView(String action) {
         //acciones al llamar el formulario despues del init    
         return "";
@@ -404,259 +407,18 @@ public class ViajeReporteController implements Serializable, IController {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="reset">
 
-    @Override
-    public void reset() {
+     
+    
 
-        RequestContext.getCurrentInstance().reset(":form:content");
-        prepare("new", viaje);
-    }// </editor-fold>
 
-// <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-    public String prepare(String action, Viaje item) {
-        String url = "";
-        try {
-            loginController.put("pageviaje", page.toString());
-            loginController.put("viaje", action);
 
-            switch (action) {
-                case "new":
-                    viaje = new Viaje();
-                    viajeSelected = new Viaje();
 
-                    writable = false;
-                    break;
 
-                case "view":
 
-                    viajeSelected = item;
-                    viaje = viajeSelected;
-                    loginController.put("idviaje", viaje.getIdviaje().toString());
 
-                    url = "/pages/viaje/view.xhtml";
-                    break;
-                case "viewfecha":
-
-                    viajeSelected = item;
-                    viaje = viajeSelected;
-                    loginController.put("idviaje", viaje.getIdviaje().toString());
-
-                    url = "/pages/viaje/viewfecha.xhtml";
-                    break;
-
-                case "golist":
-                    url = "/pages/viaje/list.xhtml";
-                    break;
-
-                case "gonew":
-
-                    url = "/pages/viaje/new.xhtml";
-                    break;
-
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-
-        return url;
-    }// </editor-fold>
-
-// <editor-fold defaultstate="collapsed" desc="showAll">
-    @Override
-    public String showAll() {
-        try {
-            viajeList = new ArrayList<>();
-            viajeFiltered = new ArrayList<>();
-            viajeList = viajeRepository.findAll();
-            viajeFiltered = viajeList;
-            viajeDataModel = new ViajeDataModel(viajeList);
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="isNew">
-
-    @Override
-    public String isNew() {
-        try {
-            writable = true;
-            if (JsfUtil.isVacio(viaje.getIdviaje())) {
-                writable = false;
-                return "";
-            }
-            //viaje.setIdviaje(viaje.getIdviaje().toUpperCase());
-            Optional<Viaje> optional = viajeRepository.findById(viaje);
-            if (optional.isPresent()) {
-                writable = false;
-
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return "";
-            } else {
-                Integer id = viaje.getIdviaje();
-                viaje = new Viaje();
-                viaje.setIdviaje(id);
-                viajeSelected = new Viaje();
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="save">
-
-    @Override
-    public String save() {
-        try {
-            if (!viajeServices.isValid(viaje)) {
-                return "";
-            }
-
-            if (!viajeServices.vehiculoDisponible(viaje)) {
-                JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
-                return null;
-            }
-
-            if (viaje.getConductor().getEscontrol().equals("no")) {
-                if (!viajeServices.conductorDisponible(viaje)) {
-                    JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
-                    return null;
-                }
-            }
-
-            Integer idviaje = autoincrementableTransporteejbServices.getContador("viaje");
-            viaje.setIdviaje(idviaje);
-            viaje.setRealizado("no");
-            viaje.setActivo("si");
-
-            //Lo datos del usuario
-            viaje.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
-            if (viajeRepository.save(viaje)) {
-                //guarda el contenido anterior
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(),
-                        "create", "viaje", viajeRepository.toDocument(viaje).toString()));
-
-                JsfUtil.successMessage(rf.getAppMessage("info.save"));
-                reset();
-            } else {
-                JsfUtil.successMessage("save() " + viajeRepository.getException().toString());
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="edit">
-
-    @Override
-    public String edit() {
-        try {
-            if (!viajeServices.isValid(viaje)) {
-                return "";
-            }
-
-            if (noHayCambioFechaHoras()) {
-                //si cambia el vehiculo
-                if (!viaje.getVehiculo().getIdvehiculo().equals(vehiculoSelected.getIdvehiculo())) {
-                    if (!viajeServices.vehiculoDisponible(viaje)) {
-                        JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
-                        return null;
-                    }
-                }
-                // si cambio el conductor
-                if (!viaje.getConductor().getIdconductor().equals(conductorSelected.getIdconductor())) {
-                    if (viaje.getConductor().getEscontrol().equals("no")) {
-                        if (!viajeServices.conductorDisponible(viaje)) {
-                            JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
-                            return null;
-                        }
-                    }
-                }
-
-            } else {
-                //si cambia el vehiculo
-                if (!viajeServices.vehiculoDisponibleExcluyendoMismoViaje(viaje)) {
-                    JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
-                    return null;
-                }
-
-                // si cambio el conductor
-                if (viaje.getConductor().getEscontrol().equals("no")) {
-                    if (!viajeServices.conductorDisponibleExcluyendoMismoViaje(viaje)) {
-                        JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
-                        return null;
-                    }
-                }
-            }
-
-            viaje.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
-
-            //guarda el contenido actualizado
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(),
-                    "update", "viaje", viajeRepository.toDocument(viaje).toString()));
-
-            viajeRepository.update(viaje);
-            JsfUtil.successMessage(rf.getAppMessage("info.update"));
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-
-// <editor-fold defaultstate="collapsed" desc="delete(Object item, Boolean deleteonviewpage)">
-    @Override
-    public String delete(Object item, Boolean deleteonviewpage) {
-        String path = "";
-        try {
-            viaje = (Viaje) item;
-
-            if (!viajeServices.isDeleted(viaje)) {
-                JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
-                return "";
-            }
-            viajeSelected = viaje;
-            if (viajeRepository.delete("idviaje", viaje.getIdviaje())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(), "delete", "viaje", viajeRepository.toDocument(viaje).toString()));
-                JsfUtil.successMessage(rf.getAppMessage("info.delete"));
-
-                if (!deleteonviewpage) {
-                    viajeList.remove(viaje);
-                    viajeFiltered = viajeList;
-                    viajeDataModel = new ViajeDataModel(viajeList);
-
-                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageviaje", page.toString());
-
-                } else {
-                    viaje = new Viaje();
-                    viajeSelected = new Viaje();
-                    writable = false;
-
-                }
-
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        // path = deleteonviewpage ? "/pages/viaje/list.xhtml" : "";
-        path = "";
-        return path;
-    }// </editor-fold>
-
-// <editor-fold defaultstate="collapsed" desc="deleteAll">
-    @Override
-    public String deleteAll() {
-        if (viajeRepository.deleteAll() != 0) {
-            JsfUtil.successMessage(rf.getAppMessage("info.delete"));
-        }
-        return "";
-    }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="print">
 
-    @Override
+     
     public String print() {
         try {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageviaje", page.toString());
@@ -673,7 +435,7 @@ public class ViajeReporteController implements Serializable, IController {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="printAll">
 
-    @Override
+     
     public String printAll() {
         try {
             List<Viaje> list = new ArrayList<>();
@@ -741,7 +503,7 @@ public class ViajeReporteController implements Serializable, IController {
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="last">
-    @Override
+     
     public String last() {
         try {
             page = viajeRepository.sizeOfPage(rowPage);
@@ -753,7 +515,7 @@ public class ViajeReporteController implements Serializable, IController {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="first">
 
-    @Override
+     
     public String first() {
         try {
             page = 1;
@@ -765,7 +527,7 @@ public class ViajeReporteController implements Serializable, IController {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="next">
 
-    @Override
+     
     public String next() {
         try {
             if (page < (viajeRepository.sizeOfPage(rowPage))) {
@@ -779,7 +541,7 @@ public class ViajeReporteController implements Serializable, IController {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="back">
 
-    @Override
+     
     public String back() {
         try {
             if (page > 1) {
@@ -793,7 +555,7 @@ public class ViajeReporteController implements Serializable, IController {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="skip(Integer page)">
 
-    @Override
+     
     public String skip(Integer page) {
         try {
             this.page = page;
@@ -805,7 +567,7 @@ public class ViajeReporteController implements Serializable, IController {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="move">
 
-    @Override
+     
     public void move() {
 
         try {
@@ -992,22 +754,10 @@ public class ViajeReporteController implements Serializable, IController {
         }
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="clear">
-    @Override
-    public String clear() {
-        try {
-            reset();
-            loginController.put("searchviajereporte", "_init");
-            page = 1;
-            move();
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
+   
 
     // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
-    @Override
+
     public String searchBy(String string) {
         try {
 
@@ -1501,15 +1251,5 @@ public class ViajeReporteController implements Serializable, IController {
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
-    private Bson functionFilter(Integer i, Date startDate, Date lastDate) {
-
-        Bson filter = Filters.and(
-                Filters.gte("pagare." + i + ".fechavencimiento", startDate),
-                Filters.lte("pagare." + i + ".fechavencimiento", lastDate),
-                Filters.eq("pagare." + i + ".cancelado", "no")
-        );
-        return filter;
-    }
-    // </editor-fold>
+   
 }
