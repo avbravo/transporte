@@ -1088,7 +1088,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                         case "APROBADO":
                             totalAprobado++;
                             String viajest = "{";
-                            viajest = a.getViajes().stream().map((t) -> t.getIdviaje() + " ").reduce(viajest, String::concat);
+                            viajest = a.getViaje().stream().map((t) -> t.getIdviaje() + " ").reduce(viajest, String::concat);
                             viajest = "}";
                             car += viajest;
                             tema = "schedule-green";

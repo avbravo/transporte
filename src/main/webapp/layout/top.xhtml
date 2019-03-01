@@ -52,16 +52,16 @@
                         <b:navLink/>
                 </b:dropMenu>
                 <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{applicationMenu.menuBarReportes}">
-                    <b:navLink value="#{msg['menu.solicitudespendientes']}" rendered="#{applicationMenu.solicitud.list}" outcome="/pages/reportes/viajeporvehiculo" iconAwesome= "fa-car" />
+                    <b:navLink value="#{msg['menu.solicitudespendientes']}" rendered="#{applicationMenu.solicitud.list}" outcome="/pages/reportes/viajeporvehiculo" iconAwesome= "fa-battery-empty" />
                     <b:navLink value="#{msg['menu.viajesporvehiculo']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajeporvehiculo" iconAwesome= "fa-car" />
                     <b:navLink value="#{msg['menu.viajesporconductor']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajeporconductor" iconAwesome= "fa-drivers-license-o" />
                     <b:navLink value="#{msg['menu.viajespendientes']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajependiente" iconAwesome= "fa-book" />
                     <b:navLink/>
                     <b:navLink value="#{msg['menu.viajesrealizados']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajerealizado" iconAwesome= "fa-drivers-license-o" />
                       
-                    <b:navLink value="#{msg['menu.viajessinconductor']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajesinconductor" iconAwesome= "fa-book" />
+                    <b:navLink value="#{msg['menu.viajessinconductor']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajesinconductor" iconAwesome= "fa-child" />
                     
-                    <b:navLink value="#{msg['menu.viajessinsolicitud']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/viaje/list" iconAwesome= "fa-book" />
+                    <b:navLink value="#{msg['menu.viajessinsolicitud']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajesinsolicitud" iconAwesome= "fa-unlink" />
                       
                 </b:dropMenu>
 <!--                <b:dropMenu value="#{msg['menubar.mantenimiento']}" rendered="#{applicationMenu.menuBarMantenimiento}">

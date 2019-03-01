@@ -30,6 +30,7 @@ import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 import com.mongodb.client.model.Filters;
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
@@ -925,20 +926,40 @@ public class ViajeReporteController implements Serializable, IController {
 
                     break;
                 case "viajesinconductor":
-                   
 
-                        Optional<Conductor> optional = conductorRepository.find(eq("escontrol", "si"));
-                        Conductor c = new Conductor();
-                        if (optional.isPresent()) {
-                            c = optional.get();
-                        } else {
-                            JsfUtil.warningMessage(rf.getMessage("warning.nohayconductorcontrol"));
-                            return;
+                    Optional<Conductor> optional = conductorRepository.find(eq("escontrol", "si"));
+                    Conductor c = new Conductor();
+                    if (optional.isPresent()) {
+                        c = optional.get();
+                    } else {
+                        JsfUtil.warningMessage(rf.getMessage("warning.nohayconductorcontrol"));
+                        return;
+                    }
+
+                    viajeList = viajeRepository.findPagination(new Document("conductor.idconductor", c.getIdconductor()), page, rowPage, new Document("idviaje", -1));
+
+                    break;
+
+                case "viajesinsolicitud":
+                    viajeList = new ArrayList<>();
+                    Bson filter_ = Filters.eq("realizado", "no");
+                    List<Viaje> list = viajeRepository.findBy(filter_, new Document("idviaje", -1));
+                    if (list != null || list.isEmpty()) {
+
+                    }
+                    //Busca en la solicitud si existe una solicitud con ese viaje asignado
+                    for (Viaje v : list) {
+                        Bson filter = Filters.or(
+                                Filters.eq("viaje.0.idviaje", v.getIdviaje()),
+                                Filters.eq("viaje.1.idviaje", v.getIdviaje())
+                        );
+                        
+
+                        List<Solicitud> solicitudList = solicitudRepository.findBy(and(eq("activo","si"),filter), new Document("idsolicitud", -1));
+                        if(solicitudList ==null || solicitudList.isEmpty()){
+                           viajeList.add(v);
                         }
-
-                        viajeList = viajeRepository.findPagination(new Document("conductor.idconductor", c.getIdconductor()), page, rowPage, new Document("idviaje", -1));
-
-                  
+                    }
 
                     break;
                 case "viajependiente":
@@ -1480,4 +1501,15 @@ public class ViajeReporteController implements Serializable, IController {
     }
     // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    private Bson functionFilter(Integer i, Date startDate, Date lastDate) {
+
+        Bson filter = Filters.and(
+                Filters.gte("pagare." + i + ".fechavencimiento", startDate),
+                Filters.lte("pagare." + i + ".fechavencimiento", lastDate),
+                Filters.eq("pagare." + i + ".cancelado", "no")
+        );
+        return filter;
+    }
+    // </editor-fold>
 }

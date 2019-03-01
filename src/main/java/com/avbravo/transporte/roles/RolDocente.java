@@ -37,18 +37,18 @@ public class RolDocente implements Serializable {
         applicationMenu.setMenuBarAdministracion(Boolean.FALSE);
         applicationMenu.setMenuBarCalendario(Boolean.FALSE);
         applicationMenu.setMenuBarCombustible(Boolean.FALSE);
- applicationMenu.setMenuBarMantenimiento(Boolean.FALSE);
+        applicationMenu.setMenuBarMantenimiento(Boolean.FALSE);
         applicationMenu.setMenuBarSolicitud(Boolean.TRUE);
         applicationMenu.setMenuBarRegistros(Boolean.FALSE);
         applicationMenu.setMenuBarReportes(Boolean.FALSE);
         applicationMenu.setMenuBarViaje(Boolean.FALSE);
-     
+
         /*
          *menu
          */
-applicationMenu.getCalendario().initialize(Boolean.TRUE);
-applicationMenu.getCalendarioautos().initialize(Boolean.TRUE);
-applicationMenu.getCalendariobuses().initialize(Boolean.TRUE);
+        applicationMenu.getCalendario().initialize(Boolean.TRUE);
+        applicationMenu.getCalendarioautos().initialize(Boolean.TRUE);
+        applicationMenu.getCalendariobuses().initialize(Boolean.TRUE);
 
         applicationMenu.getCarrera().initialize(Boolean.FALSE);
         applicationMenu.getConductor().initialize(Boolean.FALSE);

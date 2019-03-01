@@ -509,6 +509,7 @@ public class ViajeController implements Serializable, IController {
     @Override
     public String save() {
         try {
+       
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
