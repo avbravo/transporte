@@ -925,7 +925,7 @@ public class ViajeReporteController implements Serializable, IController {
 
                     break;
                 case "viajesinconductor":
-                    if (lookupServices.getConconductor() != null) {
+                   
 
                         Optional<Conductor> optional = conductorRepository.find(eq("escontrol", "si"));
                         Conductor c = new Conductor();
@@ -938,7 +938,7 @@ public class ViajeReporteController implements Serializable, IController {
 
                         viajeList = viajeRepository.findPagination(new Document("conductor.idconductor", c.getIdconductor()), page, rowPage, new Document("idviaje", -1));
 
-                    }
+                  
 
                     break;
                 case "viajependiente":
