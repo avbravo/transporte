@@ -8,18 +8,17 @@ package com.avbravo.transporte.reportes;
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.avbravoutils.DateUtil;
 import com.avbravo.avbravoutils.JsfUtil;
-import static com.avbravo.avbravoutils.JsfUtil.nameOfClass;
-import static com.avbravo.avbravoutils.JsfUtil.nameOfMethod;
 import com.avbravo.avbravoutils.printer.Printer;
 import com.avbravo.ejbjmoordb.interfaces.IError;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
 import com.avbravo.ejbjmoordb.services.UserInfoServices;
 import com.avbravo.transporte.controller.LoginController;
 import com.avbravo.transporte.util.ResourcesFiles;
-import com.avbravo.transporteejb.datamodel.ViajeDataModel;
+import com.avbravo.transporteejb.datamodel.VehiculoDataModel;
 import com.avbravo.transporteejb.entity.Viaje;
 
 import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.datamodel.VehiculoDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Vehiculo;
@@ -52,7 +51,6 @@ import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
@@ -66,7 +64,7 @@ import org.primefaces.model.ScheduleModel;
  */
 @Named
 @ViewScoped
-public class ViajeReporteController implements Serializable, IError {
+public class VehiculoReporteController implements Serializable, IError {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -75,7 +73,7 @@ public class ViajeReporteController implements Serializable, IError {
 //private transient ExternalContext externalContext;
     private Boolean writable = false;
     //DataModel
-    private ViajeDataModel viajeDataModel;
+    private VehiculoDataModel vehiculoDataModel;
 
     Integer page = 1;
     Integer rowPage = 25;
@@ -96,7 +94,7 @@ public class ViajeReporteController implements Serializable, IError {
 
     //List
     List<Viaje> viajeList = new ArrayList<>();
-    List<Viaje> viajeFiltered = new ArrayList<>();
+    List<Vehiculo> vehiculoFiltered = new ArrayList<>();
     List<Vehiculo> vehiculoList = new ArrayList<>();
     List<Conductor> conductorList = new ArrayList<>();
     List<Conductor> suggestionsConductor = new ArrayList<>();
@@ -238,20 +236,20 @@ public class ViajeReporteController implements Serializable, IError {
         this.viajeList = viajeList;
     }
 
-    public List<Viaje> getViajeFiltered() {
-        return viajeFiltered;
+    public List<Vehiculo> getVehiculoFiltered() {
+        return vehiculoFiltered;
     }
 
-    public void setViajeFiltered(List<Viaje> viajeFiltered) {
-        this.viajeFiltered = viajeFiltered;
+    public void setVehiculoFiltered(List<Vehiculo> vehiculoFiltered) {
+        this.vehiculoFiltered = vehiculoFiltered;
     }
 
-    public ViajeDataModel getViajeDataModel() {
-        return viajeDataModel;
+    public VehiculoDataModel getVehiculoDataModel() {
+        return vehiculoDataModel;
     }
 
-    public void setViajeDataModel(ViajeDataModel viajeDataModel) {
-        this.viajeDataModel = viajeDataModel;
+    public void setVehiculoDataModel(VehiculoDataModel vehiculoDataModel) {
+        this.vehiculoDataModel = vehiculoDataModel;
     }
 
     public Viaje getViaje() {
@@ -320,12 +318,11 @@ public class ViajeReporteController implements Serializable, IError {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public ViajeReporteController() {
+    public VehiculoReporteController() {
     }
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="preRenderView()">
-     
     public String preRenderView(String action) {
         //acciones al llamar el formulario despues del init    
         return "";
@@ -349,15 +346,15 @@ public class ViajeReporteController implements Serializable, IError {
             String pageSession = loginController.get("pageviaje");
             //Search
 
-            if (loginController.get("searchviajereporte") == null || loginController.get("searchviaje").equals("")) {
-                loginController.put("searchviajereporte", "_init");
+            if (loginController.get("searchvehiculoreporte") == null || loginController.get("searchviaje").equals("")) {
+                loginController.put("searchvehiculoreporte", "_init");
             }
             writable = false;
-
+            vehiculoList = new ArrayList<>();
             viajeList = new ArrayList<>();
-            viajeFiltered = new ArrayList<>();
+            vehiculoFiltered = new ArrayList<>();
             viaje = new Viaje();
-            viajeDataModel = new ViajeDataModel(viajeList);
+            vehiculoDataModel = new VehiculoDataModel(vehiculoList);
 
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
@@ -407,27 +404,7 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="reset">
 
-     
-    
-
-
- // <editor-fold defaultstate="collapsed" desc="clear()">
-      public String clear() {
-        try {
-            
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }
-    // </editor-fold>
-
-
-
-
 // <editor-fold defaultstate="collapsed" desc="print">
-
-     
     public String print() {
         try {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageviaje", page.toString());
@@ -444,7 +421,6 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="printAll">
 
-     
     public String printAll() {
         try {
             List<Viaje> list = new ArrayList<>();
@@ -501,10 +477,10 @@ public class ViajeReporteController implements Serializable, IError {
         try {
             viajeList.removeAll(viajeList);
             viajeList.add(viajeSelected);
-            viajeFiltered = viajeList;
-            viajeDataModel = new ViajeDataModel(viajeList);
+            vehiculoFiltered = vehiculoList;
+            vehiculoDataModel = new VehiculoDataModel(vehiculoList);
 
-            loginController.put("searchviajereporte", "idviaje");
+            loginController.put("searchvehiculoreporte", "idviaje");
             lookupServices.setIdviaje(viajeSelected.getIdviaje());
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -512,7 +488,6 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="last">
-     
     public String last() {
         try {
             page = viajeRepository.sizeOfPage(rowPage);
@@ -522,9 +497,19 @@ public class ViajeReporteController implements Serializable, IError {
         }
         return "";
     }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="clear()">
+
+    public String clear() {
+        try {
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+    // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="first">
 
-     
     public String first() {
         try {
             page = 1;
@@ -536,7 +521,6 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="next">
 
-     
     public String next() {
         try {
             if (page < (viajeRepository.sizeOfPage(rowPage))) {
@@ -550,7 +534,6 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="back">
 
-     
     public String back() {
         try {
             if (page > 1) {
@@ -564,7 +547,6 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="skip(Integer page)">
 
-     
     public String skip(Integer page) {
         try {
             this.page = page;
@@ -576,7 +558,6 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="move">
 
-     
     public void move() {
 
         try {
@@ -584,193 +565,66 @@ public class ViajeReporteController implements Serializable, IError {
             Document doc;
             Document sort = new Document("idviaje", -1);
 
-            switch (loginController.get("searchviajereporte")) {
+            switch (loginController.get("searchvehiculoreporte")) {
                 case "_init":
-                    viajeList = new ArrayList<>();
+                    vehiculoList = new ArrayList<>();
                     break;
 
-                case "_autocomplete":
-                    viajeList = viajeRepository.findPagination(page, rowPage, sort);
+                case "kmrecorridosporvehiculo":
+                    vehiculoList = new ArrayList<>();
 
-                    break;
+                    List<Vehiculo> list = vehiculoRepository.findBy(new Document("activo", "si"), new Document("idvehiculo", 1));
+                    if (list == null || list.isEmpty()) {
+                        JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayvehiculosactivos"));
 
-                case "activo":
-                    if (lookupServices.getActivo() != null) {
-
-                        viajeList = viajeRepository.findPagination(new Document("activo", lookupServices.getActivo()), page, rowPage, new Document("idviaje", -1));
                     } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
-                    }
-
-                    break;
-                case "_betweendates":
-                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("activo", "si", "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
-
-                    break;
-                case "comentarios":
-                    if (lookupServices.getComentarios() != null) {
-                        viajeList = viajeRepository.findRegexInTextPagination("comentarios", lookupServices.getComentarios(), true, page, rowPage, new Document("idviaje", -1));
-                    } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
-                    }
-
-                    break;
-                case "conductor":
-                    if (lookupServices.getConductor().getIdconductor() != null) {
-                        viajeList = viajeRepository.findPagination(new Document("conductor.idconductor", lookupServices.getConductor().getIdconductor()), page, rowPage, new Document("idviaje", -1));
-                    } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
-                    }
-
-                    break;
-
-                case "conconductor":
-                    if (lookupServices.getConconductor() != null) {
-
-                        Optional<Conductor> optional = conductorRepository.find(eq("escontrol", "si"));
-                        Conductor c = new Conductor();
-                        if (optional.isPresent()) {
-                            c = optional.get();
+                        vehiculoList = list;
+                        Bson filter_ = Filters.eq("realizado", "si");
+                        List<Viaje> listV = viajeRepository.findBy(filter_, new Document("idviaje", -1));
+                        if (listV != null || listV.isEmpty()) {
+                            JsfUtil.warningMessage( rf.getMessage("warning.nohayviajesrealizados"));
                         } else {
-                            JsfUtil.warningMessage(rf.getMessage("warning.nohayconductorcontrol"));
-                            return;
-                        }
-                        if (lookupServices.getConconductor().equals("si")) {
-                            Bson filter = Filters.ne("conductor.idconductor", c.getIdconductor());
-                            viajeList = viajeRepository.filtersPagination(filter, page, rowPage, new Document("idviaje", -1));
-                        } else {
-                            viajeList = viajeRepository.findPagination(new Document("conductor.idconductor", c.getIdconductor()), page, rowPage, new Document("idviaje", -1));
-                        }
-
-                    } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
-                    }
-
-                    break;
-                case "idviaje":
-                    if (lookupServices.getIdviaje() != null) {
-                        viajeList = viajeRepository.findPagination(new Document("idviaje", lookupServices.getIdviaje()), page, rowPage, new Document("idviaje", -1));
-                    } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
-                    }
-
-                    break;
-                case "lugardestino":
-                    if (lookupServices.getLugardestino() != null) {
-                        viajeList = viajeRepository.findRegexInTextPagination("lugardestino", lookupServices.getLugardestino(), true, page, rowPage, new Document("idviaje", -1));
-                    } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
-                    }
-
-                    break;
-                case "realizado":
-                    if (lookupServices.getRealizado() != null) {
-
-                        viajeList = viajeRepository.findPagination(new Document("realizado", lookupServices.getRealizado()), page, rowPage, new Document("idviaje", -1));
-                    } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
-                    }
-
-                    break;
-
-                case "vehiculo":
-                    if (lookupServices.getVehiculo().getPlaca() != null) {
-                        viajeList = viajeRepository.findPagination(new Document("vehiculo.idvehiculo", lookupServices.getVehiculo().getIdvehiculo()), page, rowPage, new Document("idviaje", -1));
-                    } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
-                    }
-
-                    break;
-                case "viajerealizado":
-
-                    Bson filter1 = Filters.eq("realizado", "si");
-                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours(filter1, "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
-
-                    break;
-                case "viajeporconductor":
-
-                    if (lookupServices.getConductor().getIdconductor() != null) {
-
-                        Bson filter = Filters.eq("conductor.idconductor", lookupServices.getConductor().getIdconductor());
-                        viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours(filter, "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
-                    }
-
-                    break;
-                case "viajesinconductor":
-
-                    Optional<Conductor> optional = conductorRepository.find(eq("escontrol", "si"));
-                    Conductor c = new Conductor();
-                    if (optional.isPresent()) {
-                        c = optional.get();
-                    } else {
-                        JsfUtil.warningMessage(rf.getMessage("warning.nohayconductorcontrol"));
-                        return;
-                    }
-
-                    viajeList = viajeRepository.findPagination(new Document("conductor.idconductor", c.getIdconductor()), page, rowPage, new Document("idviaje", -1));
-
-                    break;
-
-                case "viajesinsolicitud":
-                    viajeList = new ArrayList<>();
-                    Bson filter_ = Filters.eq("realizado", "no");
-                    List<Viaje> list = viajeRepository.findBy(filter_, new Document("idviaje", -1));
-                    if (list != null || list.isEmpty()) {
-
-                    }
-                    //Busca en la solicitud si existe una solicitud con ese viaje asignado
-                    for (Viaje v : list) {
-                        Bson filter = Filters.or(
-                                Filters.eq("viaje.0.idviaje", v.getIdviaje()),
-                                Filters.eq("viaje.1.idviaje", v.getIdviaje())
-                        );
-                        
-
-                        List<Solicitud> solicitudList = solicitudRepository.findBy(and(eq("activo","si"),filter), new Document("idsolicitud", -1));
-                        if(solicitudList ==null || solicitudList.isEmpty()){
-                           viajeList.add(v);
+                            //Recorrer los viajes de cada vehiculo en esas fechas
+                            //totaliza los km y el costo de combustible en esas fechas
+                            Integer index = 0;
+                            for (Vehiculo v : vehiculoList) {
+                                viajeList = new ArrayList<>();
+                                Bson filter = Filters.and(Filters.eq("vehiculo.idvehiculo", v.getIdvehiculo()), eq("realizado", "si"));
+                                viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours(filter, "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
+                                vehiculoList.get(index).setTotalkm(0.0);
+                                vehiculoList.get(index).setTotalconsumo(0.0);
+                                vehiculoList.get(index).setTotalviajes(0);
+                                for (Viaje vi : viajeList) {
+                                    vehiculoList.get(index).setTotalkm(vehiculoList.get(index).getTotalkm() + vi.getKmestimados());
+                                    vehiculoList.get(index).setTotalconsumo(vehiculoList.get(index).getTotalconsumo() + vi.getCostocombustible());
+                                    vehiculoList.get(index).setTotalviajes(vehiculoList.get(index).getTotalviajes()+ 1);
+                                }
+                                index++;
+                            }
                         }
                     }
 
                     break;
-                case "viajependiente":
 
-                    Bson filter2 = Filters.eq("realizado", "no");
-                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours(filter2, "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
-
-                    break;
-                case "viajeporvehiculo":
-
-                    if (lookupServices.getVehiculo().getPlaca() != null) {
-
-                        Bson filter = Filters.eq("vehiculo.idvehiculo", lookupServices.getVehiculo().getIdvehiculo());
-                        viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours(filter, "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
-                    }
-
-                    break;
                 default:
 
-                    viajeList = viajeRepository.findPagination(page, rowPage, sort);
                     break;
             }
 
-            viajeFiltered = viajeList;
+            vehiculoFiltered = vehiculoList;
 
-            viajeDataModel = new ViajeDataModel(viajeList);
+            vehiculoDataModel = new VehiculoDataModel(vehiculoList);
 
         } catch (Exception e) {
             errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
-   
-
     // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
-
     public String searchBy(String string) {
         try {
 
-            loginController.put("searchviajereporte", string);
+            loginController.put("searchvehiculoreporte", string);
 
             writable = true;
             move();
@@ -1260,5 +1114,4 @@ public class ViajeReporteController implements Serializable, IError {
     }
     // </editor-fold>
 
-   
 }
