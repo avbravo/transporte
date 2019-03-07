@@ -581,8 +581,15 @@ public class VehiculoReporteController implements Serializable, IError {
                         vehiculoList = list;
                         Bson filter_ = Filters.eq("realizado", "si");
                         List<Viaje> listV = viajeRepository.findBy(filter_, new Document("idviaje", -1));
-                        if (listV != null || listV.isEmpty()) {
-                            JsfUtil.warningMessage( rf.getMessage("warning.nohayviajesrealizados"));
+                        if (listV == null || listV.isEmpty()) {
+                            JsfUtil.warningDialog(rf.getAppMessage("warning.view"),rf.getMessage("warning.nohayviajesrealizados"));
+                            Integer index=0;
+                            for (Vehiculo v : vehiculoList) {
+                                vehiculoList.get(index).setTotalkm(0.0);
+                                vehiculoList.get(index).setTotalconsumo(0.0);
+                                vehiculoList.get(index).setTotalviajes(0); 
+                                index++;
+                            }
                         } else {
                             //Recorrer los viajes de cada vehiculo en esas fechas
                             //totaliza los km y el costo de combustible en esas fechas
