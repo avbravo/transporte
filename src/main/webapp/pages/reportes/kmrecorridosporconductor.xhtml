@@ -7,6 +7,8 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:avbravojsf="http://avbravo.com/tags"
+                xmlns:avbravox="http://avbravo.com/tags"
                 xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
                 xmlns:extensionviaje="http://xmlns.jcp.org/jsf/composite/extensionviaje">
@@ -31,8 +33,7 @@
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
 
 
-
-
+            
 
                 <b:row>
                     <b:column medium-screen="25" >
@@ -85,6 +86,19 @@
 
 
                 </b:dataTable>
+                <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{conductorReporteController.tieneRows()}"> 
+
+                        <p:outputLabel  value="#{msg['field.totalGlobalkm']}" />
+                       <p:outputLabel value="#{conductorReporteController.totalGlobalkm}"  />
+                        <p:outputLabel  value="#{msg['field.totalGlobalConsumo']}" />
+                      <p:outputLabel value="#{conductorReporteController.totalGlobalConsumo}"  />
+
+            </b:panelGrid>
+                <b:row>
+                    <b:column>
+                    
+                    </b:column>
+                </b:row>
             </b:panel>
 
         </b:form>

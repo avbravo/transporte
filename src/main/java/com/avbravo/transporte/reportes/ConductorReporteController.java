@@ -68,6 +68,8 @@ public class ConductorReporteController implements Serializable, IError {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
+    private Double totalGlobalkm;
+    private Double totalGlobalConsumo;
 
 //    @Inject
 //private transient ExternalContext externalContext;
@@ -204,6 +206,22 @@ public class ConductorReporteController implements Serializable, IError {
         this.lookupServices = lookupServices;
     }
 
+    public Double getTotalGlobalkm() {
+        return totalGlobalkm;
+    }
+
+    public void setTotalGlobalkm(Double totalGlobalkm) {
+        this.totalGlobalkm = totalGlobalkm;
+    }
+
+    public Double getTotalGlobalConsumo() {
+        return totalGlobalConsumo;
+    }
+
+    public void setTotalGlobalConsumo(Double totalGlobalConsumo) {
+        this.totalGlobalConsumo = totalGlobalConsumo;
+    }
+
     public Integer getPage() {
         return page;
     }
@@ -243,9 +261,6 @@ public class ConductorReporteController implements Serializable, IError {
     public void setConductorFiltered(List<Conductor> conductorFiltered) {
         this.conductorFiltered = conductorFiltered;
     }
-
-  
-  
 
     public ConductorDataModel getConductorDataModel() {
         return conductorDataModel;
@@ -336,6 +351,8 @@ public class ConductorReporteController implements Serializable, IError {
     @PostConstruct
     public void init() {
         try {
+            totalGlobalConsumo = 0.0;
+            totalGlobalkm = 0.0;
 
             vehiculoScheduleModel = new DefaultScheduleModel();
             conductorScheduleModel = new DefaultScheduleModel();
@@ -349,8 +366,8 @@ public class ConductorReporteController implements Serializable, IError {
             String pageSession = loginController.get("pageviaje");
             //Search
 
-            if (loginController.get("searchvehiculoreporte") == null || loginController.get("searchviaje").equals("")) {
-                loginController.put("searchvehiculoreporte", "_init");
+            if (loginController.get("searchconductorreporte") == null || loginController.get("searchviaje").equals("")) {
+                loginController.put("searchconductorreporte", "_init");
             }
             writable = false;
             conductorList = new ArrayList<>();
@@ -483,7 +500,7 @@ public class ConductorReporteController implements Serializable, IError {
             conductorFiltered = conductorList;
             conductorDataModel = new ConductorDataModel(conductorList);
 
-            loginController.put("searchvehiculoreporte", "idviaje");
+            loginController.put("searchconductorreporte", "idviaje");
             lookupServices.setIdviaje(viajeSelected.getIdviaje());
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -564,11 +581,12 @@ public class ConductorReporteController implements Serializable, IError {
     public void move() {
 
         try {
-
+            totalGlobalConsumo = 0.0;
+            totalGlobalkm = 0.0;
             Document doc;
             Document sort = new Document("idviaje", -1);
 
-            switch (loginController.get("searchvehiculoreporte")) {
+            switch (loginController.get("searchconductorreporte")) {
                 case "_init":
                     conductorList = new ArrayList<>();
                     break;
@@ -585,12 +603,12 @@ public class ConductorReporteController implements Serializable, IError {
                         Bson filter_ = Filters.eq("realizado", "si");
                         List<Viaje> listV = viajeRepository.findBy(filter_, new Document("idviaje", -1));
                         if (listV == null || listV.isEmpty()) {
-                            JsfUtil.warningDialog(rf.getAppMessage("warning.view"),rf.getMessage("warning.nohayviajesrealizados"));
-                            Integer index=0;
+                            JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayviajesrealizados"));
+                            Integer index = 0;
                             for (Conductor v : conductorList) {
                                 conductorList.get(index).setTotalkm(0.0);
                                 conductorList.get(index).setTotalconsumo(0.0);
-                                conductorList.get(index).setTotalviajes(0); 
+                                conductorList.get(index).setTotalviajes(0);
                                 index++;
                             }
                         } else {
@@ -603,11 +621,12 @@ public class ConductorReporteController implements Serializable, IError {
                                 viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours(filter, "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
                                 conductorList.get(index).setTotalkm(0.0);
                                 conductorList.get(index).setTotalconsumo(0.0);
-                               conductorList.get(index).setTotalviajes(0);
+                                conductorList.get(index).setTotalviajes(0);
                                 for (Viaje vi : viajeList) {
                                     conductorList.get(index).setTotalkm(conductorList.get(index).getTotalkm() + vi.getKmestimados());
-                                   conductorList.get(index).setTotalconsumo(conductorList.get(index).getTotalconsumo() + vi.getCostocombustible());
-                                    conductorList.get(index).setTotalviajes(conductorList.get(index).getTotalviajes()+ 1);
+                                    conductorList.get(index).setTotalconsumo(conductorList.get(index).getTotalconsumo() + vi.getCostocombustible());
+                                    conductorList.get(index).setTotalviajes(conductorList.get(index).getTotalviajes() + 1);
+
                                 }
                                 index++;
                             }
@@ -620,7 +639,12 @@ public class ConductorReporteController implements Serializable, IError {
 
                     break;
             }
-
+            conductorList.stream().map((c) -> {
+                totalGlobalConsumo += c.getTotalconsumo();
+                return c;
+            }).forEachOrdered((c) -> {
+                totalGlobalkm += c.getTotalkm();
+            });
             conductorFiltered = conductorList;
 
             conductorDataModel = new ConductorDataModel(conductorList);
@@ -634,7 +658,7 @@ public class ConductorReporteController implements Serializable, IError {
     public String searchBy(String string) {
         try {
 
-            loginController.put("searchvehiculoreporte", string);
+            loginController.put("searchconductorreporte", string);
 
             writable = true;
             move();
@@ -1121,6 +1145,12 @@ public class ConductorReporteController implements Serializable, IError {
             errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    public Boolean tieneRows() {
+        return conductorDataModel.getRowCount() > 0;
     }
     // </editor-fold>
 
