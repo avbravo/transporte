@@ -73,20 +73,15 @@
                              onpage="console.log('page');">
 
                     <b:dataTableColumn value="#{item.idprogramacionFlota}" label="#{msg['field.idprogramacionFlota']}"
-                                       style="color: #{viajeReporteController.columnColor(item.realizado,item.activo)}"/>
+                                       />
                    
-                    <b:dataTableColumn value="#{item.diaNombre}" label="#{msg['field.diaNombre}']}" />
+                    <b:dataTableColumn value="#{item.diaNombre}" label="#{msg['field.diaNombre']}" />
 
 
                     <b:dataTableColumn label="#{msg['field.fecha']}"   >
 
                         <p:calendar  disabled="true"  size="8"   
-                                     style="background-color: grey; color: #{viajeReporteController.columnColor(item.realizado,item.activo)}"
-
                                      pattern="dd/MM/yyyy" value="#{item.fecha}"  />
-                        
-                       
-
 
                     </b:dataTableColumn> 
 

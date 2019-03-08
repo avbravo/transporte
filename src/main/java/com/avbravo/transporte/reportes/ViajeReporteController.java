@@ -8,8 +8,6 @@ package com.avbravo.transporte.reportes;
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.avbravoutils.DateUtil;
 import com.avbravo.avbravoutils.JsfUtil;
-import static com.avbravo.avbravoutils.JsfUtil.nameOfClass;
-import static com.avbravo.avbravoutils.JsfUtil.nameOfMethod;
 import com.avbravo.avbravoutils.printer.Printer;
 import com.avbravo.ejbjmoordb.interfaces.IError;
 import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
@@ -22,6 +20,7 @@ import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Solicitud;
+import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
@@ -52,7 +51,6 @@ import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
@@ -697,15 +695,41 @@ public class ViajeReporteController implements Serializable, IError {
                             ProgramacionFlotaPojo programacionFlotaPojo = new ProgramacionFlotaPojo();
                             programacionFlotaPojo.setIdprogramacionFlota(v.getIdviaje());
                             programacionFlotaPojo.setConductor(v.getConductor().getNombre());
-                            programacionFlotaPojo.setDiaNombre("");
+
+                            programacionFlotaPojo.setDiaNombre(DateUtil.nameOfDay(v.getFechahorafinreserva()));
+
                             programacionFlotaPojo.setFecha(v.getFechahorainicioreserva());
-                            programacionFlotaPojo.setHorafin("");
-                            programacionFlotaPojo.setHorainicio("");
+                           Integer hora= DateUtil.getHoraDeUnaFecha(v.getFechahorainicioreserva());
+                            Integer minuto = DateUtil.getMinutosDeUnaFecha(v.getFechahorainicioreserva());
+                          //  programacionFlotaPojo.setHorainicio(hora.toString()+": "+minuto);
+                            
+                            programacionFlotaPojo.setHorainicio(DateUtil.horaMinutoAMPMDeUnaFecha(v.getFechahorainicioreserva()));
+                            programacionFlotaPojo.setHorafin(DateUtil.horaMinutoAMPMDeUnaFecha(v.getFechahorafinreserva()));
+                            
                             // buscar la solicitud con ese viaje para encontrar la mision
-                            programacionFlotaPojo.setMision("");
-                            programacionFlotaPojo.setUnidad("");
+
+                            Bson filter = Filters.or(
+                                    Filters.eq("viaje.0.idviaje", v.getIdviaje()),
+                                    Filters.eq("viaje.1.idviaje", v.getIdviaje())
+                            );
+
+                            List<Solicitud> solicitudList = solicitudRepository.findBy(and(eq("activo", "si"), filter), new Document("idsolicitud", -1));
+                            if (solicitudList == null || solicitudList.isEmpty()) {
+                                programacionFlotaPojo.setMision("---SIN SOLICITUD-----");
+                                programacionFlotaPojo.setUnidad("--SIN SOLICITUD----");
+                            } else {
+                                 String unidad = "";
+                                 String mision="";
+                                for (Solicitud s : solicitudList) {
+                                    mision+=""+ s.getMision();                                   
+                                    unidad = s.getUnidad().stream().map((u) -> " " + u.getIdunidad()).reduce(unidad, String::concat);                                    
+                                }
+                                programacionFlotaPojo.setUnidad(unidad.trim());
+                                programacionFlotaPojo.setMision(mision.trim());
+                            }
+
                             programacionFlotaPojo.setVehiculo(v.getVehiculo().getMarca() + " " + v.getVehiculo().getModelo() + " " + v.getVehiculo().getPlaca());
-programacionFlotaPojoList.add(programacionFlotaPojo);
+                            programacionFlotaPojoList.add(programacionFlotaPojo);
                         }
                     }
                     break;
@@ -1295,4 +1319,10 @@ programacionFlotaPojoList.add(programacionFlotaPojo);
     }
     // </editor-fold>
 
+//    
+//    public LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+//    return dateToConvert.toInstant()
+//      .atZone(ZoneId.systemDefault())
+//      .toLocalDate();
+//}
 }

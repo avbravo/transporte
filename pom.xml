@@ -42,12 +42,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>transporteejb</artifactId>
-            <version>19.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>avbravojsf</artifactId>
-            <version>0.1</version>
+            <version>19.2.4</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
