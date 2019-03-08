@@ -68,7 +68,8 @@ public class VehiculoReporteController implements Serializable, IError {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
-
+private Double totalGlobalkm;
+    private Double totalGlobalConsumo;
 //    @Inject
 //private transient ExternalContext externalContext;
     private Boolean writable = false;
@@ -164,6 +165,25 @@ public class VehiculoReporteController implements Serializable, IError {
         this.vehiculoScheduleModel = vehiculoScheduleModel;
     }
 
+    public Double getTotalGlobalkm() {
+        return totalGlobalkm;
+    }
+
+    public void setTotalGlobalkm(Double totalGlobalkm) {
+        this.totalGlobalkm = totalGlobalkm;
+    }
+
+    public Double getTotalGlobalConsumo() {
+        return totalGlobalConsumo;
+    }
+
+    public void setTotalGlobalConsumo(Double totalGlobalConsumo) {
+        this.totalGlobalConsumo = totalGlobalConsumo;
+    }
+
+    
+    
+    
     public List<Vehiculo> getVehiculoList() {
         return vehiculoList;
     }
@@ -333,7 +353,8 @@ public class VehiculoReporteController implements Serializable, IError {
     @PostConstruct
     public void init() {
         try {
-
+ totalGlobalkm =0.0;
+ totalGlobalConsumo=0.0;
             vehiculoScheduleModel = new DefaultScheduleModel();
             conductorScheduleModel = new DefaultScheduleModel();
             solicitudScheduleModel = new DefaultScheduleModel();
@@ -561,7 +582,8 @@ public class VehiculoReporteController implements Serializable, IError {
     public void move() {
 
         try {
-
+ totalGlobalkm =0.0;
+ totalGlobalConsumo=0.0;
             Document doc;
             Document sort = new Document("idviaje", -1);
 
@@ -617,7 +639,12 @@ public class VehiculoReporteController implements Serializable, IError {
 
                     break;
             }
-
+ vehiculoList.stream().map((c) -> {
+                totalGlobalConsumo += c.getTotalconsumo();
+                return c;
+            }).forEachOrdered((c) -> {
+                totalGlobalkm += c.getTotalkm();
+            });
             vehiculoFiltered = vehiculoList;
 
             vehiculoDataModel = new VehiculoDataModel(vehiculoList);

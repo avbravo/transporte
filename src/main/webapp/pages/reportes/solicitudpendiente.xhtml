@@ -87,8 +87,8 @@
 
                     <b:dataTableColumn value="#{item.objetivo}" label="#{msg['field.objetivo']}" style="color: #{solicitudReporteController.columnColor(item.estatus.idestatus)}" />
                     <b:dataTableColumn value="#{item.lugares}" label="#{msg['field.lugares']}" style="color: #{solicitudReporteController.columnColor(item.estatus.idestatus)}" />
-                    <b:dataTableColumn value="#{item.estatus.idestatus}" label="#{msg['field.estatus']}" style="color: #{solicitudReporteController.columnColor(item.estatus.idestatus)}" />
-
+                 
+ <b:dataTableColumn value="#{solicitudManualAdministrativoController.solicitudServices.responsable(item).nombre}" label="#{msg['field.responsable']}"  />
 
                   
 

@@ -87,6 +87,14 @@
 
 
                 </b:dataTable>
+                  <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{vehiculoReporteController.tieneRows()}"> 
+
+                        <p:outputLabel  value="#{msg['field.totalGlobalkm']}" />
+                       <p:outputLabel value="#{vehiculoReporteController.totalGlobalkm}"  />
+                        <p:outputLabel  value="#{msg['field.totalGlobalConsumo']}" />
+                      <p:outputLabel value="#{vehiculoReporteController.totalGlobalConsumo}"  />
+
+            </b:panelGrid>
             </b:panel>
 
         </b:form>

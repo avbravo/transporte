@@ -681,6 +681,14 @@ public class ViajeReporteController implements Serializable, IError {
                     }
 
                     break;
+                case "programacionflota":
+                    if (lookupServices.getVehiculo().getPlaca() != null) {
+                        viajeList = viajeRepository.findPagination(new Document("vehiculo.idvehiculo", lookupServices.getVehiculo().getIdvehiculo()), page, rowPage, new Document("idviaje", -1));
+                    } else {
+                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
+                    }
+
+                    break;
                 case "viajerealizado":
 
                     Bson filter1 = Filters.eq("realizado", "si");
