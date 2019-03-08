@@ -76,6 +76,7 @@ public class ViajeReporteController implements Serializable, IError {
     private Boolean writable = false;
     //DataModel
     private ViajeDataModel viajeDataModel;
+    private ProgramacionFlotaDataModel programacionFlotaDataModel;
 
     Integer page = 1;
     Integer rowPage = 25;
@@ -98,6 +99,9 @@ public class ViajeReporteController implements Serializable, IError {
     List<Viaje> viajeList = new ArrayList<>();
     List<Viaje> viajeFiltered = new ArrayList<>();
     List<Vehiculo> vehiculoList = new ArrayList<>();
+    List<ProgramacionFlotaPojo> programacionFlotaPojoList = new ArrayList<>();
+    List<ProgramacionFlotaPojo> programacionFlotaPojoFiltered = new ArrayList<>();
+
     List<Conductor> conductorList = new ArrayList<>();
     List<Conductor> suggestionsConductor = new ArrayList<>();
 
@@ -188,6 +192,30 @@ public class ViajeReporteController implements Serializable, IError {
 
     public void setVehiculoList(List<Vehiculo> vehiculoList) {
         this.vehiculoList = vehiculoList;
+    }
+
+    public ProgramacionFlotaDataModel getProgramacionFlotaDataModel() {
+        return programacionFlotaDataModel;
+    }
+
+    public void setProgramacionFlotaDataModel(ProgramacionFlotaDataModel programacionFlotaDataModel) {
+        this.programacionFlotaDataModel = programacionFlotaDataModel;
+    }
+
+    public List<ProgramacionFlotaPojo> getProgramacionFlotaPojoList() {
+        return programacionFlotaPojoList;
+    }
+
+    public void setProgramacionFlotaPojoList(List<ProgramacionFlotaPojo> programacionFlotaPojoList) {
+        this.programacionFlotaPojoList = programacionFlotaPojoList;
+    }
+
+    public List<ProgramacionFlotaPojo> getProgramacionFlotaPojoFiltered() {
+        return programacionFlotaPojoFiltered;
+    }
+
+    public void setProgramacionFlotaPojoFiltered(List<ProgramacionFlotaPojo> programacionFlotaPojoFiltered) {
+        this.programacionFlotaPojoFiltered = programacionFlotaPojoFiltered;
     }
 
     public List<Conductor> getConductorList() {
@@ -325,7 +353,6 @@ public class ViajeReporteController implements Serializable, IError {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="preRenderView()">
-     
     public String preRenderView(String action) {
         //acciones al llamar el formulario despues del init    
         return "";
@@ -349,7 +376,7 @@ public class ViajeReporteController implements Serializable, IError {
             String pageSession = loginController.get("pageviaje");
             //Search
 
-            if (loginController.get("searchviajereporte") == null || loginController.get("searchviaje").equals("")) {
+            if (loginController.get("searchviajereporte") == null || loginController.get("searchviajereporte").equals("")) {
                 loginController.put("searchviajereporte", "_init");
             }
             writable = false;
@@ -357,7 +384,10 @@ public class ViajeReporteController implements Serializable, IError {
             viajeList = new ArrayList<>();
             viajeFiltered = new ArrayList<>();
             viaje = new Viaje();
+            programacionFlotaPojoList = new ArrayList<>();
+            programacionFlotaPojoFiltered = new ArrayList<>();
             viajeDataModel = new ViajeDataModel(viajeList);
+            programacionFlotaDataModel = new ProgramacionFlotaDataModel(programacionFlotaPojoList);
 
             if (pageSession != null) {
                 page = Integer.parseInt(pageSession);
@@ -407,14 +437,10 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="reset">
 
-     
-    
-
-
- // <editor-fold defaultstate="collapsed" desc="clear()">
-      public String clear() {
+    // <editor-fold defaultstate="collapsed" desc="clear()">
+    public String clear() {
         try {
-            
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -422,12 +448,7 @@ public class ViajeReporteController implements Serializable, IError {
     }
     // </editor-fold>
 
-
-
-
 // <editor-fold defaultstate="collapsed" desc="print">
-
-     
     public String print() {
         try {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageviaje", page.toString());
@@ -444,7 +465,6 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="printAll">
 
-     
     public String printAll() {
         try {
             List<Viaje> list = new ArrayList<>();
@@ -512,7 +532,6 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="last">
-     
     public String last() {
         try {
             page = viajeRepository.sizeOfPage(rowPage);
@@ -524,7 +543,6 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="first">
 
-     
     public String first() {
         try {
             page = 1;
@@ -536,7 +554,6 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="next">
 
-     
     public String next() {
         try {
             if (page < (viajeRepository.sizeOfPage(rowPage))) {
@@ -550,7 +567,6 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="back">
 
-     
     public String back() {
         try {
             if (page > 1) {
@@ -564,7 +580,6 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="skip(Integer page)">
 
-     
     public String skip(Integer page) {
         try {
             this.page = page;
@@ -576,11 +591,10 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="move">
 
-     
     public void move() {
 
         try {
-
+            programacionFlotaPojoList = new ArrayList<>();
             Document doc;
             Document sort = new Document("idviaje", -1);
 
@@ -673,15 +687,30 @@ public class ViajeReporteController implements Serializable, IError {
 
                     break;
 
-                case "vehiculo":
-                    if (lookupServices.getVehiculo().getPlaca() != null) {
-                        viajeList = viajeRepository.findPagination(new Document("vehiculo.idvehiculo", lookupServices.getVehiculo().getIdvehiculo()), page, rowPage, new Document("idviaje", -1));
-                    } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage, sort);
-                    }
-
-                    break;
                 case "programacionflota":
+                    Bson filter0 = Filters.eq("activo", "si");
+                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours(filter0, "fechahorainicioreserva", lookupServices.getFechaDesde(), "fechahorafinreserva", lookupServices.getFechaHasta(), page, rowPage, new Document("idviaje", -1));
+                    if (viajeList == null || viajeList.isEmpty()) {
+
+                    } else {
+                        for (Viaje v : viajeList) {
+                            ProgramacionFlotaPojo programacionFlotaPojo = new ProgramacionFlotaPojo();
+                            programacionFlotaPojo.setIdprogramacionFlota(v.getIdviaje());
+                            programacionFlotaPojo.setConductor(v.getConductor().getNombre());
+                            programacionFlotaPojo.setDiaNombre("");
+                            programacionFlotaPojo.setFecha(v.getFechahorainicioreserva());
+                            programacionFlotaPojo.setHorafin("");
+                            programacionFlotaPojo.setHorainicio("");
+                            // buscar la solicitud con ese viaje para encontrar la mision
+                            programacionFlotaPojo.setMision("");
+                            programacionFlotaPojo.setUnidad("");
+                            programacionFlotaPojo.setVehiculo(v.getVehiculo().getMarca() + " " + v.getVehiculo().getModelo() + " " + v.getVehiculo().getPlaca());
+programacionFlotaPojoList.add(programacionFlotaPojo);
+                        }
+                    }
+                    break;
+
+                case "vehiculo":
                     if (lookupServices.getVehiculo().getPlaca() != null) {
                         viajeList = viajeRepository.findPagination(new Document("vehiculo.idvehiculo", lookupServices.getVehiculo().getIdvehiculo()), page, rowPage, new Document("idviaje", -1));
                     } else {
@@ -732,11 +761,10 @@ public class ViajeReporteController implements Serializable, IError {
                                 Filters.eq("viaje.0.idviaje", v.getIdviaje()),
                                 Filters.eq("viaje.1.idviaje", v.getIdviaje())
                         );
-                        
 
-                        List<Solicitud> solicitudList = solicitudRepository.findBy(and(eq("activo","si"),filter), new Document("idsolicitud", -1));
-                        if(solicitudList ==null || solicitudList.isEmpty()){
-                           viajeList.add(v);
+                        List<Solicitud> solicitudList = solicitudRepository.findBy(and(eq("activo", "si"), filter), new Document("idsolicitud", -1));
+                        if (solicitudList == null || solicitudList.isEmpty()) {
+                            viajeList.add(v);
                         }
                     }
 
@@ -763,18 +791,17 @@ public class ViajeReporteController implements Serializable, IError {
             }
 
             viajeFiltered = viajeList;
-
             viajeDataModel = new ViajeDataModel(viajeList);
+            programacionFlotaPojoFiltered = programacionFlotaPojoList;
+
+            programacionFlotaDataModel = new ProgramacionFlotaDataModel(programacionFlotaPojoList);
 
         } catch (Exception e) {
             errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
-   
-
     // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
-
     public String searchBy(String string) {
         try {
 
@@ -1268,5 +1295,4 @@ public class ViajeReporteController implements Serializable, IError {
     }
     // </editor-fold>
 
-   
 }

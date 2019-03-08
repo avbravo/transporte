@@ -55,18 +55,18 @@
 
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <a:paginator 
+                <a:paginatorReport 
                     rowPage="#{viajeReporteController.rowPage}"
-                    clear="#{viajeReporteController.clear()}"
+
                     first="#{viajeReporteController.first()}"
                     back="#{viajeReporteController.back()}"
                     next="#{viajeReporteController.next()}"
                     last="#{viajeReporteController.last()}"
                     page="#{viajeReporteController.page}"
                     pages="#{viajeReporteController.pages}"
-                    renderedClear="false"
+
                     skip="ajax:viajeReporteController.skip(viajeReporteController.page)" 
-                    new="#{viajeReporteController.prepare('gonew',viajeReporteController.viaje)}"
+                    
                     printAll="#{viajeReporteController.printAll()}"
                     />
                 <b:dataTable value="#{viajeReporteController.viajeDataModel}"

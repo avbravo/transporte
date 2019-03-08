@@ -55,84 +55,72 @@
 
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <a:paginator 
+                <a:paginatorReport 
                     rowPage="#{viajeReporteController.rowPage}"
-                    clear="#{viajeReporteController.clear()}"
                     first="#{viajeReporteController.first()}"
                     back="#{viajeReporteController.back()}"
                     next="#{viajeReporteController.next()}"
                     last="#{viajeReporteController.last()}"
                     page="#{viajeReporteController.page}"
                     pages="#{viajeReporteController.pages}"
-                    renderedClear="false"
                     skip="ajax:viajeReporteController.skip(viajeReporteController.page)" 
-                    new="#{viajeReporteController.prepare('gonew',viajeReporteController.viaje)}"
                     printAll="#{viajeReporteController.printAll()}"
                     />
-                <b:dataTable value="#{viajeReporteController.viajeDataModel}"
+                <b:dataTable value="#{viajeReporteController.programacionFlotaDataModel}"
                              var="item"
                              id="dataTable2"
                              paginated="false"
                              onpage="console.log('page');">
 
-                    <b:dataTableColumn value="#{item.idviaje}" label="#{msg['field.idviaje']}"
+                    <b:dataTableColumn value="#{item.idprogramacionFlota}" label="#{msg['field.idprogramacionFlota']}"
                                        style="color: #{viajeReporteController.columnColor(item.realizado,item.activo)}"/>
+                   
+                    <b:dataTableColumn value="#{item.diaNombre}" label="#{msg['field.diaNombre}']}" />
 
 
-                    <b:dataTableColumn label="#{msg['field.fechapartida']}"   style="color: #{viajeReporteController.columnColor(item.realizado,item.activo)}">
+                    <b:dataTableColumn label="#{msg['field.fecha']}"   >
 
                         <p:calendar  disabled="true"  size="8"   
                                      style="background-color: grey; color: #{viajeReporteController.columnColor(item.realizado,item.activo)}"
 
-                                     pattern="dd/MM/yyyy" value="#{item.fechahorainicioreserva}"  />
-                        <br />
-                        <p:calendar  disabled="true"    
-                                     style="background-color: grey;  color: #{viajeReporteController.columnColor(item.realizado,item.activo)}"
-                                     size="8" 
-                                     pattern="HH:mm:ss a" value="#{item.fechahorainicioreserva}"  />
-
+                                     pattern="dd/MM/yyyy" value="#{item.fecha}"  />
+                        
+                       
 
 
                     </b:dataTableColumn> 
 
-                    <b:dataTableColumn label="#{msg['field.fecharegreso']}"   style="color: #{viajeReporteController.columnColor(item.realizado,item.activo)}">
-                        <p:calendar  disabled="true"    
-                                     style="background-color: grey;  color: #{viajeReporteController.columnColor(item.realizado,item.activo)}"
-                                     size="8" 
-                                     pattern="dd/MM/yyyy" value="#{item.fechahorafinreserva}"  />
-                        <br />
-                        <p:calendar  disabled="true"   
-                                     style="background-color: grey;  color: #{viajeReporteController.columnColor(item.realizado,item.activo)}"
-                                     size="8" 
-                                     pattern="HH:mm:ss a" value="#{item.fechahorafinreserva}"  />
+                    
+
+
+                    <b:dataTableColumn label="#{msg['field.unidad']}" >
+
+                        <p:outputLabel value="#{item.unidad}"/>
+
+                    </b:dataTableColumn>
+                    <b:dataTableColumn label="#{msg['field.mision']}" >
+
+                        <p:outputLabel value="#{item.mision}"/>
+
+                    </b:dataTableColumn>
+
+                    <b:dataTableColumn label="#{msg['field.horainicio']}">
+                        <p:outputLabel value="#{item.horainicio}"  />
+
+                    </b:dataTableColumn> 
+                    <b:dataTableColumn label="#{msg['field.horafin']}">
+                        <p:outputLabel value="#{item.horafin}"  />
 
                     </b:dataTableColumn> 
 
-
-                    <b:dataTableColumn label="#{msg['field.vehiculos']}"  style="color: #{viajeReporteController.columnColor(item.realizado,item.activo)}">
-
-                        <p:outputLabel value="#{item.vehiculo.marca} #{item.vehiculo.modelo}"/>
+                    <b:dataTableColumn  label="#{msg['field.conductor']}"  >
+                        <p:outputLabel value="#{item.conductor}"/>
 
                     </b:dataTableColumn>
-                    <b:dataTableColumn label="#{msg['field.conductores']}"  style="color: #{viajeReporteController.columnColor(item.realizado,item.activo)}">
+                    <b:dataTableColumn  label="#{msg['field.vehiculo']}"  
+                                        >
 
-                        <p:outputLabel value="#{item.conductor.nombre}"/>
-
-                    </b:dataTableColumn>
-
-                    <b:dataTableColumn label="#{msg['field.lugardestino']}" style="color: #{viajeReporteController.columnColor(item.realizado,item.activo)}">
-                        <p:outputLabel value="#{item.lugardestino}"  />
-
-                    </b:dataTableColumn> 
-
-                    <b:dataTableColumn  label="#{msg['field.r']}" style="color: #{viajeReporteController.columnColor(item.realizado,item.activo)}" >
-                        <p:outputLabel value="#{item.realizado}"/>
-
-                    </b:dataTableColumn>
-                    <b:dataTableColumn  label="#{msg['field.a']}"  
-                                        style="color: #{viajeReporteController.columnColor(item.realizado,item.activo)}" >
-
-                        <p:outputLabel value="#{item.activo}"/>
+                        <p:outputLabel value="#{item.vehiculo}"/>
 
                     </b:dataTableColumn>
 

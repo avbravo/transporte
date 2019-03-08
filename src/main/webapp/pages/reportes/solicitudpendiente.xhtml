@@ -31,18 +31,18 @@
                
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <a:paginator 
+                <a:paginatorReport 
                     rowPage="#{solicitudReporteController.rowPage}"
-                    clear="#{solicitudReporteController.clear()}"
+
                     first="#{solicitudReporteController.first()}"
                     back="#{solicitudReporteController.back()}"
                     next="#{solicitudReporteController.next()}"
                     last="#{solicitudReporteController.last()}"
                     page="#{solicitudReporteController.page}"
                     pages="#{solicitudReporteController.pages}"
-                    renderedClear="false"
+                    
                     skip="ajax:solicitudReporteController.skip(solicitudReporteController.page)" 
-                    new="#{solicitudReporteController.prepare('gonew',solicitudReporteController.solicitud)}"
+                    
                     printAll="#{solicitudReporteController.printAll()}"
                     />
                 <b:dataTable value="#{solicitudReporteController.solicitudDataModel}"
