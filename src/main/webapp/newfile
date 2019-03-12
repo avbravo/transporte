@@ -1,10 +1,10 @@
 
 Replace all
-<e:autocompletetipogira
+<e:autocompletetipovehiculo
 por
 
-<jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
-completeMethod="#{tipogiraController.tipogiraServices.complete}" 
-labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"
+<jmoordbjsf:autocomplete converter="#{tipovehiculoConverter}"
+completeMethod="#{tipovehiculoController.tipovehiculoServices.complete}" 
+labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"
 
 

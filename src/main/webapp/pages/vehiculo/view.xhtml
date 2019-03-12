@@ -54,7 +54,9 @@
 
 
                          
-                         <e:autocompletetipovehiculo  listener="#{vehiculoController.handleSelect}"
+                         <jmoordbjsf:autocomplete converter="#{tipovehiculoConverter}"
+completeMethod="#{tipovehiculoController.tipovehiculoServices.complete}" 
+labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"         listener="#{vehiculoController.handleSelect}"
                                                       value="#{vehiculoController.vehiculo.tipovehiculo}"
                                                itemLabel="#{p.idtipovehiculo}"
                                                dropdown="true"

@@ -33,7 +33,9 @@
 
 
                     <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
-                    <e:autocompletetipovehiculo listener="#{tipovehiculoController.handleAutocompleteOfListXhtml}"
+                    <jmoordbjsf:autocomplete converter="#{tipovehiculoConverter}"
+completeMethod="#{tipovehiculoController.tipovehiculoServices.complete}" 
+labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"        listener="#{tipovehiculoController.handleAutocompleteOfListXhtml}"
                                                   value="#{tipovehiculoController.tipovehiculoSelected}"
                                                   itemLabel=" #{p.idtipovehiculo}"
                                                   field="idtipovehiculo"

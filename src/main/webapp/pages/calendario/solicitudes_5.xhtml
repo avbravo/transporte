@@ -71,7 +71,9 @@ labeltip1="#{msg['field.estatus']} #{p.idestatus}"   listener="#{calendarioSolic
                                            update=" :form:schedule"/>
 
                     <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
-                    <e:autocompletetipovehiculo listener="#{calendarioSolicitudController.handleSelectEstatusTipovehiculo}"
+                    <jmoordbjsf:autocomplete converter="#{tipovehiculoConverter}"
+completeMethod="#{tipovehiculoController.tipovehiculoServices.complete}" 
+labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"        listener="#{calendarioSolicitudController.handleSelectEstatusTipovehiculo}"
                                                 value="#{calendarioSolicitudController.tipovehiculo}"
                                                 itemLabel=" #{p.idtipovehiculo}"
                                                 field="idtipovehiculo"
