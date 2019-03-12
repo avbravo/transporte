@@ -130,15 +130,15 @@
 
                         <p:outputLabel value="#{msg['field.idtipogira']}"/>
                         <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
-completeMethod="#{tipogiraController.tipogiraServices.complete}" 
-labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"     listener="#{solicitudManualAdministrativoController.handleSelect}"
-                                                value="#{solicitudManualAdministrativoController.solicitud.tipogira}"
-                                                itemLabel=" #{p.idtipogira}"
-                                                field="idtipogira"
-                                                dropdown="true"
-                                                fromstart="true"
-                                                minQueryLength="0"
-                                                update=""/>
+                                                 completeMethod="#{tipogiraController.tipogiraServices.complete}" 
+                                                 labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"     listener="#{solicitudManualAdministrativoController.handleSelect}"
+                                                 value="#{solicitudManualAdministrativoController.solicitud.tipogira}"
+                                                 itemLabel=" #{p.idtipogira}"
+                                                 field="idtipogira"
+                                                 dropdown="true"
+                                                 fromstart="true"
+                                                 minQueryLength="0"
+                                                 update=""/>
 
                         <p:outputLabel  value="#{msg['field.mision']}" />
                         <b:inputTextarea rows="2"  span="8" value="#{solicitudManualAdministrativoController.solicitud.mision}" id="mision"  label="#{msg['field.mision']}" />
