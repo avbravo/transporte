@@ -1,10 +1,10 @@
 
 Replace all
-<e:autocompleteunidad
+<e:autocompletetipogira
 por
 
-<jmoordbjsf:autocomplete converter="#{unidadConverter}"
-completeMethod="#{unidadController.unidadServices.complete}" 
-labeltip1="#{msg['field.unidad']} #{p.idunidad}"
+<jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
+completeMethod="#{tipogiraController.tipogiraServices.complete}" 
+labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"
 
 

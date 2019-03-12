@@ -33,7 +33,9 @@
 
 
                     <p:outputLabel value="#{msg['field.idsugerencia']}"/>
-                    <e:autocompletesugerencia listener="#{sugerenciaController.handleAutocompleteOfListXhtml}"
+                    <jmoordbjsf:autocomplete converter="#{sugerenciaConverter}"
+completeMethod="#{sugerenciaController.sugerenciaServices.complete}" 
+labeltip1="#{msg['field.sugerencia']} #{p.idsugerencia}"     listener="#{sugerenciaController.handleAutocompleteOfListXhtml}"
                                                   value="#{sugerenciaController.sugerenciaSelected}"
                                                   itemLabel=" #{p.idsugerencia}"
                                                   field="idsugerencia"

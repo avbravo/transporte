@@ -113,7 +113,9 @@ labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudAdministr
                         <p:spacer/>
                         
                          <p:outputLabel value="#{msg['field.idtipogira']}"/>
-                           <e:autocompletetipogira listener="#{solicitudAdministrativoController.handleSelect}"
+                           <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
+completeMethod="#{tipogiraController.tipogiraServices.complete}" 
+labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"     listener="#{solicitudAdministrativoController.handleSelect}"
                                                   value="#{solicitudAdministrativoController.solicitud.tipogira}"
                                                   itemLabel=" #{p.idtipogira}"
                                                   field="idtipogira"

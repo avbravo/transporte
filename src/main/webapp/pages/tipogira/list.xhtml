@@ -33,7 +33,9 @@
 
 
                     <p:outputLabel value="#{msg['field.idtipogira']}"/>
-                    <e:autocompletetipogira listener="#{tipogiraController.handleAutocompleteOfListXhtml}"
+                    <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
+completeMethod="#{tipogiraController.tipogiraServices.complete}" 
+labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"     listener="#{tipogiraController.handleAutocompleteOfListXhtml}"
                                                   value="#{tipogiraController.tipogiraSelected}"
                                                   itemLabel=" #{p.idtipogira}"
                                                   field="idtipogira"
