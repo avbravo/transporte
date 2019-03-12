@@ -19,7 +19,7 @@
                 border-color: #428BCA;
             }
         </style>
-       
+
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudAdministrativoPorAdministrador.create}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -28,15 +28,15 @@
                 <jmoordbjsf:messages id="msg"/>
 
                 <jmoordbjsf:newDate label="#{msg['field.fechagira']}"
-                           title="#{msg['titleview.solicitudmanualadministrativo']}"
-                           value="#{solicitudManualAdministrativoController.solicitud.fecha}"
-                           isnew="#{solicitudManualAdministrativoController.isNew()}"
-                           disabled="#{solicitudManualAdministrativoController.writable}"
-                           new="#{solicitudManualAdministrativoController.prepare('new',solicitudManualAdministrativoController.solicitud)}"
-                           rendererList="#{applicationMenu.solicitudAdministrativoPorAdministrador.list}"
-                           list="#{solicitudManualAdministrativoController.prepare('golist',solicitudManualAdministrativoController.solicitud)}"
+                                    title="#{msg['titleview.solicitudmanualadministrativo']}"
+                                    value="#{solicitudManualAdministrativoController.solicitud.fecha}"
+                                    isnew="#{solicitudManualAdministrativoController.isNew()}"
+                                    disabled="#{solicitudManualAdministrativoController.writable}"
+                                    new="#{solicitudManualAdministrativoController.prepare('new',solicitudManualAdministrativoController.solicitud)}"
+                                    rendererList="#{applicationMenu.solicitudAdministrativoPorAdministrador.list}"
+                                    list="#{solicitudManualAdministrativoController.prepare('golist',solicitudManualAdministrativoController.solicitud)}"
 
-                           />
+                                    />
 
                 <b:panel title="#{app['title.data']}" look="primary" rendered="#{solicitudManualAdministrativoController.writable}">
 
@@ -44,24 +44,24 @@
 
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{solicitudManualAdministrativoController.writable}"> 
 
-                      
+
                         <p:outputLabel  value="#{msg['field.solicitadopor']}" />
                         <b:column>
-                         <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-completeMethod="#{usuarioController.usuarioServices.complete}"
-labeltip1="#{msg['field.username']} #{p.username}"
-labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudManualAdministrativoController.handleSelect}"
-                                             value="#{solicitudManualAdministrativoController.solicita}"
-                                                itemLabel=" #{p.nombre}"
-                                                field="nombre"
-                                                dropdown="true"
-                                                minQueryLength="0"
-                                                update=":form:celular :form:email"
-                                             
-                                                />
-                         
-                         <p:outputLabel  value="#{msg['field.copiardesde']}" />
-                         <e:autocompletesolicitudmanualadministrativo
+                            <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                                     completeMethod="#{usuarioController.usuarioServices.complete}"
+                                                     labeltip1="#{msg['field.username']} #{p.username}"
+                                                     labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudManualAdministrativoController.handleSelect}"
+                                                     value="#{solicitudManualAdministrativoController.solicita}"
+                                                     itemLabel=" #{p.nombre}"
+                                                     field="nombre"
+                                                     dropdown="true"
+                                                     minQueryLength="0"
+                                                     update=":form:celular :form:email"
+
+                                                     />
+
+                            <p:outputLabel  value="#{msg['field.copiardesde']}" />
+                            <e:autocompletesolicitudmanualadministrativo
                                 listener="#{solicitudManualAdministrativoController.handleSelectCopiarDesde}"
                                 value="#{solicitudManualAdministrativoController.solicitudCopiar}"
                                 itemLabel=" #{p.mision}"
@@ -72,30 +72,30 @@ labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudManualAdm
                                 />
 
                         </b:column>
-                        
-                        
-                       <p:outputLabel value="#{msg['field.responsable']}"/>
-                      <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-completeMethod="#{usuarioController.usuarioServices.complete}"
-labeltip1="#{msg['field.username']} #{p.username}"
-labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudManualAdministrativoController.handleSelect}"
-                                             value="#{solicitudManualAdministrativoController.responsable}"
-                                                itemLabel=" #{p.nombre}"
-                                                field="nombre"
-                                                dropdown="true"
-                                                minQueryLength="0"
-                                                update=":form:panel"
-                                                />
-                        
-                        
-                         <p:outputLabel  value="#{msg['field.telefono']}" />
-                       <jmoordbjsf:inputText span="4"  value="#{solicitudManualAdministrativoController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
+
+
+                        <p:outputLabel value="#{msg['field.responsable']}"/>
+                        <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                                 completeMethod="#{usuarioController.usuarioServices.complete}"
+                                                 labeltip1="#{msg['field.username']} #{p.username}"
+                                                 labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudManualAdministrativoController.handleSelect}"
+                                                 value="#{solicitudManualAdministrativoController.responsable}"
+                                                 itemLabel=" #{p.nombre}"
+                                                 field="nombre"
+                                                 dropdown="true"
+                                                 minQueryLength="0"
+                                                 update=":form:panel"
+                                                 />
+
+
+                        <p:outputLabel  value="#{msg['field.telefono']}" />
+                        <jmoordbjsf:inputText span="4"  value="#{solicitudManualAdministrativoController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
 
                         <p:outputLabel  value="#{msg['field.email']}" />
                         <jmoordbjsf:email span="8" value="#{solicitudManualAdministrativoController.responsable.email}" id="email"  label="#{msg['field.email']}" />
 
-                        
-                          <p:outputLabel value="#{msg['field.idunidad']}"/>
+
+                        <p:outputLabel value="#{msg['field.idunidad']}"/>
                         <p:autoComplete dropdown="false"
                                         multiple="true"
                                         scrollHeight="250"
@@ -123,39 +123,39 @@ labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudManualAdm
                             </f:facet>
                         </p:autoComplete>
 
-                        
-                         
+
+
                         <p:spacer/>
                         <p:spacer/>
 
-                         <p:outputLabel value="#{msg['field.idtipogira']}"/>
-                           <e:autocompletetipogira listener="#{solicitudManualAdministrativoController.handleSelect}"
-                                                  value="#{solicitudManualAdministrativoController.solicitud.tipogira}"
-                                                  itemLabel=" #{p.idtipogira}"
-                                                  field="idtipogira"
-                                                  dropdown="true"
-                                                  fromstart="true"
-                                                  minQueryLength="0"
-                                                  update=""/>
-                        
+                        <p:outputLabel value="#{msg['field.idtipogira']}"/>
+                        <e:autocompletetipogira listener="#{solicitudManualAdministrativoController.handleSelect}"
+                                                value="#{solicitudManualAdministrativoController.solicitud.tipogira}"
+                                                itemLabel=" #{p.idtipogira}"
+                                                field="idtipogira"
+                                                dropdown="true"
+                                                fromstart="true"
+                                                minQueryLength="0"
+                                                update=""/>
+
                         <p:outputLabel  value="#{msg['field.mision']}" />
                         <b:inputTextarea rows="2"  span="8" value="#{solicitudManualAdministrativoController.solicitud.mision}" id="mision"  label="#{msg['field.mision']}" />
 
 
-                     
-                        <p:outputLabel  value="#{msg['field.lugares']}" />
-                      <p:chips value="#{solicitudManualAdministrativoController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
 
- <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
-                 <b:touchSpin  col-md="3" value="#{solicitudManualAdministrativoController.solicitud.numerodevehiculos}" min="1" max="20" step="1" />
-                        
-                          <p:outputLabel  value="#{msg['field.pasajeros']}" />
-              <b:touchSpin  col-md="3"  min="1"  step="1" value="#{solicitudManualAdministrativoController.solicitud.pasajeros}" id="pasajeros"  label="#{msg['field.pasajeros']}" />
+                        <p:outputLabel  value="#{msg['field.lugares']}" />
+                        <p:chips value="#{solicitudManualAdministrativoController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
+
+                        <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
+                        <b:touchSpin  col-md="3" value="#{solicitudManualAdministrativoController.solicitud.numerodevehiculos}" min="1" max="20" step="1" />
+
+                        <p:outputLabel  value="#{msg['field.pasajeros']}" />
+                        <b:touchSpin  col-md="3"  min="1"  step="1" value="#{solicitudManualAdministrativoController.solicitud.pasajeros}" id="pasajeros"  label="#{msg['field.pasajeros']}" />
 
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
                         <jmoordbjsf:calendar 
-                                    pattern="dd/MM/yyyy HH:mm a" value="#{solicitudManualAdministrativoController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" />
+                            pattern="dd/MM/yyyy HH:mm a" value="#{solicitudManualAdministrativoController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" />
 
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
@@ -165,11 +165,11 @@ labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudManualAdm
 
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
                         <jmoordbjsf:calendar pattern="dd/MM/yyyy HH:mm a" value="#{solicitudManualAdministrativoController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
-                                  
 
-                                    label="#{msg['field.fechahoraregreso']}" />
 
-                       
+                                             label="#{msg['field.fechahoraregreso']}" />
+
+
 
                         <p:outputLabel  value="#{msg['field.lugarllegada']}" />
                         <jmoordbjsf:inputText span="8" value="#{solicitudManualAdministrativoController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
@@ -177,7 +177,7 @@ labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudManualAdm
 
 
                         <p:outputLabel  value="#{msg['field.recursossolicitados']}" />
-                      <p:chips value="#{solicitudManualAdministrativoController.solicitud.recursossolicitados}" id="recursossolicitados"  title="#{msg['field.chips']}"  />
+                        <p:chips value="#{solicitudManualAdministrativoController.solicitud.recursossolicitados}" id="recursossolicitados"  title="#{msg['field.chips']}"  />
 
                         <p:outputLabel  value="#{msg['field.observaciones']}" />
                         <b:inputTextarea rows="2" span="8" value="#{solicitudManualAdministrativoController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
@@ -185,8 +185,8 @@ labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudManualAdm
 
 
 
- <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
-                      <p:autoComplete dropdown="true"
+                        <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
+                        <p:autoComplete dropdown="true"
                                         multiple="true"
                                         scrollHeight="250"
                                         size="55"
@@ -203,29 +203,29 @@ labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudManualAdm
                             <f:attribute name="field" value="idtipovehiculo"/>
                             <f:attribute name="fielddropdown" value="false"/>
                             <f:attribute name="fieldquerylenth" value="1"/>
-                             <p:ajax event="itemSelect" listener="#{solicitudManualAdministrativoController.handleSelect}"
+                            <p:ajax event="itemSelect" listener="#{solicitudManualAdministrativoController.handleSelect}"
                                     update=""
                                     />
 
 
                         </p:autoComplete>
-               
- <p:outputLabel  value="#{msg['field.sugerencia']}" style="font-size: 25;" />
-        <b:dataTable value="#{sugerenciaController.sugerenciaDataModel}"
-                             var="item"
-                             id="dataTable2"
-                             paginated="false"
-                             onpage="console.log('page');">
-                    
-                    <b:dataTableColumn value="#{item.descripcion}" label="#{msg['field.descripcion']}"/>
-                  
-                  
 
-                </b:dataTable>
- 
+                        <p:outputLabel  value="#{msg['field.sugerencia']}" style="font-size: 25;" />
+                        <b:dataTable value="#{sugerenciaController.sugerenciaDataModel}"
+                                     var="item"
+                                     id="dataTable2"
+                                     paginated="false"
+                                     onpage="console.log('page');">
+
+                            <b:dataTableColumn value="#{item.descripcion}" label="#{msg['field.descripcion']}"/>
+
+
+
+                        </b:dataTable>
+
 
                         <jmoordbjsf:save rendered="#{solicitudManualAdministrativoController.writable and applicationMenu.solicitudAdministrativoPorAdministrador.create}"
-                                save="#{solicitudManualAdministrativoController.save()}" />
+                                         save="#{solicitudManualAdministrativoController.save()}" />
 
 
                     </b:panelGrid>

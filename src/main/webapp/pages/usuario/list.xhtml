@@ -18,13 +18,13 @@
                 border-color: #428BCA;
             }
         </style>
-       
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.usuario.list}" onkeypress="if (event.keyCode == 13) {
+
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.usuario.list}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
-          <b:growl  id="msgs"/>
-         
+            <b:growl  id="msgs"/>
+
             <b:panel title="#{msg['titlelist.usuario']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
@@ -33,25 +33,25 @@
 
                     <p:outputLabel value="#{msg['field.username']}"/>
                     <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-completeMethod="#{usuarioController.usuarioServices.complete}"
-labeltip1="#{msg['field.username']} #{p.username}"
-labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{usuarioController.handleAutocompleteOfListXhtml}"
-                                                  value="#{usuarioController.usuarioSelected}"
-                                                  itemLabel=" #{p.username}"
-                                                  field="username"
-                                                  update=" :form:dataTable"/>
+                                             completeMethod="#{usuarioController.usuarioServices.complete}"
+                                             labeltip1="#{msg['field.username']} #{p.username}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{usuarioController.handleAutocompleteOfListXhtml}"
+                                             value="#{usuarioController.usuarioSelected}"
+                                             itemLabel=" #{p.username}"
+                                             field="username"
+                                             update=" :form:dataTable"/>
 
                     <p:outputLabel value="#{msg['field.nombre']}"/>
-                      <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-completeMethod="#{usuarioController.usuarioServices.complete}"
-labeltip1="#{msg['field.username']} #{p.username}"
-labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{usuarioController.handleAutocompleteOfListXhtml}"
-                                                value="#{usuarioController.usuarioSelected}"
-                                                itemLabel=" #{p.nombre}"
-                                                field="nombre"
-                                                update=" :form:dataTable"/>
-                    
-                      
+                    <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                             completeMethod="#{usuarioController.usuarioServices.complete}"
+                                             labeltip1="#{msg['field.username']} #{p.username}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{usuarioController.handleAutocompleteOfListXhtml}"
+                                             value="#{usuarioController.usuarioSelected}"
+                                             itemLabel=" #{p.nombre}"
+                                             field="nombre"
+                                             update=" :form:dataTable"/>
+
+
 
                 </b:panelGrid>
             </b:panel>
@@ -65,7 +65,7 @@ labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{usuarioController.
                     last="#{usuarioController.last()}"
                     page="#{usuarioController.page}"
                     pages="#{usuarioController.pages}"
-                 skip="ajax:usuarioController.skip(usuarioController.page)"
+                    skip="ajax:usuarioController.skip(usuarioController.page)"
                     new="#{usuarioController.prepare('gonew',usuarioController.usuario)}"
                     printAll="#{usuarioController.printAll()}"
                     />
@@ -78,9 +78,9 @@ labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{usuarioController.
                     <b:dataTableColumn value="#{item.username}" label="#{msg['field.username']}"/>
                     <b:dataTableColumn value="#{item.nombre}" label="#{msg['field.nombre']}" />
                     <b:dataTableColumn value="#{item.unidad.idunidad}" label="#{msg['field.unidad']}" />
-                   
 
-                 
+
+
                     <b:dataTableColumn label="">
                         <p:panelGrid columns="2" styleClass="form-group ui-panelgrid-blank" layout="grid">
 
@@ -89,9 +89,9 @@ labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{usuarioController.
                             </p:repeat>
                         </p:panelGrid>
                     </b:dataTableColumn>
-                    
+
                     <b:dataTableColumn value="#{item.unidad.activo}" label="#{msg['field.activo']}" />
-                    
+
                     <b:dataTableColumn label="">
 
                         <jmoordbjsf:column

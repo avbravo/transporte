@@ -31,14 +31,20 @@
 
                     
                     <p:outputLabel value="#{msg['field.idsemestre']}"/>
-                    <e:autocompletesemestre listener="#{semestreController.handleAutocompleteOfListXhtml}"
+                    <jmoordbjsf:autocomplete converter="#{semestreConverter}"
+completeMethod="#{semestreController.semestreServices.complete}"
+labeltip1="#{p.idsemestre}"
+labeltip2="#{p.descripcion}"    listener="#{semestreController.handleAutocompleteOfListXhtml}"
                                                   value="#{semestreController.semestreSelected}"
                                                   itemLabel="#{p.idsemestre}"
                                                   field="idsemestre"
                                                   update=":form:dataTable"/>
 
                     <p:outputLabel value="#{msg['field.descripcion']}"/>
-                      <e:autocompletesemestre listener="#{semestreController.handleAutocompleteOfListXhtml}"
+                      <jmoordbjsf:autocomplete converter="#{semestreConverter}"
+completeMethod="#{semestreController.semestreServices.complete}"
+labeltip1="#{p.idsemestre}"
+labeltip2="#{p.descripcion}"    listener="#{semestreController.handleAutocompleteOfListXhtml}"
                                                 value="#{semestreController.semestreSelected}"
                                                 itemLabel=" #{p.descripcion}"
                                                 field="descripcion"

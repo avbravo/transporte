@@ -81,7 +81,10 @@ labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudDocenteCo
 
 
                             <p:outputLabel  value="#{msg['field.semestre']}" />
-                            <e:autocompletesemestre  listener="#{solicitudDocenteController.handleSelect}"
+                            <jmoordbjsf:autocomplete converter="#{semestreConverter}"
+completeMethod="#{semestreController.semestreServices.complete}"
+labeltip1="#{p.idsemestre}"
+labeltip2="#{p.descripcion}"     listener="#{solicitudDocenteController.handleSelect}"
                                                      value="#{solicitudDocenteController.solicitud.semestre}"
                                                      itemLabel="#{p.idsemestre}"
                                                      dropdown="true"
