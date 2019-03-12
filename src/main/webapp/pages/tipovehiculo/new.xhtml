@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"> 
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -24,8 +24,8 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
-                <a:new label="#{msg['field.idtipovehiculo']}"
+                <jmoordbjsf:messages id="msg"/>
+                <jmoordbjsf:new label="#{msg['field.idtipovehiculo']}"
                        title="#{msg['titleview.tipovehiculo']}"
                        value="#{tipovehiculoController.tipovehiculo.idtipovehiculo}"
                        isnew="#{tipovehiculoController.isNew()}"
@@ -43,9 +43,9 @@
 
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{tipovehiculoController.tipovehiculo.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{tipovehiculoController.tipovehiculo.activo}" id="activo"  required="true"/>
 
-                        <a:save rendered="#{tipovehiculoController.writable and applicationMenu.tipovehiculo.create}"
+                        <jmoordbjsf:save rendered="#{tipovehiculoController.writable and applicationMenu.tipovehiculo.create}"
                                       save="#{tipovehiculoController.save()}" />
 
 
@@ -55,7 +55,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tipovehiculo.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tipovehiculo.create}" />
 
         <br/><br/><br/>
     </ui:define>

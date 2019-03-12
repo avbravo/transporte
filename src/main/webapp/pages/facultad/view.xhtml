@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -24,20 +24,20 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
                 <b:panel title="#{msg['titleview.facultad']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{facultadController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idfacultad']}" />
                         <p:outputLabel  value="#{facultadController.facultad.idfacultad}" id="idfacultad"   />
                         <p:outputLabel  value="#{msg['field.facultad']}" />
-                        <a:inputText value="#{facultadController.facultad.descripcion}" id="facultad"  label="#{msg['field.facultad']}" />
+                        <jmoordbjsf:inputText value="#{facultadController.facultad.descripcion}" id="facultad"  label="#{msg['field.facultad']}" />
 
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{facultadController.facultad.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{facultadController.facultad.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
-                    <a:view 
+                    <jmoordbjsf:view 
                         renderedDelete="#{applicationMenu.facultad.delete and facultadController.writable }"
                         renderedEdit="#{applicationMenu.facultad.edit and facultadController.writable}" 
                         renderedList="#{applicationMenu.facultad.list and facultadController.writable}"
@@ -49,7 +49,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.facultad.query}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.facultad.query}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

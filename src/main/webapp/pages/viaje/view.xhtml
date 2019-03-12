@@ -6,7 +6,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:extensionviaje="http://xmlns.jcp.org/jsf/composite/extensionviaje">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -24,7 +24,7 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
                 <b:panel title="#{msg['titleview.viaje']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{viajeController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idviaje']}" />
@@ -60,10 +60,10 @@
 
 </p:fieldset>
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <a:inputText   value="#{viajeController.viaje.lugarpartida}"    />
+                        <jmoordbjsf:inputText   value="#{viajeController.viaje.lugarpartida}"    />
 
                         <p:outputLabel  value="#{msg['field.lugardestino']}" />
-                        <a:inputText  value="#{viajeController.viaje.lugardestino}"    />
+                        <jmoordbjsf:inputText  value="#{viajeController.viaje.lugardestino}"    />
 
 
                         <p:outputLabel value="#{msg['field.vehiculo']}"
@@ -115,19 +115,19 @@
 
 
                         <p:outputLabel  value="#{msg['field.kmestimados']}" />
-                        <a:inputText  span="5" value="#{viajeController.viaje.kmestimados}"  />
+                        <jmoordbjsf:inputText  span="5" value="#{viajeController.viaje.kmestimados}"  />
 
                         <p:outputLabel  value="#{msg['field.costocombustible']}"  />
-                        <a:inputText  label="#{msg['field.costocombustible']}"
+                        <jmoordbjsf:inputText  label="#{msg['field.costocombustible']}"
                                       span="5" value="#{viajeController.viaje.costocombustible}"   />
 
                         <p:outputLabel  value="#{msg['field.realizado']}" />
-                        <a:noyes value="#{viajeController.viaje.realizado}" id="realizado"  required="true"/>
+                        <jmoordbjsf:noyes value="#{viajeController.viaje.realizado}" id="realizado"  required="true"/>
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{viajeController.viaje.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{viajeController.viaje.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
-                    <a:view 
+                    <jmoordbjsf:view 
                         renderedDelete="#{applicationMenu.viaje.delete and viajeController.writable and viajeController.viaje.realizado eq 'no'}"
                         renderedEdit="#{applicationMenu.viaje.edit and viajeController.writable and viajeController.viaje.realizado eq 'no'}" 
                         renderedList="#{applicationMenu.viaje.list and viajeController.writable}"
@@ -200,7 +200,7 @@
                 </b:panelGrid>
             </p:dialog>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.viaje.query}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.viaje.query}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

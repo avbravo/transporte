@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -24,17 +24,17 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
                 <b:panel title="#{msg['titleview.unidad']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{unidadController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idunidad']}" />
                         <p:outputLabel  value="#{unidadController.unidad.idunidad}" id="idunidad"   />
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{unidadController.unidad.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{unidadController.unidad.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
-                    <a:view 
+                    <jmoordbjsf:view 
                         renderedDelete="#{applicationMenu.unidad.delete and unidadController.writable }"
                         renderedEdit="#{applicationMenu.unidad.edit and unidadController.writable}" 
                         renderedList="#{applicationMenu.unidad.list and unidadController.writable}"
@@ -46,7 +46,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.unidad.query}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.unidad.query}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

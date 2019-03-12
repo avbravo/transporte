@@ -6,7 +6,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:p="http://primefaces.org/ui">
     <ui:define name="content">
         <h:outputStylesheet library="bsf" name="css/thumbnails.css"/>
@@ -158,7 +158,7 @@
             </b:panel>
         </b:form>
 
-        <a:denegado renderedcondition="#{!loginController.loggedIn}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

@@ -8,7 +8,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions" 
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"> 
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -25,9 +25,9 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
 
-                <a:newDate label="#{msg['field.fechagira']}"
+                <jmoordbjsf:newDate label="#{msg['field.fechagira']}"
                            title="#{msg['titleview.solicitudmanualadministrativo']}"
                            value="#{solicitudManualAdministrativoController.solicitud.fecha}"
                            isnew="#{solicitudManualAdministrativoController.isNew()}"
@@ -83,10 +83,10 @@
                         
                         
                          <p:outputLabel  value="#{msg['field.telefono']}" />
-                       <a:inputText span="4"  value="#{solicitudManualAdministrativoController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
+                       <jmoordbjsf:inputText span="4"  value="#{solicitudManualAdministrativoController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
 
                         <p:outputLabel  value="#{msg['field.email']}" />
-                        <a:email span="8" value="#{solicitudManualAdministrativoController.responsable.email}" id="email"  label="#{msg['field.email']}" />
+                        <jmoordbjsf:email span="8" value="#{solicitudManualAdministrativoController.responsable.email}" id="email"  label="#{msg['field.email']}" />
 
                         
                           <p:outputLabel value="#{msg['field.idunidad']}"/>
@@ -148,17 +148,17 @@
 
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
-                        <a:calendar 
+                        <jmoordbjsf:calendar 
                                     pattern="dd/MM/yyyy HH:mm a" value="#{solicitudManualAdministrativoController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" />
 
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <a:inputText span="8" value="#{solicitudManualAdministrativoController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
+                        <jmoordbjsf:inputText span="8" value="#{solicitudManualAdministrativoController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
 
 
 
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
-                        <a:calendar pattern="dd/MM/yyyy HH:mm a" value="#{solicitudManualAdministrativoController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                        <jmoordbjsf:calendar pattern="dd/MM/yyyy HH:mm a" value="#{solicitudManualAdministrativoController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
                                   
 
                                     label="#{msg['field.fechahoraregreso']}" />
@@ -166,7 +166,7 @@
                        
 
                         <p:outputLabel  value="#{msg['field.lugarllegada']}" />
-                        <a:inputText span="8" value="#{solicitudManualAdministrativoController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
+                        <jmoordbjsf:inputText span="8" value="#{solicitudManualAdministrativoController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
 
 
 
@@ -218,7 +218,7 @@
                 </b:dataTable>
  
 
-                        <a:save rendered="#{solicitudManualAdministrativoController.writable and applicationMenu.solicitudAdministrativoPorAdministrador.create}"
+                        <jmoordbjsf:save rendered="#{solicitudManualAdministrativoController.writable and applicationMenu.solicitudAdministrativoPorAdministrador.create}"
                                 save="#{solicitudManualAdministrativoController.save()}" />
 
 
@@ -228,7 +228,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudAdministrativoPorAdministrador.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudAdministrativoPorAdministrador.create}" />
 
         <br/><br/><br/>
     </ui:define>

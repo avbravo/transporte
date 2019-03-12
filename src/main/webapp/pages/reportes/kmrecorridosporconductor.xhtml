@@ -9,7 +9,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:avbravojsf="http://avbravo.com/tags"
                 xmlns:avbravox="http://avbravo.com/tags"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
                 xmlns:extensionviaje="http://xmlns.jcp.org/jsf/composite/extensionviaje">
     <ui:define name="content">
@@ -40,7 +40,7 @@
 
 
 
-                        <a:searchBetweenDate
+                        <jmoordbjsf:searchBetweenDate
                             renderedMove="true"
                             labelDesde="#{msg['field.fechainicio']}"
                             valueDesde="#{conductorReporteController.lookupServices.fechaDesde}"
@@ -56,7 +56,7 @@
 
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <a:paginatorReport 
+                <jmoordbjsf:paginatorReport 
                     rowPage="#{conductorReporteController.rowPage}"
 
                     first="#{conductorReporteController.first()}"
@@ -103,6 +103,6 @@
 
         </b:form>
 
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.viaje.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.viaje.list}" />
     </ui:define>
 </ui:composition>

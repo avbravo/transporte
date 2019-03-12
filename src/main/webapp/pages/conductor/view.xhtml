@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -24,7 +24,7 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
                 <b:panel title="#{msg['titleview.conductor']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{conductorController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idconductor']}" />
@@ -33,25 +33,25 @@
                         <p:outputLabel  value="#{conductorController.conductor.cedula}" id="cedula"   />
 
                          <p:outputLabel  value="#{msg['field.nombre']}" />
-                        <a:inputText value="#{conductorController.conductor.nombre}" id="nombre"  label="#{msg['field.nombre']}" />
+                        <jmoordbjsf:inputText value="#{conductorController.conductor.nombre}" id="nombre"  label="#{msg['field.nombre']}" />
 
                         
                           <p:outputLabel  value="#{msg['field.celular']}" />
-                        <a:inputText value="#{conductorController.conductor.celular}" id="celular" span="4" label="#{msg['field.celular']}" />
+                        <jmoordbjsf:inputText value="#{conductorController.conductor.celular}" id="celular" span="4" label="#{msg['field.celular']}" />
 
                         <p:outputLabel  value="#{msg['field.email']}" />
-                        <a:email value="#{conductorController.conductor.email}" id="email"  label="#{msg['field.email']}" />
+                        <jmoordbjsf:email value="#{conductorController.conductor.email}" id="email"  label="#{msg['field.email']}" />
 
                      
                      <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{conductorController.conductor.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{conductorController.conductor.activo}" id="activo"  required="true"/>
 
                         
                          <p:outputLabel  value="#{msg['field.escontrol']}" />
-                        <a:noyes value="#{conductorController.conductor.escontrol}" id="escontrol"  required="true"/>
+                        <jmoordbjsf:noyes value="#{conductorController.conductor.escontrol}" id="escontrol"  required="true"/>
 
                     </b:panelGrid>
-                    <a:view 
+                    <jmoordbjsf:view 
                         renderedDelete="#{applicationMenu.conductor.delete and conductorController.writable }"
                         renderedEdit="#{applicationMenu.conductor.edit and conductorController.writable}" 
                         renderedList="#{applicationMenu.conductor.list and conductorController.writable}"
@@ -63,7 +63,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.conductor.query}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.conductor.query}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

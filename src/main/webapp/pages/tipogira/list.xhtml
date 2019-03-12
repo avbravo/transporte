@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -47,7 +47,7 @@
                    <b:row>
                   
                     <b:column medium-screen="6">
-                        <a:search label="#{msg['field.idtipogira']}"
+                        <jmoordbjsf:search label="#{msg['field.idtipogira']}"
                                   value="#{tipogiraController.lookupServices.idtipogira}"
                                   renderedList="#{applicationMenu.tipogira.list}"  
                                   search="#{tipogiraController.searchBy('idtipogira')}"
@@ -56,7 +56,7 @@
                 </b:row>
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <a:paginator 
+                <jmoordbjsf:paginator 
                     rowPage="#{tipogiraController.rowPage}"
                     clear="#{tipogiraController.clear()}"
                     first="#{tipogiraController.first()}"
@@ -81,7 +81,7 @@
                   
                     <b:dataTableColumn label="">
 
-                        <a:column
+                        <jmoordbjsf:column
 
                             edit="#{tipogiraController.prepare('view',item)}"
                             delete="#{tipogiraController.delete(item,false)}"
@@ -94,6 +94,6 @@
 
         </b:form>
 
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tipogira.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tipogira.list}" />
     </ui:define>
 </ui:composition>

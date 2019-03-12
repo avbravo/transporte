@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -40,7 +40,7 @@
                 </b:panelGrid>
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <a:paginator 
+                <jmoordbjsf:paginator 
                     rowPage="#{solicitudAdministrativoController.rowPage}"
                     clear="#{solicitudAdministrativoController.clear()}"
                     first="#{solicitudAdministrativoController.first()}"
@@ -101,7 +101,7 @@
 
                     <b:dataTableColumn label="">
 
-                        <a:column_view
+                        <jmoordbjsf:column_view
 
                             edit="#{solicitudAdministrativoController.prepare('view',item)}"
                             rendered="#{applicationMenu.solicitud.delete}"
@@ -113,6 +113,6 @@
 
         </b:form>
 
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudAdministrativo.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudAdministrativo.list}" />
     </ui:define>
 </ui:composition>

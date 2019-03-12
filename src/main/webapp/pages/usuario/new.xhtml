@@ -8,7 +8,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"> 
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -25,8 +25,8 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
-                <a:newlowercase label="#{msg['field.username']}"
+                <jmoordbjsf:messages id="msg"/>
+                <jmoordbjsf:newlowercase label="#{msg['field.username']}"
                                 title="#{msg['titleview.usuario']}"
                        value="#{usuarioController.usuario.username}"
                        isnew="#{usuarioController.isNew()}"
@@ -44,29 +44,29 @@
 
 
                         <p:outputLabel  value="#{msg['field.nombre']}" />
-                        <a:inputText value="#{usuarioController.usuario.nombre}" id="nombre"  label="#{msg['field.nombre']}" />
+                        <jmoordbjsf:inputText value="#{usuarioController.usuario.nombre}" id="nombre"  label="#{msg['field.nombre']}" />
 
 
                         <p:outputLabel  value="#{msg['field.password']}" />
-                        <a:password value="#{usuarioController.usuario.password}" id="password"  label="#{msg['field.password']}" />
+                        <jmoordbjsf:password value="#{usuarioController.usuario.password}" id="password"  label="#{msg['field.password']}" />
 
                         <p:outputLabel  value="#{msg['field.passwordnuevorepetir']}" />
-                        <a:password value="#{usuarioController.passwordnewrepeat}" id="passwordrepetido"  label="#{msg['field.passwordnuevorepetir']}" />
+                        <jmoordbjsf:password value="#{usuarioController.passwordnewrepeat}" id="passwordrepetido"  label="#{msg['field.passwordnuevorepetir']}" />
 
                         <p:outputLabel  value="#{msg['field.cedula']}" />
-                        <a:inputText value="#{usuarioController.usuario.cedula}" id="cedula" span="4" label="#{msg['field.cedula']}" />
+                        <jmoordbjsf:inputText value="#{usuarioController.usuario.cedula}" id="cedula" span="4" label="#{msg['field.cedula']}" />
 
                         <p:outputLabel  value="#{msg['field.celular']}" />
-                        <a:inputText value="#{usuarioController.usuario.celular}" id="celular" span="4" label="#{msg['field.celular']}" />
+                        <jmoordbjsf:inputText value="#{usuarioController.usuario.celular}" id="celular" span="4" label="#{msg['field.celular']}" />
 
                         <p:outputLabel  value="#{msg['field.email']}" />
-                        <a:email value="#{usuarioController.usuario.email}" id="email"  label="#{msg['field.email']}" />
+                        <jmoordbjsf:email value="#{usuarioController.usuario.email}" id="email"  label="#{msg['field.email']}" />
 
 
 
 
                         <p:outputLabel  value="#{msg['field.cargo']}" />
-                        <a:inputText value="#{usuarioController.usuario.cargo}" id="cargo"  label="#{msg['field.cargo']}" />
+                        <jmoordbjsf:inputText value="#{usuarioController.usuario.cargo}" id="cargo"  label="#{msg['field.cargo']}" />
 
                         <p:outputLabel  value="#{msg['field.unidad']}" />
        
@@ -96,12 +96,12 @@
 
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{usuarioController.usuario.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{usuarioController.usuario.activo}" id="activo"  required="true"/>
 
 
 
 
-                        <a:save rendered="#{usuarioController.writable and applicationMenu.usuario.create}"
+                        <jmoordbjsf:save rendered="#{usuarioController.writable and applicationMenu.usuario.create}"
                                 save="#{usuarioController.save()}" />
 
 
@@ -111,7 +111,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.usuario.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.usuario.create}" />
 
         <br/><br/><br/>
     </ui:define>

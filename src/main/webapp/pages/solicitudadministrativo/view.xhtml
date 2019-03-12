@@ -8,7 +8,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -25,11 +25,11 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
                 <b:panel title="#{msg['titleview.solicitudadministrativo']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{solicitudAdministrativoController.writable}"> 
                         <p:outputLabel  value="#{msg['field.fecha']}" />
-                        <a:labelDate  value="#{solicitudAdministrativoController.solicitud.fecha}" id="fecha"   />
+                        <jmoordbjsf:labelDate  value="#{solicitudAdministrativoController.solicitud.fecha}" id="fecha"   />
                         <p:outputLabel  value="#{msg['field.idsolicitud']}" />
                         <p:outputLabel  value="#{solicitudAdministrativoController.solicitud.idsolicitud}" id="idsolicitud"   />
 
@@ -68,10 +68,10 @@
                         
                         
                          <p:outputLabel  value="#{msg['field.telefono']}" />
-                       <a:inputText span="4"  value="#{solicitudAdministrativoController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
+                       <jmoordbjsf:inputText span="4"  value="#{solicitudAdministrativoController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
 
                         <p:outputLabel  value="#{msg['field.email']}" />
-                        <a:email  value="#{solicitudAdministrativoController.responsable.email}" id="email"  label="#{msg['field.email']}" />
+                        <jmoordbjsf:email  value="#{solicitudAdministrativoController.responsable.email}" id="email"  label="#{msg['field.email']}" />
 
                         
                        <p:outputLabel value="#{msg['field.idunidad']}"/>
@@ -133,17 +133,17 @@
 
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
-                        <a:calendar 
+                        <jmoordbjsf:calendar 
                                     pattern="dd/MM/yyyy HH:mm a" value="#{solicitudAdministrativoController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" />
 
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <a:inputText span="8" value="#{solicitudAdministrativoController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
+                        <jmoordbjsf:inputText span="8" value="#{solicitudAdministrativoController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
 
 
 
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
-                        <a:calendar pattern="dd/MM/yyyy HH:mm a" value="#{solicitudAdministrativoController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                        <jmoordbjsf:calendar pattern="dd/MM/yyyy HH:mm a" value="#{solicitudAdministrativoController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
                                    
 
                                     label="#{msg['field.fechahoraregreso']}" />
@@ -151,7 +151,7 @@
                      
 
                         <p:outputLabel  value="#{msg['field.lugarllegada']}" />
-                        <a:inputText span="8" value="#{solicitudAdministrativoController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
+                        <jmoordbjsf:inputText span="8" value="#{solicitudAdministrativoController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
 
 
 
@@ -209,7 +209,7 @@
                 </b:dataTable>
  
                     </b:panelGrid>
-                    <a:view 
+                    <jmoordbjsf:view 
                         renderedDelete="false"
                         renderedEdit="#{solicitudAdministrativoController.verificarEditable(solicitudAdministrativoController.solicitud) and applicationMenu.solicitud.edit and solicitudAdministrativoController.writable}" 
                         renderedList="false"
@@ -221,7 +221,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudAdministrativo.query}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudAdministrativo.query}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

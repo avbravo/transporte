@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -26,7 +26,7 @@
                 <p:remoteCommand  update=":form:content :form:panel"
                                   name="remoteid" 
                                   actionListener="#{conductorController.findByCedula()}"/>
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
                 <b:panel title="#{msg['titleview.changecedula']}"> look="primary"
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{loginController.loggedIn}"> 
                         <p:outputLabel  value="#{msg['field.cedula']}" />
@@ -71,7 +71,7 @@
                         <p:outputLabel  value="#{msg['field.nombre']}" rendered="#{conductorController.writable}"/>
                         <p:outputLabel  value="#{conductorController.conductor.nombre}" id="nombre" rendered="#{conductorController.writable}" />
                         <p:outputLabel  value="#{msg['field.cedulanueva']}" rendered="#{conductorController.writable}"/>
-                        <a:inputText  value="#{conductorController.cedulanueva}" id="cedula2" required="true" rendered="#{conductorController.writable}"  />
+                        <jmoordbjsf:inputText  value="#{conductorController.cedulanueva}" id="cedula2" required="true" rendered="#{conductorController.writable}"  />
 
                         <b:commandButton 
                             look="primary" 
@@ -86,7 +86,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or ! applicationMenu.conductorcambiarcedula.edit}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or ! applicationMenu.conductorcambiarcedula.edit}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

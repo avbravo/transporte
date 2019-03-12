@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"> 
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -24,8 +24,8 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
-                <a:new label="#{msg['field.idtiposolicitud']}"
+                <jmoordbjsf:messages id="msg"/>
+                <jmoordbjsf:new label="#{msg['field.idtiposolicitud']}"
                        title="#{msg['titleview.tiposolicitud']}"
                        value="#{tiposolicitudController.tiposolicitud.idtiposolicitud}"
                        isnew="#{tiposolicitudController.isNew()}"
@@ -43,9 +43,9 @@
 
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{tiposolicitudController.tiposolicitud.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{tiposolicitudController.tiposolicitud.activo}" id="activo"  required="true"/>
 
-                        <a:save rendered="#{tiposolicitudController.writable and applicationMenu.tiposolicitud.create}"
+                        <jmoordbjsf:save rendered="#{tiposolicitudController.writable and applicationMenu.tiposolicitud.create}"
                                       save="#{tiposolicitudController.save()}" />
 
 
@@ -55,7 +55,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tiposolicitud.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tiposolicitud.create}" />
 
         <br/><br/><br/>
     </ui:define>

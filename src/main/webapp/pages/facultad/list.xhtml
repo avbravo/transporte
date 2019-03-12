@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -43,14 +43,14 @@
                 </b:panelGrid>
                 <b:row>
                     <b:column medium-screen="4">
-                        <a:search label="#{msg['field.idfacultad']}"
+                        <jmoordbjsf:search label="#{msg['field.idfacultad']}"
                                   value="#{facultadController.lookupServices.idfacultad}"
                                   renderedList="#{applicationMenu.facultad.list}"  
                                   search="#{facultadController.searchBy('idfacultad')}"
                                   />
                     </b:column>
                     <b:column medium-screen="8">
-                        <a:search label="#{msg['field.descripcion']}"
+                        <jmoordbjsf:search label="#{msg['field.descripcion']}"
                                   value="#{facultadController.lookupServices.descripcion}"
                                   renderedList="#{applicationMenu.facultad.list}"  
                                   search="#{facultadController.searchBy('descripcion')}"
@@ -59,7 +59,7 @@
                 </b:row>
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <a:paginator 
+                <jmoordbjsf:paginator 
                     rowPage="#{facultadController.rowPage}"
                     clear="#{facultadController.clear()}"
                     first="#{facultadController.first()}"
@@ -87,7 +87,7 @@
 
                     <b:dataTableColumn label="">
 
-                        <a:column
+                        <jmoordbjsf:column
 
                             edit="#{facultadController.prepare('view',item)}"
                             delete="#{facultadController.delete(item,false)}"
@@ -100,6 +100,6 @@
 
         </b:form>
 
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.facultad.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.facultad.list}" />
     </ui:define>
 </ui:composition>

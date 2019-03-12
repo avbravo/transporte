@@ -38,7 +38,7 @@ public class ResourcesFiles implements Serializable {
         currentLocale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
         mrb = ResourceBundle.getBundle("com.avbravo.transporte.properties.messages",
                 currentLocale);
-        arb = ResourceBundle.getBundle("com.avbravoutils.properties.application",
+        arb = ResourceBundle.getBundle("com.jmoordbutils.properties.application",
                 currentLocale);
     }
 

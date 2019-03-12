@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:extensionviaje="http://xmlns.jcp.org/jsf/composite/extensionviaje"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -104,7 +104,7 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
 
                 <b:panel title="#{msg['titleview.viaje']}" look="primary" >
 
@@ -140,10 +140,10 @@
 
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <a:inputText   value="#{viajeController.viaje.lugarpartida}"    />
+                        <jmoordbjsf:inputText   value="#{viajeController.viaje.lugarpartida}"    />
 
                         <p:outputLabel  value="#{msg['field.lugardestino']}" />
-                        <a:inputText  value="#{viajeController.viaje.lugardestino}"    />
+                        <jmoordbjsf:inputText  value="#{viajeController.viaje.lugardestino}"    />
 
 
                         <p:outputLabel value="#{msg['field.vehiculo']}"
@@ -185,16 +185,16 @@
 
 
                         <p:outputLabel  value="#{msg['field.kmestimados']}" />
-                        <a:inputText  span="5" value="#{viajeController.viaje.kmestimados}"  />
+                        <jmoordbjsf:inputText  span="5" value="#{viajeController.viaje.kmestimados}"  />
 
                         <p:outputLabel  value="#{msg['field.costocombustible']}"  />
-                        <a:inputText 
+                        <jmoordbjsf:inputText 
                             label="#{msg['field.costocombustible']}"
                             span="5" value="#{viajeController.viaje.costocombustible}"   />
 
 
 
-                        <a:save rendered="#{applicationMenu.viaje.create}"
+                        <jmoordbjsf:save rendered="#{applicationMenu.viaje.create}"
                                 save="#{viajeController.save()}" />
                         
                       
@@ -277,7 +277,7 @@
             </p:dialog>
 
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.viaje.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.viaje.create}" />
 
         <br/><br/><br/>
     </ui:define>

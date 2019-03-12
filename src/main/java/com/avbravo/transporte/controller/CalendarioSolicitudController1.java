@@ -6,17 +6,17 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
-import com.avbravo.avbravoutils.DateUtil;
-import com.avbravo.avbravoutils.JsfUtil;
-import com.avbravo.avbravoutils.printer.Printer;
+import com.avbravo.jmoordbutils.DateUtil;
+import com.avbravo.jmoordbutils.JsfUtil;
+import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.commonejb.entity.Carrera;
 import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.CarreraRepository;
 import com.avbravo.commonejb.repository.FacultadRepository;
 import com.avbravo.commonejb.services.SemestreServices;
-import com.avbravo.ejbjmoordb.interfaces.IController;
-import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
-import com.avbravo.ejbjmoordb.services.UserInfoServices;
+import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.services.RevisionHistoryServices;
+import com.avbravo.jmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
@@ -645,7 +645,7 @@ public class CalendarioSolicitudController1 implements Serializable, IController
             unidadList.add(loginController.getUsuario().getUnidad());
 
             viajesSelected = new Viaje();
-            Integer mes = DateUtil.getMesDeUnaFecha(solicitud.getFecha());
+            Integer mes = DateUtil.mesDeUnaFecha(solicitud.getFecha());
 
             String idsemestre = "V";
             if (mes <= 3) {
@@ -709,13 +709,13 @@ public class CalendarioSolicitudController1 implements Serializable, IController
                 return "";
             }
 
-            if (DateUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
-                    && DateUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
+            if (DateUtil.horaDeUnaFecha(solicitud.getFechahorapartida()) == 0
+                    && DateUtil.minutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horapartidaescero"));
                 return "";
             }
-            if (DateUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
-                    && DateUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
+            if (DateUtil.horaDeUnaFecha(solicitud.getFechahoraregreso()) == 0
+                    && DateUtil.minutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
             }
 
@@ -1793,12 +1793,12 @@ public class CalendarioSolicitudController1 implements Serializable, IController
     private Boolean esMismoDiaSolicitud() {
         try {
 
-            Integer dia = DateUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
-            Integer mes = DateUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
-            Integer anio = DateUtil.getDiaDeUnaFecha(solicitud.getFechahorapartida());
-            Integer diaf = DateUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
-            Integer mesf = DateUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
-            Integer aniof = DateUtil.getDiaDeUnaFecha(solicitud.getFechahoraregreso());
+            Integer dia = DateUtil.diaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer mes = DateUtil.diaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer anio = DateUtil.diaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer diaf = DateUtil.diaDeUnaFecha(solicitud.getFechahoraregreso());
+            Integer mesf = DateUtil.diaDeUnaFecha(solicitud.getFechahoraregreso());
+            Integer aniof = DateUtil.diaDeUnaFecha(solicitud.getFechahoraregreso());
 // ES EN LA MISMA FECHA
 
             if (anio == aniof && mes == mesf && dia == diaf) {

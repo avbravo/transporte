@@ -8,7 +8,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -25,7 +25,7 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
                 <b:panel title="#{msg['titleview.usuario']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{usuarioController.writable}"> 
                         <p:outputLabel  value="#{msg['field.username']}" />
@@ -33,23 +33,23 @@
 
 
                         <p:outputLabel  value="#{msg['field.nombre']}" />
-                        <a:inputText value="#{usuarioController.usuario.nombre}" id="nombre"  label="#{msg['field.nombre']}" />
+                        <jmoordbjsf:inputText value="#{usuarioController.usuario.nombre}" id="nombre"  label="#{msg['field.nombre']}" />
 
 <p:outputLabel  value="#{msg['field.cedula']}" />
-                        <a:inputText value="#{usuarioController.usuario.cedula}" id="cedula" span="4" label="#{msg['field.cedula']}" />
+                        <jmoordbjsf:inputText value="#{usuarioController.usuario.cedula}" id="cedula" span="4" label="#{msg['field.cedula']}" />
  
                         <p:outputLabel  value="#{msg['field.celular']}" />
-                        <a:inputText value="#{usuarioController.usuario.celular}" id="celular" span="4" label="#{msg['field.celular']}" />
+                        <jmoordbjsf:inputText value="#{usuarioController.usuario.celular}" id="celular" span="4" label="#{msg['field.celular']}" />
 
 
 
                         <p:outputLabel  value="#{msg['field.email']}" />
-                        <a:email value="#{usuarioController.usuario.email}" id="email"  label="#{msg['field.email']}" />
+                        <jmoordbjsf:email value="#{usuarioController.usuario.email}" id="email"  label="#{msg['field.email']}" />
 
                         
 
                         <p:outputLabel  value="#{msg['field.cargo']}" />
-                        <a:inputText value="#{usuarioController.usuario.cargo}" id="cargo"  label="#{msg['field.cargo']}" />
+                        <jmoordbjsf:inputText value="#{usuarioController.usuario.cargo}" id="cargo"  label="#{msg['field.cargo']}" />
 
                         
                          <p:outputLabel  value="#{msg['field.unidad']}" />
@@ -81,12 +81,12 @@
 
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{usuarioController.usuario.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{usuarioController.usuario.activo}" id="activo"  required="true"/>
 
 
 
                     </b:panelGrid>
-                    <a:view 
+                    <jmoordbjsf:view 
                         renderedDelete="#{applicationMenu.usuario.delete and usuarioController.writable }"
                         renderedEdit="#{applicationMenu.usuario.edit and usuarioController.writable}" 
                         renderedList="#{applicationMenu.usuario.list and usuarioController.writable}"
@@ -98,7 +98,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.usuario.query}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.usuario.query}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

@@ -7,7 +7,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
          xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"                
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo" > 
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib" > 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -24,8 +24,8 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
-                <a:new label="#{msg['field.descripcion']}"
+                <jmoordbjsf:messages id="msg"/>
+                <jmoordbjsf:new label="#{msg['field.descripcion']}"
                        title="#{msg['titleview.carrera']}"
                        value="#{carreraController.carrera.descripcion}"
                        disabled="#{carreraController.writable}"
@@ -54,10 +54,10 @@
                             
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{carreraController.carrera.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{carreraController.carrera.activo}" id="activo"  required="true"/>
 
 
-                        <a:save rendered="#{carreraController.writable and applicationMenu.carrera.create}"
+                        <jmoordbjsf:save rendered="#{carreraController.writable and applicationMenu.carrera.create}"
                                       save="#{carreraController.save()}" />
 
 
@@ -67,7 +67,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.carrera.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.carrera.create}" />
 
         <br/><br/><br/>
     </ui:define>

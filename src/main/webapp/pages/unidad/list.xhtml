@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -49,7 +49,7 @@
                 <b:row>
 
                     <b:column medium-screen="6">
-                        <a:search label="#{msg['field.idunidad']}"
+                        <jmoordbjsf:search label="#{msg['field.idunidad']}"
                                   value="#{unidadController.lookupServices.idunidad}"
                                   renderedList="#{applicationMenu.unidad.list}"  
                                   search="#{unidadController.searchBy('idunidad')}"
@@ -58,7 +58,7 @@
                 </b:row>
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <a:paginator 
+                <jmoordbjsf:paginator 
                     rowPage="#{unidadController.rowPage}"
                     clear="#{unidadController.clear()}"
                     first="#{unidadController.first()}"
@@ -83,7 +83,7 @@
 
                     <b:dataTableColumn label="">
 
-                        <a:column
+                        <jmoordbjsf:column
 
                             edit="#{unidadController.prepare('view',item)}"
                             delete="#{unidadController.delete(item,false)}"
@@ -96,6 +96,6 @@
 
         </b:form>
 
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.unidad.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.unidad.list}" />
     </ui:define>
 </ui:composition>

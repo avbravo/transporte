@@ -6,7 +6,7 @@
 package com.avbravo.transporte.roles;
 
 import java.io.Serializable;
-import com.avbravo.avbravoutils.menu.MenuElement;
+import com.avbravo.jmoordbutils.menu.MenuElement;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 

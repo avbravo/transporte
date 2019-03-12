@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -53,7 +53,7 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
 
                 <b:panel title="#{msg['titleview.calendariosolicitud']}" look="primary">
 
@@ -103,7 +103,7 @@
                                      
                                      onclick="PF('viajesDialog').show();" />
 
-                    <a:paginator 
+                    <jmoordbjsf:paginator 
                         rowPage="#{viajeController.rowPage}"
                         clear="#{viajeController.clear()}"
                         first="#{viajeController.first()}"
@@ -171,7 +171,7 @@
 
                         <b:dataTableColumn label="">
 
-                            <a:column
+                            <jmoordbjsf:column
 
                                 edit="#{viajeController.prepare('view',item)}"
                                 delete="#{viajeController.delete(item,false)}"
@@ -476,10 +476,10 @@
 
 
                     <p:outputLabel  value="#{msg['field.kmestimados']}"  rendered="#{calendarioSolicitudController.esAprobado}"/>
-                    <a:inputText span="5" value="#{calendarioSolicitudController.viajesSelected.kmestimados}" rendered="#{calendarioSolicitudController.esAprobado}"  />
+                    <jmoordbjsf:inputText span="5" value="#{calendarioSolicitudController.viajesSelected.kmestimados}" rendered="#{calendarioSolicitudController.esAprobado}"  />
 
                     <p:outputLabel  value="#{msg['field.costocombustible']}"  rendered="#{calendarioSolicitudController.esAprobado}"/>
-                    <a:inputText required="true"
+                    <jmoordbjsf:inputText required="true"
                                  label="#{msg['field.costocombustible']}"
                                  span="5" value="#{calendarioSolicitudController.viajesSelected.costocombustible}" rendered="#{calendarioSolicitudController.esAprobado}"  />
 
@@ -687,7 +687,7 @@
                   
                     <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
                     <p:outputPanel>
-                        <a:calendar 
+                        <jmoordbjsf:calendar 
                             mode="inline"
                             required="true"
                             pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudController.viajesSelected.fechahorainicioreserva}"   
@@ -695,7 +695,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
-                        <a:calendar mode="inline"
+                        <jmoordbjsf:calendar mode="inline"
                                     required="true"
                                     pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudController.viajesSelected.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
 
@@ -703,10 +703,10 @@
 
 
                     <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                    <a:inputText value="#{calendarioSolicitudController.viajesSelected.lugarpartida}"    />
+                    <jmoordbjsf:inputText value="#{calendarioSolicitudController.viajesSelected.lugarpartida}"    />
 
                     <p:outputLabel  value="#{msg['field.lugarregreso']}" />
-                    <a:inputText value="#{calendarioSolicitudController.viajesSelected.lugarregreso}"    />
+                    <jmoordbjsf:inputText value="#{calendarioSolicitudController.viajesSelected.lugarregreso}"    />
 
 
 
@@ -891,7 +891,7 @@
 
 
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.calendariobuses.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.calendariobuses.list}" />
 
         <br/><br/><br/>
     </ui:define>

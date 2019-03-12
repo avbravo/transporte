@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -24,7 +24,7 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
                 <b:panel title="#{msg['titleview.semestre']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{semestreController.writable}"> 
 
@@ -32,12 +32,12 @@
                         <p:outputLabel value="#{semestreController.semestre.idsemestre}" id="idsemestre"  />
                        
                          <p:outputLabel  value="#{msg['field.descripcion']}" />
-                        <a:inputText value="#{semestreController.semestre.descripcion}" id="descripcion"  />
+                        <jmoordbjsf:inputText value="#{semestreController.semestre.descripcion}" id="descripcion"  />
 
               
 
                     </b:panelGrid>
-                    <a:view 
+                    <jmoordbjsf:view 
                         renderedDelete="#{applicationMenu.semestre.delete and semestreController.writable }"
                         renderedEdit="#{applicationMenu.semestre.edit and semestreController.writable}" 
                         renderedList="#{applicationMenu.semestre.list and semestreController.writable}"                    
@@ -49,7 +49,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
- <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.semestre.query}" />
+ <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.semestre.query}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -50,14 +50,14 @@
                 </b:panelGrid>
                 <b:row>
                     <b:column medium-screen="4">
-                        <a:search label="#{msg['field.idcarrera']}"
+                        <jmoordbjsf:search label="#{msg['field.idcarrera']}"
                                   value="#{carreraController.lookupServices.idcarrera}"
                                   renderedList="#{applicationMenu.carrera.list}"  
                                   search="#{carreraController.searchBy('idcarrera')}"
                                   />
                     </b:column>
                     <b:column medium-screen="8">
-                        <a:search label="#{msg['field.descripcion']}"
+                        <jmoordbjsf:search label="#{msg['field.descripcion']}"
                                   value="#{carreraController.lookupServices.descripcion}"
                                   renderedList="#{applicationMenu.carrera.list}"  
                                   search="#{carreraController.searchBy('descripcion')}"
@@ -66,7 +66,7 @@
                 </b:row>
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <a:paginator 
+                <jmoordbjsf:paginator 
                     rowPage="#{carreraController.rowPage}"
                     clear="#{carreraController.clear()}"
                     first="#{carreraController.first()}"
@@ -92,7 +92,7 @@
 
                     <b:dataTableColumn label="">
 
-                        <a:column
+                        <jmoordbjsf:column
 
                             edit="#{carreraController.prepare('view',item)}"
                             delete="#{carreraController.delete(item,false)}"
@@ -105,6 +105,6 @@
 
         </b:form>
 
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.carrera.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.carrera.list}" />
     </ui:define>
 </ui:composition>

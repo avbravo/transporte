@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
                 xmlns:extensionviaje="http://xmlns.jcp.org/jsf/composite/extensionviaje">
     <ui:define name="content">
@@ -61,14 +61,14 @@
                 <b:row>
 
                     <b:column medium-screen="6">
-                        <a:search label="#{msg['field.idviaje']}"
+                        <jmoordbjsf:search label="#{msg['field.idviaje']}"
                                   value="#{viajeController.lookupServices.idviaje}"
                                   renderedList="#{applicationMenu.viaje.list}"  
                                   search="#{viajeController.searchBy('idviaje')}"
                                   />
                     </b:column>
                     <b:column medium-screen="6">
-                        <a:search label="#{msg['field.lugardestino']}"
+                        <jmoordbjsf:search label="#{msg['field.lugardestino']}"
                                   value="#{viajeController.lookupServices.lugardestino}"
                                   renderedList="#{applicationMenu.viaje.list}"  
                                   search="#{viajeController.searchBy('lugardestino')}"
@@ -78,7 +78,7 @@
                 <b:row>
  <b:column medium-screen="6" >
              
-                            <a:searchYesNo label="#{msg['field.conconductor']}" 
+                            <jmoordbjsf:searchYesNo label="#{msg['field.conconductor']}" 
                                            
                                            value="#{viajeController.lookupServices.conconductor}"
                                            id="sinconductor"  
@@ -88,7 +88,7 @@
   
                     </b:column>
                     <b:column medium-screen="6">
-                        <a:search label="#{msg['field.comentarios']}"
+                        <jmoordbjsf:search label="#{msg['field.comentarios']}"
                                   value="#{viajeController.lookupServices.comentarios}"
                                   renderedList="#{applicationMenu.viaje.list}"  
                                   search="#{viajeController.searchBy('comentarios')}"
@@ -102,7 +102,7 @@
 
 
 
-                        <a:searchBetweenDate
+                        <jmoordbjsf:searchBetweenDate
                             renderedMove="true"
                             labelDesde="#{msg['field.fechainicio']}"
                             valueDesde="#{viajeController.lookupServices.fechaDesde}"
@@ -116,7 +116,7 @@
                 <b:row>
                     <b:column medium-screen="6" >
              
-                            <a:searchYesNo label="#{msg['field.realizado']}" 
+                            <jmoordbjsf:searchYesNo label="#{msg['field.realizado']}" 
                                            
                                            value="#{viajeController.lookupServices.realizado}"
                                            id="realizado"  
@@ -126,7 +126,7 @@
   
                     </b:column>
                     <b:column medium-screen="6" >
-                           <a:searchYesNo label="#{msg['field.activo']}" 
+                           <jmoordbjsf:searchYesNo label="#{msg['field.activo']}" 
                                            
                                            value="#{viajeController.lookupServices.activo}"
                                            id="activo"  
@@ -139,7 +139,7 @@
 
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <a:paginator 
+                <jmoordbjsf:paginator 
                     rowPage="#{viajeController.rowPage}"
                     clear="#{viajeController.clear()}"
                     first="#{viajeController.first()}"
@@ -221,7 +221,7 @@
 
                     <b:dataTableColumn label="">
 
-                        <a:column
+                        <jmoordbjsf:column
 
                             edit="#{viajeController.prepare('view',item)}"
                             delete="#{viajeController.delete(item,false)}"
@@ -235,6 +235,6 @@
 
         </b:form>
 
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.viaje.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.viaje.list}" />
     </ui:define>
 </ui:composition>

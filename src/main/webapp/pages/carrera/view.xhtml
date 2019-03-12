@@ -8,7 +8,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -26,14 +26,14 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
                 <b:panel title="#{app['title.data']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{carreraController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idcarrera']}" />
                         <p:outputLabel  value="#{carreraController.carrera.idcarrera}" id="idcarrera"   />
 
                         <p:outputLabel  value="#{msg['field.descripcion']}" />
-                        <a:inputText value="#{carreraController.carrera.descripcion}" id="descripcion"  label="#{msg['field.descripcion']}" />
+                        <jmoordbjsf:inputText value="#{carreraController.carrera.descripcion}" id="descripcion"  label="#{msg['field.descripcion']}" />
  <p:outputLabel  value="#{msg['field.facultad']}" />
                             <e:autocompletefacultad  listener="#{carreraController.handleSelect}"
                                                 value="#{carreraController.carrera.facultad}"
@@ -45,11 +45,11 @@
                                                />
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{carreraController.carrera.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{carreraController.carrera.activo}" id="activo"  required="true"/>
 
 
                     </b:panelGrid>
-                    <a:view 
+                    <jmoordbjsf:view 
                         renderedDelete="#{applicationMenu.carrera.delete and carreraController.writable }"
                         renderedEdit="#{applicationMenu.carrera.edit and carreraController.writable}" 
                         renderedList="#{applicationMenu.carrera.list and carreraController.writable}"
@@ -61,7 +61,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.carrera.query}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.carrera.query}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

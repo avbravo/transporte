@@ -6,15 +6,15 @@
 package com.avbravo.transporte.reportes;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
-import com.avbravo.avbravoutils.printer.Printer;
+import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.commonejb.entity.Carrera;
 import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.CarreraRepository;
 import com.avbravo.commonejb.repository.FacultadRepository;
 import com.avbravo.commonejb.services.SemestreServices;
-import com.avbravo.ejbjmoordb.interfaces.IError;
-import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
-import com.avbravo.ejbjmoordb.services.UserInfoServices;
+import com.avbravo.jmoordb.interfaces.IError;
+import com.avbravo.jmoordb.services.RevisionHistoryServices;
+import com.avbravo.jmoordb.services.UserInfoServices;
 import com.avbravo.transporte.controller.LoginController;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;

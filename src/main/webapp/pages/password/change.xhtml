@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -24,17 +24,17 @@
                  }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
                 <b:panel title="#{msg['titleview.changepassword']}" look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{loginController.loggedIn}"> 
 
                         <p:outputLabel  value="#{msg['field.passwordanterior']}" />
-                        <a:password value="#{loginController.passwordold}" id="passwordanterior"  label="#{msg['field.passwordanterior']}" />
+                        <jmoordbjsf:password value="#{loginController.passwordold}" id="passwordanterior"  label="#{msg['field.passwordanterior']}" />
 
                         <p:outputLabel  value="#{msg['field.passwordnuevo']}" />
-                        <a:password value="#{loginController.passwordnew}" id="passwordnuevo"  label="#{msg['field.passwordnuevo']}" />
+                        <jmoordbjsf:password value="#{loginController.passwordnew}" id="passwordnuevo"  label="#{msg['field.passwordnuevo']}" />
                         <p:outputLabel  value="#{msg['field.passwordnuevorepetir']}" />
-                        <a:password value="#{loginController.passwordnewrepeat}" id="passwordrepetido"  label="#{msg['field.passwordnuevorepetir']}" />
+                        <jmoordbjsf:password value="#{loginController.passwordnewrepeat}" id="passwordrepetido"  label="#{msg['field.passwordnuevorepetir']}" />
 
                         <b:commandButton 
                             look="primary" 
@@ -49,7 +49,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

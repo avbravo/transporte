@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -26,7 +26,7 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
 
                 <b:panel title="#{msg['titleview.calendariosolicitud']}" look="primary">
 
@@ -71,7 +71,7 @@
                 
                 
                  <b:panel id="dataTable" look="primary">
-                <a:paginator 
+                <jmoordbjsf:paginator 
                     rowPage="#{viajeController.rowPage}"
                     clear="#{viajeController.clear()}"
                     first="#{viajeController.first()}"
@@ -139,7 +139,7 @@
                   
                     <b:dataTableColumn label="">
 
-                        <a:column
+                        <jmoordbjsf:column
 
                             edit="#{viajeController.prepare('view',item)}"
                             delete="#{viajeController.delete(item,false)}"
@@ -324,13 +324,13 @@
 
 
                     <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}" rendered="#{calendarioSolicitudController.esAprobado}" />
-                    <a:calendar rendered="#{calendarioSolicitudController.esAprobado}"
+                    <jmoordbjsf:calendar rendered="#{calendarioSolicitudController.esAprobado}"
                                 required="true"
                                 pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudController.viajesSelected.fechahorainicioreserva}"   label="#{msg['field.fechahorainicioreserva']}" />
 
 
                     <p:outputLabel  value="#{msg['field.fechahorafinreserva']}" rendered="#{calendarioSolicitudController.esAprobado}" />
-                    <a:calendar rendered="#{calendarioSolicitudController.esAprobado}"
+                    <jmoordbjsf:calendar rendered="#{calendarioSolicitudController.esAprobado}"
                                 required="true"
                                 pattern="dd/MM/yyyy HH:mm a" value="#{calendarioSolicitudController.viajesSelected.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
 
@@ -455,10 +455,10 @@
 
 
                     <p:outputLabel  value="#{msg['field.kmestimados']}"  rendered="#{calendarioSolicitudController.esAprobado}"/>
-                    <a:inputText span="5" value="#{calendarioSolicitudController.viajesSelected.kmestimados}" rendered="#{calendarioSolicitudController.esAprobado}"  />
+                    <jmoordbjsf:inputText span="5" value="#{calendarioSolicitudController.viajesSelected.kmestimados}" rendered="#{calendarioSolicitudController.esAprobado}"  />
 
                     <p:outputLabel  value="#{msg['field.costocombustible']}"  rendered="#{calendarioSolicitudController.esAprobado}"/>
-                    <a:inputText required="true"
+                    <jmoordbjsf:inputText required="true"
                                  label="#{msg['field.costocombustible']}"
                                  span="5" value="#{calendarioSolicitudController.viajesSelected.costocombustible}" rendered="#{calendarioSolicitudController.esAprobado}"  />
 
@@ -660,7 +660,7 @@
 
 
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.calendariobuses.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.calendariobuses.list}" />
 
         <br/><br/><br/>
     </ui:define>

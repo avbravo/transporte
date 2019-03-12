@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -26,7 +26,7 @@
                 <p:remoteCommand  update=":form:content :form:panel"
                                   name="remoteid" 
                                   actionListener="#{vehiculoController.findByPlaca()}"/>
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
                 <b:panel title="#{msg['titleview.changeplaca']}" look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{loginController.loggedIn}"> 
                         <p:outputLabel  value="#{msg['field.placa']}" />
@@ -74,7 +74,7 @@
                         <p:outputLabel  value="#{msg['field.modelo']}" rendered="#{vehiculoController.writable}"/>
                         <p:outputLabel  value="#{vehiculoController.vehiculo.modelo}" id="modelo" rendered="#{vehiculoController.writable}" />
                         <p:outputLabel  value="#{msg['field.placanueva']}" rendered="#{vehiculoController.writable}"/>
-                        <a:inputText  value="#{vehiculoController.placanueva}" id="placanueva" required="true" rendered="#{vehiculoController.writable}"  />
+                        <jmoordbjsf:inputText  value="#{vehiculoController.placanueva}" id="placanueva" required="true" rendered="#{vehiculoController.writable}"  />
 
                         <b:commandButton 
                             look="primary" 
@@ -89,7 +89,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or ! applicationMenu.vehiculocambiarplaca.edit}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or ! applicationMenu.vehiculocambiarplaca.edit}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

@@ -6,12 +6,12 @@
 package com.avbravo.transporte.reportes;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
-import com.avbravo.avbravoutils.DateUtil;
-import com.avbravo.avbravoutils.JsfUtil;
-import com.avbravo.avbravoutils.printer.Printer;
-import com.avbravo.ejbjmoordb.interfaces.IError;
-import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
-import com.avbravo.ejbjmoordb.services.UserInfoServices;
+import com.avbravo.jmoordbutils.DateUtil;
+import com.avbravo.jmoordbutils.JsfUtil;
+import com.avbravo.jmoordbutils.printer.Printer;
+import com.avbravo.jmoordb.interfaces.IError;
+import com.avbravo.jmoordb.services.RevisionHistoryServices;
+import com.avbravo.jmoordb.services.UserInfoServices;
 import com.avbravo.transporte.controller.LoginController;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
@@ -699,8 +699,8 @@ public class ViajeReporteController implements Serializable, IError {
                             programacionFlotaPojo.setDiaNombre(DateUtil.nameOfDay(v.getFechahorafinreserva()));
 
                             programacionFlotaPojo.setFecha(v.getFechahorainicioreserva());
-                           Integer hora= DateUtil.getHoraDeUnaFecha(v.getFechahorainicioreserva());
-                            Integer minuto = DateUtil.getMinutosDeUnaFecha(v.getFechahorainicioreserva());
+                           Integer hora= DateUtil.horaDeUnaFecha(v.getFechahorainicioreserva());
+                            Integer minuto = DateUtil.minutosDeUnaFecha(v.getFechahorainicioreserva());
                           //  programacionFlotaPojo.setHorainicio(hora.toString()+": "+minuto);
                             
                             programacionFlotaPojo.setHorainicio(DateUtil.horaMinutoAMPMDeUnaFecha(v.getFechahorainicioreserva()));

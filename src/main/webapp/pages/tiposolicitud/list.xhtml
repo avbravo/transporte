@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -47,7 +47,7 @@
                    <b:row>
                   
                     <b:column medium-screen="6">
-                        <a:search label="#{msg['field.idtiposolicitud']}"
+                        <jmoordbjsf:search label="#{msg['field.idtiposolicitud']}"
                                   value="#{tiposolicitudController.lookupServices.idtiposolicitud}"
                                   renderedList="#{applicationMenu.tiposolicitud.list}"  
                                   search="#{tiposolicitudController.searchBy('idtiposolicitud')}"
@@ -56,7 +56,7 @@
                 </b:row>
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <a:paginator 
+                <jmoordbjsf:paginator 
                     rowPage="#{tiposolicitudController.rowPage}"
                     clear="#{tiposolicitudController.clear()}"
                     first="#{tiposolicitudController.first()}"
@@ -81,7 +81,7 @@
                   
                     <b:dataTableColumn label="">
 
-                        <a:column
+                        <jmoordbjsf:column
 
                             edit="#{tiposolicitudController.prepare('view',item)}"
                             delete="#{tiposolicitudController.delete(item,false)}"
@@ -94,6 +94,6 @@
 
         </b:form>
 
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tiposolicitud.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tiposolicitud.list}" />
     </ui:define>
 </ui:composition>

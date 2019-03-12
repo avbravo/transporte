@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -26,7 +26,7 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
 
                 <b:panel title="#{msg['titleview.calendarioviajes']}" look="primary">
 
@@ -82,7 +82,7 @@
                       showEffect="clip" hideEffect="clip">
                 <b:panelGrid id="eventDetails" colSpans="2,10" size="xs" > 
                     <p:outputLabel  value="#{msg['field.fecha']}" />
-                    <a:labelDate  value="#{calendarioViajesController.solicitud.fecha}" id="fecha"   />
+                    <jmoordbjsf:labelDate  value="#{calendarioViajesController.solicitud.fecha}" id="fecha"   />
                     <p:outputLabel  value="#{msg['field.idsolicitud']}" />
                     <p:outputLabel  value="#{calendarioViajesController.solicitud.idsolicitud}" id="idsolicitud"   />
 
@@ -127,12 +127,12 @@
 
 
                     <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}" rendered="#{applicationMenu.menuBarAdministracion}" />
-                    <a:calendar rendered="#{applicationMenu.menuBarAdministracion}"
+                    <jmoordbjsf:calendar rendered="#{applicationMenu.menuBarAdministracion}"
                         pattern="dd/MM/yyyy HH:mm a" value="#{calendarioViajesController.viajes.fechahorainicioreserva}"   label="#{msg['field.fechahorainicioreserva']}" />
 
 
                     <p:outputLabel  value="#{msg['field.fechahorafinreserva']}" rendered="#{applicationMenu.menuBarAdministracion}" />
-                    <a:calendar rendered="#{applicationMenu.menuBarAdministracion}"
+                    <jmoordbjsf:calendar rendered="#{applicationMenu.menuBarAdministracion}"
                         pattern="dd/MM/yyyy HH:mm a" value="#{calendarioViajesController.viajes.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
 
 
@@ -142,7 +142,7 @@
 
 
                     <p:outputLabel  value="#{msg['field.kmestimados']}" />
-                    <a:inputText  value="#{calendarioViajesController.viajes.kmestimados}"  />
+                    <jmoordbjsf:inputText  value="#{calendarioViajesController.viajes.kmestimados}"  />
 
 
 
@@ -371,7 +371,7 @@
 
 
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.calendariobuses.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.calendariobuses.list}" />
 
         <br/><br/><br/>
     </ui:define>

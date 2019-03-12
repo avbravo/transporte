@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"> 
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -24,8 +24,8 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
-                <a:new label="#{msg['field.descripcion']}"
+                <jmoordbjsf:messages id="msg"/>
+                <jmoordbjsf:new label="#{msg['field.descripcion']}"
                        title="#{msg['titleview.facultad']}"
                        value="#{facultadController.facultad.descripcion}"
                        isnew="#{facultadController.isNew()}"
@@ -44,9 +44,9 @@
 
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{facultadController.facultad.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{facultadController.facultad.activo}" id="activo"  required="true"/>
 
-                        <a:save rendered="#{facultadController.writable and applicationMenu.facultad.create}"
+                        <jmoordbjsf:save rendered="#{facultadController.writable and applicationMenu.facultad.create}"
                                 save="#{facultadController.save()}" />
 
 
@@ -56,7 +56,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.facultad.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.facultad.create}" />
 
         <br/><br/><br/>
     </ui:define>

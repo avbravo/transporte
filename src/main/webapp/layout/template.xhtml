@@ -5,12 +5,13 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+ 
+      xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
     <h:head>
         <f:facet name="first">
             <f:view locale="#{idiomas.locale}"></f:view>
             <f:loadBundle basename="com.avbravo.transporte.properties.messages" var="msg" />
-            <f:loadBundle basename="com.avbravoutils.properties.application" var="app" />
+            <f:loadBundle basename="com.jmoordbutils.properties.application" var="app" />
 
         </f:facet>
         <title>#{msg['application.shorttitle']}</title>
@@ -19,16 +20,9 @@
         <meta name="KEYWORDS" content="jsf, bootstrap, framework, java, enterprise, server, faces, jquery, usability, next-gen, web, html5, easy, modern, well-designed, website, state-of-the-art" />
         <meta name="robots" content="index, follow" />
 
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <meta name="revisit-after" content="7 days" />
-        <meta name="DISTRIBUTION" content="GLOBAL" />
-        <meta http-equiv="PRAGMA" content="NO-CACHE" />
-        <meta name="copyright" content="AVBravo" />
-        <h:outputStylesheet library="sh" name="css/shCore.css"/>
-        <h:outputStylesheet library="sh" name="css/shCoreEclipse.css"/>
-        <h:outputStylesheet library="css" name="avbravo.css"/>
-     <h:outputStylesheet library="css" name="font-awesome.min.css"/>
-       
+     
+        <jmoordbjsf:metatemplate/>
+        <jmoordbjsf:csstemplate/>
         <style>.tooltip-inner {
                 max-width: 350px;
                 /* If max-width does not work, try using width instead */
@@ -37,18 +31,8 @@
     </h:head>
     <h:body style="padding-top: 85px;padding-bottom: 85px;" >
 
-        <h:outputScript library="sh" name="js/shCore.js"         target="head"/>
-        <h:outputScript library="sh" name="js/shBrushXml.js"     target="head"/>
-        <h:outputScript library="sh" name="js/shBrushJava.js"    target="head"/>
-        <h:outputScript library="sh" name="js/shBrushGroovy.js"  target="head"/>
-        <h:outputScript library="sh" name="js/shBrushJScript.js" target="head"/>
-        <script>SyntaxHighlighter.defaults['gutter'] = false;</script>   
-        <script>
-            if ($.blockUI) {
-                $.blockUI.defaults.overlayCSS.opacity = 0;
-                $.blockUI.defaults.message = '<h1><img src="../javax.faces.resource/images/waitcursor.gif.jsf?ln=bsf" /></h1>';
-            }
-        </script>         
+        <jmoordbjsf:jstemplate/>
+       
         <ui:insert name="nbtop">
             <ui:include src="/layout/top.xhtml"/>
         </ui:insert>

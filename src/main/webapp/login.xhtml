@@ -6,7 +6,7 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo">
+      xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
     <h:head> 
         <title>#{msg['application.title']}</title>
         <meta name="author" content="Aristides Villarreal"></meta>
@@ -20,7 +20,7 @@
         <f:facet name="first">
             <f:view locale="#{idiomas.locale}"></f:view>
             <f:loadBundle basename="com.avbravo.transporte.properties.messages" var="msg" />
-            <f:loadBundle basename="com.avbravoutils.properties.application" var="app" />
+            <f:loadBundle basename="com.jmoordbutils.properties.application" var="app" />
 
         </f:facet>
     </h:head>
@@ -69,7 +69,7 @@
                     </b:column>
 
                     <b:column medium-screen="9">
-                        <a:selectOneMenu
+                        <jmoordbjsf:selectOneMenu
                             id="rol"
                             value="#{loginController.rol}" 
                             requiredMessage="#{msg['field.idrol']}"

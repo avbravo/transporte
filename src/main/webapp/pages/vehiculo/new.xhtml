@@ -8,7 +8,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"> 
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -25,8 +25,8 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
-                <a:new label="#{msg['field.placa']}"
+                <jmoordbjsf:messages id="msg"/>
+                <jmoordbjsf:new label="#{msg['field.placa']}"
                        title="#{msg['titleview.vehiculo']}"
                        value="#{vehiculoController.vehiculo.placa}"
                        isnew="#{vehiculoController.isNew()}"
@@ -43,21 +43,21 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{vehiculoController.writable}"> 
 
                         <p:outputLabel  value="#{msg['field.marca']}" />
-                        <a:inputText value="#{vehiculoController.vehiculo.marca}" id="marca"  label="#{msg['field.marca']}" />
+                        <jmoordbjsf:inputText value="#{vehiculoController.vehiculo.marca}" id="marca"  label="#{msg['field.marca']}" />
 
 
                         <p:outputLabel  value="#{msg['field.modelo']}" />
-                        <a:inputText value="#{vehiculoController.vehiculo.modelo}" id="modelo"  label="#{msg['field.modelo']}" />
+                        <jmoordbjsf:inputText value="#{vehiculoController.vehiculo.modelo}" id="modelo"  label="#{msg['field.modelo']}" />
 
                         <p:outputLabel  value="#{msg['field.chasis']}" />
-                        <a:inputText value="#{vehiculoController.vehiculo.chasis}" id="chasis"  label="#{msg['field.chasis']}" />
+                        <jmoordbjsf:inputText value="#{vehiculoController.vehiculo.chasis}" id="chasis"  label="#{msg['field.chasis']}" />
 
                         <p:outputLabel  value="#{msg['field.anio']}" />
-                        <a:inputText value="#{vehiculoController.vehiculo.anio}" id="anio" span="4" label="#{msg['field.anio']}" />
+                        <jmoordbjsf:inputText value="#{vehiculoController.vehiculo.anio}" id="anio" span="4" label="#{msg['field.anio']}" />
 
 
                         <p:outputLabel  value="#{msg['field.pasajeros']}" />
-                        <a:inputText value="#{vehiculoController.vehiculo.pasajeros}" id="pasajeros" span="4" label="#{msg['field.pasajeros']}" />
+                        <jmoordbjsf:inputText value="#{vehiculoController.vehiculo.pasajeros}" id="pasajeros" span="4" label="#{msg['field.pasajeros']}" />
 
                         <p:outputLabel  value="#{msg['field.tipovehiculo']}" />
                      
@@ -84,14 +84,14 @@
                         </b:selectOneMenu>
 
                         <p:outputLabel  value="#{msg['field.km']}" />
-                        <a:inputText value="#{vehiculoController.vehiculo.km}" id="km" span="4" label="#{msg['field.km']}" />
+                        <jmoordbjsf:inputText value="#{vehiculoController.vehiculo.km}" id="km" span="4" label="#{msg['field.km']}" />
 
 
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{vehiculoController.vehiculo.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{vehiculoController.vehiculo.activo}" id="activo"  required="true"/>
 
-                        <a:save rendered="#{vehiculoController.writable and applicationMenu.vehiculo.create}"
+                        <jmoordbjsf:save rendered="#{vehiculoController.writable and applicationMenu.vehiculo.create}"
                                 save="#{vehiculoController.save()}" />
 
 
@@ -101,7 +101,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.vehiculo.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.vehiculo.create}" />
 
         <br/><br/><br/>
     </ui:define>

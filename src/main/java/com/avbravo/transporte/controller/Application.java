@@ -5,7 +5,7 @@
  */
 package com.avbravo.transporte.controller;
 
-import com.avbravo.ejbjmoordb.pojos.Configuracion;
+import com.avbravo.jmoordb.pojos.Configuracion;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 

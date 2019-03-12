@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"> 
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -24,8 +24,8 @@
                  }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
-                <a:new label="#{msg['field.idsemestre']}"
+                <jmoordbjsf:messages id="msg"/>
+                <jmoordbjsf:new label="#{msg['field.idsemestre']}"
                        title="#{msg['titleview.semestre']}"
                        value="#{semestreController.semestre.idsemestre}"
                        isnew="#{semestreController.isNew()}"
@@ -42,13 +42,13 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{semestreController.writable}"> 
 
                         <p:outputLabel  value="#{msg['field.descripcion']}" />
-                        <a:inputText value="#{semestreController.semestre.descripcion}" id="descripcion"  label="#{msg['field.descripcion']}" />
+                        <jmoordbjsf:inputText value="#{semestreController.semestre.descripcion}" id="descripcion"  label="#{msg['field.descripcion']}" />
 
 
 
 
 
-                        <a:save rendered="#{semestreController.writable and applicationMenu.semestre.create}"
+                        <jmoordbjsf:save rendered="#{semestreController.writable and applicationMenu.semestre.create}"
                                 save="#{semestreController.save()}"
                                 />
 
@@ -58,7 +58,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.semestre.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.semestre.create}" />
 
         <br/><br/><br/>
     </ui:define>

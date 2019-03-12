@@ -6,11 +6,11 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
-import com.avbravo.avbravoutils.JsfUtil;
-import com.avbravo.avbravoutils.printer.Printer;
-import com.avbravo.ejbjmoordb.interfaces.IController;
-import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
-import com.avbravo.ejbjmoordb.services.UserInfoServices;
+import com.avbravo.jmoordbutils.JsfUtil;
+import com.avbravo.jmoordbutils.printer.Printer;
+import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.services.RevisionHistoryServices;
+import com.avbravo.jmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.EstatusDataModel;
 import com.avbravo.transporteejb.entity.Estatus;

@@ -57,8 +57,13 @@
         </dependency>
         <dependency>
             <groupId>com.github.avbravo</groupId>
-            <artifactId>avbravosecurity</artifactId>
-            <version>0.4</version>
+            <artifactId>jmoordbsecurity</artifactId>
+            <version>0.1</version>
+        </dependency>
+         <dependency>
+            <groupId>com.github.avbravo</groupId>
+            <artifactId>jmoordbjsf</artifactId>
+            <version>0.2.2</version>
         </dependency>
     </dependencies>
 

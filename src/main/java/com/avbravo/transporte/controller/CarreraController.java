@@ -6,8 +6,8 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
-import com.avbravo.avbravoutils.JsfUtil;
-import com.avbravo.avbravoutils.printer.Printer;
+import com.avbravo.jmoordbutils.JsfUtil;
+import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.commonejb.datamodel.CarreraDataModel;
 import com.avbravo.commonejb.entity.Carrera;
 import com.avbravo.commonejb.repository.CarreraRepository;
@@ -15,9 +15,9 @@ import com.avbravo.commonejb.producer.AutoincrementableCommonejbServices;
 import com.avbravo.commonejb.producer.RevisionHistoryCommonejbRepository;
 import com.avbravo.commonejb.services.CarreraServices;
 import com.avbravo.commonejb.services.FacultadServices;
-import com.avbravo.ejbjmoordb.interfaces.IController;
-import com.avbravo.ejbjmoordb.services.RevisionHistoryServices;
-import com.avbravo.ejbjmoordb.services.UserInfoServices;
+import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.services.RevisionHistoryServices;
+import com.avbravo.jmoordb.services.UserInfoServices;
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;

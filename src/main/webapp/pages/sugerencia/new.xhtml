@@ -7,7 +7,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"> 
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -24,8 +24,8 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
-                <a:new label="#{msg['field.idsugerencia']}"
+                <jmoordbjsf:messages id="msg"/>
+                <jmoordbjsf:new label="#{msg['field.idsugerencia']}"
                        title="#{msg['titleview.sugerencia']}"
                        value="#{sugerenciaController.sugerencia.idsugerencia}"
                        isnew="#{sugerenciaController.isNew()}"
@@ -45,9 +45,9 @@
      <b:inputTextarea rows="2" span="8" value="#{sugerenciaController.sugerencia.descripcion}" id="descripcion"  />
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <a:yesno value="#{sugerenciaController.sugerencia.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{sugerenciaController.sugerencia.activo}" id="activo"  required="true"/>
 
-                        <a:save rendered="#{sugerenciaController.writable and applicationMenu.sugerencia.create}"
+                        <jmoordbjsf:save rendered="#{sugerenciaController.writable and applicationMenu.sugerencia.create}"
                                       save="#{sugerenciaController.save()}" />
 
 
@@ -57,7 +57,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.sugerencia.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.sugerencia.create}" />
 
         <br/><br/><br/>
     </ui:define>

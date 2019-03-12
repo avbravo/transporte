@@ -6,7 +6,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:a="http://xmlns.jcp.org/jsf/composite/avbravo"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
                 xmlns:extensionviajes="http://xmlns.jcp.org/jsf/composite/extensionviajes"
                 xmlns:extensionviaje="http://xmlns.jcp.org/jsf/composite/extensionviaje"> 
@@ -97,7 +97,7 @@
                 }">
             <h:panelGroup id="content" layout="block"> 
 
-                <a:messages id="msg"/>
+                <jmoordbjsf:messages id="msg"/>
 
                 <b:panel title="#{msg['titleview.calendariosolicitud']}" look="primary">
 
@@ -154,7 +154,7 @@
 
                     <p:tabView>
                         <p:tab title="#{msg['tab.viajes']}">
-                            <a:paginator 
+                            <jmoordbjsf:paginator 
                                 rowPage="#{viajeController.rowPage}"
                                 clear="#{viajeController.clear()}"
                                 first="#{viajeController.first()}"
@@ -223,7 +223,7 @@
 
                                 <b:dataTableColumn label="">
 
-                                    <a:column
+                                    <jmoordbjsf:column
 
                                         edit="#{viajeController.prepare('view',item)}"
                                         delete="#{viajeController.delete(item,false)}"
@@ -501,7 +501,7 @@
 
 
         </b:form>
-        <a:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.calendariobuses.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.calendariobuses.list}" />
 
         <br/><br/><br/>
     </ui:define>
