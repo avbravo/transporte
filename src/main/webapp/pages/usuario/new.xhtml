@@ -19,23 +19,23 @@
                 border-color: #428BCA;
             }
         </style>
-       
+
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.usuario.create}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <jmoordbjsf:new label="#{msg['field.username']}"
-                                title="#{msg['titleview.usuario']}"
-                       value="#{usuarioController.usuario.username}"
-                       isnew="#{usuarioController.isNew()}"
-                          disabled="#{usuarioController.writable}"
-                       new="#{usuarioController.prepare('new',usuarioController.usuario)}"
-                       rendererList="#{applicationMenu.usuario.list}"
-                       list="#{usuarioController.prepare('golist',usuarioController.usuario)}"
+                <jmoordbjsf:newlowercase label="#{msg['field.username']}"
+                                         title="#{msg['titleview.usuario']}"
+                                         value="#{usuarioController.usuario.username}"
+                                         isnew="#{usuarioController.isNew()}"
+                                         disabled="#{usuarioController.writable}"
+                                         new="#{usuarioController.prepare('new',usuarioController.usuario)}"
+                                         rendererList="#{applicationMenu.usuario.list}"
+                                         list="#{usuarioController.prepare('golist',usuarioController.usuario)}"
 
-                       />
+                                         />
                 <b:panel title="#{app['title.data']}" look="primary" rendered="#{usuarioController.writable}">
 
 
@@ -69,34 +69,36 @@
                         <jmoordbjsf:inputText value="#{usuarioController.usuario.cargo}" id="cargo"  label="#{msg['field.cargo']}" />
 
                         <p:outputLabel  value="#{msg['field.unidad']}" />
-       
-                        
-                         <jmoordbjsf:autocomplete converter="#{unidadConverter}"
-completeMethod="#{unidadController.unidadServices.complete}" 
-labeltip1="#{msg['field.unidad']} #{p.idunidad}"   listener="#{usuarioController.handleSelect}"
-                                                      value="#{usuarioController.usuario.unidad}"
-                                               itemLabel="#{p.idunidad}"
-                                               dropdown="true"
-                                               required="true"
-                                               minQueryLength="0"
-                                               field="idunidad"
-                                               />
+
+
+                        <jmoordbjsf:autocomplete converter="#{unidadConverter}"
+                                                 completeMethod="#{unidadController.unidadServices.complete}" 
+                                                 labeltip1="#{msg['field.unidad']} #{p.idunidad}"  
+                                                 listener="#{usuarioController.handleSelect}"
+                                                 value="#{usuarioController.usuario.unidad}"
+                                                 itemLabel="#{p.idunidad}"
+                                                 dropdown="true"
+                                                 required="true"
+                                                 minQueryLength="0"
+                                                 field="idunidad"
+                                                 />
 
                         <p:outputLabel  value="#{msg['field.rol']}" />
-                               <jmoordbjsf:autocomplete converter="#{rolConverter}"
-completeMethod="#{rolController.rolServices.complete}"
-labeltip1="#{msg['field.idrol']} #{p.idrol}"
-labeltip2="#{msg['field.rol']} #{p.rol}"    listener="#{usuarioController.handleSelect}"
-                                                      value="#{usuarioController.rolList}"
-                                               itemLabel="#{p.idrol}"
-                                               dropdown="true"
-                                               multiple="true"
-                                               required="true"
-                                               minQueryLength="0"
-                                               field="idrol"
-                                               />
-                        
-                       
+                        <jmoordbjsf:autocomplete converter="#{rolConverter}"
+                                                 completeMethod="#{rolController.rolServices.complete}"
+                                                 labeltip1="#{msg['field.idrol']} #{p.idrol}"
+                                                 labeltip2="#{msg['field.rol']} #{p.rol}"   
+                                                 listener="#{usuarioController.handleSelect}"
+                                                 value="#{usuarioController.rolList}"
+                                                 itemLabel="#{p.idrol}"
+                                                 dropdown="true"
+                                                 multiple="true"
+                                                 required="true"
+                                                 minQueryLength="0"
+                                                 field="idrol"
+                                                 />
+
+
 
 
 
@@ -107,7 +109,7 @@ labeltip2="#{msg['field.rol']} #{p.rol}"    listener="#{usuarioController.handle
 
 
                         <jmoordbjsf:save rendered="#{usuarioController.writable and applicationMenu.usuario.create}"
-                                save="#{usuarioController.save()}" />
+                                         save="#{usuarioController.save()}" />
 
 
                     </b:panelGrid>
