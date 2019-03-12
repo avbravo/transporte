@@ -32,14 +32,20 @@
 
 
                     <p:outputLabel value="#{msg['field.username']}"/>
-                    <e:autocompleteusuario listener="#{usuarioController.handleAutocompleteOfListXhtml}"
+                    <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+completeMethod="#{usuarioController.usuarioServices.complete}"
+labeltip1="#{msg['field.username']} #{p.username}"
+labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{usuarioController.handleAutocompleteOfListXhtml}"
                                                   value="#{usuarioController.usuarioSelected}"
                                                   itemLabel=" #{p.username}"
                                                   field="username"
                                                   update=" :form:dataTable"/>
 
                     <p:outputLabel value="#{msg['field.nombre']}"/>
-                      <e:autocompleteusuario listener="#{usuarioController.handleAutocompleteOfListXhtml}"
+                      <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+completeMethod="#{usuarioController.usuarioServices.complete}"
+labeltip1="#{msg['field.username']} #{p.username}"
+labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{usuarioController.handleAutocompleteOfListXhtml}"
                                                 value="#{usuarioController.usuarioSelected}"
                                                 itemLabel=" #{p.nombre}"
                                                 field="nombre"

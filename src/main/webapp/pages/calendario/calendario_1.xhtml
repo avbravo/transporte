@@ -32,7 +32,9 @@
 
 
                     <p:outputLabel value="#{msg['field.idestatus']}"/>
-                    <e:autocompleteestatus listener="#{calendarioSolicitudController.handleSelectEstatusTipovehiculo}"
+                    <jmoordbjsf:autocomplete converter="#{estatusConverter}"
+completeMethod="#{estatusController.estatusServices.complete}"
+labeltip1="#{msg['field.estatus']} #{p.idestatus}"   listener="#{calendarioSolicitudController.handleSelectEstatusTipovehiculo}"
                                            value="#{calendarioSolicitudController.estatus}"
                                            itemLabel=" #{p.idestatus}"
                                            field="idestatus"
@@ -87,7 +89,9 @@
                     <p:outputLabel  value="#{calendarioSolicitudController.solicitud.estatus.idestatus}"  rendered="#{!applicationMenu.menuBarAdministracion}"/>
 
                     <p:outputLabel value="#{msg['field.idestatus']}" rendered="#{applicationMenu.menuBarAdministracion}"/>
-                    <e:autocompleteestatus listener="#{calendarioSolicitudController.handleSelectEstatusTipovehiculo}"
+                    <jmoordbjsf:autocomplete converter="#{estatusConverter}"
+completeMethod="#{estatusController.estatusServices.complete}"
+labeltip1="#{msg['field.estatus']} #{p.idestatus}"   listener="#{calendarioSolicitudController.handleSelectEstatusTipovehiculo}"
                                            value="#{calendarioSolicitudController.estatusSelected}"
                                            rendered="#{applicationMenu.menuBarAdministracion}"
                                            itemLabel=" #{p.idestatus}"

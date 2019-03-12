@@ -35,7 +35,10 @@
 
                     <p:outputLabel value="#{msg['field.descripcion']}"/>
 
-                    <e:autocompletecarrera  listener="#{carreraController.handleAutocompleteOfListXhtml}"
+                    <jmoordbjsf:autocomplete converter="#{carreraConverter}"
+completeMethod="#{carreraController.carreraServices.complete}"
+labeltip1="#{msg['field.idcarrera']} #{p.idcarrera}"
+labeltip2="#{msg['field.carrera']} #{p.descripcion}"     listener="#{carreraController.handleAutocompleteOfListXhtml}"
                                             value="#{carreraController.carreraSelected}"
                                             itemLabel="#{p.descripcion}"
                                             dropdown="false"

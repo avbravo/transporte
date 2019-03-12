@@ -36,7 +36,10 @@
                     <b:column medium-screen="6">
 
                         <p:outputLabel value="#{msg['field.conductor']}"/>
-                        <e:autocompleteconductor 
+                        <jmoordbjsf:autocomplete converter="#{conductorConverter}"
+completeMethod="#{conductorController.conductorServices.complete}"
+labeltip1="#{msg['field.cedula']} #{p.cedula}"
+labeltip2="#{msg['field.nombre']} #{p.nombre}"    
                                                  value="#{viajeReporteController.lookupServices.conductor}"
                                                  itemLabel=" #{p.nombre}"
                                                  dropdown="true"

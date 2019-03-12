@@ -315,7 +315,9 @@
 
                     <p:outputLabel value="#{msg['field.idestatus']}" />
 
-                    <e:autocompleteestatus  listener="#{calendarioSolicitudViajesController.handleSelectEstatus}"
+                    <jmoordbjsf:autocomplete converter="#{estatusConverter}"
+completeMethod="#{estatusController.estatusServices.complete}"
+labeltip1="#{msg['field.estatus']} #{p.idestatus}"    listener="#{calendarioSolicitudViajesController.handleSelectEstatus}"
                                             value="#{calendarioSolicitudViajesController.estatusSelected}"
                                             rendered="#{applicationMenu.menuBarAdministracion}"
                                             itemLabel=" #{p.idestatus}"

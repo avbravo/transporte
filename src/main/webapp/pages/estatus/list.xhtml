@@ -33,7 +33,9 @@
 
 
                     <p:outputLabel value="#{msg['field.idestatus']}"/>
-                    <e:autocompleteestatus listener="#{estatusController.handleAutocompleteOfListXhtml}"
+                    <jmoordbjsf:autocomplete converter="#{estatusConverter}"
+completeMethod="#{estatusController.estatusServices.complete}"
+labeltip1="#{msg['field.estatus']} #{p.idestatus}"   listener="#{estatusController.handleAutocompleteOfListXhtml}"
                                                   value="#{estatusController.estatusSelected}"
                                                   itemLabel=" #{p.idestatus}"
                                                   field="idestatus"

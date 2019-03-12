@@ -43,7 +43,10 @@
                                                   update=":form:schedule"/>
                     
                      <p:outputLabel value="#{msg['field.conductor']}"/>
-                    <e:autocompleteconductor listener="#{calendarioViajesController.handleSelectVehiculoConductor}"
+                    <jmoordbjsf:autocomplete converter="#{conductorConverter}"
+completeMethod="#{conductorController.conductorServices.complete}"
+labeltip1="#{msg['field.cedula']} #{p.cedula}"
+labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{calendarioViajesController.handleSelectVehiculoConductor}"
                                                   value="#{calendarioViajesController.conductor}"
                                                   itemLabel=" #{p.nombre}"
                                                   field="nombre"
@@ -90,7 +93,9 @@
                     <p:outputLabel  value="#{calendarioViajesController.solicitud.estatus.idestatus}"  rendered="#{!applicationMenu.menuBarAdministracion}"/>
 
                     <p:outputLabel value="#{msg['field.idestatus']}" rendered="#{applicationMenu.menuBarAdministracion}"/>
-                    <e:autocompleteestatus listener="#{calendarioViajesController.handleSelectEstatusTipovehiculo}"
+                    <jmoordbjsf:autocomplete converter="#{estatusConverter}"
+completeMethod="#{estatusController.estatusServices.complete}"
+labeltip1="#{msg['field.estatus']} #{p.idestatus}"   listener="#{calendarioViajesController.handleSelectEstatusTipovehiculo}"
                                            value="#{calendarioViajesController.estatusSelected}"
                                            rendered="#{applicationMenu.menuBarAdministracion}"
                                            itemLabel=" #{p.idestatus}"
@@ -115,7 +120,10 @@
 
 
                     <p:outputLabel value="#{msg['field.conductor']}"  rendered="#{applicationMenu.menuBarAdministracion}"/>
-                    <e:autocompleteconductor listener="#{calendariController.handleSelect}"
+                    <jmoordbjsf:autocomplete converter="#{conductorConverter}"
+completeMethod="#{conductorController.conductorServices.complete}"
+labeltip1="#{msg['field.cedula']} #{p.cedula}"
+labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{calendariController.handleSelect}"
                                              rendered="#{applicationMenu.menuBarAdministracion}"
                                              value="#{calendarioViajesController.conductor}"
                                              itemLabel=" #{p.nombre}"

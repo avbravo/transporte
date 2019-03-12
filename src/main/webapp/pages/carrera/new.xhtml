@@ -42,7 +42,10 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{carreraController.writable}"> 
 
                             <p:outputLabel  value="#{msg['field.facultad']}" />
-                            <e:autocompletefacultad  listener="#{carreraController.handleSelect}"
+                            <jmoordbjsf:autocomplete converter="#{facultadConverter}"
+completeMethod="#{facultadController.facultadServices.complete}"
+labeltip1="#{msg['field.idfacultad']} #{p.idfacultad}"
+labeltip2="#{msg['field.descripcion']} #{p.descripcion}"      listener="#{carreraController.handleSelect}"
                                                 value="#{carreraController.carrera.facultad}"
                                                itemLabel="#{p.descripcion}"
                                                dropdown="true"

@@ -32,7 +32,10 @@
 
 
                     <p:outputLabel value="#{msg['field.facultad']}"/>
-                    <e:autocompletefacultad  listener="#{facultadController.handleAutocompleteOfListXhtml}"
+                    <jmoordbjsf:autocomplete converter="#{facultadConverter}"
+completeMethod="#{facultadController.facultadServices.complete}"
+labeltip1="#{msg['field.idfacultad']} #{p.idfacultad}"
+labeltip2="#{msg['field.descripcion']} #{p.descripcion}"      listener="#{facultadController.handleAutocompleteOfListXhtml}"
                                              value="#{facultadController.facultadSelected}"
                                              itemLabel=" #{p.descripcion}"
                                              field="descripcion"

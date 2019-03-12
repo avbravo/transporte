@@ -36,7 +36,10 @@
 
                         <p:outputLabel  value="#{msg['field.solicitadopor']}" />
                         <b:column>
-                            <e:autocompleteusuario listener="#{solicitudDocenteController.handleSelect}"
+                            <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+completeMethod="#{usuarioController.usuarioServices.complete}"
+labeltip1="#{msg['field.username']} #{p.username}"
+labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudDocenteController.handleSelect}"
                                                    value="#{solicitudDocenteController.solicita}"
                                                    itemLabel=" #{p.nombre}"
                                                    field="nombre"
@@ -57,7 +60,10 @@
                                 />
                         </b:column>
                             <p:outputLabel value="#{msg['field.responsable']}"/>
-                            <e:autocompleteusuario listener="#{solicitudDocenteController.handleSelect}"
+                            <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+completeMethod="#{usuarioController.usuarioServices.complete}"
+labeltip1="#{msg['field.username']} #{p.username}"
+labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudDocenteController.handleSelect}"
                                                    value="#{solicitudDocenteController.responsable}"
                                                    itemLabel=" #{p.nombre}"
                                                    field="nombre"
