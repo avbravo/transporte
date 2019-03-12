@@ -118,26 +118,33 @@
                         <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
 
                         <p:fieldset >
-                        <extensionviaje:calendar   pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorainicioreserva}"   
-                                                   label="#{msg['field.fechahorainicioreserva']}" />
 
-                        <p:spacer width="25"/>
-                           <b:commandButton  look="success"
-                                             title="#{msg['label.solicitudpendiente']}"
+                            <jmoordbjsf:calendar
+                                pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorainicioreserva}" 
+                                label="#{msg['field.fechahorainicioreserva']}"
+                                listener="#{viajeController.handleSelect}"
+                                update=":form:vehiculo, :form:conductor, :form:msg"/>
+
+                            <p:spacer width="25"/>
+                            <b:commandButton  look="success"
+                                              title="#{msg['label.solicitudpendiente']}"
                                               immediate="true"
                                               iconAwesome="fa-calendar" 
                                               update="solicitudDetails"
                                               action="#{viajeController.prepareScheduleSolicitud()}"
                                               oncomplete="PF('solicitudDialog').show();" />
 
-                        
+
                         </p:fieldset>
 
 
                         <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
-                        <extensionviaje:calendar  
-                            pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
 
+                        <jmoordbjsf:calendar
+                            pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorafinreserva}"
+                            label="#{msg['field.fechahorafinreserva']}" 
+                            listener="#{viajeController.handleSelect}"
+                            update=":form:vehiculo, :form:conductor, :form:msg"/>
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <jmoordbjsf:inputText   value="#{viajeController.viaje.lugarpartida}"    />
@@ -154,7 +161,7 @@
 
                             <b:commandButton  look="primary"
                                               immediate="true"
-                                               title="#{msg['label.viajevehiculo']}"
+                                              title="#{msg['label.viajevehiculo']}"
                                               iconAwesome="fa-calendar" 
                                               update="vehiculoDetails"
                                               action="#{viajeController.prepareScheduleVehiculo()}"
@@ -195,9 +202,9 @@
 
 
                         <jmoordbjsf:save rendered="#{applicationMenu.viaje.create}"
-                                save="#{viajeController.save()}" />
-                        
-                      
+                                         save="#{viajeController.save()}" />
+
+
                         <b:commandButton immediate="true"
                                          look="primary"
                                          iconAwesome="fa-share" 

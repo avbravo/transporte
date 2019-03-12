@@ -33,16 +33,25 @@
                         <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
 
                         <p:fieldset>
-                            <extensionviaje:calendar  disabled="false"
-                                                      pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorainicioreserva}"   
-                                                      label="#{msg['field.fechahorainicioreserva']}" />
+
+
+                            <jmoordbjsf:calendar
+                                pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorainicioreserva}" 
+                                label="#{msg['field.fechahorainicioreserva']}" 
+                                listener="#{viajeController.handleSelect}"
+                                update=":form:vehiculo, :form:conductor, :form:msg"/>
+
                             <p:spacer width="25"/>
-                            <extensionviaje:calendar  disabled="true"
-                                                      pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.fechaHoraInicioReservaanterior}"   
-                                                      label="#{msg['field.fechahorainicioreserva']}" />
- <p:spacer width="25"/>
-      <b:commandButton  look="success"
-                                             title="#{msg['label.solicitudpendiente']}"
+
+                            <jmoordbjsf:calendar
+                                disabled="true"
+                                pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.fechaHoraInicioReservaanterior}" 
+                                label="#{msg['field.fechahorainicioreserva']}" 
+                                listener="#{viajeController.handleSelect}"
+                                update=":form:vehiculo, :form:conductor, :form:msg"/>
+                            <p:spacer width="25"/>
+                            <b:commandButton  look="success"
+                                              title="#{msg['label.solicitudpendiente']}"
                                               immediate="true"
                                               iconAwesome="fa-calendar" 
                                               update="solicitudDetails"
@@ -52,13 +61,26 @@
 
                         <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
                         <p:fieldset>
-                        <extensionviaje:calendar  disabled="false"
-                                                  pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorafinreserva}"  label="#{msg['field.fechahorafinreserva']}" />
-                        <p:spacer width="25"/>
-                        <extensionviaje:calendar  disabled="true"
-                                                  pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.fechaHoraFinReservaAnterior}"  label="#{msg['field.fechahorafinreserva']}" />
 
-</p:fieldset>
+
+
+                            <jmoordbjsf:calendar 
+                                pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorafinreserva}"    
+                                label="#{msg['field.fechahorafinreserva']}" 
+                                listener="#{viajeController.handleSelect}"
+                                update=":form:vehiculo, :form:conductor, :form:msg"/>
+
+                            <p:spacer width="25"/>
+
+                            <jmoordbjsf:calendar 
+                                disabled="true"
+                                pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.fechaHoraFinReservaAnterior}"    
+                                label="#{msg['field.fechahorafinreserva']}" 
+                                listener="#{viajeController.handleSelect}"
+                                update=":form:vehiculo, :form:conductor, :form:msg"/>
+
+
+                        </p:fieldset>
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <jmoordbjsf:inputText   value="#{viajeController.viaje.lugarpartida}"    />
 
@@ -74,10 +96,10 @@
 
                             <p:spacer width="25"/>
                             <p:outputLabel value="#{viajeController.vehiculoSelected.marca}- #{viajeController.vehiculoSelected.modelo }-#{viajeController.vehiculoSelected.placa }" />
-<p:spacer width="25"/>
-<b:commandButton  look="primary"
+                            <p:spacer width="25"/>
+                            <b:commandButton  look="primary"
                                               immediate="true"
-                                               title="#{msg['label.viajevehiculo']}"
+                                              title="#{msg['label.viajevehiculo']}"
                                               iconAwesome="fa-calendar" 
                                               update="vehiculoDetails"
                                               action="#{viajeController.prepareScheduleVehiculo()}"
@@ -92,8 +114,8 @@
                             <extensionviaje:autocompleteconductor id="conductor"/>
                             <p:spacer width="25"/>
                             <p:outputLabel value="#{viajeController.conductorSelected.nombre}- #{viajeController.conductorSelected.cedula }" />
- <p:spacer width="25"/>
-   <b:commandButton  look="primary"
+                            <p:spacer width="25"/>
+                            <b:commandButton  look="primary"
                                               immediate="true"
                                               title="#{msg['label.viajeconductor']}"
                                               iconAwesome="fa-calendar" 
@@ -119,7 +141,7 @@
 
                         <p:outputLabel  value="#{msg['field.costocombustible']}"  />
                         <jmoordbjsf:inputText  label="#{msg['field.costocombustible']}"
-                                      span="5" value="#{viajeController.viaje.costocombustible}"   />
+                                               span="5" value="#{viajeController.viaje.costocombustible}"   />
 
                         <p:outputLabel  value="#{msg['field.realizado']}" />
                         <jmoordbjsf:noyes value="#{viajeController.viaje.realizado}" id="realizado"  required="true"/>
@@ -138,8 +160,8 @@
                         />
                 </b:panel>
             </h:panelGroup>
-            
-              <p:dialog widgetVar="vehiculoDialog" header="#{msg['dialogo.viajevehiculos']}" 
+
+            <p:dialog widgetVar="vehiculoDialog" header="#{msg['dialogo.viajevehiculos']}" 
                       width="850" height="450"
                       styleClass="customDialog"
 
