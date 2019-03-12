@@ -395,7 +395,40 @@ labeltip1="#{msg['field.estatus']} #{p.idestatus}"    listener="#{calendarioSoli
 
 
                         <p:outputLabel value="#{msg['field.viajes']}"  rendered="#{calendarioSolicitudViajesController.esAprobado}"/>
-                        <e:autocompleteviaje_disponibles/>
+                      
+                        
+                         <jmoordbjsf:autocompleteWithCalendarDateTime
+                                converter="#{viajeConverter}"
+                                completeMethod="#{calendarioSolicitudViajesController.completeViajesDisponibles}"
+                                rendered="#{calendarioSolicitudViajesController.esAprobado}"
+                                labeltip1="#{msg['field.lugarpartida']}"
+                                labelvalue1="#{p.lugarpartida}"   
+                                
+                                calendarsize="20"
+                                columnpaneltip="2"
+                                calendardatelabel1="#{msg['field.fechainicio']}"
+                                calendardatevalue1="#{p.fechahorainicioreserva}" 
+
+                                calendartimelabel1="#{msg['field.horainicio']}"
+                                calendartimevalue1="#{p.fechahorainicioreserva}"  
+
+                                calendardatelabel2="#{msg['field.fecharegreso']}" 
+                                calendardatevalue2="#{p.fechahorafinreserva}"  
+
+
+                                calendartimelabel2="#{msg['field.horaregreso']}" 
+                                calendartimevalue2="#{p.fechahorafinreserva}"  
+
+
+                                listener="#{calendarioSolicitudViajesController.handleSelect}"
+                                value="#{calendarioSolicitudViajesController.viajesDisponiblesList}"
+                                itemLabel="( #{p.idviaje} )"
+                                field="idsolicitud"
+                                fromstart="true"
+                                dropdown="true"
+                                minQueryLength="0"
+                                update="eventDetails"
+                                />
 
                         <b:commandButton value="#{app['button.close']}"
                                          iconAwesome="fa-close"
