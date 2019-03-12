@@ -33,14 +33,22 @@
 
 
                     <p:outputLabel value="#{msg['field.placa']}"/>
-                    <e:autocompletevehiculo listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
+                    <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
+completeMethod="#{vehiculoController.vehiculoServices.complete}" 
+labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
+labeltip2="#{msg['field.marca']} #{p.marca}"
+labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
                                                   value="#{vehiculoController.vehiculoSelected}"
                                                   itemLabel=" #{p.placa}"
                                                   field="placa"
                                                   update=" :form:dataTable"/>
                     
                     <p:outputLabel value="#{msg['field.marca']}"/>
-                    <e:autocompletevehiculo listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
+                    <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
+completeMethod="#{vehiculoController.vehiculoServices.complete}" 
+labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
+labeltip2="#{msg['field.marca']} #{p.marca}"
+labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
                                                   value="#{vehiculoController.vehiculoSelected}"
                                                   itemLabel=" #{p.marca}"
                                                   field="marca"
@@ -48,7 +56,11 @@
 
                
                     <p:outputLabel value="#{msg['field.modelo']}"/>
-                    <e:autocompletevehiculo listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
+                    <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
+completeMethod="#{vehiculoController.vehiculoServices.complete}" 
+labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
+labeltip2="#{msg['field.marca']} #{p.marca}"
+labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
                                                   value="#{vehiculoController.vehiculoSelected}"
                                                   itemLabel=" #{p.modelo}"
                                                   field="modelo"

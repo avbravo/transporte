@@ -1,10 +1,10 @@
 
 Replace all
-<e:autocompletesolicitud
+<e:autocompleteunidad
 por
 
-<jmoordbjsf:autocomplete converter="#{semestreConverter}"
-completeMethod="#{semestreController.semestreServices.complete}"
-labeltip1="#{p.idsemestre}"
-labeltip2="#{p.descripcion}"
+<jmoordbjsf:autocomplete converter="#{unidadConverter}"
+completeMethod="#{unidadController.unidadServices.complete}" 
+labeltip1="#{msg['field.unidad']} #{p.idunidad}"
+
 

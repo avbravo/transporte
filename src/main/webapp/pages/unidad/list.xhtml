@@ -33,7 +33,9 @@
 
 
                     <p:outputLabel value="#{msg['field.idunidad']}"/>
-                    <e:autocompleteunidad listener="#{unidadController.handleAutocompleteOfListXhtml}"
+                    <jmoordbjsf:autocomplete converter="#{unidadConverter}"
+completeMethod="#{unidadController.unidadServices.complete}" 
+labeltip1="#{msg['field.unidad']} #{p.idunidad}"  listener="#{unidadController.handleAutocompleteOfListXhtml}"
                                           value="#{unidadController.unidadSelected}"
                                           itemLabel=" #{p.idunidad}"
                                           field="idunidad"

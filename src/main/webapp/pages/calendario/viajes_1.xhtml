@@ -33,7 +33,11 @@
 
     
                    <p:outputLabel value="#{msg['field.placa']}"/>
-                    <e:autocompletevehiculo listener="#{calendarioViajesController.handleSelectVehiculoConductor}"
+                    <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
+completeMethod="#{vehiculoController.vehiculoServices.complete}" 
+labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
+labeltip2="#{msg['field.marca']} #{p.marca}"
+labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{calendarioViajesController.handleSelectVehiculoConductor}"
                                                   value="#{calendarioViajesController.vehiculo}"
                                                   itemLabel=" #{p.placa} #{p.marca} #{p.modelo}"
                                                   field="placa"
@@ -108,7 +112,11 @@ labeltip1="#{msg['field.estatus']} #{p.idestatus}"   listener="#{calendarioViaje
 
                     <p:outputLabel value="#{msg['field.vehiculo']}"
                                    rendered="#{applicationMenu.menuBarAdministracion}" />
-                    <e:autocompletevehiculo listener="#{calendarioViajesController.handleSelect}"
+                    <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
+completeMethod="#{vehiculoController.vehiculoServices.complete}" 
+labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
+labeltip2="#{msg['field.marca']} #{p.marca}"
+labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{calendarioViajesController.handleSelect}"
                                             rendered="#{applicationMenu.menuBarAdministracion}"
                                             value="#{calendarioViajesController.vehiculo}"
                                             itemLabel=" #{p.marca}"
