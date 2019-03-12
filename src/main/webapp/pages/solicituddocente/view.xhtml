@@ -49,8 +49,37 @@ labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudDocenteCo
                                                    />
 
                             <p:outputLabel  value="#{msg['field.copiardesde']}" />
-                            <e:autocompletesolicituddocente
-                                listener="#{solicitudDocenteController.handleSelectCopiarDesde}"
+                          
+                             <jmoordbjsf:autocompleteWithCalendarDateTime
+                                converter="#{solicitudConverter}"
+                                completeMethod="#{solicitudDocenteController.completeSolicitudParaCopiar}"    
+                                labeltip1="#{msg['field.idsolicitud']}"
+                                labelvalue1="#{p.idsolicitud}"   
+                                labeltip2="#{msg['field.solicitadopor']}" 
+                                labelvalue2="#{p.usuario.get(0).nombre}"
+                                labeltip3="#{msg['field.responsable']}"
+                                labelvalue3="#{p.usuario.get(1).nombre}"
+                                labeltip4="#{msg['field.mision']} "
+                                labelvalue4="#{p.mision}" 
+                                labeltip5="#{msg['field.lugares']}" 
+                                labelvalue5="#{p.lugares}"
+                                calendarsize="20"
+                                columnpaneltip="2"
+                                calendardatelabel1="#{msg['field.fechapartida']}" 
+                                calendardatevalue1="#{p.fechahorapartida}" 
+
+                                calendartimelabel1="#{msg['field.horapartida']}"
+                                calendartimevalue1="#{p.fechahorapartida}"  
+
+                                calendardatelabel2="#{msg['field.fecharegreso']}" 
+                                calendardatevalue2="#{p.fechahoraregreso}"  
+
+
+                                calendartimelabel2="#{msg['field.horaregreso']}" 
+                                calendartimevalue2="#{p.fechahoraregreso}"  
+
+
+                                 listener="#{solicitudDocenteController.handleSelectCopiarDesde}"
                                 value="#{solicitudDocenteController.solicitudCopiar}"
                                 itemLabel=" #{p.mision}"
                                 field="mision"
