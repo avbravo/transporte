@@ -19,7 +19,7 @@
                 border-color: #428BCA;
             } 
         </style>
-       
+
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.facultad.list}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -33,9 +33,10 @@
 
                     <p:outputLabel value="#{msg['field.facultad']}"/>
                     <jmoordbjsf:autocomplete converter="#{facultadConverter}"
-completeMethod="#{facultadController.facultadServices.complete}"
-labeltip1="#{msg['field.idfacultad']} #{p.idfacultad}"
-labeltip2="#{msg['field.descripcion']} #{p.descripcion}"      listener="#{facultadController.handleAutocompleteOfListXhtml}"
+                                             completeMethod="#{facultadController.facultadServices.complete}"
+                                             labeltip1="#{msg['field.idfacultad']} #{p.idfacultad}"
+                                             labeltip2="#{msg['field.descripcion']} #{p.descripcion}"   
+                                             listener="#{facultadController.handleAutocompleteOfListXhtml}"
                                              value="#{facultadController.facultadSelected}"
                                              itemLabel=" #{p.descripcion}"
                                              field="descripcion"
@@ -47,17 +48,17 @@ labeltip2="#{msg['field.descripcion']} #{p.descripcion}"      listener="#{facult
                 <b:row>
                     <b:column medium-screen="4">
                         <jmoordbjsf:search label="#{msg['field.idfacultad']}"
-                                  value="#{facultadController.lookupServices.idfacultad}"
-                                  renderedList="#{applicationMenu.facultad.list}"  
-                                  search="#{facultadController.searchBy('idfacultad')}"
-                                  />
+                                           value="#{facultadController.lookupServices.idfacultad}"
+                                           renderedList="#{applicationMenu.facultad.list}"  
+                                           search="#{facultadController.searchBy('idfacultad')}"
+                                           />
                     </b:column>
                     <b:column medium-screen="8">
                         <jmoordbjsf:search label="#{msg['field.descripcion']}"
-                                  value="#{facultadController.lookupServices.descripcion}"
-                                  renderedList="#{applicationMenu.facultad.list}"  
-                                  search="#{facultadController.searchBy('descripcion')}"
-                                  />
+                                           value="#{facultadController.lookupServices.descripcion}"
+                                           renderedList="#{applicationMenu.facultad.list}"  
+                                           search="#{facultadController.searchBy('descripcion')}"
+                                           />
                     </b:column>
                 </b:row>
             </b:panel>

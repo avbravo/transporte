@@ -19,10 +19,10 @@
                 border-color: #428BCA;
             } 
         </style>
-        
+
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.carrera.list}" onkeypress="if (event.keyCode == 13) {
-                     return false;
-                 }">
+                    return false;
+                }">
 
             <b:growl  id="msgs"/>
 
@@ -35,36 +35,38 @@
 
                     <p:outputLabel value="#{msg['field.descripcion']}"/>
 
-                    <jmoordbjsf:autocomplete converter="#{carreraConverter}"
-completeMethod="#{carreraController.carreraServices.complete}"
-labeltip1="#{msg['field.idcarrera']} #{p.idcarrera}"
-labeltip2="#{msg['field.carrera']} #{p.descripcion}"     listener="#{carreraController.handleAutocompleteOfListXhtml}"
-                                            value="#{carreraController.carreraSelected}"
-                                            itemLabel="#{p.descripcion}"
-                                            dropdown="false"
-                                            size="35"
-                                            required="true"
-                                            minQueryLength="1"
-                                            field="descripcion"
-
-                                            />
-
-
+                    <jmoordbjsf:autocomplete
+                        converter="#{carreraConverter}"
+                        completeMethod="#{carreraController.carreraServices.complete}"
+                        labeltip1="#{msg['field.idcarrera']} #{p.idcarrera}"
+                        labeltip2="#{msg['field.carrera']} #{p.descripcion}"   
+                        listener="#{carreraController.handleAutocompleteOfListXhtml}"
+                        value="#{carreraController.carreraSelected}"
+                        itemLabel="#{p.descripcion}"
+                        dropdown="false"
+                        size="35"
+                        required="true"
+                        minQueryLength="1"
+                        field="descripcion"
+update=" :form:dataTable"
+                        />
+                    
+                               
                 </b:panelGrid>
                 <b:row>
                     <b:column medium-screen="4">
                         <jmoordbjsf:search label="#{msg['field.idcarrera']}"
-                                  value="#{carreraController.lookupServices.idcarrera}"
-                                  renderedList="#{applicationMenu.carrera.list}"  
-                                  search="#{carreraController.searchBy('idcarrera')}"
-                                  />
+                                           value="#{carreraController.lookupServices.idcarrera}"
+                                           renderedList="#{applicationMenu.carrera.list}"  
+                                           search="#{carreraController.searchBy('idcarrera')}"
+                                           />
                     </b:column>
                     <b:column medium-screen="8">
                         <jmoordbjsf:search label="#{msg['field.descripcion']}"
-                                  value="#{carreraController.lookupServices.descripcion}"
-                                  renderedList="#{applicationMenu.carrera.list}"  
-                                  search="#{carreraController.searchBy('descripcion')}"
-                                  />
+                                           value="#{carreraController.lookupServices.descripcion}"
+                                           renderedList="#{applicationMenu.carrera.list}"  
+                                           search="#{carreraController.searchBy('descripcion')}"
+                                           />
                     </b:column>
                 </b:row>
             </b:panel>

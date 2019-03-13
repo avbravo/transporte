@@ -22,7 +22,6 @@ import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 
-
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -76,8 +75,8 @@ public class CarreraController implements Serializable, IController {
     RevisionHistoryCommonejbRepository revisionHistoryCommonejbRepository;
 
     //Services
-  @Inject
-ErrorInfoTransporteejbServices errorServices;
+    @Inject
+    ErrorInfoTransporteejbServices errorServices;
     @Inject
     FacultadServices facultadServices;
     @Inject
@@ -259,7 +258,7 @@ ErrorInfoTransporteejbServices errorServices;
                 move();
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="reset">
@@ -305,7 +304,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
 
         return url;
@@ -322,7 +321,7 @@ ErrorInfoTransporteejbServices errorServices;
             carreraDataModel = new CarreraDataModel(carreraList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -351,7 +350,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -383,7 +382,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -414,7 +413,7 @@ ErrorInfoTransporteejbServices errorServices;
 
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -451,7 +450,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         //  path = deleteonviewpage ? "/pages/carrera/list.xhtml" : "";
         path = "";
@@ -479,7 +478,7 @@ ErrorInfoTransporteejbServices errorServices;
 //            parameters.put("P_EMPRESA", loginController.getUsuario().getEmpresa().getDescripcion());
             printer.imprimir(list, ruta, parameters);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -496,7 +495,7 @@ ErrorInfoTransporteejbServices errorServices;
 //            parameters.put("P_EMPRESA", loginController.getUsuario().getEmpresa().getDescripcion());
             printer.imprimir(list, ruta, parameters);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -504,35 +503,35 @@ ErrorInfoTransporteejbServices errorServices;
 
     public void handleSelect(SelectEvent event) {
         try {
-          
-        
+
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
     public void handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-      carreraList.removeAll(carreraList);
+            carreraList.removeAll(carreraList);
             carreraList.add(carreraSelected);
             carreraFiltered = carreraList;
             carreraDataModel = new CarreraDataModel(carreraList);
-            
+
             loginController.put("searchcarrera", "idcarrera");
             lookupServices.setIdcarrera(carreraSelected.getIdcarrera());
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="last">
+
     @Override
     public String last() {
         try {
             page = carreraRepository.sizeOfPage(rowPage);
             move();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -544,7 +543,7 @@ ErrorInfoTransporteejbServices errorServices;
             page = 1;
             move();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -558,7 +557,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             move();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -572,7 +571,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             move();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -584,7 +583,7 @@ ErrorInfoTransporteejbServices errorServices;
             this.page = page;
             move();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -598,21 +597,20 @@ ErrorInfoTransporteejbServices errorServices;
             Document doc;
             switch (loginController.get("searchcarrera")) {
                 case "_init":
-                           case "_autocomplete":
+                case "_autocomplete":
                     carreraList = carreraRepository.findPagination(page, rowPage);
 
                     break;
-         
 
                 case "idcarrera":
                     if (lookupServices.getIdcarrera() != null) {
-                         doc = new Document("idcarrera", lookupServices.getIdcarrera());
+                        doc = new Document("idcarrera", lookupServices.getIdcarrera());
 
-                    carreraList = carreraRepository.findBy(doc);
+                        carreraList = carreraRepository.findBy(doc);
                     } else {
-                         carreraList = carreraRepository.findPagination(page, rowPage); 
+                        carreraList = carreraRepository.findPagination(page, rowPage);
                     }
-                   
+
                     break;
                 case "descripcion":
                     carreraList = carreraRepository.findRegexInTextPagination("descripcion", lookupServices.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
@@ -629,7 +627,7 @@ ErrorInfoTransporteejbServices errorServices;
             carreraDataModel = new CarreraDataModel(carreraList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="carrera()">
@@ -641,7 +639,7 @@ ErrorInfoTransporteejbServices errorServices;
             page = 1;
             move();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -657,7 +655,7 @@ ErrorInfoTransporteejbServices errorServices;
             move();
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>

@@ -377,11 +377,14 @@ ErrorInfoTransporteejbServices errorServices;
                 return null;
             }
             
-            Integer numeroescontrol = conductorRepository.count(eq("escontrol","si"));
+            if(conductor.getEscontrol().equals("si")){
+                 Integer numeroescontrol = conductorRepository.count(eq("escontrol","si"));
             if(numeroescontrol >= 1){
                   JsfUtil.warningMessage(rf.getMessage("warning.conductorcontrolyaexiste"));
                 return "";
             }
+            }
+           
             
             
             Integer id = autoincrementableTransporteejbServices.getContador("conductor");
