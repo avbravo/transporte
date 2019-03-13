@@ -364,7 +364,9 @@ labeltip1="#{msg['field.descripcion']} #{p.descripcion}"  />
 
 
                         <p:outputLabel value="#{msg['field.idunidad']}" />
-                        <extensionviaje:autocompleteunidad/>
+                        <jmoordbjsf:autocomplete converter="#{unidadConverter}"
+completeMethod="#{calendarioSolicitudViajesController.completeFiltradoUnidad}"
+labeltip1="#{msg['field.unidad']} #{p.idunidad}"   />
 
                         <p:outputLabel  value="#{msg['field.objetivo']}" rendered="#{calendarioSolicitudViajesController.esDocente}" />
                         <b:inputTextarea rows="2" disabled="true" rendered="#{calendarioSolicitudViajesController.esDocente}" value="#{calendarioSolicitudViajesController.solicitud.objetivo}"    />
