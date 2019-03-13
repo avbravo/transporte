@@ -1,11 +1,11 @@
 
 Replace all
-<extensionviaje:autocompletefacultad
+<extensionviaje:autocompletetipovehiculo
 por
 
-<jmoordbjsf:autocomplete converter="#{facultadConverter}"
-completeMethod="#{calendarioSolicitudViajesController.completeFiltradoFacultad}"
-labeltip1="#{msg['field.descripcion']} #{p.descripcion}"
+<jmoordbjsf:autocomplete converter="#{tipovehiculoConverter}"
+completeMethod="#{solicitudManualAdministrativoController.completeFiltradoTipovehiculo}"
+labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"
 
 
 

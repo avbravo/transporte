@@ -391,7 +391,13 @@ labeltip1="#{msg['field.nombre']} #{p.nombre}"  />
 
 
                         <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
-                        <extensionviaje:autocompletetipovehiculo/>
+                        <jmoordbjsf:autocomplete converter="#{tipovehiculoConverter}"
+completeMethod="#{solicitudManualAdministrativoController.completeFiltradoTipovehiculo}"
+labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"  
+
+
+
+/>
 
 
 
