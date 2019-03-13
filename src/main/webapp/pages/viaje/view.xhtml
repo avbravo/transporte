@@ -7,7 +7,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
-                xmlns:extensionviaje="http://xmlns.jcp.org/jsf/composite/extensionviaje">
+                 >
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -93,11 +93,11 @@
 
                         <p:fieldset>
                             <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
-completeMethod="#{viajeController.completeVehiculo}"
-labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
-labeltip2="#{msg['field.marca']} #{p.marca}"
-labeltip3="#{msg['field.modelo']} #{p.modelo}"
-labeltip4="#{msg['field.placa']} #{p.placa}"     id="vehiculo"/>
+                                                     completeMethod="#{viajeController.completeVehiculo}"
+                                                     labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
+                                                     labeltip2="#{msg['field.marca']} #{p.marca}"
+                                                     labeltip3="#{msg['field.modelo']} #{p.modelo}"
+                                                     labeltip4="#{msg['field.placa']} #{p.placa}"     id="vehiculo"/>
 
                             <p:spacer width="25"/>
                             <p:outputLabel value="#{viajeController.vehiculoSelected.marca}- #{viajeController.vehiculoSelected.modelo }-#{viajeController.vehiculoSelected.placa }" />
@@ -117,9 +117,9 @@ labeltip4="#{msg['field.placa']} #{p.placa}"     id="vehiculo"/>
 
 
                             <jmoordbjsf:autocomplete converter="#{conductorConverter}"
-completeMethod="#{viajeController.completeConductor}"
-labeltip1="#{msg['field.cedula']} #{p.cedula}"
-labeltip1="#{msg['field.nombre']} #{p.nombre}"   id="conductor"/>
+                                                     completeMethod="#{viajeController.completeConductor}"
+                                                     labeltip1="#{msg['field.cedula']} #{p.cedula}"
+                                                     labeltip2="#{msg['field.nombre']} #{p.nombre}"   id="conductor"/>
                             <p:spacer width="25"/>
                             <p:outputLabel value="#{viajeController.conductorSelected.nombre}- #{viajeController.conductorSelected.cedula }" />
                             <p:spacer width="25"/>
