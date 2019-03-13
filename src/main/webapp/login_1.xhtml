@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
+    <h:head> 
+        <title>#{msg['application.title']}</title>
+        <meta name="author" content="Aristides Villarreal"></meta>
+        <style type="text/css">
+            .form-signin {
+                margin: 0 auto;
+                max-width: 330px;
+                padding: 15px;
+            }
+        </style>
+        <f:facet name="first">
+            <f:view locale="#{idiomas.locale}"></f:view>
+            <f:loadBundle basename="com.avbravo.transporte.properties.messages" var="msg" />
+            <f:loadBundle basename="com.jmoordbutils.properties.application" var="app" />
+
+        </f:facet>
+    </h:head>
+    <h:body style="padding-top: 60px; background-color: lightslategray">
+
+        <b:container fluid="true"> 
+            <h:form styleClass="form-signin" prependId="false" id="form">
+                <p:messages id="growl" closable="true"  />
+                <h2 class="form-signin-heading"><p:outputLabel value="#{msg['application.title']}" style="color: white"/></h2>
+                <b:panel title="#{app['login.title']}" look="primary" collapsed="false" >
+                   <b:row>
+                        <b:column medium-screen="3">
+                            <h:outputText value="#{app['login.username']}"  />
+                        </b:column>
+                        <b:column medium-screen="9">
+                            <b:inputText id="username" value="#{loginController.username}" placeholder="#{app['login.username']}" >
+                                <f:facet name="prepend">
+                                    <b:icon name="user" />
+                                </f:facet>
+                            </b:inputText>
+                        </b:column>
+
+                    </b:row>
+                    <b:row tooltip="This password has fancy error messages.">
+                        <b:column medium-screen="3">
+                            <h:outputText value="#{app['login.password']}" />
+                        </b:column>
+                        <b:column medium-screen="9">
+                            <b:inputText id="password" value="#{loginController.password}"  placeholder="#{app['login.password']}" type="password">
+                                <f:facet name="prepend">
+                                    <b:iconAwesome name="key" />
+                                </f:facet>
+                            </b:inputText>
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row>
+
+
+                    </b:row>
+                    <b:column medium-screen="3">
+                        <p:outputLabel  value="#{msg['field.rol']}" />
+                    </b:column>
+
+                    <b:column medium-screen="9">
+                        <jmoordbjsf:selectOneMenu
+                            id="rol"
+                            value="#{loginController.rol}" 
+                            requiredMessage="#{msg['field.idrol']}"
+                            selectItemsValue="#{usuarioController.rolServices.rolList}"
+                            selectItemsLabel="#{item.idrol}"
+
+                            />
+                    </b:column>
+
+
+                    <b:row>
+                        <b:column span="8" >
+                            <b:commandButton look="primary btn-block" value="#{app['button.login']}" 
+                                             action="#{loginController.doLogin()}" icon="log-in" size="lg"
+                                             update=":form:growl"/>
+                        </b:column>
+
+                    </b:row>
+                </b:panel>
+
+
+
+
+
+                <p:outputLabel value="#{msg['application.version']}" style="color: white"/>
+               
+
+            </h:form>
+        </b:container>
+    </h:body>
+</html>
