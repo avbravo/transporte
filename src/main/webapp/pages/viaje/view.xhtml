@@ -92,12 +92,23 @@
                                        id="vehiculolabel" />
 
                         <p:fieldset>
-                            <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
+ 
+                            
+                             <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
                                                      completeMethod="#{viajeController.completeVehiculo}"
                                                      labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
                                                      labeltip2="#{msg['field.marca']} #{p.marca}"
                                                      labeltip3="#{msg['field.modelo']} #{p.modelo}"
-                                                     labeltip4="#{msg['field.placa']} #{p.placa}"     id="vehiculo"/>
+                                                     labeltip4="#{msg['field.placa']} #{p.placa}" 
+                                                     listener="#{viajeController.handleSelect}"
+                                                     dropdown="true"
+
+                                                     minQueryLength="0"
+                                                     id="vehiculo"
+                                                     value="#{viajeController.viaje.vehiculo}"
+                                                     itemLabel="#{p.marca} #{p.modelo} #{p.placa}"
+                                                     field="marca"
+                                                     />
 
                             <p:spacer width="25"/>
                             <p:outputLabel value="#{viajeController.vehiculoSelected.marca}- #{viajeController.vehiculoSelected.modelo }-#{viajeController.vehiculoSelected.placa }" />
@@ -116,10 +127,17 @@
                         <p:fieldset>
 
 
-                            <jmoordbjsf:autocomplete converter="#{conductorConverter}"
+                                                    <jmoordbjsf:autocomplete converter="#{conductorConverter}"
                                                      completeMethod="#{viajeController.completeConductor}"
                                                      labeltip1="#{msg['field.cedula']} #{p.cedula}"
-                                                     labeltip2="#{msg['field.nombre']} #{p.nombre}"   id="conductor"/>
+                                                     labeltip2="#{msg['field.nombre']} #{p.nombre}" 
+                                                     listener="#{viajeController.handleSelect}"
+                                                     dropdown="true"
+                                                      minQueryLength="0"
+                                                     value="#{viajeController.viaje.conductor}"
+                                                    itemLabel="#{p.nombre}"
+                                                    field="nombre"
+                                                     id="conductor"/>
                             <p:spacer width="25"/>
                             <p:outputLabel value="#{viajeController.conductorSelected.nombre}- #{viajeController.conductorSelected.cedula }" />
                             <p:spacer width="25"/>
