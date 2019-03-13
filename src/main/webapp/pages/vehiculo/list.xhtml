@@ -19,13 +19,13 @@
                 border-color: #428BCA;
             } 
         </style>
-       
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.vehiculo.list}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
 
-          <b:growl  id="msgs"/>
-         
+        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.vehiculo.list}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
+
+            <b:growl  id="msgs"/>
+
             <b:panel title="#{msg['titlelist.vehiculo']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
@@ -34,51 +34,51 @@
 
                     <p:outputLabel value="#{msg['field.placa']}"/>
                     <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
-completeMethod="#{vehiculoController.vehiculoServices.complete}" 
-labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
-labeltip2="#{msg['field.marca']} #{p.marca}"
-labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
-                                                  value="#{vehiculoController.vehiculoSelected}"
-                                                  itemLabel=" #{p.placa}"
-                                                  field="placa"
-                                                  update=" :form:dataTable"/>
-                    
+                                             completeMethod="#{vehiculoController.vehiculoServices.complete}" 
+                                             labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
+                                             labeltip2="#{msg['field.marca']} #{p.marca}"
+                                             labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
+                                             value="#{vehiculoController.vehiculoSelected}"
+                                             itemLabel=" #{p.placa}"
+                                             field="placa"
+                                             update=" :form:dataTable"/>
+
                     <p:outputLabel value="#{msg['field.marca']}"/>
                     <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
-completeMethod="#{vehiculoController.vehiculoServices.complete}" 
-labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
-labeltip2="#{msg['field.marca']} #{p.marca}"
-labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
-                                                  value="#{vehiculoController.vehiculoSelected}"
-                                                  itemLabel=" #{p.marca}"
-                                                  field="marca"
-                                                  update=" :form:dataTable"/>
+                                             completeMethod="#{vehiculoController.vehiculoServices.complete}" 
+                                             labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
+                                             labeltip2="#{msg['field.marca']} #{p.marca}"
+                                             labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
+                                             value="#{vehiculoController.vehiculoSelected}"
+                                             itemLabel=" #{p.marca}"
+                                             field="marca"
+                                             update=" :form:dataTable"/>
 
-               
+
                     <p:outputLabel value="#{msg['field.modelo']}"/>
                     <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
-completeMethod="#{vehiculoController.vehiculoServices.complete}" 
-labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
-labeltip2="#{msg['field.marca']} #{p.marca}"
-labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
-                                                  value="#{vehiculoController.vehiculoSelected}"
-                                                  itemLabel=" #{p.modelo}"
-                                                  field="modelo"
-                                                  update=" :form:dataTable"/>
+                                             completeMethod="#{vehiculoController.vehiculoServices.complete}" 
+                                             labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
+                                             labeltip2="#{msg['field.marca']} #{p.marca}"
+                                             labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
+                                             value="#{vehiculoController.vehiculoSelected}"
+                                             itemLabel=" #{p.modelo}"
+                                             field="modelo"
+                                             update=" :form:dataTable"/>
 
-               
-                      
-                      
+
+
+
 
                 </b:panelGrid>
-                 <b:row>
-                  
+                <b:row>
+
                     <b:column medium-screen="6">
                         <jmoordbjsf:search label="#{msg['field.idvehiculo']}"
-                                  value="#{vehiculoController.lookupServices.idvehiculo}"
-                                  renderedList="#{applicationMenu.vehiculo.list}"  
-                                  search="#{vehiculoController.searchBy('idvehiculo')}"
-                                  />
+                                           value="#{vehiculoController.lookupServices.idvehiculo}"
+                                           renderedList="#{applicationMenu.vehiculo.list}"  
+                                           search="#{vehiculoController.searchBy('idvehiculo')}"
+                                           />
                     </b:column>
                 </b:row>
             </b:panel>
@@ -92,7 +92,7 @@ labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{vehiculoControll
                     last="#{vehiculoController.last()}"
                     page="#{vehiculoController.page}"
                     pages="#{vehiculoController.pages}"
-                 skip="ajax:vehiculoController.skip(vehiculoController.page)" 
+                    skip="ajax:vehiculoController.skip(vehiculoController.page)" 
                     new="#{vehiculoController.prepare('gonew',vehiculoController.vehiculo)}"
                     printAll="#{vehiculoController.printAll()}"
                     />
@@ -110,12 +110,12 @@ labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{vehiculoControll
                     <b:dataTableColumn value="#{item.tipovehiculo.idtipovehiculo}" label="#{msg['field.idtipovehiculo']}"/>
                     <b:dataTableColumn value="#{item.pasajeros}" label="#{msg['field.pasajeros']}"/>
                     <b:dataTableColumn value="#{item.combustible}" label="#{msg['field.combustible']}"/>
-                  
+
                     <b:dataTableColumn value="#{item.km}" label="#{msg['field.km']}"/>
                     <b:dataTableColumn value="#{item.enreparacion}" label="#{msg['field.enreparacion']}"/>
 
 
-                  
+
                     <b:dataTableColumn label="">
 
                         <jmoordbjsf:column
