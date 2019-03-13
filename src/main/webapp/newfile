@@ -1,10 +1,11 @@
 
 Replace all
-<extensionviaje:autocompletecarrera
+<extensionviaje:autocompleteconductor
 por
 
-<jmoordbjsf:autocomplete converter="#{carreraConverter}"
-completeMethod="#{calendarioSolicitudViajesController.completeFiltradoCarrera}"
-labeltip1="#{msg['field.descripcion']} #{p.descripcion}"
+<jmoordbjsf:autocomplete converter="#{conductorConverter}"
+completeMethod="#{viajeController.completeConductor}"
+labeltip1="#{msg['field.cedula']} #{p.cedula}"
+labeltip1="#{msg['field.nombre']} #{p.nombre}"
 
 

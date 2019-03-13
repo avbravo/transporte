@@ -111,7 +111,10 @@
                         <p:fieldset>
 
 
-                            <extensionviaje:autocompleteconductor id="conductor"/>
+                            <jmoordbjsf:autocomplete converter="#{conductorConverter}"
+completeMethod="#{viajeController.completeConductor}"
+labeltip1="#{msg['field.cedula']} #{p.cedula}"
+labeltip1="#{msg['field.nombre']} #{p.nombre}"   id="conductor"/>
                             <p:spacer width="25"/>
                             <p:outputLabel value="#{viajeController.conductorSelected.nombre}- #{viajeController.conductorSelected.cedula }" />
                             <p:spacer width="25"/>

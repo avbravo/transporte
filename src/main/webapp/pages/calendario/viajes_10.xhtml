@@ -273,7 +273,10 @@
 
                                 <p:outputLabel value="#{msg['field.conductor']}"  />
 
-                                <extensionviaje:autocompleteconductor/>
+                                <jmoordbjsf:autocomplete converter="#{conductorConverter}"
+completeMethod="#{viajeController.completeConductor}"
+labeltip1="#{msg['field.cedula']} #{p.cedula}"
+labeltip1="#{msg['field.nombre']} #{p.nombre}"  />
 
 
 
