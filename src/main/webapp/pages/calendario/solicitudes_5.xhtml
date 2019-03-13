@@ -20,34 +20,7 @@
             }
 
         </style>
-        <script type="text/javascript">
-            PrimeFaces.locales['es'] = {
-                closeText: 'Cerrar',
-                prevText: 'Anterior',
-                nextText: 'Siguiente',
-                monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'September', 'Octubre', 'Noviembre', 'Diciembre'],
-                monthNamesShort: ['Ene', 'Feb', 'Marz', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
-                dayNamesShort: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
-                dayNamesMin: ['S', 'M', 'D', 'M ', 'D', 'F ', 'S'],
-                weekHeader: 'Woche',
-                FirstDay: 1,
-                isRTL: false,
-                showMonthAfterYear: false,
-                yearSuffix: '',
-                timeOnlyTitle: 'Nur Zeit',
-                timeText: 'Zeit',
-                hourText: 'Stunde',
-                minuteText: 'Minuto',
-                secondText: 'Seguendo',
-                currentText: 'Aktuelles Datum',
-                ampm: false,
-                month: 'Mes',
-                week: 'Semana',
-                day: 'Dia',
-                allDayText: 'Ganzer Tag'
-            };
-        </script>
+          <jmoordbjsf:jsschedule/>
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.calendariobuses.list}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
