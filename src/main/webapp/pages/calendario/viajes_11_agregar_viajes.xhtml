@@ -9,7 +9,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
-                xmlns:extensionviajes="http://xmlns.jcp.org/jsf/composite/extensionviajes"> 
+                xmlns:extensionviaje="http://xmlns.jcp.org/jsf/composite/extensionviaje"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -265,13 +265,13 @@
 
     <p:outputLabel value="#{msg['field.vehiculo']}"
                                                id="vehiculolabel" />
-                                <extensionviajes:autocompletevehiculos id="vehiculo"/>
+                                <extensionviaje:autocompletevehiculos id="vehiculo"/>
 
 
 
                                 <p:outputLabel value="#{msg['field.conductor']}"  />
 
-                                <extensionviajes:autocompleteconductor/>
+                                <extensionviaje:autocompleteconductor/>
 
 
 
@@ -386,7 +386,7 @@
 
 
                         <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
-                        <extensionviajes:autocompletetipovehiculo/>
+                        <extensionviaje:autocompletetipovehiculo/>
 
 
 
@@ -420,19 +420,21 @@
 
 
                         <p:outputLabel  value="#{msg['field.facultad']}"  rendered="#{calendarioSolicitudViajesController.esDocente}" />
-                        <extensionviajes:autocompletefacultad/>
+                        <extensionviaje:autocompletefacultad/>
 
 
 
                         <p:outputLabel  value="#{msg['field.carrera']}" rendered="#{calendarioSolicitudViajesController.esDocente}" />
-                        <extensionviajes:autocompletecarrera/>  
+                        <jmoordbjsf:autocomplete converter="#{carreraConverter}"
+completeMethod="#{calendarioSolicitudViajesController.completeFiltradoCarrera}"
+labeltip1="#{msg['field.descripcion']} #{p.descripcion}"  />  
 
 
 
 
 
                         <p:outputLabel value="#{msg['field.idunidad']}" />
-                        <extensionviajes:autocompleteunidad/>
+                        <extensionviaje:autocompleteunidad/>
 
                         <p:outputLabel  value="#{msg['field.objetivo']}" rendered="#{calendarioSolicitudViajesController.esDocente}" />
                         <b:inputTextarea rows="2" disabled="true" rendered="#{calendarioSolicitudViajesController.esDocente}" value="#{calendarioSolicitudViajesController.solicitud.objetivo}"    />

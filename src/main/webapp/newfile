@@ -1,46 +1,10 @@
 
 Replace all
-<e:autocompletetipovehiculo
+<extensionviaje:autocompletecarrera
 por
 
-<jmoordbjsf:autocomplete converter="#{solicitudConverter}"
-completeMethod="#{solicitudAdministrativoController.completeSolicitudParaCopiar}"
-labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"
-
-
- <h:outputText value="#{msg['field.idsolicitud']}" />
-                    <h:outputText value=" #{p.idsolicitud}" />
-                    <p:outputLabel  value="#{msg['field.solicitadopor']}" />
-                    <h:outputText value="#{p.usuario.get(0).nombre}" />
-                    <p:outputLabel value="#{msg['field.responsable']}"/>
-                    <h:outputText value="#{p.usuario.get(1).nombre}" />
-                    <h:outputText value="#{msg['field.mision']} " />
-                    <h:outputText value="#{p.mision}" />
-                    <h:outputText value="#{msg['field.lugares']}" />
-                    <h:outputText value=" #{p.lugares}" />
-
-
-
-                    <h:outputText value="#{msg['field.fechapartida']}" />
-                    <p:calendar  disabled="true"  size="8"                                  
-                                 pattern="dd/MM/yyyy" value="#{p.fechahorapartida}"  />
-
-
-                    <h:outputText value="#{msg['field.horapartida']}" />
-                    <p:calendar  disabled="true"    
-                                 size="8" 
-                                 pattern="HH:mm:ss a" value="#{p.fechahorapartida}"  />
-
-                    <h:outputText value="#{msg['field.fecharegreso']}" />
-                    <p:calendar  disabled="true"  size="8"                                  
-                                 pattern="dd/MM/yyyy" value="#{p.fechahoraregreso}"  />
-
-
-                    <h:outputText value="#{msg['field.horaregreso']}" />
-                    <p:calendar  disabled="true"    
-                                 size="8" 
-                                 pattern="HH:mm:ss a" value="#{p.fechahoraregreso}"  />
-
-
+<jmoordbjsf:autocomplete converter="#{carreraConverter}"
+completeMethod="#{calendarioSolicitudViajesController.completeFiltradoCarrera}"
+labeltip1="#{msg['field.descripcion']} #{p.descripcion}"
 
 

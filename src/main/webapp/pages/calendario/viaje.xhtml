@@ -8,7 +8,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
-                xmlns:extensionviajes="http://xmlns.jcp.org/jsf/composite/extensionviajes"
+                xmlns:extensionviaje="http://xmlns.jcp.org/jsf/composite/extensionviaje"
                 xmlns:extensionviaje="http://xmlns.jcp.org/jsf/composite/extensionviaje"> 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -347,7 +347,9 @@
 
 
                         <p:outputLabel  value="#{msg['field.carrera']}" rendered="#{calendarioSolicitudViajesController.esDocente}" />
-                        <extensionviaje:autocompletecarrera/>  
+                        <jmoordbjsf:autocomplete converter="#{carreraConverter}"
+completeMethod="#{calendarioSolicitudViajesController.completeFiltradoCarrera}"
+labeltip1="#{msg['field.descripcion']} #{p.descripcion}"  />  
 
 
 
