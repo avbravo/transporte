@@ -425,7 +425,9 @@ labeltip1="#{msg['field.nombre']} #{p.nombre}"  />
 
 
                         <p:outputLabel  value="#{msg['field.facultad']}"  rendered="#{calendarioSolicitudViajesController.esDocente}" />
-                        <extensionviaje:autocompletefacultad/>
+                        <jmoordbjsf:autocomplete converter="#{facultadConverter}"
+completeMethod="#{calendarioSolicitudViajesController.completeFiltradoFacultad}"
+labeltip1="#{msg['field.descripcion']} #{p.descripcion}"  />
 
 
 
