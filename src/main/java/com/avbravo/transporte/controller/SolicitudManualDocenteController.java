@@ -386,8 +386,13 @@ public class SolicitudManualDocenteController implements Serializable, IControll
                 switch (action) {
                     case "gonew":
                         solicitud = new Solicitud();
-                        solicitudSelected = solicitud;
+
                         writable = false;
+                        isNew();
+
+                        //
+                        
+
                         break;
                     case "view":
                         if (id != null) {
@@ -497,15 +502,15 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             Date idsecond = solicitud.getFecha();
             Integer id = solicitud.getIdsolicitud();
 
-            List<Solicitud> list = solicitudRepository.findBy(new Document("usuario.username", loginController.getUsuario().getUsername()).append("fecha", solicitud.getFecha()));
-            if (!list.isEmpty()) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yasolicitoviajeenestafecha"));
-            }
-            if (DateUtil.fechaMenor(solicitud.getFecha(), DateUtil.getFechaActual())) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechasolicitudmenorqueactual"));
-                writable = false;
-
-            }
+//            List<Solicitud> list = solicitudRepository.findBy(new Document("usuario.username", loginController.getUsuario().getUsername()).append("fecha", solicitud.getFecha()));
+//            if (!list.isEmpty()) {
+//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yasolicitoviajeenestafecha"));
+//            }
+//            if (DateUtil.fechaMenor(solicitud.getFecha(), DateUtil.getFechaActual())) {
+//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechasolicitudmenorqueactual"));
+//                writable = false;
+//
+//            }
             solicitud = new Solicitud();
             solicitudSelected = new Solicitud();
             solicitud.setIdsolicitud(id);
@@ -570,7 +575,16 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     @Override
     public String save() {
         try {
+            List<Solicitud> list = solicitudRepository.findBy(new Document("usuario.username", loginController.getUsuario().getUsername()).append("fecha", solicitud.getFechahorapartida()));
+            if (!list.isEmpty()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yasolicitoviajeenestafecha"));
+            }
+            if (DateUtil.fechaMenor(solicitud.getFechahorapartida(), DateUtil.getFechaActual())) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechasolicitudmenorqueactual"));
+                return "";
 
+            }
+            solicitud.setFecha(DateUtil.getFechaActual());
             solicitud.setActivo("si");
             solicitud.setUnidad(unidadList);
             solicitud.setFacultad(facultadList);
