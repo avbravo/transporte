@@ -28,16 +28,10 @@
                 <jmoordbjsf:messages id="msg"/>
 
             
-
                 <b:panel title="#{msg['titleview.solicitudmanualdocente']}" look="primary" >
 
 
-
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" > 
-
-
-
-
 
                         <p:outputLabel  value="#{msg['field.solicitadopor']}" />
                         <b:column>
@@ -280,9 +274,6 @@
 
 
 
-
-
-
                         <p:outputLabel  value="#{msg['field.sugerencia']}" style="font-size: 25;" />
                         <b:dataTable value="#{sugerenciaController.sugerenciaDataModel}"
                                      var="item"
@@ -291,7 +282,6 @@
                                      onpage="console.log('page');">
 
                             <b:dataTableColumn value="#{item.descripcion}" label="#{msg['field.descripcion']}"/>
-
 
 
                         </b:dataTable>
