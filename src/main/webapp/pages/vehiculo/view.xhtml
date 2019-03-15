@@ -88,7 +88,7 @@ labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"         listener=
                         <jmoordbjsf:yesno value="#{vehiculoController.vehiculo.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
-                    <jmoordbjsf:view 
+                    <jmoordbjsf:toolbarview 
                         renderedDelete="#{applicationMenu.vehiculo.delete and vehiculoController.writable }"
                         renderedEdit="#{applicationMenu.vehiculo.edit and vehiculoController.writable}" 
                         renderedList="#{applicationMenu.vehiculo.list and vehiculoController.writable}"

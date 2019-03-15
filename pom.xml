@@ -44,11 +44,8 @@
             <artifactId>transporteejb</artifactId>
             <version>19.2.4</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jmoordbjsf</artifactId>
-            <version>0.3.2.1</version>
-        </dependency>
+    
+       
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -68,7 +65,7 @@
     <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbjsf</artifactId>
-            <version>0.3.3</version>
+            <version>0.4</version>
         </dependency>
     </dependencies>
 

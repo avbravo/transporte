@@ -175,7 +175,7 @@
                         <jmoordbjsf:yesno value="#{viajeController.viaje.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
-                    <jmoordbjsf:view 
+                    <jmoordbjsf:toolbarview 
                         renderedDelete="#{applicationMenu.viaje.delete and viajeController.writable and viajeController.viaje.realizado eq 'no'}"
                         renderedEdit="#{applicationMenu.viaje.edit and viajeController.writable and viajeController.viaje.realizado eq 'no'}" 
                         renderedList="#{applicationMenu.viaje.list and viajeController.writable}"
