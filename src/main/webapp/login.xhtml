@@ -32,18 +32,20 @@
                 <h2 class="form-signin-heading"><p:outputLabel value="#{msg['application.title']}" style="color: white"/></h2>
                 
                 <jmoordbjsf:login
-                    simple="false"
+                   
                     id="username"
                     fieldusername="#{loginController.username}"
                     labelusername="#{app['login.username']}"
                     fieldpassword="#{loginController.password}"
                     dologin="#{loginController.doLogin()}"
-                                      
-                    idrol="rol"
-                    requiredMessagerol="#{msg['field.idrol']}"                    
-                    selectItemsLabelrol="#{item.idrol}"
-                    selectItemsValuerol="#{usuarioController.rolServices.rolList}"
-                    valuerol="#{loginController.rol}"
+                    
+                    showone="true"
+                    idone="rol"
+                  
+                    requiredMessageone="#{msg['field.idrol']}"                    
+                    selectItemsLabelone="#{item.idrol}"
+                    selectItemsValueone="#{usuarioController.rolServices.rolList}"
+                    valueone="#{loginController.rol}"
                     />
                 
                 

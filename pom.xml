@@ -4,7 +4,7 @@
 
     <groupId>com.avbravo</groupId>
     <artifactId>transporte</artifactId>
-    <version>19.3.0.1</version>
+    <version>19.3.0.2</version>
     <packaging>war</packaging>
 
     <name>transporte</name>
@@ -44,7 +44,11 @@
             <artifactId>transporteejb</artifactId>
             <version>19.2.4</version>
         </dependency>
-     
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jmoordbjsf</artifactId>
+            <version>0.3.2.1</version>
+        </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -61,10 +65,10 @@
             <artifactId>jmoordbsecurity</artifactId>
             <version>0.1</version>
         </dependency>
-      <dependency>
+    <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbjsf</artifactId>
-            <version>0.3</version>
+            <version>0.3.3</version>
         </dependency>
     </dependencies>
 

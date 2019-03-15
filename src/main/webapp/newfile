@@ -1,14 +1,18 @@
 
-Replace all
-<extensionviaje:autocompletevehiculos
-por
 
-<jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
-completeMethod="#{viajeController.completeVehiculo}"
-labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
-labeltip2="#{msg['field.marca']} #{p.marca}"
-labeltip3="#{msg['field.modelo']} #{p.modelo}"
-labeltip4="#{msg['field.placa']} #{p.placa}"
+
+ 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
