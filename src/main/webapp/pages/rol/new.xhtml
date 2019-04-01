@@ -26,16 +26,16 @@
             <h:panelGroup id="content" layout="block"> 
                 
                  <jmoordbjsf:messages id="msg"/>
-                 <jmoordbjsf:toolbarnew label="#{msg['field.idrol']}"
-                        title="#{msg['titleview.rol']}"
-                                  value="#{rolController.rol.idrol}"
-                                  isnew="#{rolController.isNew()}"
-                                   disabled="#{rolController.writable}"
-                                  new="#{rolController.prepare('new',rolController.rol)}"
-                                  rendererList="#{applicationMenu.rol.list}"
-                                  list="#{rolController.prepare('golist',rolController.rol)}"
+                    <jmoordbjsf:toolbarnew label="#{msg['field.idrol']}"
+                                       title="#{msg['titleview.rol']}"
+                                       value="#{rolController.rol.idrol}"
+                                       disabled="#{rolController.writable}"
 
-                                  />
+                                       rendererList="#{applicationMenu.rol.list}"
+                                       controller="#{rolController}"
+                                       url  = "/pages/rol/list.xhtml"
+
+                                       />
                 <b:panel title="#{app['title.data']}" look="primary" rendered="#{rolController.writable}">
 
                      
@@ -51,9 +51,11 @@
                         <jmoordbjsf:yesno value="#{rolController.rol.activo}" id="activo"  required="true"/>
 
 
-                        <jmoordbjsf:save rendered="#{rolController.writable and applicationMenu.rol.create}"
-                                            save="#{rolController.save()}"
-                                            />
+                        <jmoordbjsf:toolbarsave
+                            rendered="#{rolController.writable and applicationMenu.rol.create}"
+                            controller="#{rolController}"
+
+                            />
 
 
                     </b:panelGrid>                    
