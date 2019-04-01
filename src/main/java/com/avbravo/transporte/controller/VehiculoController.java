@@ -8,18 +8,17 @@ package com.avbravo.transporte.controller;
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
-import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.interfaces.IControllerOld;
+import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.jmoordb.services.UserInfoServices;
+ 
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.VehiculoDataModel;
-import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Vehiculo;
-import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 
 import com.avbravo.transporte.util.LookupServices;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
-import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
@@ -35,7 +34,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import org.bson.Document;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
 
@@ -45,7 +44,7 @@ import org.primefaces.event.SelectEvent;
  */
 @Named
 @ViewScoped
-public class VehiculoController implements Serializable, IController {
+public class VehiculoController implements Serializable, IControllerOld {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -75,7 +74,7 @@ public class VehiculoController implements Serializable, IController {
     @Inject
     VehiculoRepository vehiculoRepository;
     @Inject
-    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
+    RevisionHistoryRepository revisionHistoryRepository;
 
     //Services
     //Atributos para busquedas
@@ -85,11 +84,10 @@ public class VehiculoController implements Serializable, IController {
     @Inject
     TipovehiculoServices tipovehiculoServices;
    @Inject
-ErrorInfoTransporteejbServices errorServices;
+ErrorInfoServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
-    @Inject
-    UserInfoServices userInfoServices;
+
     @Inject
     VehiculoServices vehiculoServices;
     @Inject
@@ -99,7 +97,7 @@ ErrorInfoTransporteejbServices errorServices;
     @Inject
     LoginController loginController;
     @Inject
-    AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
+    AutoincrementableServices autoincrementableServices;
 
     //List of Relations
     //Repository of Relations
@@ -267,11 +265,11 @@ ErrorInfoTransporteejbServices errorServices;
                         }
                         break;
                     case "golist":
-                        move();
+                        move(page);
                         break;
                 }
             } else {
-                move();
+                move(page);
             }
 
         } catch (Exception e) {
@@ -283,7 +281,7 @@ ErrorInfoTransporteejbServices errorServices;
     @Override
     public void reset() {
 
-        RequestContext.getCurrentInstance().reset(":form:content");
+        PrimeFaces.current().resetInputs(":form:content");
         prepare("new", vehiculo);
     }// </editor-fold>
 
@@ -384,13 +382,13 @@ ErrorInfoTransporteejbServices errorServices;
                 return null;
             }
             vehiculo.setEnreparacion("no");
-            Integer id = autoincrementableTransporteejbServices.getContador("vehiculo");
+            Integer id = autoincrementableServices.getContador("vehiculo");
             vehiculo.setIdvehiculo(id);
             //Lo datos del usuario
-            vehiculo.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+            vehiculo.setUserInfo(vehiculoRepository.generateListUserinfo(loginController.getUsername(), "create"));
             if (vehiculoRepository.save(vehiculo)) {
                 //guarda el contenido anterior
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), loginController.getUsername(),
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), loginController.getUsername(),
                         "create", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -410,10 +408,10 @@ ErrorInfoTransporteejbServices errorServices;
     public String edit() {
         try {
 
-            vehiculo.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
+            vehiculo.getUserInfo().add(vehiculoRepository.generateUserinfo(loginController.getUsername(), "update"));
 
             //guarda el contenido actualizado
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), loginController.getUsername(),
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), loginController.getUsername(),
                     "update", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
 
             vehiculoRepository.update(vehiculo);
@@ -436,7 +434,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             vehiculoSelected = vehiculo;
             if (vehiculoRepository.delete("idvehiculo", vehiculo.getIdvehiculo())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), loginController.getUsername(), "delete", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), loginController.getUsername(), "delete", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -536,7 +534,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String last() {
         try {
             page = vehiculoRepository.sizeOfPage(rowPage);
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -548,7 +546,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String first() {
         try {
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -562,7 +560,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (page < (vehiculoRepository.sizeOfPage(rowPage))) {
                 page++;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -576,7 +574,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (page > 1) {
                 page--;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -588,7 +586,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String skip(Integer page) {
         try {
             this.page = page;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -597,7 +595,7 @@ ErrorInfoTransporteejbServices errorServices;
 // <editor-fold defaultstate="collapsed" desc="move">
 
     @Override
-    public void move() {
+    public void move(Integer page) {
 
         try {
 
@@ -639,7 +637,7 @@ ErrorInfoTransporteejbServices errorServices;
         try {
             loginController.put("searchvehiculo", "_init");
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -654,7 +652,7 @@ ErrorInfoTransporteejbServices errorServices;
             loginController.put("searchvehiculo", string);
 
             writable = true;
-            move();
+            move(page);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
@@ -722,7 +720,7 @@ ErrorInfoTransporteejbServices errorServices;
 
             vehiculo.setPlaca(placanueva);
 
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), loginController.getUsername(),
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), loginController.getUsername(),
                     "update", "conductor", vehiculoRepository.toDocument(vehiculo).toString()));
 
             vehiculoRepository.update(vehiculo);
@@ -732,5 +730,10 @@ ErrorInfoTransporteejbServices errorServices;
         }
         return "";
     }// </editor-fold>
+
+    @Override
+    public Integer sizeOfPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

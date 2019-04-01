@@ -6,6 +6,8 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
+import com.avbravo.jmoordb.mongodb.history.AccessInfoRepository;
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbsecurity.SecurityInterface;
 
@@ -16,8 +18,7 @@ import com.avbravo.transporte.roles.ValidadorRoles;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
-import com.avbravo.transporteejb.producer.AccessInfoTransporteejbRepository;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
+ 
 import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import java.util.logging.Logger;
@@ -53,11 +54,11 @@ public class LoginController implements Serializable, SecurityInterface {
     @Inject
     AccessInfoServices accessInfoServices;
     @Inject
-    AccessInfoTransporteejbRepository accessInfoTransporteejbRepository;
+    AccessInfoRepository accessInfoRepository;
     @Inject
     ResourcesFiles rf;
       @Inject
-ErrorInfoTransporteejbServices errorServices;
+ErrorInfoServices errorServices;
     @Inject
     ValidadorRoles validadorRoles;
     Boolean loggedIn = false;
@@ -263,13 +264,13 @@ ErrorInfoTransporteejbServices errorServices;
 
             }
             if (!isUserValid()) {
-                accessInfoTransporteejbRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.usernameorpasswordnotvalid")));
+                accessInfoRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.usernameorpasswordnotvalid")));
                 JsfUtil.warningMessage(rf.getAppMessage("login.usernameorpasswordnotvalid"));
                 return "";
 
             }
             saveUserInSession(username, 2100);
-            accessInfoTransporteejbRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.welcome")));
+            accessInfoRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.welcome")));
             loggedIn = true;
             foto = "img/me.jpg";
             JsfUtil.successMessage(rf.getAppMessage("login.welcome") + " " + usuario.getNombre());

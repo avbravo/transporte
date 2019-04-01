@@ -14,21 +14,21 @@ import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.CarreraRepository;
 import com.avbravo.commonejb.repository.FacultadRepository;
 import com.avbravo.commonejb.services.SemestreServices;
-import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.interfaces.IControllerOld;
+import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.jmoordb.services.UserInfoServices;
+ 
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
-import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.entity.Tiposolicitud;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
-import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.TiposolicitudRepository;
 import com.avbravo.transporteejb.repository.TipovehiculoRepository;
@@ -61,7 +61,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.bson.Document;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 // </editor-fold>
@@ -72,7 +72,7 @@ import org.primefaces.event.UnselectEvent;
  */
 @Named
 @ViewScoped
-public class SolicitudManualDocenteController implements Serializable, IController {
+public class SolicitudManualDocenteController implements Serializable, IControllerOld {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -128,23 +128,22 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     @Inject
     TipovehiculoRepository tipovehiculoRepository;
     @Inject
-    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
+    RevisionHistoryRepository revisionHistoryRepository;
     @Inject
     UsuarioRepository usuarioRepository;
 
     //Services
     //Atributos para busquedas
     @Inject
-    AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
+    AutoincrementableServices autoincrementableServices;
     @Inject
-    ErrorInfoTransporteejbServices errorServices;
+    ErrorInfoServices errorServices;
     @Inject
     LookupServices lookupServices;
 
     @Inject
     RevisionHistoryServices revisionHistoryServices;
-    @Inject
-    UserInfoServices userInfoServices;
+ 
     @Inject
     SolicitudServices solicitudServices;
     @Inject
@@ -415,11 +414,11 @@ public class SolicitudManualDocenteController implements Serializable, IControll
                         }
                         break;
                     case "golist":
-                        move();
+                        move(page);
                         break;
                 }
             } else {
-                move();
+                move(page);
             }
 
         } catch (Exception e) {
@@ -431,7 +430,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     @Override
     public void reset() {
 
-        RequestContext.getCurrentInstance().reset(":form:content");
+        PrimeFaces.current().resetInputs(":form:content");
         prepare("new", solicitud);
     }// </editor-fold>
 
@@ -611,7 +610,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
 //                return "";
 //            }
 
-                Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
+                Integer idsolicitud = autoincrementableServices.getContador("solicitud");
                 solicitud.setIdsolicitud(idsolicitud);
                 Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
                 if (optional.isPresent()) {
@@ -620,10 +619,10 @@ public class SolicitudManualDocenteController implements Serializable, IControll
                 }
 
                 //Lo datos del usuario
-                solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+                solicitud.setUserInfo(solicitudRepository.generateListUserinfo(loginController.getUsername(), "create"));
                 if (solicitudRepository.save(solicitud)) {
                     //guarda el contenido anterior
-                    revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
+                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                             "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 //enviarEmails();
 
@@ -658,7 +657,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     public String edit() {
         try {
             solicitud.setUnidad(unidadList);
-            solicitud.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
+            solicitud.getUserInfo().add(solicitudRepository.generateUserinfo(loginController.getUsername(), "update"));
             solicitud.setUnidad(unidadList);
             solicitud.setFacultad(facultadList);
             solicitud.setCarrera(carreraList);
@@ -679,7 +678,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
                 return "";
             }
 
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             solicitudRepository.update(solicitud);
@@ -711,7 +710,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             }
             solicitudSelected = solicitud;
             if (solicitudRepository.delete("idsolicitud", solicitud.getIdsolicitud())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(), "delete", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(), "delete", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -820,7 +819,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     public String last() {
         try {
             page = solicitudRepository.sizeOfPage(rowPage);
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -832,7 +831,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     public String first() {
         try {
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -846,7 +845,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             if (page < (solicitudRepository.sizeOfPage(rowPage))) {
                 page++;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -860,7 +859,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             if (page > 1) {
                 page--;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -872,7 +871,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     public String skip(Integer page) {
         try {
             this.page = page;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -881,7 +880,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
 // <editor-fold defaultstate="collapsed" desc="move">
 
     @Override
-    public void move() {
+    public void move(Integer page) {
 
         try {
 
@@ -924,7 +923,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
         try {
             loginController.put("searchsolicitud", "_init");
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -939,7 +938,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             loginController.put("searchsolicitud", string);
 
             writable = true;
-            move();
+            move(page);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1391,4 +1390,9 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
+
+    @Override
+    public Integer sizeOfPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

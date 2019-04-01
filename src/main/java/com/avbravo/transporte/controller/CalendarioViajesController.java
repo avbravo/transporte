@@ -14,9 +14,12 @@ import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.CarreraRepository;
 import com.avbravo.commonejb.repository.FacultadRepository;
 import com.avbravo.commonejb.services.SemestreServices;
-import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.interfaces.IControllerOld;
+import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.jmoordb.services.UserInfoServices;
+ 
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
@@ -27,11 +30,8 @@ import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viaje;
-import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 
 import com.avbravo.transporte.util.LookupServices;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
-import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
@@ -62,7 +62,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.bson.Document;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
@@ -79,7 +79,7 @@ import org.primefaces.model.ScheduleModel;
  */
 @Named
 @ViewScoped
-public class CalendarioViajesController implements Serializable, IController {
+public class CalendarioViajesController implements Serializable, IControllerOld {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -140,25 +140,24 @@ public class CalendarioViajesController implements Serializable, IController {
     @Inject
     SolicitudRepository solicitudRepository;
     @Inject
-    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
+    RevisionHistoryRepository revisionHistoryRepository;
     @Inject
     UsuarioRepository usuarioRepository;
 
     //Services
     //Atributos para busquedas
     @Inject
-    AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
+    AutoincrementableServices autoincrementableServices;
 
   @Inject
-ErrorInfoTransporteejbServices errorServices;
+ErrorInfoServices errorServices;
 
     @Inject
     LookupServices lookupServices;
 
     @Inject
     RevisionHistoryServices revisionHistoryServices;
-    @Inject
-    UserInfoServices userInfoServices;
+
     @Inject
     SolicitudServices solicitudServices;
     @Inject
@@ -474,7 +473,7 @@ ErrorInfoTransporteejbServices errorServices;
     @Override
     public void reset() {
 
-        RequestContext.getCurrentInstance().reset(":form:content");
+        PrimeFaces.current().resetInputs(":form:content");
         prepare("new", solicitud);
     }// </editor-fold>
 
@@ -611,7 +610,7 @@ ErrorInfoTransporteejbServices errorServices;
     @Override
     public String save() {
         try {
-            Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
+            Integer idsolicitud = autoincrementableServices.getContador("solicitud");
             solicitud.setIdsolicitud(idsolicitud);
             Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
             if (optional.isPresent()) {
@@ -656,10 +655,10 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
             //Lo datos del usuario
-            solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+            solicitud.setUserInfo(solicitudRepository.generateListUserinfo(loginController.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
                 //guarda el contenido anterior
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                         "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 //enviarEmails();
 
@@ -689,7 +688,7 @@ ErrorInfoTransporteejbServices errorServices;
         try {
             solicitud.setEstatus(estatusSelected);
 //            solicitud.setUnidad(unidadList);
-//            solicitud.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
+//            solicitud.getUserInfo().add(solicitudRepository.generateUserinfo(loginController.getUsername(), "update"));
 //            solicitud.setUnidad(unidadList);
 //            solicitud.setFacultad(facultadList);
 //            solicitud.setCarrera(carreraList);
@@ -718,7 +717,7 @@ ErrorInfoTransporteejbServices errorServices;
 //                return "";
 //            }
 
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             solicitudRepository.update(solicitud);
@@ -743,7 +742,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             solicitudSelected = solicitud;
             if (solicitudRepository.delete("idsolicitud", solicitud.getIdsolicitud())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(), "delete", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(), "delete", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -884,7 +883,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String last() {
         try {
             page = solicitudRepository.sizeOfPage(rowPage);
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -896,7 +895,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String first() {
         try {
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -910,7 +909,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (page < (solicitudRepository.sizeOfPage(rowPage))) {
                 page++;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -924,7 +923,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (page > 1) {
                 page--;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -936,7 +935,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String skip(Integer page) {
         try {
             this.page = page;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -945,7 +944,7 @@ ErrorInfoTransporteejbServices errorServices;
 // <editor-fold defaultstate="collapsed" desc="move">
 
     @Override
-    public void move() {
+    public void move(Integer page) {
 
         try {
 
@@ -990,7 +989,7 @@ ErrorInfoTransporteejbServices errorServices;
         try {
             loginController.put("searchsolicitud", "_init");
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1005,7 +1004,7 @@ ErrorInfoTransporteejbServices errorServices;
             loginController.put("searchsolicitud", string);
 
             writable = true;
-            move();
+            move(page);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
@@ -1433,4 +1432,9 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
 //        addMessage(message);
     }
 // </editor-fold>
+
+    @Override
+    public Integer sizeOfPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

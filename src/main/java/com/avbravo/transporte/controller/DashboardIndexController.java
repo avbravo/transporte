@@ -6,15 +6,13 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.transporte.util.ResourcesFiles;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -43,7 +41,7 @@ public class DashboardIndexController implements Serializable {
     @Inject
     VehiculoRepository vehiculoRepository;
    @Inject
-ErrorInfoTransporteejbServices errorServices;
+ErrorInfoServices errorServices;
     @Inject
     LoginController loginController;
     @Inject

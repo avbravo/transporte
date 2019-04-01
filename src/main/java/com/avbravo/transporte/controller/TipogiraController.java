@@ -8,16 +8,16 @@ package com.avbravo.transporte.controller;
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
-import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.interfaces.IControllerOld;
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.jmoordb.services.UserInfoServices;
+ 
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.TipogiraDataModel;
 import com.avbravo.transporteejb.entity.Tipogira;
 
 import com.avbravo.transporte.util.LookupServices;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
-import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.TipogiraRepository;
 import com.avbravo.transporteejb.services.TipogiraServices;
 
@@ -32,7 +32,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import org.bson.Document;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
 
@@ -42,7 +42,7 @@ import org.primefaces.event.SelectEvent;
  */
 @Named
 @ViewScoped
-public class TipogiraController implements Serializable, IController {
+public class TipogiraController implements Serializable, IControllerOld {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -71,7 +71,7 @@ public class TipogiraController implements Serializable, IController {
     @Inject
     TipogiraRepository tipogiraRepository;
     @Inject
-    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
+    RevisionHistoryRepository revisionHistoryRepository;
 
     //Services
     //Atributos para busquedas
@@ -79,11 +79,10 @@ public class TipogiraController implements Serializable, IController {
     @Inject
     LookupServices lookupServices;
    @Inject
-ErrorInfoTransporteejbServices errorServices;
+ErrorInfoServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
-    @Inject
-    UserInfoServices userInfoServices;
+   
     @Inject
     TipogiraServices tipogiraServices;
     @Inject
@@ -243,11 +242,11 @@ ErrorInfoTransporteejbServices errorServices;
                         }
                         break;
                     case "golist":
-                        move();
+                        move(page);
                         break;
                 }
             } else {
-                move();
+                move(page);
             }
 
         } catch (Exception e) {
@@ -259,7 +258,7 @@ ErrorInfoTransporteejbServices errorServices;
     @Override
     public void reset() {
 
-        RequestContext.getCurrentInstance().reset(":form:content");
+        PrimeFaces.current().resetInputs(":form:content");
         prepare("new", tipogira);
     }// </editor-fold>
 
@@ -361,10 +360,10 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
             //Lo datos del usuario
-            tipogira.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+            tipogira.setUserInfo(tipogiraRepository.generateListUserinfo(loginController.getUsername(), "create"));
             if (tipogiraRepository.save(tipogira)) {
                 //guarda el contenido anterior
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tipogira.getIdtipogira(), loginController.getUsername(),
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(tipogira.getIdtipogira(), loginController.getUsername(),
                         "create", "tipogira", tipogiraRepository.toDocument(tipogira).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -384,10 +383,10 @@ ErrorInfoTransporteejbServices errorServices;
     public String edit() {
         try {
 
-            tipogira.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
+            tipogira.getUserInfo().add(tipogiraRepository.generateUserinfo(loginController.getUsername(), "update"));
 
             //guarda el contenido actualizado
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tipogira.getIdtipogira(), loginController.getUsername(),
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(tipogira.getIdtipogira(), loginController.getUsername(),
                     "update", "tipogira", tipogiraRepository.toDocument(tipogira).toString()));
 
             tipogiraRepository.update(tipogira);
@@ -410,7 +409,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             tipogiraSelected = tipogira;
             if (tipogiraRepository.delete("idtipogira", tipogira.getIdtipogira())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(tipogira.getIdtipogira(), loginController.getUsername(), "delete", "tipogira", tipogiraRepository.toDocument(tipogira).toString()));
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(tipogira.getIdtipogira(), loginController.getUsername(), "delete", "tipogira", tipogiraRepository.toDocument(tipogira).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -510,7 +509,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String last() {
         try {
             page = tipogiraRepository.sizeOfPage(rowPage);
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -522,7 +521,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String first() {
         try {
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -536,7 +535,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (page < (tipogiraRepository.sizeOfPage(rowPage))) {
                 page++;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -550,7 +549,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (page > 1) {
                 page--;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -562,7 +561,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String skip(Integer page) {
         try {
             this.page = page;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -571,7 +570,7 @@ ErrorInfoTransporteejbServices errorServices;
 // <editor-fold defaultstate="collapsed" desc="move">
 
     @Override
-    public void move() {
+    public void move(Integer page) {
 
         try {
 
@@ -613,7 +612,7 @@ ErrorInfoTransporteejbServices errorServices;
         try {
             loginController.put("searchtipogira", "_init");
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -628,12 +627,17 @@ ErrorInfoTransporteejbServices errorServices;
             loginController.put("searchtipogira", string);
 
             writable = true;
-            move();
+            move(page);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
+
+    @Override
+    public Integer sizeOfPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

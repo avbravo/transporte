@@ -13,21 +13,21 @@ import com.avbravo.commonejb.repository.CarreraRepository;
 import com.avbravo.commonejb.repository.FacultadRepository;
 import com.avbravo.commonejb.services.SemestreServices;
 import com.avbravo.jmoordb.interfaces.IError;
+import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.jmoordb.services.UserInfoServices;
+ 
 import com.avbravo.transporte.controller.LoginController;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
-import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.entity.Tiposolicitud;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
-import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.TiposolicitudRepository;
 import com.avbravo.transporteejb.repository.TipovehiculoRepository;
@@ -38,7 +38,6 @@ import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.mongodb.client.model.Filters;
-import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -114,23 +113,21 @@ public class SolicitudReporteController implements Serializable, IError {
     @Inject
     SolicitudRepository solicitudRepository;
     @Inject
-    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
+    RevisionHistoryRepository revisionHistoryRepository;
     @Inject
     UsuarioRepository usuarioRepository;
 
     //Services
     //Atributos para busquedas
     @Inject
-    AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
+    AutoincrementableServices autoincrementableServices;
     @Inject
-    ErrorInfoTransporteejbServices errorServices;
+    ErrorInfoServices errorServices;
     @Inject
     LookupServices lookupServices;
 
     @Inject
     RevisionHistoryServices revisionHistoryServices;
-    @Inject
-    UserInfoServices userInfoServices;
     @Inject
     SolicitudServices solicitudServices;
     @Inject
@@ -375,7 +372,7 @@ public class SolicitudReporteController implements Serializable, IError {
 //            solicitudList = solicitudRepository.findBy(filter, new Document("idsolicitud", -1));
 //            solicitudFiltered = solicitudList;
 //            solicitudDataModel = new SolicitudDataModel(solicitudList);
-            move();
+            move(page);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -452,7 +449,7 @@ public class SolicitudReporteController implements Serializable, IError {
     public String last() {
         try {
             page = solicitudRepository.sizeOfPage(rowPage);
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -463,7 +460,7 @@ public class SolicitudReporteController implements Serializable, IError {
     public String first() {
         try {
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -476,7 +473,7 @@ public class SolicitudReporteController implements Serializable, IError {
             if (page < (solicitudRepository.sizeOfPage(rowPage))) {
                 page++;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -489,7 +486,7 @@ public class SolicitudReporteController implements Serializable, IError {
             if (page > 1) {
                 page--;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -500,7 +497,7 @@ public class SolicitudReporteController implements Serializable, IError {
     public String skip(Integer page) {
         try {
             this.page = page;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -508,7 +505,7 @@ public class SolicitudReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="move">
 
-    public void move() {
+    public void move(Integer page) {
 
         try {
 
@@ -545,7 +542,7 @@ public class SolicitudReporteController implements Serializable, IError {
         try {
             loginController.put("searchsolicitudreporte", "_init");
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -559,7 +556,7 @@ public class SolicitudReporteController implements Serializable, IError {
             loginController.put("searchsolicitudreporte", string);
 
             writable = true;
-            move();
+            move(page);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());

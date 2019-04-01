@@ -10,8 +10,11 @@ import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.jmoordb.interfaces.IError;
+import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.jmoordb.services.UserInfoServices;
+ 
 import com.avbravo.transporte.controller.LoginController;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
@@ -20,11 +23,7 @@ import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Solicitud;
-import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Vehiculo;
-import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
-import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
@@ -116,7 +115,7 @@ public class ViajeReporteController implements Serializable, IError {
     @Inject
     ViajeRepository viajeRepository;
     @Inject
-    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
+    RevisionHistoryRepository revisionHistoryRepository;
     @Inject
     ConductorRepository conductorRepository;
     @Inject
@@ -125,10 +124,10 @@ public class ViajeReporteController implements Serializable, IError {
     VehiculoRepository vehiculoRepository;
     //Services
     @Inject
-    ErrorInfoTransporteejbServices errorServices;
+    ErrorInfoServices errorServices;
 
     @Inject
-    AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
+    AutoincrementableServices autoincrementableServices;
     @Inject
     LookupServices lookupServices;
 
@@ -136,8 +135,7 @@ public class ViajeReporteController implements Serializable, IError {
     RevisionHistoryServices revisionHistoryServices;
     @Inject
     SolicitudServices solicitudServices;
-    @Inject
-    UserInfoServices userInfoServices;
+  
     @Inject
     ViajeServices viajeServices;
     @Inject
@@ -422,11 +420,11 @@ public class ViajeReporteController implements Serializable, IError {
                         }
                         break;
                     case "golist":
-                        move();
+                        move(page);
                         break;
                 }
             } else {
-                move();
+                move(page);
             }
 
         } catch (Exception e) {
@@ -533,7 +531,7 @@ public class ViajeReporteController implements Serializable, IError {
     public String last() {
         try {
             page = viajeRepository.sizeOfPage(rowPage);
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -544,7 +542,7 @@ public class ViajeReporteController implements Serializable, IError {
     public String first() {
         try {
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -557,7 +555,7 @@ public class ViajeReporteController implements Serializable, IError {
             if (page < (viajeRepository.sizeOfPage(rowPage))) {
                 page++;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -570,7 +568,7 @@ public class ViajeReporteController implements Serializable, IError {
             if (page > 1) {
                 page--;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -581,7 +579,7 @@ public class ViajeReporteController implements Serializable, IError {
     public String skip(Integer page) {
         try {
             this.page = page;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -589,7 +587,7 @@ public class ViajeReporteController implements Serializable, IError {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="move">
 
-    public void move() {
+    public void move(Integer page) {
 
         try {
             programacionFlotaPojoList = new ArrayList<>();
@@ -832,7 +830,7 @@ public class ViajeReporteController implements Serializable, IError {
             loginController.put("searchviajereporte", string);
 
             writable = true;
-            move();
+            move(page);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());

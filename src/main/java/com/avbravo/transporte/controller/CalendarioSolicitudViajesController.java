@@ -14,9 +14,12 @@ import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.CarreraRepository;
 import com.avbravo.commonejb.repository.FacultadRepository;
 import com.avbravo.commonejb.services.SemestreServices;
-import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.interfaces.IControllerOld;
+import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.jmoordb.services.UserInfoServices;
+ 
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
@@ -28,10 +31,6 @@ import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viaje;
-import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
-
-import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
@@ -67,7 +66,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.bson.Document;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
@@ -84,7 +83,7 @@ import org.primefaces.model.ScheduleModel;
  */
 @Named
 @ViewScoped
-public class CalendarioSolicitudViajesController implements Serializable, IController {
+public class CalendarioSolicitudViajesController implements Serializable, IControllerOld {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -163,7 +162,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     @Inject
     SolicitudRepository solicitudRepository;
     @Inject
-    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
+    RevisionHistoryRepository revisionHistoryRepository;
     @Inject
     UsuarioRepository usuarioRepository;
     @Inject
@@ -176,16 +175,15 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     //Services
     //Atributos para busquedas
     @Inject
-    AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
+    AutoincrementableServices autoincrementableServices;
 
     @Inject
     LookupServices lookupServices;
     @Inject
-    ErrorInfoTransporteejbServices errorServices;
+    ErrorInfoServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
-    @Inject
-    UserInfoServices userInfoServices;
+  
     @Inject
     SolicitudServices solicitudServices;
     @Inject
@@ -620,7 +618,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     @Override
     public void reset() {
 
-        RequestContext.getCurrentInstance().reset(":form:content");
+        PrimeFaces.current().resetInputs(":form:content");
         prepare("new", solicitud);
     }// </editor-fold>
 
@@ -796,7 +794,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                 return "";
             }
 
-            Integer idsolicitud = autoincrementableTransporteejbServices.getContador("solicitud");
+            Integer idsolicitud = autoincrementableServices.getContador("solicitud");
             solicitud.setIdsolicitud(idsolicitud);
             Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
             if (optional.isPresent()) {
@@ -805,10 +803,10 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             }
 
             //Lo datos del usuario
-            solicitud.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+            solicitud.setUserInfo(solicitudRepository.generateListUserinfo(loginController.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
                 //guarda el contenido anterior
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                         "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 //enviarEmails();
 
@@ -861,17 +859,17 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                 }
                 if (!esAprobadoParaEditar) {
                     viajes = viajesSelected;
-                    Integer idviaje = autoincrementableTransporteejbServices.getContador("viajes");
+                    Integer idviaje = autoincrementableServices.getContador("viajes");
                     viajes.setActivo("si");
                     viajes.setIdviaje(idviaje);
                     viajes.setConductor(conductorSelected);
                     viajes.setVehiculo(vehiculoSelected);
                     // viajes.setVehsolicitudList);
 
-                    viajes.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+                    viajes.setUserInfo(solicitudRepository.generateListUserinfo(loginController.getUsername(), "create"));
 
                     if (viajesRepository.save(viajes)) {
-                        revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajes.getIdviaje().toString(), loginController.getUsername(),
+                        revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viajes.getIdviaje().toString(), loginController.getUsername(),
                                 "create", "viajes", viajesRepository.toDocument(viajes).toString()));
                         JsfUtil.successMessage(rf.getAppMessage("info.save"));
 
@@ -883,9 +881,9 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                     viajes = viajesSelected;
                     viajes.setConductor(conductorSelected);
                     viajes.setVehiculo(vehiculoSelected);
-                    viajesSelected.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "update"));
+                    viajesSelected.setUserInfo(solicitudRepository.generateListUserinfo(loginController.getUsername(), "update"));
                     if (viajesRepository.update(viajesSelected)) {
-                        revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajesSelected.getIdviaje().toString(), loginController.getUsername(),
+                        revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viajesSelected.getIdviaje().toString(), loginController.getUsername(),
                                 "update", "viajes", viajesRepository.toDocument(viajesSelected).toString()));
 
                     }
@@ -895,9 +893,9 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
                 //Si era apronado para editar y se cambio el estatus se coloca activo = no
                 if (esAprobadoParaEditar) {
                     viajesSelected.setActivo("no");
-                    viajesSelected.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "update"));
+                    viajesSelected.setUserInfo(solicitudRepository.generateListUserinfo(loginController.getUsername(), "update"));
                     if (viajesRepository.update(viajesSelected)) {
-                        revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viajesSelected.getIdviaje().toString(), loginController.getUsername(),
+                        revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viajesSelected.getIdviaje().toString(), loginController.getUsername(),
                                 "update", "viajes", viajesRepository.toDocument(viajesSelected).toString()));
 
                     }
@@ -906,7 +904,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
 
             solicitud.setEstatus(estatusSelected);
 
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             solicitudRepository.update(solicitud);
@@ -934,7 +932,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             }
             solicitudSelected = solicitud;
             if (solicitudRepository.delete("idsolicitud", solicitud.getIdsolicitud())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(), "delete", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(), "delete", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -1162,7 +1160,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     public String last() {
         try {
             page = solicitudRepository.sizeOfPage(rowPage);
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1174,7 +1172,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     public String first() {
         try {
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1188,7 +1186,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             if (page < (solicitudRepository.sizeOfPage(rowPage))) {
                 page++;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1202,7 +1200,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             if (page > 1) {
                 page--;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1214,7 +1212,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     public String skip(Integer page) {
         try {
             this.page = page;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1223,7 +1221,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
 // <editor-fold defaultstate="collapsed" desc="move">
 
     @Override
-    public void move() {
+    public void move(Integer page) {
 
         try {
 
@@ -1267,7 +1265,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
         try {
             loginController.put("searchsolicitud", "_init");
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1282,7 +1280,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
             loginController.put("searchsolicitud", string);
 
             writable = true;
-            move();
+            move(page);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -2269,5 +2267,10 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
         return "";
     }
     // </editor-fold>
+
+    @Override
+    public Integer sizeOfPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

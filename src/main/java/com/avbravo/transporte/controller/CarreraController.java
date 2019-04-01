@@ -11,16 +11,18 @@ import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.commonejb.datamodel.CarreraDataModel;
 import com.avbravo.commonejb.entity.Carrera;
 import com.avbravo.commonejb.repository.CarreraRepository;
-import com.avbravo.commonejb.producer.AutoincrementableCommonejbServices;
-import com.avbravo.commonejb.producer.RevisionHistoryCommonejbRepository;
+ 
+ 
 import com.avbravo.commonejb.services.CarreraServices;
 import com.avbravo.commonejb.services.FacultadServices;
-import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.interfaces.IControllerOld;
+import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.jmoordb.services.UserInfoServices;
+ 
 import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporte.util.ResourcesFiles;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -33,7 +35,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import org.bson.Document;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
 
@@ -43,7 +45,7 @@ import org.primefaces.event.SelectEvent;
  */
 @Named
 @ViewScoped
-public class CarreraController implements Serializable, IController {
+public class CarreraController implements Serializable, IControllerOld {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -72,21 +74,20 @@ public class CarreraController implements Serializable, IController {
     @Inject
     CarreraRepository carreraRepository;
     @Inject
-    RevisionHistoryCommonejbRepository revisionHistoryCommonejbRepository;
+    RevisionHistoryRepository revisionHistoryRepository;
 
     //Services
     @Inject
-    ErrorInfoTransporteejbServices errorServices;
+    ErrorInfoServices errorServices;
     @Inject
     FacultadServices facultadServices;
     @Inject
-    AutoincrementableCommonejbServices autoincrementableCommonejbServices;
+    AutoincrementableServices autoincrementableServices;
     @Inject
     LookupServices lookupServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
-    @Inject
-    UserInfoServices userInfoServices;
+  
     @Inject
     CarreraServices carreraServices;
     @Inject
@@ -251,11 +252,11 @@ public class CarreraController implements Serializable, IController {
 
                         break;
                     case "golist":
-                        move();
+                        move(page);
                         break;
                 }
             } else {
-                move();
+                move(page);
             }
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -266,7 +267,7 @@ public class CarreraController implements Serializable, IController {
     @Override
     public void reset() {
 
-        RequestContext.getCurrentInstance().reset(":form:content");
+        PrimeFaces.current().resetInputs(":form:content");
         prepare("new", carrera);
     }// </editor-fold>
 
@@ -367,13 +368,13 @@ public class CarreraController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return "";
             }
-            Integer identity = autoincrementableCommonejbServices.getContador("carrera");
+            Integer identity = autoincrementableServices.getContador("carrera");
             carrera.setIdcarrera(identity);
 
-            carrera.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+            carrera.setUserInfo(carreraRepository.generateListUserinfo(loginController.getUsername(), "create"));
 
             if (carreraRepository.save(carrera)) {
-                revisionHistoryCommonejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
                         "create", "carrera", carreraRepository.toDocument(carrera).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
@@ -404,9 +405,9 @@ public class CarreraController implements Serializable, IController {
 
             }
 
-            carrera.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
+            carrera.getUserInfo().add(carreraRepository.generateUserinfo(loginController.getUsername(), "update"));
 
-            revisionHistoryCommonejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(),
                     "update", "carrera", carreraRepository.toDocument(carrera).toString()));
 
             carreraRepository.update(carrera);
@@ -430,7 +431,7 @@ public class CarreraController implements Serializable, IController {
             }
             carreraSelected = carrera;
             if (carreraRepository.delete("idcarrera", carrera.getIdcarrera())) {
-                revisionHistoryCommonejbRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(), "delete", "carrera", carreraRepository.toDocument(carrera).toString()));
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(carrera.getIdcarrera().toString(), loginController.getUsername(), "delete", "carrera", carreraRepository.toDocument(carrera).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -529,7 +530,7 @@ public class CarreraController implements Serializable, IController {
     public String last() {
         try {
             page = carreraRepository.sizeOfPage(rowPage);
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -541,7 +542,7 @@ public class CarreraController implements Serializable, IController {
     public String first() {
         try {
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -555,7 +556,7 @@ public class CarreraController implements Serializable, IController {
             if (page < (carreraRepository.sizeOfPage(rowPage))) {
                 page++;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -569,7 +570,7 @@ public class CarreraController implements Serializable, IController {
             if (page > 1) {
                 page--;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -581,7 +582,7 @@ public class CarreraController implements Serializable, IController {
     public String skip(Integer page) {
         try {
             this.page = page;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -590,7 +591,7 @@ public class CarreraController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="move">
 
     @Override
-    public void move() {
+    public void move(Integer page) {
 
         try {
 
@@ -637,7 +638,7 @@ public class CarreraController implements Serializable, IController {
         try {
             loginController.put("searchcarrera", "_init");
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -652,12 +653,17 @@ public class CarreraController implements Serializable, IController {
             loginController.put("searchcarrera", string);
 
             writable = true;
-            move();
+            move(page);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
+
+    @Override
+    public Integer sizeOfPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

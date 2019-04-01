@@ -25,7 +25,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>6.2</version>
+            <version>7.0</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -60,12 +60,12 @@
         <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbsecurity</artifactId>
-            <version>0.1</version>
+            <version>0.1.1</version>
         </dependency>
     <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbjsf</artifactId>
-            <version>0.4.1</version>
+            <version>0.7</version>
         </dependency>
     </dependencies>
 

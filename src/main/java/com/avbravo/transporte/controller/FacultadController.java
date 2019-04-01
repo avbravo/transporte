@@ -11,17 +11,18 @@ import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.commonejb.datamodel.FacultadDataModel;
 import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.FacultadRepository;
-import com.avbravo.commonejb.producer.RevisionHistoryCommonejbRepository;
-import com.avbravo.commonejb.producer.AutoincrementableCommonejbServices;
+ 
+ 
 import com.avbravo.commonejb.services.FacultadServices;
-import com.avbravo.commonejb.producer.LookupCommonejbServices;
-import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.interfaces.IControllerOld;
+import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.jmoordb.services.UserInfoServices;
+ 
 
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporte.util.LookupServices;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -34,7 +35,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import org.bson.Document;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
 
@@ -44,7 +45,7 @@ import org.primefaces.event.SelectEvent;
  */
 @Named
 @ViewScoped
-public class FacultadController implements Serializable, IController {
+public class FacultadController implements Serializable, IControllerOld {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -73,18 +74,17 @@ public class FacultadController implements Serializable, IController {
     @Inject
     FacultadRepository facultadRepository;
     @Inject
-    RevisionHistoryCommonejbRepository revisionHistoryCommonejbRepository;
+    RevisionHistoryRepository revisionHistoryRepository;
 
     //Services
     //Atributos para busquedas
     @Inject
-    AutoincrementableCommonejbServices autoincrementableCommonejbServices;
+    AutoincrementableServices autoincrementableServices;
      @Inject
-ErrorInfoTransporteejbServices errorServices;
+ErrorInfoServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
-    @Inject
-    UserInfoServices userInfoServices;
+   
     @Inject
     FacultadServices facultadServices;
     @Inject
@@ -254,11 +254,11 @@ ErrorInfoTransporteejbServices errorServices;
                         }
                         break;
                     case "golist":
-                        move();
+                        move(page);
                         break;
                 }
             } else {
-                move();
+                move(page);
             }
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
@@ -269,7 +269,7 @@ ErrorInfoTransporteejbServices errorServices;
     @Override
     public void reset() {
 
-        RequestContext.getCurrentInstance().reset(":form:content");
+        PrimeFaces.current().resetInputs(":form:content");
         prepare("new", facultad);
     }// </editor-fold>
 
@@ -370,13 +370,13 @@ ErrorInfoTransporteejbServices errorServices;
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return "";
             }
-            Integer identity = autoincrementableCommonejbServices.getContador("facultad");
+            Integer identity = autoincrementableServices.getContador("facultad");
             facultad.setIdfacultad(identity);
 
-            facultad.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+            facultad.setUserInfo(facultadRepository.generateListUserinfo(loginController.getUsername(), "create"));
 
             if (facultadRepository.save(facultad)) {
-                revisionHistoryCommonejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
                         "create", "facultad", facultadRepository.toDocument(facultad).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
@@ -407,9 +407,9 @@ ErrorInfoTransporteejbServices errorServices;
 
             }
 
-            facultad.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
+            facultad.getUserInfo().add(facultadRepository.generateUserinfo(loginController.getUsername(), "update"));
 
-            revisionHistoryCommonejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(),
                     "update", "facultad", facultadRepository.toDocument(facultad).toString()));
 
             facultadRepository.update(facultad);
@@ -433,7 +433,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             facultadSelected = facultad;
             if (facultadRepository.delete("idfacultad", facultad.getIdfacultad())) {
-                revisionHistoryCommonejbRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(), "delete", "facultad", facultadRepository.toDocument(facultad).toString()));
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(facultad.getIdfacultad().toString(), loginController.getUsername(), "delete", "facultad", facultadRepository.toDocument(facultad).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -531,7 +531,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String last() {
         try {
             page = facultadRepository.sizeOfPage(rowPage);
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -543,7 +543,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String first() {
         try {
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -557,7 +557,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (page < (facultadRepository.sizeOfPage(rowPage))) {
                 page++;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -571,7 +571,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (page > 1) {
                 page--;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -583,7 +583,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String skip(Integer page) {
         try {
             this.page = page;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -592,7 +592,7 @@ ErrorInfoTransporteejbServices errorServices;
 // <editor-fold defaultstate="collapsed" desc="move">
 
     @Override
-    public void move() {
+    public void move(Integer page) {
 
         try {
 
@@ -639,7 +639,7 @@ ErrorInfoTransporteejbServices errorServices;
         try {
             loginController.put("searchfacultad", "_init");
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -654,12 +654,17 @@ ErrorInfoTransporteejbServices errorServices;
             loginController.put("searchfacultad", string);
 
             writable = true;
-            move();
+            move(page);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
+
+    @Override
+    public Integer sizeOfPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

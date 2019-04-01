@@ -8,17 +8,17 @@ package com.avbravo.transporte.controller;
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
-import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.interfaces.IControllerOld;
+import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.jmoordb.services.UserInfoServices;
+ 
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ConductorDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
-import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
 
 import com.avbravo.transporte.util.LookupServices;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
-import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.services.ConductorServices;
 import static com.mongodb.client.model.Filters.eq;
@@ -34,7 +34,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import org.bson.Document;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
 
@@ -44,7 +44,7 @@ import org.primefaces.event.SelectEvent;
  */
 @Named
 @ViewScoped
-public class ConductorController implements Serializable, IController {
+public class ConductorController implements Serializable, IControllerOld {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -74,21 +74,20 @@ public class ConductorController implements Serializable, IController {
     @Inject
     ConductorRepository conductorRepository;
     @Inject
-    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
+    RevisionHistoryRepository revisionHistoryRepository;
 
     //Services
    @Inject
-ErrorInfoTransporteejbServices errorServices;
+ErrorInfoServices errorServices;
     @Inject
-    AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
+    AutoincrementableServices autoincrementableServices;
     
     @Inject
     LookupServices lookupServices;
 
     @Inject
     RevisionHistoryServices revisionHistoryServices;
-    @Inject
-    UserInfoServices userInfoServices;
+
     @Inject
     ConductorServices conductorServices;
     @Inject
@@ -258,11 +257,11 @@ ErrorInfoTransporteejbServices errorServices;
                         }
                         break;
                     case "golist":
-                        move();
+                        move(page);
                         break;
                 }
             } else {
-                move();
+                move(page);
             }
 
         } catch (Exception e) {
@@ -274,7 +273,7 @@ ErrorInfoTransporteejbServices errorServices;
     @Override
     public void reset() {
 
-        RequestContext.getCurrentInstance().reset(":form:content");
+        PrimeFaces.current().resetInputs(":form:content");
         prepare("new", conductor);
     }// </editor-fold>
 
@@ -387,13 +386,13 @@ ErrorInfoTransporteejbServices errorServices;
            
             
             
-            Integer id = autoincrementableTransporteejbServices.getContador("conductor");
+            Integer id = autoincrementableServices.getContador("conductor");
             conductor.setIdconductor(id);
             //Lo datos del usuario
-            conductor.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+            conductor.setUserInfo(conductorRepository.generateListUserinfo(loginController.getUsername(), "create"));
             if (conductorRepository.save(conductor)) {
                 //guarda el contenido anterior
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(),
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(),
                         "create", "conductor", conductorRepository.toDocument(conductor).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -433,10 +432,10 @@ ErrorInfoTransporteejbServices errorServices;
             }
            
             
-            conductor.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
+            conductor.getUserInfo().add(conductorRepository.generateUserinfo(loginController.getUsername(), "update"));
 
             //guarda el contenido actualizado
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(),
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(),
                     "update", "conductor", conductorRepository.toDocument(conductor).toString()));
 
             conductorRepository.update(conductor);
@@ -460,7 +459,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             conductorSelected = conductor;
             if (conductorRepository.delete("idconductor", conductor.getIdconductor())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(), "delete", "conductor", conductorRepository.toDocument(conductor).toString()));
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(), "delete", "conductor", conductorRepository.toDocument(conductor).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -564,7 +563,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String last() {
         try {
             page = conductorRepository.sizeOfPage(rowPage);
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -576,7 +575,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String first() {
         try {
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -590,7 +589,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (page < (conductorRepository.sizeOfPage(rowPage))) {
                 page++;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -604,7 +603,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (page > 1) {
                 page--;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -616,7 +615,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String skip(Integer page) {
         try {
             this.page = page;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -625,7 +624,7 @@ ErrorInfoTransporteejbServices errorServices;
 // <editor-fold defaultstate="collapsed" desc="move">
 
     @Override
-    public void move() {
+    public void move(Integer page) {
 
         try {
 
@@ -671,7 +670,7 @@ ErrorInfoTransporteejbServices errorServices;
         try {
             loginController.put("searchconductor", "_init");
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -686,7 +685,7 @@ ErrorInfoTransporteejbServices errorServices;
             loginController.put("searchconductor", string);
 
             writable = true;
-            move();
+            move(page);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
@@ -754,7 +753,7 @@ ErrorInfoTransporteejbServices errorServices;
 
             conductor.setCedula(cedulanueva);
 
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(),
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(),
                     "update", "conductor", conductorRepository.toDocument(conductor).toString()));
 
             conductorRepository.update(conductor);
@@ -764,5 +763,10 @@ ErrorInfoTransporteejbServices errorServices;
         }
         return "";
     }// </editor-fold>
+
+    @Override
+    public Integer sizeOfPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

@@ -8,18 +8,18 @@ package com.avbravo.transporte.controller;
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
-import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.interfaces.IControllerOld;
+import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.jmoordb.services.UserInfoServices;
+ 
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.UsuarioDataModel;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
-import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbRepository;
 
 import com.avbravo.transporte.util.LookupServices;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
-import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.services.RolServices;
@@ -38,7 +38,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import org.bson.Document;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
 
@@ -48,7 +48,7 @@ import org.primefaces.event.SelectEvent;
  */
 @Named
 @ViewScoped
-public class UsuarioController implements Serializable, IController {
+public class UsuarioController implements Serializable, IControllerOld {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -78,9 +78,9 @@ public class UsuarioController implements Serializable, IController {
 
     //Repository
     @Inject
-    AutoincrementableTransporteejbRepository autoincrementableRepository;
+    AutoincrementableServices autoincrementableServices;
     @Inject
-    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
+    RevisionHistoryRepository revisionHistoryRepository;
     @Inject
     RolRepository rolRepository;
     @Inject
@@ -93,8 +93,7 @@ public class UsuarioController implements Serializable, IController {
     LookupServices lookupServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
-    @Inject
-    UserInfoServices userInfoServices;
+
     @Inject
     UsuarioServices usuarioServices;
     @Inject
@@ -102,7 +101,7 @@ public class UsuarioController implements Serializable, IController {
     @Inject
     UnidadServices unidadServices;
    @Inject
-ErrorInfoTransporteejbServices errorServices;
+ErrorInfoServices errorServices;
     @Inject
     ResourcesFiles rf;
     @Inject
@@ -305,11 +304,11 @@ ErrorInfoTransporteejbServices errorServices;
                         }
                         break;
                     case "golist":
-                        move();
+                        move(page);
                         break;
                 }
             } else {
-                move();
+                move(page);
             }
 
         } catch (Exception e) {
@@ -321,7 +320,7 @@ ErrorInfoTransporteejbServices errorServices;
     @Override
     public void reset() {
 
-        RequestContext.getCurrentInstance().reset(":form:content");
+        PrimeFaces.current().resetInputs(":form:content");
         prepare("new", usuario);
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
@@ -427,9 +426,9 @@ ErrorInfoTransporteejbServices errorServices;
 
             usuario.setRol(rolList);
             usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
-            usuario.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+            usuario.setUserInfo(usuarioRepository.generateListUserinfo(loginController.getUsername(), "create"));
             if (usuarioRepository.save(usuario)) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(),
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(),
                         "create", "usuario", usuarioRepository.toDocument(usuario).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 reset();
@@ -449,11 +448,11 @@ ErrorInfoTransporteejbServices errorServices;
         try {
             usuario.setRol(rolList);
             usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
-            usuario.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
+            usuario.getUserInfo().add(usuarioRepository.generateUserinfo(loginController.getUsername(), "update"));
 
             //guarda el contenido anterior
             //guarda el contenido actualizado
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(),
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(),
                     "update", "usuario", usuarioRepository.toDocument(usuario).toString()));
 
             usuarioRepository.update(usuario);
@@ -476,7 +475,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             usuarioSelected = usuario;
             if (usuarioRepository.delete("username", usuario.getUsername())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(), "delete", "usuario", usuarioRepository.toDocument(usuario).toString()));
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(usuario.getUsername(), loginController.getUsername(), "delete", "usuario", usuarioRepository.toDocument(usuario).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -575,7 +574,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String last() {
         try {
             page = usuarioRepository.sizeOfPage(rowPage);
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -587,7 +586,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String first() {
         try {
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -601,7 +600,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (page < (usuarioRepository.sizeOfPage(rowPage))) {
                 page++;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -615,7 +614,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (page > 1) {
                 page--;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -627,7 +626,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String skip(Integer page) {
         try {
             this.page = page;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -636,7 +635,7 @@ ErrorInfoTransporteejbServices errorServices;
 // <editor-fold defaultstate="collapsed" desc="move">
 
     @Override
-    public void move() {
+    public void move(Integer page) {
 
         try {
 
@@ -679,7 +678,7 @@ ErrorInfoTransporteejbServices errorServices;
         try {
             loginController.put("searchusuario", "_init");
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -694,7 +693,7 @@ ErrorInfoTransporteejbServices errorServices;
             loginController.put("searchusuario", string);
 
             writable = true;
-            move();
+            move(page);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
@@ -752,4 +751,9 @@ ErrorInfoTransporteejbServices errorServices;
     }
 
     // </editor-fold>
+
+    @Override
+    public Integer sizeOfPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

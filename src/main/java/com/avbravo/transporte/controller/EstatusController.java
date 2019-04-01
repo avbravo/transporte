@@ -8,16 +8,16 @@ package com.avbravo.transporte.controller;
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
-import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.interfaces.IControllerOld;
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.jmoordb.services.UserInfoServices;
+ 
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.EstatusDataModel;
 import com.avbravo.transporteejb.entity.Estatus;
 
 import com.avbravo.transporte.util.LookupServices;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
-import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 
@@ -32,7 +32,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import org.bson.Document;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
 
@@ -42,7 +42,7 @@ import org.primefaces.event.SelectEvent;
  */
 @Named
 @ViewScoped
-public class EstatusController implements Serializable, IController {
+public class EstatusController implements Serializable, IControllerOld {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -71,11 +71,11 @@ public class EstatusController implements Serializable, IController {
     @Inject
     EstatusRepository estatusRepository;
     @Inject
-    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
+    RevisionHistoryRepository revisionHistoryRepository;
 
     //Services
   @Inject
-ErrorInfoTransporteejbServices errorServices;
+ErrorInfoServices errorServices;
 
     @Inject
     LookupServices lookupServices;
@@ -83,8 +83,7 @@ ErrorInfoTransporteejbServices errorServices;
 
     @Inject
     RevisionHistoryServices revisionHistoryServices;
-    @Inject
-    UserInfoServices userInfoServices;
+  
     @Inject
     EstatusServices estatusServices;
     @Inject
@@ -245,11 +244,11 @@ ErrorInfoTransporteejbServices errorServices;
                         }
                         break;
                     case "golist":
-                        move();
+                        move(page);
                         break;
                 }
             } else {
-                move();
+                move(page);
             }
 
         } catch (Exception e) {
@@ -261,7 +260,7 @@ ErrorInfoTransporteejbServices errorServices;
     @Override
     public void reset() {
 
-        RequestContext.getCurrentInstance().reset(":form:content");
+        PrimeFaces.current().resetInputs(":form:content");
         prepare("new", estatus);
     }// </editor-fold>
 
@@ -363,10 +362,10 @@ ErrorInfoTransporteejbServices errorServices;
             }
 
             //Lo datos del usuario
-            estatus.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+            estatus.setUserInfo(estatusRepository.generateListUserinfo(loginController.getUsername(), "create"));
             if (estatusRepository.save(estatus)) {
                 //guarda el contenido anterior
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(),
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(),
                         "create", "estatus", estatusRepository.toDocument(estatus).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -386,10 +385,10 @@ ErrorInfoTransporteejbServices errorServices;
     public String edit() {
         try {
 
-            estatus.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
+            estatus.getUserInfo().add(estatusRepository.generateUserinfo(loginController.getUsername(), "update"));
 
             //guarda el contenido actualizado
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(),
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(),
                     "update", "estatus", estatusRepository.toDocument(estatus).toString()));
 
             estatusRepository.update(estatus);
@@ -413,7 +412,7 @@ ErrorInfoTransporteejbServices errorServices;
             }
             estatusSelected = estatus;
             if (estatusRepository.delete("idestatus", estatus.getIdestatus())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(), "delete", "estatus", estatusRepository.toDocument(estatus).toString()));
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(estatus.getIdestatus(), loginController.getUsername(), "delete", "estatus", estatusRepository.toDocument(estatus).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -513,7 +512,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String last() {
         try {
             page = estatusRepository.sizeOfPage(rowPage);
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -525,7 +524,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String first() {
         try {
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -539,7 +538,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (page < (estatusRepository.sizeOfPage(rowPage))) {
                 page++;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -553,7 +552,7 @@ ErrorInfoTransporteejbServices errorServices;
             if (page > 1) {
                 page--;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -565,7 +564,7 @@ ErrorInfoTransporteejbServices errorServices;
     public String skip(Integer page) {
         try {
             this.page = page;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -574,7 +573,7 @@ ErrorInfoTransporteejbServices errorServices;
 // <editor-fold defaultstate="collapsed" desc="move">
 
     @Override
-    public void move() {
+    public void move(Integer page) {
 
         try {
 
@@ -617,7 +616,7 @@ ErrorInfoTransporteejbServices errorServices;
         try {
             loginController.put("searchestatus", "_init");
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
@@ -632,12 +631,17 @@ ErrorInfoTransporteejbServices errorServices;
             loginController.put("searchestatus", string);
 
             writable = true;
-            move();
+            move(page);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
+
+    @Override
+    public Integer sizeOfPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

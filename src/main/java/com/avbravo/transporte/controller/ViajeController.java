@@ -9,9 +9,12 @@ package com.avbravo.transporte.controller;
 import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
-import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.interfaces.IControllerOld;
+import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.jmoordb.services.UserInfoServices;
+ 
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
 import com.avbravo.transporteejb.entity.Viaje;
@@ -20,9 +23,6 @@ import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Vehiculo;
-import com.avbravo.transporteejb.producer.AutoincrementableTransporteejbServices;
-import com.avbravo.transporteejb.producer.ErrorInfoTransporteejbServices;
-import com.avbravo.transporteejb.producer.RevisionHistoryTransporteejbRepository;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
@@ -48,7 +48,7 @@ import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
@@ -62,7 +62,7 @@ import org.primefaces.model.ScheduleModel;
  */
 @Named
 @ViewScoped
-public class ViajeController implements Serializable, IController {
+public class ViajeController implements Serializable, IControllerOld {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -110,7 +110,7 @@ public class ViajeController implements Serializable, IController {
     @Inject
     ViajeRepository viajeRepository;
     @Inject
-    RevisionHistoryTransporteejbRepository revisionHistoryTransporteejbRepository;
+    RevisionHistoryRepository revisionHistoryRepository;
     @Inject
     ConductorRepository conductorRepository;
     @Inject
@@ -119,10 +119,10 @@ public class ViajeController implements Serializable, IController {
     VehiculoRepository vehiculoRepository;
     //Services
     @Inject
-    ErrorInfoTransporteejbServices errorServices;
+    ErrorInfoServices errorServices;
 
     @Inject
-    AutoincrementableTransporteejbServices autoincrementableTransporteejbServices;
+    AutoincrementableServices autoincrementableServices;
     @Inject
     LookupServices lookupServices;
 
@@ -130,8 +130,7 @@ public class ViajeController implements Serializable, IController {
     RevisionHistoryServices revisionHistoryServices;
     @Inject
     SolicitudServices solicitudServices;
-    @Inject
-    UserInfoServices userInfoServices;
+
     @Inject
     ViajeServices viajeServices;
     @Inject
@@ -390,11 +389,11 @@ public class ViajeController implements Serializable, IController {
                         }
                         break;
                     case "golist":
-                        move();
+                        move(page);
                         break;
                 }
             } else {
-                move();
+                move(page);
             }
 
         } catch (Exception e) {
@@ -406,7 +405,7 @@ public class ViajeController implements Serializable, IController {
     @Override
     public void reset() {
 
-        RequestContext.getCurrentInstance().reset(":form:content");
+        PrimeFaces.current().resetInputs(":form:content");
         prepare("new", viaje);
     }// </editor-fold>
 
@@ -526,16 +525,16 @@ public class ViajeController implements Serializable, IController {
                 }
             }
 
-            Integer idviaje = autoincrementableTransporteejbServices.getContador("viaje");
+            Integer idviaje = autoincrementableServices.getContador("viaje");
             viaje.setIdviaje(idviaje);
             viaje.setRealizado("no");
             viaje.setActivo("si");
 
             //Lo datos del usuario
-            viaje.setUserInfo(userInfoServices.generateListUserinfo(loginController.getUsername(), "create"));
+            viaje.setUserInfo(viajeRepository.generateListUserinfo(loginController.getUsername(), "create"));
             if (viajeRepository.save(viaje)) {
                 //guarda el contenido anterior
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(),
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(),
                         "create", "viaje", viajeRepository.toDocument(viaje).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -592,10 +591,10 @@ public class ViajeController implements Serializable, IController {
                 }
             }
 
-            viaje.getUserInfo().add(userInfoServices.generateUserinfo(loginController.getUsername(), "update"));
+            viaje.getUserInfo().add(viajeRepository.generateUserinfo(loginController.getUsername(), "update"));
 
             //guarda el contenido actualizado
-            revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(),
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(),
                     "update", "viaje", viajeRepository.toDocument(viaje).toString()));
 
             viajeRepository.update(viaje);
@@ -619,7 +618,7 @@ public class ViajeController implements Serializable, IController {
             }
             viajeSelected = viaje;
             if (viajeRepository.delete("idviaje", viaje.getIdviaje())) {
-                revisionHistoryTransporteejbRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(), "delete", "viaje", viajeRepository.toDocument(viaje).toString()));
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), loginController.getUsername(), "delete", "viaje", viajeRepository.toDocument(viaje).toString()));
                 JsfUtil.successMessage(rf.getAppMessage("info.delete"));
 
                 if (!deleteonviewpage) {
@@ -745,7 +744,7 @@ public class ViajeController implements Serializable, IController {
     public String last() {
         try {
             page = viajeRepository.sizeOfPage(rowPage);
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -757,7 +756,7 @@ public class ViajeController implements Serializable, IController {
     public String first() {
         try {
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -771,7 +770,7 @@ public class ViajeController implements Serializable, IController {
             if (page < (viajeRepository.sizeOfPage(rowPage))) {
                 page++;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -785,7 +784,7 @@ public class ViajeController implements Serializable, IController {
             if (page > 1) {
                 page--;
             }
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -797,7 +796,7 @@ public class ViajeController implements Serializable, IController {
     public String skip(Integer page) {
         try {
             this.page = page;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -806,7 +805,7 @@ public class ViajeController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="move">
 
     @Override
-    public void move() {
+    public void move(Integer page) {
 
         try {
 
@@ -953,7 +952,7 @@ public class ViajeController implements Serializable, IController {
             reset();
             loginController.put("searchviaje", "_init");
             page = 1;
-            move();
+            move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -968,7 +967,7 @@ public class ViajeController implements Serializable, IController {
             loginController.put("searchviaje", string);
 
             writable = true;
-            move();
+            move(page);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1454,5 +1453,10 @@ public class ViajeController implements Serializable, IController {
         return "";
     }
     // </editor-fold>
+
+    @Override
+    public Integer sizeOfPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }
