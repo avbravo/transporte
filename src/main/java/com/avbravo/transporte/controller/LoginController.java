@@ -6,14 +6,19 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
+import com.avbravo.jmoordb.configuration.JmoordbConfiguration;
+import com.avbravo.jmoordb.configuration.JmoordbConnection;
+import com.avbravo.jmoordb.configuration.JmoordbContext;
 import com.avbravo.jmoordb.mongodb.history.AccessInfoRepository;
 import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbsecurity.SecurityInterface;
 
 import javax.inject.Inject;
 import com.avbravo.jmoordbutils.email.ManagerEmail;
 import com.avbravo.jmoordb.services.AccessInfoServices;
+import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.transporte.roles.ValidadorRoles;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.entity.Rol;
@@ -47,6 +52,11 @@ public class LoginController implements Serializable, SecurityInterface {
     private String passwordold;
     private String passwordnew;
     private String passwordnewrepeat;
+    
+    @Inject
+    RevisionHistoryRepository revisionHistoryRepository;
+    @Inject
+    RevisionHistoryServices revisionHistoryServices;
 
     Rol rol = new Rol();
 
@@ -210,6 +220,14 @@ ErrorInfoServices errorServices;
         recoverSession = false;
         userwasLoged = false;
         tokenwassend = false;
+        JmoordbConnection  jmc = new JmoordbConnection.Builder()
+                    .withSecurity(false)                  
+                    .withDatabase("transporte")
+                    .withHost("")
+                    .withPort(0)
+                    .withUsername("")
+                    .withPassword("")
+                    .build();
     }
 
     // </editor-fold>
@@ -274,6 +292,22 @@ ErrorInfoServices errorServices;
             loggedIn = true;
             foto = "img/me.jpg";
             JsfUtil.successMessage(rf.getAppMessage("login.welcome") + " " + usuario.getNombre());
+            
+            //----------------------------------------------
+//Agregar al context
+      
+            
+            JmoordbConfiguration jmc = new JmoordbConfiguration.Builder()
+                    .withSpanish(true)                  
+                    .withRepositoryRevisionHistory(revisionHistoryRepository)
+                    .withRevisionHistoryServices(revisionHistoryServices)
+                    .withRevisionSave(true)
+                    .withUsername(username)
+                    .build();
+            
+            JmoordbContext.put("_userLogged", usuario);
+            
+            //-----------------------------
             if (rol.getIdrol().equals("DOCENTE")) {
                 return "/faces/pages/solicituddocente/list.xhtml?faces-redirect=true";
             } else {
