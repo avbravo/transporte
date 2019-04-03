@@ -3,48 +3,70 @@
 * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.avbravo.transporte.controller;
+package com.avbravo.transporte.security;
 
-// <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.jmoordb.configuration.JmoordbConfiguration;
 import com.avbravo.jmoordb.configuration.JmoordbConnection;
 import com.avbravo.jmoordb.configuration.JmoordbContext;
 import com.avbravo.jmoordb.mongodb.history.AccessInfoRepository;
+import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
+import com.avbravo.jmoordb.mongodb.history.ConfiguracionRepository;
+import com.avbravo.jmoordb.mongodb.history.ConfiguracionServices;
 import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
-import com.avbravo.jmoordbutils.JsfUtil;
-import com.avbravo.jmoordbsecurity.SecurityInterface;
-
-import javax.inject.Inject;
-import com.avbravo.jmoordbutils.email.ManagerEmail;
+import com.avbravo.jmoordb.pojos.Configuracion;
 import com.avbravo.jmoordb.services.AccessInfoServices;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
+import com.avbravo.jmoordbsecurity.SecurityInterface;
+import com.avbravo.jmoordbutils.JsfUtil;
+import com.avbravo.jmoordbutils.email.ManagerEmail;
 import com.avbravo.transporte.roles.ValidadorRoles;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
- 
 import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
-import java.util.logging.Logger;
-import javax.inject.Named;
+import com.avbravo.transporteejb.services.UsuarioServices;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Optional;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
-// </editor-fold>
+import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.security.enterprise.AuthenticationStatus;
+import javax.security.enterprise.SecurityContext;
+import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
+import javax.security.enterprise.credential.UsernamePasswordCredential;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- * @authoravbravo
- */
 @Named
 @SessionScoped
 public class LoginController implements Serializable, SecurityInterface {
-
 // <editor-fold defaultstate="collapsed" desc="fields">
+
+    @Inject
+    private SecurityContext securityContext;
+    @Inject
+    private ExternalContext externalContext;
+    @Inject
+    private FacesContext facesContext;
+
+    //Atributos para la interface IController
+    @Inject
+    RevisionHistoryRepository revisionHistoryRepository;
+    @Inject
+    RevisionHistoryServices revisionHistoryServices;
+    @Inject
+    AutoincrementableServices autoincrementableServices;
+    @Inject
+    ConfiguracionRepository configuracionRepository;
+
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = Logger.getLogger(LoginController.class.getName());
     private HashMap<String, String> parameters = new HashMap<>();
@@ -52,14 +74,8 @@ public class LoginController implements Serializable, SecurityInterface {
     private String passwordold;
     private String passwordnew;
     private String passwordnewrepeat;
-    
-    @Inject
-    RevisionHistoryRepository revisionHistoryRepository;
-    @Inject
-    RevisionHistoryServices revisionHistoryServices;
 
-    Rol rol = new Rol();
-
+    Configuracion configuracion = new Configuracion();
     //Acceso
     @Inject
     AccessInfoServices accessInfoServices;
@@ -67,8 +83,6 @@ public class LoginController implements Serializable, SecurityInterface {
     AccessInfoRepository accessInfoRepository;
     @Inject
     ResourcesFiles rf;
-      @Inject
-ErrorInfoServices errorServices;
     @Inject
     ValidadorRoles validadorRoles;
     Boolean loggedIn = false;
@@ -84,14 +98,35 @@ ErrorInfoServices errorServices;
     String usernameRecover = "";
     String myemail = "@gmail.com";
     String mytoken = "";
+    /*
+    
+     */
+
     @Inject
     UsuarioRepository usuarioRepository;
     Usuario usuario = new Usuario();
     @Inject
     RolRepository rolRepository;
+    Rol rol = new Rol();
 
+    //Services
+    @Inject
+    ErrorInfoServices errorServices;
+    @Inject
+    UsuarioServices usuarioServices;
+    @Inject
+    ConfiguracionServices configuracionServices;
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="getter/setter">
+
+    public Configuracion getConfiguracion() {
+        return configuracion;
+    }
+
+    public void setConfiguracion(Configuracion configuracion) {
+        this.configuracion = configuracion;
+    }
+
     public Rol getRol() {
         return rol;
     }
@@ -220,14 +255,16 @@ ErrorInfoServices errorServices;
         recoverSession = false;
         userwasLoged = false;
         tokenwassend = false;
-        JmoordbConnection  jmc = new JmoordbConnection.Builder()
-                    .withSecurity(false)                  
-                    .withDatabase("transporte")
-                    .withHost("")
-                    .withPort(0)
-                    .withUsername("")
-                    .withPassword("")
-                    .build();
+        configuracion = new Configuracion();
+
+        JmoordbConnection jmc = new JmoordbConnection.Builder()
+                .withSecurity(false)
+                .withDatabase("store")
+                .withHost("")
+                .withPort(0)
+                .withUsername("")
+                .withPassword("")
+                .build();
     }
 
     // </editor-fold>
@@ -253,6 +290,8 @@ ErrorInfoServices errorServices;
     public String doLogin() {
         try {
 
+//   String version=    getClass().getPackage().getImplementationVersion();
+//            System.out.println("---> numero "+version);
             tokenwassend = false;
             userwasLoged = false;
             loggedIn = true;
@@ -261,131 +300,100 @@ ErrorInfoServices errorServices;
                 JsfUtil.warningMessage(rf.getAppMessage("login.usernamenotvalid"));
                 return null;
             }
-            usernameRecover = usernameRecoveryOfSession();
-            recoverSession = !usernameRecover.equals("");
-            if (recoverSession) {
-                invalidateCurrentSession();
-                //  RequestContext.getCurrentInstance().execute("PF('sessionDialog').show();");
-                JsfUtil.warningMessage(rf.getAppMessage("session.procederacerrar"));
+
+            if (!isValidSession(username)) {
                 return "";
             }
-            if (recoverSession && usernameRecover.equals(username)) {
-            } else {
-                if (isUserLogged(username)) {
-                    userwasLoged = true;
-                    JsfUtil.warningMessage(rf.getAppMessage("login.alreadylogged"));
-                    if (destroyByUsername(username)) {
 
-                    }
-                    return "";
-                }
+            /**
+             * Cargando la configuracion
+             */
+            configuracion = configuracionServices.generarConfiguracionInicial(username);
 
-            }
-            if (!isUserValid()) {
-                accessInfoRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.usernameorpasswordnotvalid")));
-                JsfUtil.warningMessage(rf.getAppMessage("login.usernameorpasswordnotvalid"));
-                return "";
-
-            }
-            saveUserInSession(username, 2100);
-            accessInfoRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.welcome")));
-            loggedIn = true;
-            foto = "img/me.jpg";
-            JsfUtil.successMessage(rf.getAppMessage("login.welcome") + " " + usuario.getNombre());
-            
             //----------------------------------------------
 //Agregar al context
-      
-            
             JmoordbConfiguration jmc = new JmoordbConfiguration.Builder()
-                    .withSpanish(true)                  
+                    .withSpanish(true)
                     .withRepositoryRevisionHistory(revisionHistoryRepository)
                     .withRevisionHistoryServices(revisionHistoryServices)
                     .withRevisionSave(true)
                     .withUsername(username)
                     .build();
-            
+
             JmoordbContext.put("_userLogged", usuario);
-            
-            //-----------------------------
-            if (rol.getIdrol().equals("DOCENTE")) {
-                return "/faces/pages/solicituddocente/list.xhtml?faces-redirect=true";
-            } else {
-                if (rol.getIdrol().equals("ADMINISTRATIVO")) {
-                 return "/faces/pages/solicitudadministrativo/list.xhtml?faces-redirect=true";
-                } else {
-                    return "/faces/index.xhtml?faces-redirect=true";
-                }
+            JmoordbContext.put("_login_rol", rol);
+//---Injectarlo en el Session
+            switch (continueAuthentication()) {
+                case SEND_CONTINUE:
+                    facesContext.responseComplete();
+                    break;
+                case SEND_FAILURE:
+                    facesContext.addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login failed", null));
+                    break;
+                case SUCCESS:
+                    foto = "img/me.jpg";
+                    loggedIn = true;
+                    usuario = (Usuario) JmoordbContext.get("_userLogged");
+                    // JmoordbContext.put("_userLogged", usuario);
+                    saveUserInSession(username, 2100);
+                    accessInfoRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.welcome")));
+                    loggedIn = true;
+                    JsfUtil.successMessage(rf.getAppMessage("login.welcome") + " " + usuario.getNombre());
+//                    return "/faces/pages/index.xhtml?faces-redirect=true";
+                    switch(rol.getIdrol()){
+                        case "DOCENTE":
+                             return "/faces/pages/solicituddocente/list.xhtml?faces-redirect=true";
+                        case "ADMINISTRATIVO":
+                            return "/faces/pages/solicituddocente/list.xhtml?faces-redirect=true";
+                        case "ADMINISTRADOR" :
+                             return "/faces/pages/index.xhtml?faces-redirect=true";
+                    }
+                  
+
+                case NOT_DONE:
             }
 
+            //-----------------------------
             //              return "/dashboard.xhtml?faces-redirect=true";
         } catch (Exception e) {
-errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }
 
     // </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="isValid">
-    /**
-     * verifica si es valido el usuario
-     *
-     * @return
-     */
-    private Boolean isUserValid() {
-        Boolean isvalid = false;
-        try {
-            if (username.isEmpty() || username.equals("") || username == null) {
-                JsfUtil.successMessage(rf.getAppMessage("warning.usernameisempty"));
-                return false;
-            }
-            if (password.isEmpty() || password.equals("") || password == null) {
-                JsfUtil.successMessage(rf.getAppMessage("warning.passwordisempty"));
-                return false;
-            }
-            usuario.setUsername(username);
-            Optional<Usuario> optional = usuarioRepository.findById(usuario);
-            if (!optional.isPresent()) {
-                JsfUtil.warningMessage(rf.getAppMessage("login.usernamenotvalid"));
-                return false;
-            } else {
-                Usuario u2 = optional.get();
-//               usuario = optional.get();
-                usuario = u2;
-                if (!JsfUtil.desencriptar(usuario.getPassword()).equals(password)) {
-                    JsfUtil.successMessage(rf.getAppMessage("login.passwordnotvalid"));
-                    return false;
-                }
-                if (usuario.getActivo().equals("no")) {
-                    JsfUtil.successMessage(rf.getAppMessage("login.usuarioinactivo"));
-                    return false;
-                }
-                //Valida los roles del usuario si coincide con el seleccionado
-                Boolean foundrol = false;
-                for (Rol r : usuario.getRol()) {
-                    if (rol.getIdrol().equals(r.getIdrol())) {
-                        foundrol = true;
-                    }
-                }
-                if (!foundrol) {
-                    JsfUtil.successMessage(rf.getAppMessage("login.notienerolenelsistema") + " " + rol.getIdrol());
-                    return false;
-                }
-//                if (!validadorRoles.validarRoles(usuario.getRol().getIdrol())) {
-//                    JsfUtil.successMessage(rf.getAppMessage("login.notienerolenelsistema") + " " + usuario.getRol().getIdrol());
-                if (!validadorRoles.validarRoles(rol.getIdrol())) {
-                    JsfUtil.successMessage(rf.getAppMessage("login.notienerolenelsistema") + " " + rol.getIdrol());
-                    return false;
-                }
-            }
-            return true;
-        } catch (Exception e) {
-errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
-        }
-        return isvalid;
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="sendToken()"> 
+    private AuthenticationStatus continueAuthentication() {
+        return securityContext.authenticate(
+                (HttpServletRequest) externalContext.getRequest(),
+                (HttpServletResponse) externalContext.getResponse(),
+                AuthenticationParameters.withParams()
+                        .credential(new UsernamePasswordCredential(username, password))
+        );
+    }
 
+    // <editor-fold defaultstate="collapsed" desc="put(String key, String value)">
+    public void put(String key, String value) {
+        try {
+            parameters.put(key, value);
+        } catch (Exception e) {
+            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
+        }
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="get(String key)">
+    public String get(String key) {
+        String value = "";
+        try {
+            value = parameters.get(key);
+        } catch (Exception e) {
+            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
+        }
+        return value;
+    }   // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="sendToken()"> 
     public String sendToken() {
         try {
 
@@ -408,7 +416,7 @@ errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLo
             }
 
         } catch (Exception e) {
-errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -416,18 +424,16 @@ errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLo
 
     public String destroyByUser() {
         try {
-            if (isUserValid()) {
-                userwasLoged = !destroyByUsername(username);
-                if (!userwasLoged) {
-                    JsfUtil.successMessage(rf.getAppMessage("session.destroyedloginagain"));
-                } else {
-                    JsfUtil.successMessage(rf.getAppMessage("session.notdestroyed"));
-                }
+
+            userwasLoged = !destroyByUsername(username);
+            if (!userwasLoged) {
+                JsfUtil.successMessage(rf.getAppMessage("session.destroyedloginagain"));
             } else {
-                JsfUtil.warningMessage(rf.getAppMessage("warning.usernotvalid"));
+                JsfUtil.successMessage(rf.getAppMessage("session.notdestroyed"));
             }
+
         } catch (Exception e) {
-           errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }
@@ -436,12 +442,9 @@ errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLo
 
     public String destroyByToken() {
         try {
-            if (isUserValid()) {
-                userwasLoged = !destroyByToken(username, mytoken);
 
-            } else {
-                JsfUtil.warningMessage("Los datos del usuario no son validos");
-            }
+            userwasLoged = !destroyByToken(username, mytoken);
+
         } catch (Exception e) {
             JsfUtil.warningMessage(rf.getAppMessage("warning.usernotvalid"));
         }
@@ -508,31 +511,9 @@ errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLo
             usuarioRepository.update(usuario);
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
         }
         return null;
     }
     // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="put(String key, String value)">
-    public void put(String key, String value) {
-        try {
-            parameters.put(key, value);
-        } catch (Exception e) {
-            errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
-        }
-    }
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="get(String key)">
-    public String get(String key) {
-        String value = "";
-        try {
-            value = parameters.get(key);
-        } catch (Exception e) {
-            errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
-        }
-        return value;
-    }   // </editor-fold>
-
 }

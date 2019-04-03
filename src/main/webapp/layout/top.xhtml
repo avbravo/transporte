@@ -20,100 +20,94 @@
                 <b:navLink />
                 <b:navLink />
                 <b:navbarLinks>
-                    <b:navLink outcome="/index" value="#{msg['menubar.home']}" iconAwesome="home" />
+                    <b:navLink outcome="/pages/index" value="#{msg['menubar.home']}" iconAwesome="home" />
                 </b:navbarLinks>
-                <b:dropMenu value="#{msg['menubar.solicitud']}" rendered="#{applicationMenu.menuBarSolicitud}">
+                <b:dropMenu value="#{msg['menubar.solicitud']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, DOCENTE, ADMINISTRATIVO')}">
 
 
+                    <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{p:ifGranted('ADMINISTRADOR')}" outcome="/pages/solicitudmanualdocente/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{p:ifGranted('ADMINISTRADOR')}"  outcome="/pages/solicitudmanualadministrativo/list" iconAwesome= "fa-calendar-o" />
 
 
-                    <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{applicationMenu.solicitudDocentePorAdministrador.menu}" outcome="/pages/solicitudmanualdocente/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{applicationMenu.solicitudAdministrativoPorAdministrador.menu}" outcome="/pages/solicitudmanualadministrativo/list" iconAwesome= "fa-calendar-o" />
-
-
-                    <b:navLink value="#{msg['menu.solicituddocente']}" rendered="#{applicationMenu.solicitudDocente.menu}" outcome="/pages/solicituddocente/list" iconAwesome= "fa-calendar-o" />                   
-                    <b:navLink value="#{msg['menu.solicitudadministrativo']}" rendered="#{applicationMenu.solicitudAdministrativo.menu}" outcome="/pages/solicitudadministrativo/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.solicituddocente']}" rendered="#{p:ifGranted('DOCENTE')}" outcome="/pages/solicituddocente/list" iconAwesome= "fa-calendar-o" />                   
+                    <b:navLink value="#{msg['menu.solicitudadministrativo']}" rendered="#{p:ifGranted('ADMINISTRATIVO')}" outcome="/pages/solicitudadministrativo/list" iconAwesome= "fa-calendar-o" />
 
 
 
 
                 </b:dropMenu>
 
-                <b:dropMenu value="#{msg['menubar.calendario']}" rendered="#{applicationMenu.menuBarCalendario}">
-                    <b:navLink value="#{msg['menu.viajes']}" rendered="#{applicationMenu.calendariobuses.menu}" outcome="/pages/calendario/viaje" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.solicitudes']}" rendered="#{applicationMenu.calendariobuses.menu}" outcome="/pages/calendario/solicitudes" iconAwesome= "fa-calendar-o" />
+                <b:dropMenu value="#{msg['menubar.calendario']}" rendered="#{p:ifGranted('ADMINISTRADOR')}">
+                    <b:navLink value="#{msg['menu.viajes']}"  outcome="/pages/calendario/viaje" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.solicitudes']}"  outcome="/pages/calendario/solicitudes" iconAwesome= "fa-calendar-o" />
 
 
 
                 </b:dropMenu>
 
-                <b:dropMenu value="#{msg['menubar.viaje']}" rendered="#{applicationMenu.menuBarViaje}">
-                    <b:navLink value="#{msg['menu.viajes']}" rendered="#{applicationMenu.viaje.menu}" outcome="/pages/viaje/list" iconAwesome= "fa-book" />
+                <b:dropMenu value="#{msg['menubar.viaje']}" rendered="#{p:ifGranted('ADMINISTRADOR')}">
+                    <b:navLink value="#{msg['menu.viajes']}"  outcome="/pages/viaje/list" iconAwesome= "fa-book" />
                     <b:navLink/>
                 </b:dropMenu>
-                <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{applicationMenu.menuBarReportes}">
-                    <b:navLink value="#{msg['menu.solicitudpendiente']}" rendered="#{applicationMenu.solicitud.list}" outcome="/pages/reportes/solicitudpendiente" iconAwesome= "fa-battery-empty" />
-                    <b:navLink value="#{msg['menu.viajesporvehiculo']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajeporvehiculo" iconAwesome= "fa-car" />
-                    <b:navLink value="#{msg['menu.viajesporconductor']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajeporconductor" iconAwesome= "fa-drivers-license-o" />
-                    <b:navLink value="#{msg['menu.viajespendientes']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajependiente" iconAwesome= "fa-book" />
+                <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{p:ifGranted('ADMINISTRADOR')}">
+                    <b:navLink value="#{msg['menu.solicitudpendiente']}"  outcome="/pages/reportes/solicitudpendiente" iconAwesome= "fa-battery-empty" />
+                    <b:navLink value="#{msg['menu.viajesporvehiculo']}"  outcome="/pages/reportes/viajeporvehiculo" iconAwesome= "fa-car" />
+                    <b:navLink value="#{msg['menu.viajesporconductor']}"  outcome="/pages/reportes/viajeporconductor" iconAwesome= "fa-drivers-license-o" />
+                    <b:navLink value="#{msg['menu.viajespendientes']}"  outcome="/pages/reportes/viajependiente" iconAwesome= "fa-book" />
                     <b:navLink/>
-                    <b:navLink value="#{msg['menu.viajesrealizados']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajerealizado" iconAwesome= "fa-drivers-license-o" />
+                    <b:navLink value="#{msg['menu.viajesrealizados']}" outcome="/pages/reportes/viajerealizado" iconAwesome= "fa-drivers-license-o" />
 
-                    <b:navLink value="#{msg['menu.viajessinconductor']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajesinconductor" iconAwesome= "fa-child" />
+                    <b:navLink value="#{msg['menu.viajessinconductor']}"  outcome="/pages/reportes/viajesinconductor" iconAwesome= "fa-child" />
 
-                    <b:navLink value="#{msg['menu.viajessinsolicitud']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/viajesinsolicitud" iconAwesome= "fa-unlink" />
+                    <b:navLink value="#{msg['menu.viajessinsolicitud']}"  outcome="/pages/reportes/viajesinsolicitud" iconAwesome= "fa-unlink" />
 
                     <b:navLink/>
-                    <b:navLink value="#{msg['menu.kmrecorridosporvehiculo']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/kmrecorridosporvehiculo" iconAwesome= "fa-map-signs" />
-                    <b:navLink value="#{msg['menu.kmrecorridosporconductor']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/kmrecorridosporconductor" iconAwesome= "fa-map-signs" />
+                    <b:navLink value="#{msg['menu.kmrecorridosporvehiculo']}"  outcome="/pages/reportes/kmrecorridosporvehiculo" iconAwesome= "fa-map-signs" />
+                    <b:navLink value="#{msg['menu.kmrecorridosporconductor']}"  outcome="/pages/reportes/kmrecorridosporconductor" iconAwesome= "fa-map-signs" />
                     <b:navLink/>
-                    <b:navLink value="#{msg['menu.programacionflota']}" rendered="#{applicationMenu.viaje.list}" outcome="/pages/reportes/programacionflota" iconAwesome= "fa-bus" />
+                    <b:navLink value="#{msg['menu.programacionflota']}"  outcome="/pages/reportes/programacionflota" iconAwesome= "fa-bus" />
                 </b:dropMenu>
-<!--                <b:dropMenu value="#{msg['menubar.mantenimiento']}" rendered="#{applicationMenu.menuBarMantenimiento}">
-                    <b:dropMenu value="#{msg['menubar.combustible']}" rendered="#{applicationMenu.menuBarCombustible}">
-                    </b:dropMenu>
-                </b:dropMenu>-->
 
-                <b:dropMenu value="#{msg['menubar.registros']}" rendered="#{applicationMenu.menuBarRegistros}">
+
+                <b:dropMenu value="#{msg['menubar.registros']}" rendered="#{p:ifGranted('ADMINISTRADOR')}">
 
 
 
-                    <b:navLink value="#{msg['menu.vehiculo']}" rendered="#{applicationMenu.vehiculo.menu}" outcome="/pages/vehiculo/list" iconAwesome= "fa-car" />
-                    <b:navLink value="#{msg['menu.vehiculocambiarplaca']}" rendered="#{applicationMenu.vehiculocambiarplaca.menu}" outcome="/pages/vehiculo/cambiarplaca" iconAwesome="fa-pencil-square-o" />
+                    <b:navLink value="#{msg['menu.vehiculo']}"  outcome="/pages/vehiculo/list" iconAwesome= "fa-car" />
+                    <b:navLink value="#{msg['menu.vehiculocambiarplaca']}"  outcome="/pages/vehiculo/cambiarplaca" iconAwesome="fa-pencil-square-o" />
                     <b:navLink />
-                    <b:navLink value="#{msg['menu.conductor']}" rendered="#{applicationMenu.conductor.menu}" outcome="/pages/conductor/list" iconAwesome= "fa-drivers-license-o" />
+                    <b:navLink value="#{msg['menu.conductor']}"  outcome="/pages/conductor/list" iconAwesome= "fa-drivers-license-o" />
 
-                    <b:navLink value="#{msg['menu.cambiarcedulaconductor']}" rendered="#{applicationMenu.conductorcambiarcedula.menu}" outcome="/pages/conductor/cambiarcedula" iconAwesome="fa-pencil-square-o" />
+                    <b:navLink value="#{msg['menu.cambiarcedulaconductor']}"  outcome="/pages/conductor/cambiarcedula" iconAwesome="fa-pencil-square-o" />
                     <b:navLink/>
-                    <b:navLink value="#{msg['menu.estatus']}"  rendered="#{applicationMenu.estatus.menu}" outcome="/pages/estatus/list" iconAwesome="fa-address-card " />
-                    <b:navLink value="#{msg['menu.tipovehiculo']}" rendered="#{applicationMenu.tipovehiculo.menu}" outcome="/pages/tipovehiculo/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.tiposolicitud']}" rendered="#{applicationMenu.tiposolicitud.menu}" outcome="/pages/tiposolicitud/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.sugerencia']}" rendered="#{applicationMenu.sugerencia.menu}" outcome="/pages/sugerencia/list" iconAwesome= "fa-comments-o" />
+                    <b:navLink value="#{msg['menu.estatus']}"   outcome="/pages/estatus/list" iconAwesome="fa-address-card " />
+                    <b:navLink value="#{msg['menu.tipovehiculo']}"  outcome="/pages/tipovehiculo/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.tiposolicitud']}" outcome="/pages/tiposolicitud/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.sugerencia']}"  outcome="/pages/sugerencia/list" iconAwesome= "fa-comments-o" />
 
                     <b:navLink/>
-                    <b:navLink value="#{msg['menu.tipogira']}" rendered="#{applicationMenu.tipogira.menu}" outcome="/pages/tipogira/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.unidad']}" rendered="#{applicationMenu.unidad.menu}" outcome="/pages/unidad/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.tipogira']}"  outcome="/pages/tipogira/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.unidad']}"  outcome="/pages/unidad/list" iconAwesome= "fa-calendar-o" />
                     <b:navLink/>
-                    <b:navLink value="#{msg['menu.semestre']}" rendered="#{applicationMenu.semestre.menu}" outcome="/pages/semestre/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.facultad']}" rendered="#{applicationMenu.facultad.menu}" outcome="/pages/facultad/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.carrera']}" rendered="#{applicationMenu.carrera.menu}" outcome="/pages/carrera/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.semestre']}"  outcome="/pages/semestre/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.facultad']}" outcome="/pages/facultad/list" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.carrera']}"  outcome="/pages/carrera/list" iconAwesome= "fa-calendar-o" />
 
 
                 </b:dropMenu>
-<!--                <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{applicationMenu.menuBarReportes}">
 
-                </b:dropMenu>-->
 
-                <b:dropMenu value="#{msg['menubar.administracion']}" rendered="#{applicationMenu.menuBarAdministracion}">
-                    <b:navLink value="#{msg['menu.usuario']}" rendered="#{applicationMenu.usuario.menu}" outcome="/pages/usuario/list" icon="user"  />
-                    <b:navLink value="#{msg['menu.rol']}" rendered="#{applicationMenu.rol.menu}" outcome="/pages/rol/list" iconAwesome="desktop"  />
 
- <!--<b:navLink value="#{msg['menu.backup']}"  outcome="/pages/backup/backup" iconAwesome="desktop"  />-->
+                <b:dropMenu value="#{msg['menubar.administracion']}"  rendered="#{p:ifGranted('ADMINISTRADOR')}">
+                    <b:navLink value="#{msg['menu.usuario']}"  outcome="/pages/usuario/list" icon="user"  />
+                    <b:navLink value="#{msg['menu.rol']}"  outcome="/pages/rol/list" iconAwesome="desktop"  />
+
+
 
                 </b:dropMenu>
-                <b:dropMenu value="#{loginController.usuario.username}" rendered="#{loginController.loggedIn}">
+                <b:dropMenu value="#{loginController.usuario.username}" >
 
-                    <b:navLink value="#{msg['menu.cambiarpassword']}" rendered="#{loginController.loggedIn}" outcome="/pages/password/change" iconAwesome="fa-expeditedssl"  />
+                    <b:navLink value="#{msg['menu.cambiarpassword']}"  outcome="/pages/password/change" iconAwesome="fa-expeditedssl"  />
                     <h:form id="navbartopform">
                         <p:commandLink class="btnn btnn-primary login-btn" value="#{app['button.logout']}" action="#{loginController.doLogout()}"/>
 

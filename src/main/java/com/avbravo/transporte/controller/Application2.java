@@ -13,16 +13,16 @@ import javax.enterprise.context.ApplicationScoped;
  *
  * @author avbravo
  */
-@Named(value = "application")
+@Named(value = "application2")
 @ApplicationScoped
-public class Application {
+public class Application2 {
 
     Configuracion configuracion = new Configuracion();
 
     /**
      * Creates a new instance of Application
      */
-    public Application() {
+    public Application2() {
     }
 
     public Configuracion getConfiguracion() {
