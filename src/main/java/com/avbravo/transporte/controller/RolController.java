@@ -9,28 +9,26 @@ package com.avbravo.transporte.controller;
 import com.avbravo.jmoordb.configuration.JmoordbContext;
 import com.avbravo.jmoordb.configuration.JmoordbControllerEnvironment;
 import com.avbravo.jmoordb.interfaces.IController;
-import com.avbravo.jmoordbutils.JsfUtil;
+import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
 import com.avbravo.jmoordbutils.printer.Printer;
-import com.avbravo.jmoordb.interfaces.IControllerOld;
-import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
 
+
+
+import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.RolDataModel;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
-
 import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.services.RolServices;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.faces.context.FacesContext;
 import org.bson.Document;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
@@ -42,36 +40,40 @@ import org.primefaces.event.SelectEvent;
  */
 @Named
 @ViewScoped
+//@RequestScoped
 public class RolController implements Serializable, IController {
-// <editor-fold defaultstate="collapsed" desc="fields">  
 
+// <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
-    Integer page = 1;
-    Integer rowPage = 25;
-    List<Integer> pages = new ArrayList<>();
+
 
     private Boolean writable = false;
+    //DataModel
+    private RolDataModel rolDataModel;
+
+    Integer page = 1;
+    Integer rowPage = 25;
+
+    List<Integer> pages = new ArrayList<>();
+    //
 
     //Entity
     Rol rol = new Rol();
-    Rol rolSelected = new Rol();
+    Rol rolSelected;
     Rol rolSearch = new Rol();
-
-    //DataModel
-    private RolDataModel rolDataModel;
 
     //List
     List<Rol> rolList = new ArrayList<>();
 
     //Repository
+ 
     @Inject
     RolRepository rolRepository;
-
-    //Services
-    //Atributos para busquedas
+      //Services
     @Inject
     ErrorInfoServices errorServices;
-
+    @Inject
+AutoincrementableServices autoincrementableServices;
     @Inject
     RolServices rolServices;
     @Inject
@@ -88,6 +90,10 @@ public class RolController implements Serializable, IController {
         return rolRepository.listOfPage(rowPage);
     }
 
+    public void setPages(List<Integer> pages) {
+        this.pages = pages;
+    }
+
     public Rol getRolSearch() {
         return rolSearch;
     }
@@ -95,11 +101,13 @@ public class RolController implements Serializable, IController {
     public void setRolSearch(Rol rolSearch) {
         this.rolSearch = rolSearch;
     }
-    
-    
 
-    public void setPages(List<Integer> pages) {
-        this.pages = pages;
+    public RolRepository getRolRepository() {
+        return rolRepository;
+    }
+
+    public void setRolRepository(RolRepository rolRepository) {
+        this.rolRepository = rolRepository;
     }
 
     public Integer getPage() {
@@ -175,7 +183,7 @@ public class RolController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="preRenderView()">
     @Override
     public String preRenderView(String action) {
-        //acciones al llamar el formulario despuès del init    
+        //acciones al llamar el formulario despues del init    
         return "";
     }
 // </editor-fold>
@@ -184,12 +192,13 @@ public class RolController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
+
             /*
             configurar el ambiente del controller
              */
             HashMap parameters = new HashMap();
             Usuario _userLogged = (Usuario) JmoordbContext.get("_userLogged");
-//            parameters.put("P_EMPRESA", _userLogged.getEmpresa().getDescripcion());
+        //    parameters.put("P_EMPRESA", _userLogged.getEmpresa().getDescripcion());
 
             JmoordbControllerEnvironment jmc = new JmoordbControllerEnvironment.Builder()
                     .withController(this)
@@ -205,6 +214,7 @@ public class RolController implements Serializable, IController {
                     .build();
 
             start();
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -213,17 +223,12 @@ public class RolController implements Serializable, IController {
 
     @Override
     public void reset() {
-
-      PrimeFaces.current().resetInputs(":form:content");
+PrimeFaces.current().resetInputs(":form:content");
         prepareNew();
     }// </editor-fold>
-
-
 // <editor-fold defaultstate="collapsed" desc="handleSelect">
-
     public void handleSelect(SelectEvent event) {
         try {
-
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -240,15 +245,14 @@ public class RolController implements Serializable, IController {
         }
     }// </editor-fold>
 
-
-
 // <editor-fold defaultstate="collapsed" desc="move">
-
     @Override
     public void move(Integer page) {
         try {
-  rolDataModel = new RolDataModel(rolList);
+            this.page = page;
+            rolDataModel = new RolDataModel(rolList);
             Document doc;
+
             switch ((String) JmoordbContext.get("searchrol")) {
                 case "_init":
                 case "_autocomplete":
@@ -258,29 +262,45 @@ public class RolController implements Serializable, IController {
 
                 case "idrol":
                     if (JmoordbContext.get("_fieldsearchrol") != null) {
+                         rolSearch.setIdrol(JmoordbContext.get("_fieldsearchrol").toString());
                         doc = new Document("idrol", JmoordbContext.get("_fieldsearchrol").toString());
                         rolList = rolRepository.findPagination(doc, page, rowPage, new Document("idrol", -1));
-                         rolSearch.setIdrol(JmoordbContext.get("_fieldsearchrol").toString());
+                       
                     } else {
                         rolList = rolRepository.findPagination(page, rowPage);
+
                     }
 
+                    break;
+                case "activo":
+                    if (JmoordbContext.get("_fieldsearchrol") != null) {
+                        rolSearch.setActivo(JmoordbContext.get("_fieldsearchrol").toString());
+                        doc = new Document("activo", rolSearch.getActivo());
+                        rolList = rolRepository.findPagination(doc, page, rowPage, new Document("idrol", -1));
+
+                    } else {
+                        rolList = rolRepository.findPagination(page, rowPage);
+
+                    }
                     break;
 
                 default:
 
                     rolList = rolRepository.findPagination(page, rowPage);
                     break;
-            }
 
-       
+            }
 
             rolDataModel = new RolDataModel(rolList);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+
         }
     }// </editor-fold>
+    
+   
 
-  
 }
+
+

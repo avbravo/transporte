@@ -20,7 +20,7 @@
             }
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.rol.list}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                      return false;
                  }">
 
@@ -32,12 +32,12 @@
 
 
                     <p:outputLabel value="#{msg['field.idrol']}"/>
-                    <jmoordbjsf:autocomplete converter="#{rolConverter}"
+                   <jmoordbjsf:autocomplete converter="#{rolConverter}"
                                              completeMethod="#{rolController.rolServices.complete}"
                                              labeltip1="#{msg['field.idrol']} #{p.idrol}"
-                                             labeltip2="#{msg['field.rol']} #{p.rol}"    
+                                             labeltip2="#{msg['field.rol']} #{p.rol}"
                                              listener="#{rolController.handleAutocompleteOfListXhtml}"
-                                             value="#{rolController.rolSelected}"
+                                             value="#{rolController.rolSearch}"
                                              itemLabel="#{p.idrol}"
                                              field="idrol"
                                              update=":form:dataTable"/>
@@ -46,7 +46,8 @@
                     <jmoordbjsf:autocomplete converter="#{rolConverter}"
                                              completeMethod="#{rolController.rolServices.complete}"
                                              labeltip1="#{msg['field.idrol']} #{p.idrol}"
-                                             labeltip2="#{msg['field.rol']} #{p.rol}"    listener="#{rolController.handleAutocompleteOfListXhtml}"
+                                             labeltip2="#{msg['field.rol']} #{p.rol}" 
+                                             listener="#{rolController.handleAutocompleteOfListXhtml}"
                                              value="#{rolController.rolSelected}"
                                              itemLabel=" #{p.rol}"
                                              field="rol"
@@ -58,14 +59,14 @@
                     <b:column medium-screen="4">
                         <jmoordbjsf:search label="#{msg['field.activo']}"
                                            value="#{rolController.rolSearch.activo}"
-                                           renderedList="#{applicationMenu.rol.list}"  
+                                           renderedList="#{p:ifGranted('ADMINISTRADOR')}"  
                                            search="#{rolController.searchBy('activo',rolController.rolSearch.activo)}"
                                            />
                     </b:column>
                  </b:row>
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                 <jmoordbjsf:paginator
+                   <jmoordbjsf:paginator
                     controller="#{rolController}"                        
                     rowPage="#{rolController.rowPage}"                   
                     page="#{rolController.page}"
@@ -86,10 +87,10 @@
 
                     <b:dataTableColumn label="">
 
-                        <jmoordbjsf:column
+                      <jmoordbjsf:column
 
-                            renderedEdit="#{applicationMenu.rol.edit}"
-                            renderedDelete="#{applicationMenu.rol.delete}"
+                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
                             controller="#{rolController}"
                             url="/pages/rol/view.xhtml"
                             item="#{item}"
@@ -103,6 +104,6 @@
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.rol.list}" />
+      <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
     </ui:define>
 </ui:composition>
