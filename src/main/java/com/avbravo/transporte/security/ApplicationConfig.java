@@ -16,7 +16,7 @@ import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
  */
 @CustomFormAuthenticationMechanismDefinition(
         loginToContinue = @LoginToContinue(
-                loginPage = "/login.xhtml",
+                loginPage = "/faces/login.xhtml",
                 useForwardToLogin = false
             )
 )

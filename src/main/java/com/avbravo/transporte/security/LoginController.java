@@ -300,7 +300,7 @@ public class LoginController implements Serializable, SecurityInterface {
                 JsfUtil.warningMessage(rf.getAppMessage("login.usernamenotvalid"));
                 return null;
             }
- usernameRecover = usernameRecoveryOfSession();
+            usernameRecover = usernameRecoveryOfSession();
             recoverSession = !usernameRecover.equals("");
             if (recoverSession) {
                 invalidateCurrentSession();
@@ -320,7 +320,7 @@ public class LoginController implements Serializable, SecurityInterface {
                 }
 
             }
-            
+
             if (!isValidSession(username)) {
                 return "";
             }
@@ -355,21 +355,20 @@ public class LoginController implements Serializable, SecurityInterface {
                     foto = "img/me.jpg";
                     loggedIn = true;
                     usuario = (Usuario) JmoordbContext.get("_userLogged");
-                    // JmoordbContext.put("_userLogged", usuario);
+            
                     saveUserInSession(username, 2100);
                     accessInfoRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.welcome")));
                     loggedIn = true;
                     JsfUtil.successMessage(rf.getAppMessage("login.welcome") + " " + usuario.getNombre());
-//                    return "/faces/pages/index.xhtml?faces-redirect=true";
-                    switch(rol.getIdrol()){
+validadorRoles.validarRoles(rol.getIdrol());
+                    switch (rol.getIdrol()) {
                         case "DOCENTE":
-                             return "/faces/pages/solicituddocente/list.xhtml?faces-redirect=true";
+                            return "/faces/pages/solicituddocente/list.xhtml?faces-redirect=true";
                         case "ADMINISTRATIVO":
                             return "/faces/pages/solicituddocente/list.xhtml?faces-redirect=true";
-                        case "ADMINISTRADOR" :
-                             return "/faces/pages/index.xhtml?faces-redirect=true";
+                        case "ADMINISTRADOR":
+                            return "/faces/pages/index.xhtml?faces-redirect=true";
                     }
-                  
 
                 case NOT_DONE:
             }
@@ -536,6 +535,5 @@ public class LoginController implements Serializable, SecurityInterface {
         return null;
     }
     // </editor-fold>
-    
-    
+
 }

@@ -49,7 +49,7 @@ public class CustomInMemoryIdentityStore implements IdentityStore {
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="Boolean isValidUser(String username, String password) ">
     private Boolean isValidUser(String username, String password) {
         try {
 

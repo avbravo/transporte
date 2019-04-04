@@ -105,7 +105,7 @@
 
 
                 </b:dropMenu>
-                <b:dropMenu value="#{app['button.logout']}" >
+                <b:dropMenu value="#{loginController.usuario.username}" >
 
                     <b:navLink value="#{msg['menu.cambiarpassword']}"  outcome="/pages/password/change" iconAwesome="fa-expeditedssl"  />
                     <h:form id="navbartopform">
