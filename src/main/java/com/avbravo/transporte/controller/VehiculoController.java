@@ -9,9 +9,9 @@ package com.avbravo.transporte.controller;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.jmoordb.interfaces.IControllerOld;
-import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
-import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
-import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
+import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
+import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.transporte.security.LoginController;
  

@@ -59,7 +59,7 @@ public class CustomInMemoryIdentityStore implements IdentityStore {
             Usuario usuario = new Usuario();
             usuario.setUsername(username);
 
-            Rol rol = (Rol) JmoordbContext.get("_login_rol");
+            Rol rol = (Rol) JmoordbContext.get("jmoordb_rol");
 //Asigna el rol del usuario
             this.rolValue = rol.getIdrol();
 
@@ -75,7 +75,7 @@ public class CustomInMemoryIdentityStore implements IdentityStore {
 
                 usuario = u2;
                 //guarda el usuario logeado
-                JmoordbContext.put("_userLogged", usuario);
+                JmoordbContext.put("jmoordb_user", usuario);
 
                 if (!JsfUtil.desencriptar(usuario.getPassword()).equals(password)) {
                     JsfUtil.successMessage(rf.getAppMessage("login.passwordnotvalid"));

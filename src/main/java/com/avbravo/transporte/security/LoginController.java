@@ -8,13 +8,13 @@ package com.avbravo.transporte.security;
 import com.avbravo.jmoordb.configuration.JmoordbConfiguration;
 import com.avbravo.jmoordb.configuration.JmoordbConnection;
 import com.avbravo.jmoordb.configuration.JmoordbContext;
-import com.avbravo.jmoordb.mongodb.history.AccessInfoRepository;
-import com.avbravo.jmoordb.mongodb.history.AutoincrementableServices;
-import com.avbravo.jmoordb.mongodb.history.ConfiguracionRepository;
-import com.avbravo.jmoordb.mongodb.history.ConfiguracionServices;
-import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
-import com.avbravo.jmoordb.mongodb.history.RevisionHistoryRepository;
-import com.avbravo.jmoordb.pojos.Configuracion;
+import com.avbravo.jmoordb.mongodb.history.repository.AccessInfoRepository;
+import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
+import com.avbravo.jmoordb.mongodb.history.repository.ConfiguracionRepository;
+import com.avbravo.jmoordb.mongodb.history.services.ConfiguracionServices;
+import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
+import com.avbravo.jmoordb.mongodb.history.entity.Configuracion;
 import com.avbravo.jmoordb.services.AccessInfoServices;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.jmoordbsecurity.SecurityInterface;
@@ -257,9 +257,10 @@ public class LoginController implements Serializable, SecurityInterface {
         tokenwassend = false;
         configuracion = new Configuracion();
 
+        //Configuracion de la base de datos
         JmoordbConnection jmc = new JmoordbConnection.Builder()
                 .withSecurity(false)
-                .withDatabase("store")
+                .withDatabase("transporte")
                 .withHost("")
                 .withPort(0)
                 .withUsername("")
@@ -340,8 +341,8 @@ public class LoginController implements Serializable, SecurityInterface {
                     .withUsername(username)
                     .build();
 
-            JmoordbContext.put("_userLogged", usuario);
-            JmoordbContext.put("_login_rol", rol);
+            JmoordbContext.put("jmoordb_user", usuario);
+            JmoordbContext.put("jmoordb_rol", rol);
 //---Injectarlo en el Session
             switch (continueAuthentication()) {
                 case SEND_CONTINUE:
@@ -354,13 +355,13 @@ public class LoginController implements Serializable, SecurityInterface {
                 case SUCCESS:
                     foto = "img/me.jpg";
                     loggedIn = true;
-                    usuario = (Usuario) JmoordbContext.get("_userLogged");
-            
+                    usuario = (Usuario) JmoordbContext.get("jmoordb_user");
+
                     saveUserInSession(username, 2100);
                     accessInfoRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.welcome")));
                     loggedIn = true;
                     JsfUtil.successMessage(rf.getAppMessage("login.welcome") + " " + usuario.getNombre());
-validadorRoles.validarRoles(rol.getIdrol());
+                    validadorRoles.validarRoles(rol.getIdrol());
                     switch (rol.getIdrol()) {
                         case "DOCENTE":
                             return "/faces/pages/solicituddocente/list.xhtml?faces-redirect=true";

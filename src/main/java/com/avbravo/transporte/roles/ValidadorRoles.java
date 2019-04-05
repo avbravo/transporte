@@ -5,7 +5,7 @@
  */
 package com.avbravo.transporte.roles;
 
-import com.avbravo.jmoordb.mongodb.history.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.transporte.util.ResourcesFiles;
 import javax.inject.Inject;
