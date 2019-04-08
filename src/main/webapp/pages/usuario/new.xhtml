@@ -20,22 +20,24 @@
             }
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.usuario.create}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <jmoordbjsf:toolbarnewlowercase label="#{msg['field.username']}"
-                                         title="#{msg['titleview.usuario']}"
-                                         value="#{usuarioController.usuario.username}"
-                                         isnew="#{usuarioController.isNew()}"
-                                         disabled="#{usuarioController.writable}"
-                                         new="#{usuarioController.prepare('new',usuarioController.usuario)}"
-                                         rendererList="#{applicationMenu.usuario.list}"
-                                         list="#{usuarioController.prepare('golist',usuarioController.usuario)}"
 
-                                         />
+                <jmoordbjsf:toolbarnew label="#{msg['field.username']}"
+                                                title="#{msg['titleview.usuario']}"
+                                                value="#{usuarioController.usuario.username}"
+                                                disabled="#{usuarioController.writable}"
+                                                rendererList="#{p:ifGranted('ADMINISTRADOR')}"
+                                                controller="#{usuarioController}"
+                                                lowercase="true"
+                                                url  = "/pages/usuario/list.xhtml"
+
+                                                />
+
                 <b:panel title="#{app['title.data']}" look="primary" rendered="#{usuarioController.writable}">
 
 
@@ -72,7 +74,7 @@
 
 
                         <jmoordbjsf:autocomplete converter="#{unidadConverter}"
-                                                 completeMethod="#{unidadController.unidadServices.complete}" 
+                                                 completeMethod="#{usuarioController.unidadServices.complete}" 
                                                  labeltip1="#{msg['field.unidad']} #{p.idunidad}"  
                                                  listener="#{usuarioController.handleSelect}"
                                                  value="#{usuarioController.usuario.unidad}"
@@ -85,7 +87,7 @@
 
                         <p:outputLabel  value="#{msg['field.rol']}" />
                         <jmoordbjsf:autocomplete converter="#{rolConverter}"
-                                                 completeMethod="#{rolController.rolServices.complete}"
+                                                 completeMethod="#{usuarioController.rolServices.complete}"
                                                  labeltip1="#{msg['field.idrol']} #{p.idrol}"
                                                  labeltip2="#{msg['field.rol']} #{p.rol}"   
                                                  listener="#{usuarioController.handleSelect}"
@@ -108,9 +110,10 @@
 
 
 
-                        <jmoordbjsf:save rendered="#{usuarioController.writable and applicationMenu.usuario.create}"
-                                         save="#{usuarioController.save()}" />
 
+                        <jmoordbjsf:toolbarsave
+                            rendered="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{usuarioController}"   />
 
                     </b:panelGrid>
 
@@ -118,7 +121,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.usuario.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
 
         <br/><br/><br/>
     </ui:define>

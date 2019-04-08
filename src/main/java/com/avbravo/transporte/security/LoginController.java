@@ -26,6 +26,7 @@ import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
+import com.avbravo.transporteejb.services.RolServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -111,6 +112,8 @@ public class LoginController implements Serializable, SecurityInterface {
 
     //Services
     @Inject
+    RolServices rolServices;
+    @Inject
     ErrorInfoServices errorServices;
     @Inject
     UsuarioServices usuarioServices;
@@ -127,6 +130,17 @@ public class LoginController implements Serializable, SecurityInterface {
         this.configuracion = configuracion;
     }
 
+    public RolServices getRolServices() {
+        return rolServices;
+    }
+
+    public void setRolServices(RolServices rolServices) {
+        this.rolServices = rolServices;
+    }
+
+    
+    
+    
     public Rol getRol() {
         return rol;
     }

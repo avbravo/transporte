@@ -19,8 +19,8 @@
                 border-color: #428BCA;
             }
         </style>
-      
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.usuario.query}" onkeypress="if (event.keyCode == 13) {
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -35,9 +35,9 @@
                         <p:outputLabel  value="#{msg['field.nombre']}" />
                         <jmoordbjsf:inputText value="#{usuarioController.usuario.nombre}" id="nombre"  label="#{msg['field.nombre']}" />
 
-<p:outputLabel  value="#{msg['field.cedula']}" />
+                        <p:outputLabel  value="#{msg['field.cedula']}" />
                         <jmoordbjsf:inputText value="#{usuarioController.usuario.cedula}" id="cedula" span="4" label="#{msg['field.cedula']}" />
- 
+
                         <p:outputLabel  value="#{msg['field.celular']}" />
                         <jmoordbjsf:inputText value="#{usuarioController.usuario.celular}" id="celular" span="4" label="#{msg['field.celular']}" />
 
@@ -46,42 +46,43 @@
                         <p:outputLabel  value="#{msg['field.email']}" />
                         <jmoordbjsf:email value="#{usuarioController.usuario.email}" id="email"  label="#{msg['field.email']}" />
 
-                        
+
 
                         <p:outputLabel  value="#{msg['field.cargo']}" />
                         <jmoordbjsf:inputText value="#{usuarioController.usuario.cargo}" id="cargo"  label="#{msg['field.cargo']}" />
 
-                        
-                         <p:outputLabel  value="#{msg['field.unidad']}" />
-               <jmoordbjsf:autocomplete converter="#{unidadConverter}"
-completeMethod="#{unidadController.unidadServices.complete}" 
-labeltip1="#{msg['field.unidad']} #{p.idunidad}"   listener="#{usuarioController.handleSelect}"
-                                                      value="#{usuarioController.usuario.unidad}"
-                                               itemLabel="#{p.idunidad}"
-                                               dropdown="true"
-                                               required="true"
-                                               minQueryLength="0"
-                                               field="idunidad"
-                                               />
-                           
+
+                        <p:outputLabel  value="#{msg['field.unidad']}" />
+                        <jmoordbjsf:autocomplete converter="#{unidadConverter}"
+                                                 completeMethod="#{unidadController.unidadServices.complete}" 
+                                                 labeltip1="#{msg['field.unidad']} #{p.idunidad}"   listener="#{usuarioController.handleSelect}"
+                                                 value="#{usuarioController.usuario.unidad}"
+                                                 itemLabel="#{p.idunidad}"
+                                                 dropdown="true"
+                                                 required="true"
+                                                 minQueryLength="0"
+                                                 field="idunidad"
+                                                 />
+
 
                         <p:outputLabel  value="#{msg['field.rol']}" />
-                        
-                        
-                       <jmoordbjsf:autocomplete converter="#{rolConverter}"
-completeMethod="#{rolController.rolServices.complete}"
-labeltip1="#{msg['field.idrol']} #{p.idrol}"
-labeltip2="#{msg['field.rol']} #{p.rol}"    listener="#{usuarioController.handleSelect}"
-                                                      value="#{usuarioController.rolList}"
-                                               itemLabel="#{p.idrol}"
-                                          
-                                               multiple="true"
-                                               required="true"
-                                               minQueryLength="0"
-                                               field="idrol"
-                                               dropdown="true"
-                                               />
-                        
+
+
+                        <jmoordbjsf:autocomplete converter="#{rolConverter}"
+                                                 completeMethod="#{rolController.rolServices.complete}"
+                                                 labeltip1="#{msg['field.idrol']} #{p.idrol}"
+                                                 labeltip2="#{msg['field.rol']} #{p.rol}"   
+                                                 listener="#{usuarioController.handleSelect}"
+                                                 value="#{usuarioController.rolList}"
+                                                 itemLabel="#{p.idrol}"
+
+                                                 multiple="true"
+                                                 required="true"
+                                                 minQueryLength="0"
+                                                 field="idrol"
+                                                 dropdown="true"
+                                                 />
+
 
 
 
@@ -91,19 +92,20 @@ labeltip2="#{msg['field.rol']} #{p.rol}"    listener="#{usuarioController.handle
 
 
                     </b:panelGrid>
-                    <jmoordbjsf:toolbarview 
-                        renderedDelete="#{applicationMenu.usuario.delete and usuarioController.writable }"
-                        renderedEdit="#{applicationMenu.usuario.edit and usuarioController.writable}" 
-                        renderedList="#{applicationMenu.usuario.list and usuarioController.writable}"
-                        edit="#{usuarioController.edit()}"
-                        delete="#{usuarioController.delete(usuarioController.usuario,true)}"
-                        print="#{usuarioController.print()}"
-                        url="#{usuarioController.prepare('golist',usuarioController.usuario)}"
+                  
+                    
+                    
+                      <jmoordbjsf:toolbarview 
+                        renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
+                        controller="#{usuarioController}"
+                        url  = "/pages/usuario/list.xhtml"
                         />
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.usuario.query}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

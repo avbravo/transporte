@@ -35,8 +35,9 @@
                     <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
                                              completeMethod="#{usuarioController.usuarioServices.complete}"
                                              labeltip1="#{msg['field.username']} #{p.username}"
-                                             labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{usuarioController.handleAutocompleteOfListXhtml}"
-                                             value="#{usuarioController.usuarioSelected}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}"   
+                                             listener="#{usuarioController.handleAutocompleteOfListXhtml}"
+                                             value="#{usuarioController.usuarioSearch}"
                                              itemLabel=" #{p.username}"
                                              field="username"
                                              update=" :form:dataTable"/>
@@ -45,8 +46,9 @@
                     <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
                                              completeMethod="#{usuarioController.usuarioServices.complete}"
                                              labeltip1="#{msg['field.username']} #{p.username}"
-                                             labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{usuarioController.handleAutocompleteOfListXhtml}"
-                                             value="#{usuarioController.usuarioSelected}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}" 
+                                             listener="#{usuarioController.handleAutocompleteOfListXhtml}"
+                                             value="#{usuarioController.usuarioSearch}"
                                              itemLabel=" #{p.nombre}"
                                              field="nombre"
                                              update=" :form:dataTable"/>
@@ -56,18 +58,14 @@
                 </b:panelGrid>
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <jmoordbjsf:paginator 
-                    rowPage="#{usuarioController.rowPage}"
-                    clear="#{usuarioController.clear()}"
-                    first="#{usuarioController.first()}"
-                    back="#{usuarioController.back()}"
-                    next="#{usuarioController.next()}"
-                    last="#{usuarioController.last()}"
+                <jmoordbjsf:paginator
+                    controller="#{usuarioController}"                        
+                    rowPage="#{usuarioController.rowPage}"                   
                     page="#{usuarioController.page}"
                     pages="#{usuarioController.pages}"
-                    skip="ajax:usuarioController.skip(usuarioController.page)"
-                    new="#{usuarioController.prepare('gonew',usuarioController.usuario)}"
-                    printAll="#{usuarioController.printAll()}"
+                    skip="ajax:usuarioController.skip()" 
+                    url = "/pages/usuario/new.xhtml"
+
                     />
                 <b:dataTable value="#{usuarioController.usuarioDataModel}"
                              var="item"
@@ -94,11 +92,16 @@
 
                     <b:dataTableColumn label="">
 
+                      
+                        
                         <jmoordbjsf:column
 
-                            edit="#{usuarioController.prepare('view',item)}"
-                            delete="#{usuarioController.delete(item,false)}"
-                            rendered="#{applicationMenu.usuario.delete}"
+                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{usuarioController}"
+                            url="/pages/usuario/view.xhtml"
+                            item="#{item}"
+
                             />
                     </b:dataTableColumn>
 
@@ -107,6 +110,6 @@
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.usuario.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
     </ui:define>
 </ui:composition>

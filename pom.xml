@@ -4,7 +4,7 @@
 
     <groupId>com.avbravo</groupId>
     <artifactId>transporte</artifactId>
-    <version>19.3.2</version>
+    <version>19.3.3</version>
     <packaging>war</packaging>
 
     <name>transporte</name>
@@ -64,10 +64,10 @@
             <artifactId>jmoordbsecurity</artifactId>
             <version>0.2</version>
         </dependency>
-    <dependency>
+           <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbjsf</artifactId>
-            <version>0.7</version>
+            <version>0.7.1</version>
         </dependency>
     </dependencies>
 
