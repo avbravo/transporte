@@ -137,6 +137,7 @@ public class UsuarioController implements Serializable, IController {
             String action = (String) JmoordbContext.get("usuario");
             if (action.equals("view")) {
                 usuario.setPassword(JsfUtil.desencriptar(usuario.getPassword()));
+                   rolList = usuario.getRol();
                 usuarioSelected = usuario;
             }
 
@@ -201,6 +202,7 @@ public class UsuarioController implements Serializable, IController {
 
     }// </editor-fold>
 
+  
     // <editor-fold defaultstate="collapsed" desc="Boolean beforeSave()">
     public Boolean beforeSave() {
         try {
