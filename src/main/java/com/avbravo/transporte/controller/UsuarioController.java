@@ -261,9 +261,6 @@ public class UsuarioController implements Serializable, IController {
         try {
             Boolean found = false;
             query = query.trim();
-            if (query.length() < 1) {
-                return suggestions;
-            }
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = rolRepository.findRegex(field, query, true, new Document(field, 1));
 

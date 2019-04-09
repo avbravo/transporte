@@ -87,7 +87,7 @@
 
                         <p:outputLabel  value="#{msg['field.rol']}" />
                         <jmoordbjsf:autocomplete converter="#{rolConverter}"
-                                                 completeMethod="#{usuarioController.rolServices.complete}"
+                                                 completeMethod="#{usuarioController.completeFiltrado}"
                                                  labeltip1="#{msg['field.idrol']} #{p.idrol}"
                                                  labeltip2="#{msg['field.rol']} #{p.rol}"   
                                                  listener="#{usuarioController.handleSelect}"
