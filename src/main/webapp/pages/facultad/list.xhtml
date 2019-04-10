@@ -20,7 +20,7 @@
             } 
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.facultad.list}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
@@ -37,10 +37,11 @@
                                              labeltip1="#{msg['field.idfacultad']} #{p.idfacultad}"
                                              labeltip2="#{msg['field.descripcion']} #{p.descripcion}"   
                                              listener="#{facultadController.handleAutocompleteOfListXhtml}"
-                                             value="#{facultadController.facultadSelected}"
+                                             value="#{facultadController.facultadSearch}"
                                              itemLabel=" #{p.descripcion}"
                                              field="descripcion"
                                              update=" :form:dataTable"/>
+
 
 
 
@@ -48,35 +49,33 @@
                 <b:row>
                     <b:column medium-screen="4">
                         <jmoordbjsf:search label="#{msg['field.idfacultad']}"
-                                           value="#{facultadController.lookupServices.idfacultad}"
-                                           renderedList="#{applicationMenu.facultad.list}"  
-                                           search="#{facultadController.searchBy('idfacultad')}"
+                                           value="#{facultadController.facultadSearch.idfacultad}"
+                                          renderedList="#{p:ifGranted('ADMINISTRADOR')}" 
+                                           search="#{facultadController.searchBy('idfacultad',facultadController.facultadSearch.idfacultad)}"
                                            />
+                        
+                       
                     </b:column>
                     <b:column medium-screen="8">
                         <jmoordbjsf:search label="#{msg['field.descripcion']}"
-                                           value="#{facultadController.lookupServices.descripcion}"
-                                           renderedList="#{applicationMenu.facultad.list}"  
-                                           search="#{facultadController.searchBy('descripcion')}"
+                                           value="#{facultadController.facultadSearch.descripcion}"
+                                           renderedList="#{p:ifGranted('ADMINISTRADOR')}"   
+                                           search="#{facultadController.searchBy('descripcion',facultadController.facultadSearch.descripcion)}"
                                            />
                     </b:column>
                 </b:row>
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <jmoordbjsf:paginator 
-                    rowPage="#{facultadController.rowPage}"
-                    clear="#{facultadController.clear()}"
-                    first="#{facultadController.first()}"
-                    back="#{facultadController.back()}"
-                    next="#{facultadController.next()}"
-                    last="#{facultadController.last()}"
+                
+                 <jmoordbjsf:paginator
+                    controller="#{facultadController}"                        
+                    rowPage="#{facultadController.rowPage}"                   
                     page="#{facultadController.page}"
                     pages="#{facultadController.pages}"
-                    skip="ajax:facultadController.skip(facultadController.page)" 
-                    new="#{facultadController.prepare('gonew',facultadController.facultad)}"
-                    printAll="#{facultadController.printAll()}"
+                    skip="ajax:facultadController.skip()" 
+                    url = "/pages/facultad/new.xhtml"
                     />
-
+               
                 <b:dataTable value="#{facultadController.facultadDataModel}"
                              var="item"
                              id="dataTable2"
@@ -90,13 +89,18 @@
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
 
                     <b:dataTableColumn label="">
-
+                        
                         <jmoordbjsf:column
 
-                            edit="#{facultadController.prepare('view',item)}"
-                            delete="#{facultadController.delete(item,false)}"
-                            rendered="#{applicationMenu.facultad.delete}"
+                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{facultadController}"
+                            url="/pages/facultad/view.xhtml"
+                            item="#{item}"
+
                             />
+
+                     
                     </b:dataTableColumn>
 
                 </b:dataTable>
@@ -104,6 +108,6 @@
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.facultad.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}"/>
     </ui:define>
 </ui:composition>

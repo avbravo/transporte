@@ -19,7 +19,7 @@
             }
         </style>
         
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.facultad.query}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -37,19 +37,18 @@
                         <jmoordbjsf:yesno value="#{facultadController.facultad.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
-                    <jmoordbjsf:toolbarview 
-                        renderedDelete="#{applicationMenu.facultad.delete and facultadController.writable }"
-                        renderedEdit="#{applicationMenu.facultad.edit and facultadController.writable}" 
-                        renderedList="#{applicationMenu.facultad.list and facultadController.writable}"
-                        edit="#{facultadController.edit()}"
-                        delete="#{facultadController.delete(facultadController.facultad,true)}"
-                        print="#{facultadController.print()}"
-                        url="#{facultadController.prepare('golist',facultadController.facultad)}"
+                      <jmoordbjsf:toolbarview 
+                        renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
+                        controller="#{facultarController}"
+                        url  = "/pages/facultad/list.xhtml"                        
                         />
+                    
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.facultad.query}" />
+          <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

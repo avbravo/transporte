@@ -18,23 +18,23 @@
                 border-color: #428BCA;
             }
         </style>
-     
+
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.facultad.create}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <jmoordbjsf:toolbarnew label="#{msg['field.descripcion']}"
-                       title="#{msg['titleview.facultad']}"
-                       value="#{facultadController.facultad.descripcion}"
-                       isnew="#{facultadController.isNew()}"
-                       disabled="#{facultadController.writable}"
-                       new="#{facultadController.prepare('new',facultadController.facultad)}"
-                       rendererList="#{applicationMenu.facultad.list}"
-                       list="#{facultadController.prepare('golist',facultadController.facultad)}"
 
-                       />
+                <jmoordbjsf:toolbarnew label="#{msg['field.descripcion']}"
+                                       title="#{msg['titleview.facultad']}"
+                                       value="#{facultadController.facultad.descripcion}"
+                                       disabled="#{facultadController.writable}"
+                                       rendererList="#{p:ifGranted('ADMINISTRADOR')}"
+                                       controller="#{facultadController}"                                       
+                                       url  = "/pages/facultad/list.xhtml"
+
+                                       />
                 <b:panel title="#{app['title.data']}" look="primary" rendered="#{facultadController.writable}">
 
 
@@ -46,8 +46,10 @@
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{facultadController.facultad.activo}" id="activo"  required="true"/>
 
-                        <jmoordbjsf:save rendered="#{facultadController.writable and applicationMenu.facultad.create}"
-                                save="#{facultadController.save()}" />
+
+                        <jmoordbjsf:toolbarsave
+                            rendered="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{facultadController}"   />
 
 
                     </b:panelGrid>
@@ -56,7 +58,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.facultad.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
 
         <br/><br/><br/>
     </ui:define>

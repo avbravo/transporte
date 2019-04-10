@@ -150,7 +150,7 @@ public class RolController implements Serializable, IController {
                 case "idrol":
                     if (JmoordbContext.get("_fieldsearchrol") != null) {
                         rolSearch.setIdrol(JmoordbContext.get("_fieldsearchrol").toString());
-                        doc = new Document("idrol", JmoordbContext.get("_fieldsearchrol").toString());
+                        doc = new Document("idrol",rolSearch.getIdrol());
                         rolList = rolRepository.findPagination(doc, page, rowPage, new Document("idrol", -1));
                     } else {
                         rolList = rolRepository.findPagination(page, rowPage);

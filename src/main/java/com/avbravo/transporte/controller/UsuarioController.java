@@ -171,7 +171,7 @@ public class UsuarioController implements Serializable, IController {
                 case "username":
                     if (JmoordbContext.get("_fieldsearchusuario") != null) {
                         usuarioSearch.setUsername(JmoordbContext.get("_fieldsearchusuario").toString());
-                        doc = new Document("username", JmoordbContext.get("_fieldsearchusuario").toString());
+                        doc = new Document("username", usuarioSearch.getUsername());
                         usuarioList = usuarioRepository.findPagination(doc, page, rowPage, new Document("idusuario", -1));
                     } else {
                         usuarioList = usuarioRepository.findPagination(page, rowPage);
