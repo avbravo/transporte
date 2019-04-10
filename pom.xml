@@ -46,7 +46,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>transporteejb</artifactId>
-            <version>19.2.5</version>
+            <version>19.2.6</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
