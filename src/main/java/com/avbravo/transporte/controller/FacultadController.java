@@ -101,7 +101,7 @@ public class FacultadController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-autoincrementablebRepository.setDatabase("commondb");
+            autoincrementablebRepository.setDatabase("commondb");
             /*
             configurar el ambiente del contfacultadler
              */
@@ -166,8 +166,8 @@ autoincrementablebRepository.setDatabase("commondb");
                 case "descripcion":
                     if (JmoordbContext.get("_fieldsearchfacultad") != null) {
                         facultadSearch.setDescripcion(JmoordbContext.get("_fieldsearchfacultad").toString());
-                      //  doc = new Document("descripcion", facultadSearch.getDescripcion());
-                         facultadList = facultadRepository.findRegexInTextPagination("descripcion", facultadSearch.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
+                        //  doc = new Document("descripcion", facultadSearch.getDescripcion());
+                        facultadList = facultadRepository.findRegexInTextPagination("descripcion", facultadSearch.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
 
                     } else {
                         facultadList = facultadRepository.findPagination(page, rowPage);
@@ -198,16 +198,17 @@ autoincrementablebRepository.setDatabase("commondb");
 
     }// </editor-fold>
 
-    
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
-    public Boolean beforeSave(){
+    // <editor-fold defaultstate="collapsed" desc="beforeSave()">
+    public Boolean beforeSave() {
         try {
             facultad.setIdfacultad(autoincrementableServices.getContador("facultad"));
             return true;
         } catch (Exception e) {
-                 errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
     }
     // </editor-fold>
+    
+    
 }
