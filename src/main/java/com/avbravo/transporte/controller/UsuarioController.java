@@ -125,7 +125,7 @@ public class UsuarioController implements Serializable, IController {
                     .withService(usuarioServices)
                     .withNameFieldOfPage("page")
                     .withNameFieldOfRowPage("rowPage")
-                    .withSearchbysecondarykey(false)
+                    .withTypeKey("primary")
                     .withSearchLowerCase(true)
                     .withPathReportDetail("/resources/reportes/usuario/details.jasper")
                     .withPathReportAll("/resources/reportes/usuario/all.jasper")

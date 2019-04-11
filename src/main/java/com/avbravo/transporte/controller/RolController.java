@@ -111,7 +111,7 @@ public class RolController implements Serializable, IController {
                     .withService(rolServices)
                     .withNameFieldOfPage("page")
                     .withNameFieldOfRowPage("rowPage")
-                    .withSearchbysecondarykey(false)
+                    .withTypeKey("primary")
                     .withSearchLowerCase(false)
                     .withPathReportDetail("/resources/reportes/rol/details.jasper")
                     .withPathReportAll("/resources/reportes/rol/all.jasper")

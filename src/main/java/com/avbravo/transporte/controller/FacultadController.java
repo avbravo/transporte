@@ -15,6 +15,7 @@ import com.avbravo.commonejb.services.FacultadServices;
 import com.avbravo.jmoordb.configuration.JmoordbContext;
 import com.avbravo.jmoordb.configuration.JmoordbControllerEnvironment;
 import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.mongodb.history.repository.AutoincrementablebRepository;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 
@@ -71,6 +72,8 @@ public class FacultadController implements Serializable, IController {
     @Inject
     AutoincrementableServices autoincrementableServices;
     @Inject
+    AutoincrementablebRepository autoincrementablebRepository;
+    @Inject
     ErrorInfoServices errorServices;
     @Inject
     FacultadServices facultadServices;
@@ -98,7 +101,7 @@ public class FacultadController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-
+autoincrementablebRepository.setDatabase("commondb");
             /*
             configurar el ambiente del contfacultadler
              */
@@ -113,7 +116,7 @@ public class FacultadController implements Serializable, IController {
                     .withService(facultadServices)
                     .withNameFieldOfPage("page")
                     .withNameFieldOfRowPage("rowPage")
-                    .withSearchbysecondarykey(true)
+                    .withTypeKey("secondary")
                     .withSearchLowerCase(false)
                     .withPathReportDetail("/resources/reportes/facultad/details.jasper")
                     .withPathReportAll("/resources/reportes/facultad/all.jasper")
@@ -195,4 +198,16 @@ public class FacultadController implements Serializable, IController {
 
     }// </editor-fold>
 
+    
+    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    public Boolean beforeSave(){
+        try {
+            facultad.setIdfacultad(autoincrementableServices.getContador("facultad"));
+            return true;
+        } catch (Exception e) {
+                 errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }
+    // </editor-fold>
 }
