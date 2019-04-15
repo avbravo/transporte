@@ -19,22 +19,21 @@
             }
         </style>
         
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.unidad.create}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <jmoordbjsf:toolbarnew label="#{msg['field.idunidad']}"
-                       title="#{msg['titleview.unidad']}"
-                       value="#{unidadController.unidad.idunidad}"
-                       isnew="#{unidadController.isNew()}"
-                       disabled="#{unidadController.writable}"
-                       new="#{unidadController.prepare('new',unidadController.unidad)}"
-                       rendererList="#{applicationMenu.unidad.list}"
-                       list="#{unidadController.prepare('golist',unidadController.unidad)}"
+    <jmoordbjsf:toolbarnew label="#{msg['field.idrol']}"
+                                       title="#{msg['titleview.unidad']}"
+                                       value="#{unidadController.unidad.idunidad}"
+                                       disabled="#{unidadController.writable}"
+                                       rendererList="#{p:ifGranted('ADMINISTRADOR')}"
+                                       controller="#{unidadController}"                                       
+                                       url  = "/pages/unidad/list.xhtml"
 
-                       />
+                                       />
                 <b:panel title="#{app['title.data']}" look="primary" rendered="#{unidadController.writable}">
 
 
@@ -45,8 +44,9 @@
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{unidadController.unidad.activo}" id="activo"  required="true"/>
 
-                        <jmoordbjsf:save rendered="#{unidadController.writable and applicationMenu.unidad.create}"
-                                save="#{unidadController.save()}" />
+                   <jmoordbjsf:toolbarsave
+                            rendered="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{unidadController}"   />
 
 
                     </b:panelGrid>

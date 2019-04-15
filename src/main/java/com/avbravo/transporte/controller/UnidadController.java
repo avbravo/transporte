@@ -6,20 +6,29 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
+import com.avbravo.jmoordb.configuration.JmoordbContext;
+import com.avbravo.jmoordb.configuration.JmoordbControllerEnvironment;
+import com.avbravo.jmoordb.interfaces.IController;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.jmoordb.interfaces.IControllerOld;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
+import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.transporte.security.LoginController;
- 
+
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.UnidadDataModel;
 import com.avbravo.transporteejb.entity.Unidad;
 
 import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.datamodel.UnidadDataModel;
+import com.avbravo.transporteejb.entity.Unidad;
+import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.repository.UnidadRepository;
+import com.avbravo.transporteejb.repository.UnidadRepository;
+import com.avbravo.transporteejb.services.UnidadServices;
 import com.avbravo.transporteejb.services.UnidadServices;
 
 import java.util.ArrayList;
@@ -32,6 +41,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
+import lombok.Getter;
+import lombok.Setter;
 import org.bson.Document;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
@@ -43,55 +54,43 @@ import org.primefaces.event.SelectEvent;
  */
 @Named
 @ViewScoped
-public class UnidadController implements Serializable, IControllerOld {
-// <editor-fold defaultstate="collapsed" desc="fields">  
+@Getter
+@Setter
+public class UnidadController implements Serializable, IController {
 
+// <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
 
-//    @Inject
-//private transient ExternalContext externalContext;
     private Boolean writable = false;
     //DataModel
     private UnidadDataModel unidadDataModel;
 
     Integer page = 1;
     Integer rowPage = 25;
-
     List<Integer> pages = new ArrayList<>();
-    //
 
     //Entity
-    Unidad unidad;
+    Unidad unidad = new Unidad();
     Unidad unidadSelected;
+    Unidad unidadSearch = new Unidad();
 
     //List
     List<Unidad> unidadList = new ArrayList<>();
-    List<Unidad> unidadFiltered = new ArrayList<>();
 
     //Repository
     @Inject
     UnidadRepository unidadRepository;
-    @Inject
-    RevisionHistoryRepository revisionHistoryRepository;
-
     //Services
-    //Atributos para busquedas
-  
     @Inject
-    LookupServices lookupServices;
-   @Inject
-ErrorInfoServices errorServices;
+    AutoincrementableServices autoincrementableServices;
     @Inject
-    RevisionHistoryServices revisionHistoryServices;
-    
+    ErrorInfoServices errorServices;
     @Inject
     UnidadServices unidadServices;
     @Inject
     ResourcesFiles rf;
     @Inject
     Printer printer;
-    @Inject
-    LoginController loginController;
 
     //List of Relations
     //Repository of Relations
@@ -102,542 +101,98 @@ ErrorInfoServices errorServices;
         return unidadRepository.listOfPage(rowPage);
     }
 
-    public void setPages(List<Integer> pages) {
-        this.pages = pages;
-    }
-
-    public LookupServices getLookupServices() {
-        return lookupServices;
-    }
-
-    public void setLookupServices(LookupServices lookupServices) {
-        this.lookupServices = lookupServices;
-    }
-
-    public Integer getPage() {
-        return page;
-    }
-
-    public void setPage(Integer page) {
-        this.page = page;
-    }
-
-    public Integer getRowPage() {
-        return rowPage;
-    }
-
-    public void setRowPage(Integer rowPage) {
-        this.rowPage = rowPage;
-    }
-
-    public UnidadServices getUnidadServices() {
-        return unidadServices;
-    }
-
-    public void setUnidadServices(UnidadServices unidadServices) {
-        this.unidadServices = unidadServices;
-    }
-
-    public List<Unidad> getUnidadList() {
-        return unidadList;
-    }
-
-    public void setUnidadList(List<Unidad> unidadList) {
-        this.unidadList = unidadList;
-    }
-
-    public List<Unidad> getUnidadFiltered() {
-        return unidadFiltered;
-    }
-
-    public void setUnidadFiltered(List<Unidad> unidadFiltered) {
-        this.unidadFiltered = unidadFiltered;
-    }
-
-    public Unidad getUnidad() {
-        return unidad;
-    }
-
-    public void setUnidad(Unidad unidad) {
-        this.unidad = unidad;
-    }
-
-    public Unidad getUnidadSelected() {
-        return unidadSelected;
-    }
-
-    public void setUnidadSelected(Unidad unidadSelected) {
-        this.unidadSelected = unidadSelected;
-    }
-
-    public UnidadDataModel getUnidadDataModel() {
-        return unidadDataModel;
-    }
-
-    public void setUnidadDataModel(UnidadDataModel unidadDataModel) {
-        this.unidadDataModel = unidadDataModel;
-    }
-
-    public Boolean getWritable() {
-        return writable;
-    }
-
-    public void setWritable(Boolean writable) {
-        this.writable = writable;
-    }
-
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
     public UnidadController() {
     }
 
     // </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="preRenderView()">
-    @Override
-    public String preRenderView(String action) {
-        //acciones al llamar el formulario despues del init    
-        return "";
-    }
-// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="init">
-
     @PostConstruct
     public void init() {
         try {
-            String action = loginController.get("unidad");
-            String id = loginController.get("idunidad");
-            String pageSession = loginController.get("pageunidad");
-            //Search
 
-            if (loginController.get("searchunidad") == null || loginController.get("searchunidad").equals("")) {
-                loginController.put("searchunidad", "_init");
-            }
-            writable = false;
-
-            unidadList = new ArrayList<>();
-            unidadFiltered = new ArrayList<>();
-            unidad = new Unidad();
-            unidadDataModel = new UnidadDataModel(unidadList);
-
-            if (pageSession != null) {
-                page = Integer.parseInt(pageSession);
-            }
-            Integer c = unidadRepository.sizeOfPage(rowPage);
-            page = page > c ? c : page;
-            if (action != null) {
-                switch (action) {
-                    case "gonew":
-                        unidad = new Unidad();
-                        unidadSelected = unidad;
-                        writable = false;
-
-                        break;
-                    case "view":
-                        if (id != null) {
-                            Optional<Unidad> optional = unidadRepository.find("idunidad", id);
-                            if (optional.isPresent()) {
-                                unidad = optional.get();
-                                unidadSelected = unidad;
-                                writable = true;
-
-                            }
-                        }
-                        break;
-                    case "golist":
-                        move(page);
-                        break;
-                }
-            } else {
-                move(page);
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="reset">
-
-    @Override
-    public void reset() {
-
-        PrimeFaces.current().resetInputs(":form:content");
-        prepare("new", unidad);
-    }// </editor-fold>
-
-// <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-    public String prepare(String action, Unidad item) {
-        String url = "";
-        try {
-            loginController.put("pageunidad", page.toString());
-            loginController.put("unidad", action);
-
-            switch (action) {
-                case "new":
-                    unidad = new Unidad();
-                    unidadSelected = new Unidad();
-
-                    writable = false;
-                    break;
-
-                case "view":
-
-                    unidadSelected = item;
-                    unidad = unidadSelected;
-                    loginController.put("idunidad", unidad.getIdunidad());
-
-                    url = "/pages/unidad/view.xhtml";
-                    break;
-
-                case "golist":
-                    url = "/pages/unidad/list.xhtml";
-                    break;
-
-                case "gonew":
-                    url = "/pages/unidad/new.xhtml";
-                    break;
-
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-
-        return url;
-    }// </editor-fold>
-
-// <editor-fold defaultstate="collapsed" desc="showAll">
-    @Override
-    public String showAll() {
-        try {
-            unidadList = new ArrayList<>();
-            unidadFiltered = new ArrayList<>();
-            unidadList = unidadRepository.findAll();
-            unidadFiltered = unidadList;
-            unidadDataModel = new UnidadDataModel(unidadList);
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="isNew">
-
-    @Override
-    public String isNew() {
-        try {
-            writable = true;
-            if (JsfUtil.isVacio(unidad.getIdunidad())) {
-                writable = false;
-                return "";
-            }
-            unidad.setIdunidad(unidad.getIdunidad().toUpperCase());
-            Optional<Unidad> optional = unidadRepository.findById(unidad);
-            if (optional.isPresent()) {
-                writable = false;
-
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return "";
-            } else {
-                String id = unidad.getIdunidad();
-                unidad = new Unidad();
-                unidad.setIdunidad(id);
-                unidadSelected = new Unidad();
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="save">
-
-    @Override
-    public String save() {
-        try {
-            unidad.setIdunidad(unidad.getIdunidad().toUpperCase());
-            Optional<Unidad> optional = unidadRepository.findById(unidad);
-            if (optional.isPresent()) {
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return null;
-            }
-
-            //Lo datos del usuario
-            unidad.setUserInfo(unidadRepository.generateListUserinfo(loginController.getUsername(), "create"));
-            if (unidadRepository.save(unidad)) {
-                //guarda el contenido anterior
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(),
-                        "create", "unidad", unidadRepository.toDocument(unidad).toString()));
-
-                JsfUtil.successMessage(rf.getAppMessage("info.save"));
-                reset();
-            } else {
-                JsfUtil.successMessage("save() " + unidadRepository.getException().toString());
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="edit">
-
-    @Override
-    public String edit() {
-        try {
-
-            unidad.getUserInfo().add(unidadRepository.generateUserinfo(loginController.getUsername(), "update"));
-
-            //guarda el contenido actualizado
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(),
-                    "update", "unidad", unidadRepository.toDocument(unidad).toString()));
-
-            unidadRepository.update(unidad);
-            JsfUtil.successMessage(rf.getAppMessage("info.update"));
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="delete(Object item, Boolean deleteonviewpage)">
-
-    @Override
-    public String delete(Object item, Boolean deleteonviewpage) {
-        String path = "";
-        try {
-            unidad = (Unidad) item;
-            if (!unidadServices.isDeleted(unidad)) {
-                JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
-                return "";
-            }
-            unidadSelected = unidad;
-            if (unidadRepository.delete("idunidad", unidad.getIdunidad())) {
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(unidad.getIdunidad(), loginController.getUsername(), "delete", "unidad", unidadRepository.toDocument(unidad).toString()));
-                JsfUtil.successMessage(rf.getAppMessage("info.delete"));
-
-                if (!deleteonviewpage) {
-                    unidadList.remove(unidad);
-                    unidadFiltered = unidadList;
-                    unidadDataModel = new UnidadDataModel(unidadList);
-
-                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageunidad", page.toString());
-
-                } else {
-                    unidad = new Unidad();
-                    unidadSelected = new Unidad();
-                    writable = false;
-
-                }
-
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        // path = deleteonviewpage ? "/pages/unidad/list.xhtml" : "";
-        path = "";
-        return path;
-    }// </editor-fold>
-
-// <editor-fold defaultstate="collapsed" desc="deleteAll">
-    @Override
-    public String deleteAll() {
-        if (unidadRepository.deleteAll() != 0) {
-            JsfUtil.successMessage(rf.getAppMessage("info.delete"));
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="print">
-
-    @Override
-    public String print() {
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageunidad", page.toString());
-            List<Unidad> list = new ArrayList<>();
-            list.add(unidad);
-            String ruta = "/resources/reportes/unidad/details.jasper";
+            /*
+            configurar el ambiente del controller
+             */
             HashMap parameters = new HashMap();
-            // parameters.put("P_parametro", "valor");
-            printer.imprimir(list, ruta, parameters);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return null;
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="printAll">
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            //    parameters.put("P_EMPRESA", jmoordb_user.getEmpresa().getDescripcion());
 
-    @Override
-    public String printAll() {
-        try {
-            List<Unidad> list = new ArrayList<>();
-            list = unidadRepository.findAll(new Document("idunidad", 1));
+            JmoordbControllerEnvironment jmc = new JmoordbControllerEnvironment.Builder()
+                    .withController(this)
+                    .withRepository(unidadRepository)
+                    .withEntity(unidad)
+                    .withService(unidadServices)
+                    .withNameFieldOfPage("page")
+                    .withNameFieldOfRowPage("rowPage")
+                    .withTypeKey("primary")
+                    .withSearchLowerCase(false)
+                    .withPathReportDetail("/resources/reportes/unidad/details.jasper")
+                    .withPathReportAll("/resources/reportes/unidad/all.jasper")
+                    .withparameters(parameters)
+                    .build();
 
-            String ruta = "/resources/reportes/unidad/all.jasper";
-            HashMap parameters = new HashMap();
-            // parameters.put("P_parametro", "valor");
-            printer.imprimir(list, ruta, parameters);
+            start();
+
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-        return null;
     }// </editor-fold>
+
 // <editor-fold defaultstate="collapsed" desc="handleSelect">
-
     public void handleSelect(SelectEvent event) {
         try {
-
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
-    public void handleAutocompleteOfListXhtml(SelectEvent event) {
-        try {
-            unidadList.removeAll(unidadList);
-            unidadList.add(unidadSelected);
-            unidadFiltered = unidadList;
-            unidadDataModel = new UnidadDataModel(unidadList);
-
-            loginController.put("searchunidad", "idunidad");
-            lookupServices.setIdunidad(unidadSelected.getIdunidad());
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-    }// </editor-fold>
-
-// <editor-fold defaultstate="collapsed" desc="last">
-    @Override
-    public String last() {
-        try {
-            page = unidadRepository.sizeOfPage(rowPage);
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="first">
-
-    @Override
-    public String first() {
-        try {
-            page = 1;
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="next">
-
-    @Override
-    public String next() {
-        try {
-            if (page < (unidadRepository.sizeOfPage(rowPage))) {
-                page++;
-            }
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="back">
-
-    @Override
-    public String back() {
-        try {
-            if (page > 1) {
-                page--;
-            }
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="skip(Integer page)">
-
-    @Override
-    public String skip(Integer page) {
-        try {
-            this.page = page;
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="move">
-
+// <editor-fold defaultstate="collapsed" desc="move(Integer page)">
     @Override
     public void move(Integer page) {
-
         try {
-
+            this.page = page;
+            unidadDataModel = new UnidadDataModel(unidadList);
             Document doc;
-            switch (loginController.get("searchunidad")) {
+
+            switch ((String) JmoordbContext.get("searchunidad")) {
                 case "_init":
                 case "_autocomplete":
                     unidadList = unidadRepository.findPagination(page, rowPage);
-
                     break;
+
                 case "idunidad":
-                    if (lookupServices.getIdunidad() != null) {
-                        unidadList = unidadRepository.findRegexInTextPagination("idunidad", lookupServices.getIdunidad(), true, page, rowPage, new Document("descripcion", -1));
+                    if (JmoordbContext.get("_fieldsearchunidad") != null) {
+                        unidadSearch.setIdunidad(JmoordbContext.get("_fieldsearchunidad").toString());
+                        doc = new Document("idunidad", unidadSearch.getIdunidad());
+                        unidadList = unidadRepository.findPagination(doc, page, rowPage, new Document("idunidad", -1));
                     } else {
                         unidadList = unidadRepository.findPagination(page, rowPage);
                     }
 
                     break;
+                case "activo":
+                    if (JmoordbContext.get("_fieldsearchunidad") != null) {
+                        unidadSearch.setActivo(JmoordbContext.get("_fieldsearchunidad").toString());
+                        doc = new Document("activo", unidadSearch.getActivo());
+                        unidadList = unidadRepository.findPagination(doc, page, rowPage, new Document("idunidad", -1));
+                    } else {
+                        unidadList = unidadRepository.findPagination(page, rowPage);
+                    }
+                    break;
 
                 default:
-
                     unidadList = unidadRepository.findPagination(page, rowPage);
                     break;
             }
 
-            unidadFiltered = unidadList;
-
             unidadDataModel = new UnidadDataModel(unidadList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+
         }
+
     }// </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="clear">
-    @Override
-    public String clear() {
-        try {
-            loginController.put("searchunidad", "_init");
-            page = 1;
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
-    @Override
-    public String searchBy(String string) {
-        try {
-
-            loginController.put("searchunidad", string);
-
-            writable = true;
-            move(page);
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-
-    @Override
-    public Integer sizeOfPage() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }

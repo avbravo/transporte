@@ -10,68 +10,58 @@
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
     <ui:define name="content">
-        <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
+
 
         <style>
             .thumbnail { max-width: 100%; }
             img.thumbnail:hover, img.thumbnail:focus {
                 border: 1px solid;
                 border-color: #428BCA;
-            } 
+            }
         </style>
-        
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.unidad.list}" onkeypress="if (event.keyCode == 13) {
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
-            <b:growl  id="msgs"/>
-
+            <b:growl id="msgs"/>
             <b:panel title="#{msg['titlelist.unidad']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
 
-
-
                     <p:outputLabel value="#{msg['field.idunidad']}"/>
                     <jmoordbjsf:autocomplete converter="#{unidadConverter}"
-completeMethod="#{unidadController.unidadServices.complete}" 
-labeltip1="#{msg['field.unidad']} #{p.idunidad}"  listener="#{unidadController.handleAutocompleteOfListXhtml}"
-                                          value="#{unidadController.unidadSelected}"
-                                          itemLabel=" #{p.idunidad}"
-                                          field="idunidad"
-                                          size="35"
-                                          update=" :form:dataTable"/>
+                                             completeMethod="#{unidadController.unidadServices.complete}"
+                                             labeltip1="#{msg['field.idunidad']} #{p.idunidad}"
+                                             labeltip2="#{msg['field.activo']} #{p.activo}"
+                                             listener="#{unidadController.handleAutocompleteOfListXhtml}"
+                                             value="#{unidadController.unidadSearch}"
+                                             itemLabel="#{p.idunidad}"
+                                             field="idunidad"
+                                             update=":form:dataTable"/>
 
-
-
-
+                    
 
                 </b:panelGrid>
 
                 <b:row>
-
-                    <b:column medium-screen="6">
-                        <jmoordbjsf:search label="#{msg['field.idunidad']}"
-                                  value="#{unidadController.lookupServices.idunidad}"
-                                  renderedList="#{applicationMenu.unidad.list}"  
-                                  search="#{unidadController.searchBy('idunidad')}"
-                                  />
+                    <b:column medium-screen="4">
+                        <jmoordbjsf:search label="#{msg['field.activo']}"
+                                           value="#{unidadController.unidadSearch.activo}"
+                                           renderedList="#{p:ifGranted('ADMINISTRADOR')}"  
+                                           search="#{unidadController.searchBy('activo',unidadController.unidadSearch.activo)}"
+                                           />
                     </b:column>
                 </b:row>
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <jmoordbjsf:paginator 
-                    rowPage="#{unidadController.rowPage}"
-                    clear="#{unidadController.clear()}"
-                    first="#{unidadController.first()}"
-                    back="#{unidadController.back()}"
-                    next="#{unidadController.next()}"
-                    last="#{unidadController.last()}"
+                <jmoordbjsf:paginator
+                    controller="#{unidadController}"                        
+                    rowPage="#{unidadController.rowPage}"                   
                     page="#{unidadController.page}"
                     pages="#{unidadController.pages}"
-                    skip="ajax:unidadController.skip(unidadController.page)" 
-                    new="#{unidadController.prepare('gonew',unidadController.unidad)}"
-                    printAll="#{unidadController.printAll()}"
+                    skip="ajax:unidadController.skip()" 
+                    url = "/pages/unidad/new.xhtml"
                     />
                 <b:dataTable value="#{unidadController.unidadDataModel}"
                              var="item"
@@ -80,16 +70,19 @@ labeltip1="#{msg['field.unidad']} #{p.idunidad}"  listener="#{unidadController.h
                              onpage="console.log('page');">
 
                     <b:dataTableColumn value="#{item.idunidad}" label="#{msg['field.idunidad']}"/>
-
+                   
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
 
                     <b:dataTableColumn label="">
 
                         <jmoordbjsf:column
 
-                            edit="#{unidadController.prepare('view',item)}"
-                            delete="#{unidadController.delete(item,false)}"
-                            rendered="#{applicationMenu.unidad.delete}"
+                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{unidadController}"
+                            url="/pages/unidad/view.xhtml"
+                            item="#{item}"
+
                             />
                     </b:dataTableColumn>
 
@@ -98,6 +91,6 @@ labeltip1="#{msg['field.unidad']} #{p.idunidad}"  listener="#{unidadController.h
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.unidad.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
     </ui:define>
 </ui:composition>
