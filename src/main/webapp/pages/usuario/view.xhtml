@@ -55,7 +55,8 @@
                         <p:outputLabel  value="#{msg['field.unidad']}" />
                         <jmoordbjsf:autocomplete converter="#{unidadConverter}"
                                                  completeMethod="#{usuarioController.unidadServices.complete}" 
-                                                 labeltip1="#{msg['field.unidad']} #{p.idunidad}"   listener="#{usuarioController.handleSelect}"
+                                                 labeltip1="#{msg['field.unidad']} #{p.idunidad}"  
+                                                 listener="#{usuarioController.handleSelect}"
                                                  value="#{usuarioController.usuario.unidad}"
                                                  itemLabel="#{p.idunidad}"
                                                  dropdown="true"

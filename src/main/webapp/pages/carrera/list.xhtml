@@ -20,7 +20,7 @@
             } 
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.carrera.list}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
@@ -31,67 +31,60 @@
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
 
 
+                    <p:outputLabel value="#{msg['field.carrera']}"/>
+                    <jmoordbjsf:autocomplete converter="#{carreraConverter}"
+                                             completeMethod="#{carreraController.carreraServices.complete}"
+                                             labeltip1="#{msg['field.idcarrera']} #{p.idcarrera}"
+                                             labeltip2="#{msg['field.descripcion']} #{p.descripcion}"   
+                                             listener="#{carreraController.handleAutocompleteOfListXhtml}"
+                                             value="#{carreraController.carreraSearch}"
+                                             itemLabel=" #{p.descripcion}"
+                                             field="descripcion"
+                                             update=" :form:dataTable"/>
 
 
-                    <p:outputLabel value="#{msg['field.descripcion']}"/>
 
-                    <jmoordbjsf:autocomplete
-                        converter="#{carreraConverter}"
-                        completeMethod="#{carreraController.carreraServices.complete}"
-                        labeltip1="#{msg['field.idcarrera']} #{p.idcarrera}"
-                        labeltip2="#{msg['field.carrera']} #{p.descripcion}"   
-                        listener="#{carreraController.handleAutocompleteOfListXhtml}"
-                        value="#{carreraController.carreraSelected}"
-                        itemLabel="#{p.descripcion}"
-                        dropdown="false"
-                        size="35"
-                        required="true"
-                        minQueryLength="1"
-                        field="descripcion"
-update=" :form:dataTable"
-                        />
-                    
-                               
+
                 </b:panelGrid>
                 <b:row>
                     <b:column medium-screen="4">
                         <jmoordbjsf:search label="#{msg['field.idcarrera']}"
-                                           value="#{carreraController.lookupServices.idcarrera}"
-                                           renderedList="#{applicationMenu.carrera.list}"  
-                                           search="#{carreraController.searchBy('idcarrera')}"
+                                           value="#{carreraController.carreraSearch.idcarrera}"
+                                           renderedList="#{p:ifGranted('ADMINISTRADOR')}" 
+                                           search="#{carreraController.searchBy('idcarrera',carreraController.carreraSearch.idcarrera)}"
                                            />
+
+
                     </b:column>
                     <b:column medium-screen="8">
                         <jmoordbjsf:search label="#{msg['field.descripcion']}"
-                                           value="#{carreraController.lookupServices.descripcion}"
-                                           renderedList="#{applicationMenu.carrera.list}"  
-                                           search="#{carreraController.searchBy('descripcion')}"
+                                           value="#{carreraController.carreraSearch.descripcion}"
+                                           renderedList="#{p:ifGranted('ADMINISTRADOR')}"   
+                                           search="#{carreraController.searchBy('descripcion',carreraController.carreraSearch.descripcion)}"
                                            />
                     </b:column>
                 </b:row>
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <jmoordbjsf:paginator 
-                    rowPage="#{carreraController.rowPage}"
-                    clear="#{carreraController.clear()}"
-                    first="#{carreraController.first()}"
-                    back="#{carreraController.back()}"
-                    next="#{carreraController.next()}"
-                    last="#{carreraController.last()}"
+
+                <jmoordbjsf:paginator
+                    controller="#{carreraController}"                        
+                    rowPage="#{carreraController.rowPage}"                   
                     page="#{carreraController.page}"
                     pages="#{carreraController.pages}"
-                    skip="ajax:carreraController.skip(carreraController.page)" 
-                    new="#{carreraController.prepare('gonew',carreraController.carrera)}"
-                    printAll="#{carreraController.printAll()}"
+                    skip="ajax:carreraController.skip()" 
+                    url = "/pages/carrera/new.xhtml"
                     />
+
                 <b:dataTable value="#{carreraController.carreraDataModel}"
                              var="item"
                              id="dataTable2"
                              paginated="false"
                              onpage="console.log('page');">
 
+
                     <b:dataTableColumn value="#{item.idcarrera}" label="#{msg['field.idcarrera']}"/>
-                    <b:dataTableColumn value="#{item.descripcion}" label="#{msg['field.descripcion']}" />
+                    <b:dataTableColumn value="#{item.descripcion}" label="#{msg['field.carrera']}"/>
                     <b:dataTableColumn value="#{item.facultad.descripcion}" label="#{msg['field.facultad']}" />
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
 
@@ -99,10 +92,15 @@ update=" :form:dataTable"
 
                         <jmoordbjsf:column
 
-                            edit="#{carreraController.prepare('view',item)}"
-                            delete="#{carreraController.delete(item,false)}"
-                            rendered="#{applicationMenu.carrera.delete}"
+                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{carreraController}"
+                            url="/pages/carrera/view.xhtml"
+                            item="#{item}"
+
                             />
+
+
                     </b:dataTableColumn>
 
                 </b:dataTable>
@@ -110,6 +108,6 @@ update=" :form:dataTable"
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.carrera.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}"/>
     </ui:define>
 </ui:composition>

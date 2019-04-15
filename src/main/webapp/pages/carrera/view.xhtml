@@ -21,9 +21,9 @@
         </style>
         <h1>#{msg['titleview.carrera']}</h1>
         <hr/>
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.carrera.query}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
@@ -34,37 +34,36 @@
 
                         <p:outputLabel  value="#{msg['field.descripcion']}" />
                         <jmoordbjsf:inputText value="#{carreraController.carrera.descripcion}" id="descripcion"  label="#{msg['field.descripcion']}" />
- <p:outputLabel  value="#{msg['field.facultad']}" />
-                            <jmoordbjsf:autocomplete converter="#{facultadConverter}"
-completeMethod="#{facultadController.facultadServices.complete}"
-labeltip1="#{msg['field.idfacultad']} #{p.idfacultad}"
-labeltip2="#{msg['field.descripcion']} #{p.descripcion}"      listener="#{carreraController.handleSelect}"
-                                                value="#{carreraController.carrera.facultad}"
-                                               itemLabel="#{p.descripcion}"
-                                               dropdown="true"
-                                               required="true"
-                                               minQueryLength="0"
-                                               field="descripcion"
-                                               />
+                        <p:outputLabel  value="#{msg['field.facultad']}" />
+                        <jmoordbjsf:autocomplete converter="#{facultadConverter}"
+                                                 completeMethod="#{carreraController.facultadServices.complete}"
+                                                 labeltip1="#{msg['field.idfacultad']} #{p.idfacultad}"
+                                                 labeltip2="#{msg['field.descripcion']} #{p.descripcion}"  
+                                                 listener="#{carreraController.handleSelect}"
+                                                 value="#{carreraController.carrera.facultad}"
+                                                 itemLabel="#{p.descripcion}"
+                                                 dropdown="true"
+                                                 required="true"
+                                                 minQueryLength="0"
+                                                 field="descripcion"
+                                                 />
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{carreraController.carrera.activo}" id="activo"  required="true"/>
 
 
                     </b:panelGrid>
-                    <jmoordbjsf:toolbarview 
-                        renderedDelete="#{applicationMenu.carrera.delete and carreraController.writable }"
-                        renderedEdit="#{applicationMenu.carrera.edit and carreraController.writable}" 
-                        renderedList="#{applicationMenu.carrera.list and carreraController.writable}"
-                        edit="#{carreraController.edit()}"
-                        delete="#{carreraController.delete(carreraController.carrera,true)}"
-                        print="#{carreraController.print()}"
-                        url="#{carreraController.prepare('golist',carreraController.carrera)}"
+                   <jmoordbjsf:toolbarview 
+                        renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
+                        controller="#{carreraController}"
+                        url  = "/pages/carrera/list.xhtml"                        
                         />
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.carrera.query}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

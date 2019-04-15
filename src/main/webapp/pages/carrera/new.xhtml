@@ -6,7 +6,7 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-         xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"                
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"                
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib" > 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
@@ -18,59 +18,57 @@
                 border-color: #428BCA;
             }
         </style>
-        
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.carrera.create}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <jmoordbjsf:toolbarnew label="#{msg['field.descripcion']}"
-                       title="#{msg['titleview.carrera']}"
-                       value="#{carreraController.carrera.descripcion}"
-                       disabled="#{carreraController.writable}"
-                       isnew="#{carreraController.isNew()}"
-                       new="#{carreraController.prepare('new',carreraController.carrera)}"
-                       rendererList="#{applicationMenu.carrera.list}"
-                       list="#{carreraController.prepare('golist',carreraController.carrera)}"
+                  <jmoordbjsf:toolbarnew label="#{msg['field.descripcion']}"
+                                       title="#{msg['titleview.carrera']}"
+                                       value="#{carreraController.carrera.descripcion}"
+                                       disabled="#{carreraController.writable}"
+                                       rendererList="#{p:ifGranted('ADMINISTRADOR')}"
+                                       controller="#{carreraController}"                                       
+                                       url  = "/pages/carrera/list.xhtml"
 
-                       />
+                                       />
                 <b:panel title="#{app['title.data']}" look="primary" rendered="#{carreraController.writable}">
 
 
 
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{carreraController.writable}"> 
 
-                            <p:outputLabel  value="#{msg['field.facultad']}" />
-                            <jmoordbjsf:autocomplete converter="#{facultadConverter}"
-completeMethod="#{facultadController.facultadServices.complete}"
-labeltip1="#{msg['field.idfacultad']} #{p.idfacultad}"
-labeltip2="#{msg['field.descripcion']} #{p.descripcion}"      listener="#{carreraController.handleSelect}"
-                                                value="#{carreraController.carrera.facultad}"
-                                               itemLabel="#{p.descripcion}"
-                                               dropdown="true"
-                                               required="true"
-                                               minQueryLength="0"
-                                               field="descripcion"
-                                               />
-                                        
-                            
+                        <p:outputLabel  value="#{msg['field.facultad']}" />
+                        <jmoordbjsf:autocomplete converter="#{facultadConverter}"
+                                                 completeMethod="#{carreraController.facultadServices.complete}"
+                                                 labeltip1="#{msg['field.idfacultad']} #{p.idfacultad}"
+                                                 labeltip2="#{msg['field.descripcion']} #{p.descripcion}"      listener="#{carreraController.handleSelect}"
+                                                 value="#{carreraController.carrera.facultad}"
+                                                 itemLabel="#{p.descripcion}"
+                                                 dropdown="true"
+                                                 required="true"
+                                                 minQueryLength="0"
+                                                 field="descripcion"
+                                                 />
+
+
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{carreraController.carrera.activo}" id="activo"  required="true"/>
 
 
-                        <jmoordbjsf:save rendered="#{carreraController.writable and applicationMenu.carrera.create}"
-                                      save="#{carreraController.save()}" />
-
-
+                         <jmoordbjsf:toolbarsave
+                            rendered="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{carreraController}"   />
                     </b:panelGrid>
 
 
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.carrera.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
 
         <br/><br/><br/>
     </ui:define>
