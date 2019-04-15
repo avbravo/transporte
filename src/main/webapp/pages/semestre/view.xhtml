@@ -18,8 +18,8 @@
                 border-color: #428BCA;
             }
         </style>
-       
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.semestre.query}" onkeypress="if (event.keyCode == 13) {
+        
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -27,29 +27,25 @@
                 <jmoordbjsf:messages id="msg"/>
                 <b:panel title="#{msg['titleview.semestre']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{semestreController.writable}"> 
-
                         <p:outputLabel  value="#{msg['field.idsemestre']}" />
-                        <p:outputLabel value="#{semestreController.semestre.idsemestre}" id="idsemestre"  />
-                       
-                         <p:outputLabel  value="#{msg['field.descripcion']}" />
-                        <jmoordbjsf:inputText value="#{semestreController.semestre.descripcion}" id="descripcion"  />
+                        <p:outputLabel  value="#{semestreController.semestre.idsemestre}" id="idsemestre"   />
+                        <p:outputLabel  value="#{msg['field.semestre']}" />
+                        <jmoordbjsf:inputText value="#{semestreController.semestre.descripcion}" id="semestre"  label="#{msg['field.semestre']}" />
 
-              
 
                     </b:panelGrid>
-                    <jmoordbjsf:toolbarview 
-                        renderedDelete="#{applicationMenu.semestre.delete and semestreController.writable }"
-                        renderedEdit="#{applicationMenu.semestre.edit and semestreController.writable}" 
-                        renderedList="#{applicationMenu.semestre.list and semestreController.writable}"                    
-                        edit="#{semestreController.edit()}"
-                        delete="#{semestreController.delete(semestreController.semestre,true)}"
-                        print="#{semestreController.print()}"
-                        url="#{semestreController.prepare('golist',semestreController.semestre)}"
+                      <jmoordbjsf:toolbarview 
+                        renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
+                        controller="#{semestreController}"
+                        url  = "/pages/semestre/list.xhtml"                        
                         />
+                    
                 </b:panel>
             </h:panelGroup>
         </b:form>
- <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.semestre.query}" />
+          <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

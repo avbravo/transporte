@@ -18,47 +18,46 @@
                 border-color: #428BCA;
             }
         </style>
-      
+
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.semestre.create}" onkeypress="if (event.keyCode == 13) {
-                     return false;
-                 }">
+                    return false;
+                }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <jmoordbjsf:toolbarnew label="#{msg['field.idsemestre']}"
-                       title="#{msg['titleview.semestre']}"
-                       value="#{semestreController.semestre.idsemestre}"
-                       isnew="#{semestreController.isNew()}"
-                       disabled="#{semestreController.writable}"
-                       new="#{semestreController.prepare('new',semestreController.semestre)}"
-                       rendererList="#{applicationMenu.semestre.list}"
-                       list="#{semestreController.prepare('golist',semestreController.semestre)}"
 
-                       />
+                <jmoordbjsf:toolbarnew label="#{msg['field.idsemestre']}"
+                                       title="#{msg['titleview.semestre']}"
+                                       value="#{semestreController.semestre.idsemestre}"
+                                       disabled="#{semestreController.writable}"
+                                       rendererList="#{p:ifGranted('ADMINISTRADOR')}"
+                                       controller="#{semestreController}"                                       
+                                       url  = "/pages/semestre/list.xhtml"
+
+                                       />
                 <b:panel title="#{app['title.data']}" look="primary" rendered="#{semestreController.writable}">
 
 
 
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{semestreController.writable}"> 
 
-                        <p:outputLabel  value="#{msg['field.descripcion']}" />
-                        <jmoordbjsf:inputText value="#{semestreController.semestre.descripcion}" id="descripcion"  label="#{msg['field.descripcion']}" />
+
+    <p:outputLabel  value="#{msg['field.semestre']}" />
+                        <jmoordbjsf:inputText value="#{semestreController.semestre.descripcion}" id="semestre"  label="#{msg['field.semestre']}" />
 
 
+                        <jmoordbjsf:toolbarsave
+                            rendered="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{semestreController}"   />
 
 
+                    </b:panelGrid>
 
-                        <jmoordbjsf:save rendered="#{semestreController.writable and applicationMenu.semestre.create}"
-                                save="#{semestreController.save()}"
-                                />
-
-
-                    </b:panelGrid>                    
 
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.semestre.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
 
         <br/><br/><br/>
     </ui:define>
