@@ -1,0 +1,1715 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  Internal Error (javaCalls.cpp:51), pid=3990, tid=0x00007f875e8e8700
+#  guarantee(thread->is_Java_thread()) failed: crucial check - the VM thread cannot and must not escape to Java code
+#
+# JRE version: Java(TM) SE Runtime Environment (8.0_172-b11) (build 1.8.0_172-b11)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.172-b11 mixed mode linux-amd64 compressed oops)
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f87741cc000):  VMThread [stack: 0x00007f875e7e9000,0x00007f875e8e9000] [id=4002]
+
+Stack: [0x00007f875e7e9000,0x00007f875e8e9000],  sp=0x00007f875e8e6340,  free space=1012k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0xad221a]  VMError::report_and_die()+0x2ba
+V  [libjvm.so+0x500fb2]  report_vm_error(char const*, int, char const*, char const*)+0x62
+V  [libjvm.so+0x6963d7]  JavaCallWrapper::JavaCallWrapper(methodHandle, Handle, JavaValue*, Thread*)+0x267
+V  [libjvm.so+0x6970a4]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x884
+V  [libjvm.so+0x698c31]  JavaCalls::call_special(JavaValue*, KlassHandle, Symbol*, Symbol*, JavaCallArguments*, Thread*)+0x2d1
+V  [libjvm.so+0x584b7a]  Exceptions::new_exception(Thread*, Symbol*, Symbol*, JavaCallArguments*, Handle, Handle)+0x17a
+V  [libjvm.so+0x584c32]  Exceptions::new_exception(Thread*, Symbol*, Symbol*, JavaCallArguments*, Handle, Handle, Handle)+0x22
+V  [libjvm.so+0x5851e1]  Exceptions::new_exception(Thread*, Symbol*, char const*, Handle, Handle, Handle, Exceptions::ExceptionMsgToUtf8Mode)+0x1d1
+V  [libjvm.so+0x585278]  Exceptions::new_exception(Thread*, Symbol*, char const*, Exceptions::ExceptionMsgToUtf8Mode)+0x18
+V  [libjvm.so+0x5f330b]  GenerateOopMap::verify_error(char const*, ...)+0x8b
+V  [libjvm.so+0x5fb4c1]  GenerateOopMap::init_basic_blocks()+0x571
+V  [libjvm.so+0x5fb695]  GenerateOopMap::do_interpretation()+0x55
+V  [libjvm.so+0x5fbb6d]  GenerateOopMap::compute_map(Thread*)+0x34d
+V  [libjvm.so+0x91fde4]  OopMapForCacheEntry::compute_map(Thread*)+0xb4
+V  [libjvm.so+0x921ba2]  OopMapCacheEntry::fill(methodHandle, int)+0x2d2
+V  [libjvm.so+0x923025]  OopMapCache::lookup(methodHandle, int, InterpreterOopMap*) const+0xa05
+V  [libjvm.so+0x64c842]  InstanceKlass::mask_for(methodHandle, int, InterpreterOopMap*)+0x82
+V  [libjvm.so+0x8bd65d]  Method::mask_for(int, InterpreterOopMap*)+0x9d
+V  [libjvm.so+0x7aff14]  VM_GetOrSetLocal::doit()+0x54
+V  [libjvm.so+0xadb7b5]  VM_Operation::evaluate()+0x55
+V  [libjvm.so+0xad9b7a]  VMThread::evaluate_operation(VM_Operation*)+0xba
+V  [libjvm.so+0xad9efe]  VMThread::loop()+0x1ce
+V  [libjvm.so+0xada370]  VMThread::run()+0x70
+V  [libjvm.so+0x930248]  java_start(Thread*)+0x108
+
+VM_Operation (0x00007f875e2df8c0): GetOrSetLocal, mode: safepoint, requested by thread 0x00007f8774216000
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007f875800f800 JavaThread "Thread-22" daemon [_thread_blocked, id=8417, stack(0x00007f875c199000,0x00007f875c29a000)]
+  0x00007f875800f000 JavaThread "Thread-21" daemon [_thread_blocked, id=8416, stack(0x00007f873d92c000,0x00007f873da2d000)]
+  0x00007f8748020800 JavaThread "pool-50-thread-1" daemon [_thread_blocked, id=8415, stack(0x00007f8754cfe000,0x00007f8754dff000)]
+  0x00007f86617b7800 JavaThread "ContainerBackgroundProcessor[StandardEngine[glassfish-web].StandardHost[server].StandardContext[/transporte]]" daemon [_thread_blocked, id=8413, stack(0x00007f8754bfd000,0x00007f8754cfe000)]
+  0x00007f8660062800 JavaThread "deployment-jar-scanner" daemon [_thread_blocked, id=8149, stack(0x00007f8754afc000,0x00007f8754bfd000)]
+  0x00007f8740012000 JavaThread "pool-49-thread-1" daemon [_thread_blocked, id=8148, stack(0x00007f873d72a000,0x00007f873d82b000)]
+  0x00007f86d4006800 JavaThread "pool-45-thread-1" daemon [_thread_blocked, id=8147, stack(0x00007f87448fb000,0x00007f87449fc000)]
+  0x00007f86e0004800 JavaThread "pool-48-thread-1" daemon [_thread_blocked, id=8146, stack(0x00007f864f6c8000,0x00007f864f7c9000)]
+  0x00007f86e4001800 JavaThread "pool-46-thread-1" daemon [_thread_blocked, id=8145, stack(0x00007f86516d9000,0x00007f86517da000)]
+  0x00007f86b8004000 JavaThread "pool-47-thread-1" daemon [_thread_blocked, id=8144, stack(0x00007f864fcc4000,0x00007f864fdc5000)]
+  0x00007f86f005f800 JavaThread "pool-44-thread-1" daemon [_thread_blocked, id=8143, stack(0x00007f864e0c6000,0x00007f864e1c7000)]
+  0x00007f86602bf800 JavaThread "Executor-Service-18" daemon [_thread_blocked, id=8138, stack(0x00007f8650bd8000,0x00007f8650cd9000)]
+  0x00007f86602bf000 JavaThread "Executor-Service-17" daemon [_thread_blocked, id=8137, stack(0x00007f864dfc5000,0x00007f864e0c6000)]
+  0x00007f86602c2000 JavaThread "Executor-Service-16" daemon [_thread_blocked, id=8136, stack(0x00007f87452b7000,0x00007f87453b8000)]
+  0x00007f8661d65000 JavaThread "Executor-Service-15" daemon [_thread_blocked, id=8135, stack(0x00007f87549fb000,0x00007f8754afc000)]
+  0x00007f8660077000 JavaThread "Executor-Service-14" daemon [_thread_blocked, id=8134, stack(0x00007f864d3bd000,0x00007f864d4be000)]
+  0x00007f86ac171800 JavaThread "CleanCursors-3-thread-1" daemon [_thread_blocked, id=7897, stack(0x00007f864d6be000,0x00007f864d7bf000)]
+  0x00007f86ac170000 JavaThread "cluster-ClusterId{value='5cb62dc28017f20f96294adb', description='null'}-127.0.0.1:27017" daemon [_thread_blocked, id=7896, stack(0x00007f864d7bf000,0x00007f864d8c0000)]
+  0x00007f86ac16e000 JavaThread "CleanCursors-2-thread-1" daemon [_thread_blocked, id=7895, stack(0x00007f864d8c0000,0x00007f864d9c1000)]
+  0x00007f86ac16d000 JavaThread "cluster-ClusterId{value='5cb62dc28017f20f96294ada', description='null'}-localhost:27017" daemon [_thread_blocked, id=7894, stack(0x00007f864d9c1000,0x00007f864dac2000)]
+  0x00007f86ac16c000 JavaThread "CleanCursors-1-thread-1" daemon [_thread_blocked, id=7893, stack(0x00007f864dac2000,0x00007f864dbc3000)]
+  0x00007f86ac9b8800 JavaThread "cluster-ClusterId{value='5cb62dc28017f20f96294ad9', description='null'}-127.0.0.1:27017" daemon [_thread_blocked, id=7892, stack(0x00007f864f5c7000,0x00007f864f6c8000)]
+  0x00007f86d4009000 JavaThread "Thread-19" daemon [_thread_blocked, id=7842, stack(0x00007f864ddc3000,0x00007f864dec4000)]
+  0x00007f86d4007800 JavaThread "Thread-18" daemon [_thread_blocked, id=7841, stack(0x00007f864dec4000,0x00007f864dfc5000)]
+  0x00007f865c023000 JavaThread "__ejb-thread-pool16" daemon [_thread_blocked, id=6702, stack(0x00007f87455b8000,0x00007f87456b9000)]
+  0x00007f865c021800 JavaThread "__ejb-thread-pool15" daemon [_thread_blocked, id=6701, stack(0x00007f873d82b000,0x00007f873d92c000)]
+  0x00007f865c020800 JavaThread "__ejb-thread-pool14" daemon [_thread_blocked, id=6700, stack(0x00007f87450b5000,0x00007f87451b6000)]
+  0x00007f865c01f800 JavaThread "__ejb-thread-pool13" daemon [_thread_blocked, id=6699, stack(0x00007f873d326000,0x00007f873d427000)]
+  0x00007f865c01e000 JavaThread "__ejb-thread-pool12" daemon [_thread_blocked, id=6698, stack(0x00007f8754430000,0x00007f8754531000)]
+  0x00007f865c01c800 JavaThread "__ejb-thread-pool11" daemon [_thread_blocked, id=6697, stack(0x00007f87451b6000,0x00007f87452b7000)]
+  0x00007f865c01b800 JavaThread "__ejb-thread-pool10" daemon [_thread_blocked, id=6696, stack(0x00007f875c29a000,0x00007f875c39b000)]
+  0x00007f865c01a800 JavaThread "__ejb-thread-pool9" daemon [_thread_blocked, id=6695, stack(0x00007f86524e5000,0x00007f86525e6000)]
+  0x00007f865c019800 JavaThread "__ejb-thread-pool8" daemon [_thread_blocked, id=6694, stack(0x00007f86520e1000,0x00007f86521e2000)]
+  0x00007f865c018000 JavaThread "__ejb-thread-pool7" daemon [_thread_blocked, id=6693, stack(0x00007f86530f1000,0x00007f86531f2000)]
+  0x00007f865c016800 JavaThread "__ejb-thread-pool6" daemon [_thread_blocked, id=6692, stack(0x00007f86521e2000,0x00007f86522e3000)]
+  0x00007f865c015800 JavaThread "__ejb-thread-pool5" daemon [_thread_blocked, id=6691, stack(0x00007f86522e3000,0x00007f86523e4000)]
+  0x00007f865c010800 JavaThread "__ejb-thread-pool4" daemon [_thread_blocked, id=6690, stack(0x00007f872825f000,0x00007f8728360000)]
+  0x00007f865c00f800 JavaThread "__ejb-thread-pool3" daemon [_thread_blocked, id=6689, stack(0x00007f8754104000,0x00007f8754205000)]
+  0x00007f865c00f000 JavaThread "__ejb-thread-pool2" daemon [_thread_blocked, id=6688, stack(0x00007f8747eff000,0x00007f8748000000)]
+  0x00007f865c00c800 JavaThread "__ejb-thread-pool1" daemon [_thread_blocked, id=6687, stack(0x00007f8651cdd000,0x00007f8651dde000)]
+  0x00007f86b1774000 JavaThread "CleanCursors-3-thread-1" daemon [_thread_blocked, id=4714, stack(0x00007f8651bdc000,0x00007f8651cdd000)]
+  0x00007f86b1773800 JavaThread "cluster-ClusterId{value='5cb62a8a8017f20f96c224b3', description='null'}-127.0.0.1:27017" daemon [_thread_blocked, id=4713, stack(0x00007f86518db000,0x00007f86519dc000)]
+  0x00007f86b1772000 JavaThread "CleanCursors-2-thread-1" daemon [_thread_blocked, id=4712, stack(0x00007f86517da000,0x00007f86518db000)]
+  0x00007f86b1771000 JavaThread "cluster-ClusterId{value='5cb62a8a8017f20f96c224b2', description='null'}-localhost:27017" daemon [_thread_blocked, id=4711, stack(0x00007f8754003000,0x00007f8754104000)]
+  0x00007f86b1770800 JavaThread "CleanCursors-1-thread-1" daemon [_thread_blocked, id=4710, stack(0x00007f8651edf000,0x00007f8651fe0000)]
+  0x00007f86b176d800 JavaThread "cluster-ClusterId{value='5cb62a8a8017f20f96c224b1', description='null'}-127.0.0.1:27017" daemon [_thread_blocked, id=4709, stack(0x00007f8651dde000,0x00007f8651edf000)]
+  0x00007f877400e800 JavaThread "DestroyJavaVM" [_thread_blocked, id=3993, stack(0x00007f877dd1e000,0x00007f877de1e000)]
+  0x00007f86e800f800 JavaThread "hz._hzInstance_1_development.cached.thread-9" [_thread_blocked, id=4415, stack(0x00007f8651fe0000,0x00007f86520e1000)]
+  0x00007f86dc11f800 JavaThread "hz._hzInstance_1_development.cached.thread-5" [_thread_blocked, id=4411, stack(0x00007f86523e4000,0x00007f86524e5000)]
+  0x00007f8777368800 JavaThread "hz._hzInstance_1_development.HealthMonitor" daemon [_thread_blocked, id=4409, stack(0x00007f86525e6000,0x00007f86526e7000)]
+  0x00007f8698005800 JavaThread "hz._hzInstance_1_development.cached.thread-3" [_thread_blocked, id=4408, stack(0x00007f86526e7000,0x00007f86527e8000)]
+  0x00007f8777b7e800 JavaThread "hz._hzInstance_1_development.MulticastThread" [_thread_in_native, id=4407, stack(0x00007f86527e8000,0x00007f86528e9000)]
+  0x00007f8777b7d000 JavaThread "hz._hzInstance_1_development.IO.thread-Acceptor" [_thread_in_native, id=4406, stack(0x00007f86528e9000,0x00007f86529ea000)]
+  0x00007f8777b7a800 JavaThread "hz._hzInstance_1_development.IOBalancerThread" [_thread_blocked, id=4405, stack(0x00007f86529ea000,0x00007f8652aeb000)]
+  0x00007f8777b75800 JavaThread "hz._hzInstance_1_development.IO.thread-out-2" [_thread_in_native, id=4404, stack(0x00007f8652aeb000,0x00007f8652bec000)]
+  0x00007f8777b5a800 JavaThread "hz._hzInstance_1_development.IO.thread-out-1" [_thread_in_native, id=4403, stack(0x00007f8652bec000,0x00007f8652ced000)]
+  0x00007f8776ca1000 JavaThread "hz._hzInstance_1_development.IO.thread-out-0" [_thread_in_native, id=4402, stack(0x00007f8652ced000,0x00007f8652dee000)]
+  0x00007f8776c9f000 JavaThread "hz._hzInstance_1_development.IO.thread-in-2" [_thread_in_native, id=4401, stack(0x00007f8652dee000,0x00007f8652eef000)]
+  0x00007f8776c9e000 JavaThread "hz._hzInstance_1_development.IO.thread-in-1" [_thread_in_native, id=4400, stack(0x00007f8652eef000,0x00007f8652ff0000)]
+  0x00007f8776c65000 JavaThread "hz._hzInstance_1_development.IO.thread-in-0" [_thread_in_native, id=4399, stack(0x00007f8652ff0000,0x00007f86530f1000)]
+  0x00007f8776c5e000 JavaThread "hz._hzInstance_1_development.SlowOperationDetectorThread" [_thread_blocked, id=4397, stack(0x00007f86531f2000,0x00007f86532f3000)]
+  0x00007f8776c5c000 JavaThread "hz._hzInstance_1_development.response" [_thread_blocked, id=4396, stack(0x00007f86532f3000,0x00007f86533f4000)]
+  0x00007f8776c5a000 JavaThread "hz._hzInstance_1_development.generic-operation.thread-3" [_thread_blocked, id=4395, stack(0x00007f86533f4000,0x00007f86534f5000)]
+  0x00007f8776c58000 JavaThread "hz._hzInstance_1_development.generic-operation.thread-2" [_thread_blocked, id=4394, stack(0x00007f86534f5000,0x00007f86535f6000)]
+  0x00007f8776c56000 JavaThread "hz._hzInstance_1_development.generic-operation.thread-1" [_thread_blocked, id=4393, stack(0x00007f86535f6000,0x00007f86536f7000)]
+  0x00007f8776c54800 JavaThread "hz._hzInstance_1_development.generic-operation.thread-0" [_thread_blocked, id=4392, stack(0x00007f86536f7000,0x00007f86537f8000)]
+  0x00007f8776c52800 JavaThread "hz._hzInstance_1_development.priority-generic-operation.thread-0" [_thread_blocked, id=4391, stack(0x00007f86537f8000,0x00007f86538f9000)]
+  0x00007f8776c50800 JavaThread "hz._hzInstance_1_development.partition-operation.thread-7" [_thread_blocked, id=4390, stack(0x00007f86538f9000,0x00007f86539fa000)]
+  0x00007f8776c4e800 JavaThread "hz._hzInstance_1_development.partition-operation.thread-6" [_thread_blocked, id=4389, stack(0x00007f86539fa000,0x00007f8653afb000)]
+  0x00007f8776c4c800 JavaThread "hz._hzInstance_1_development.partition-operation.thread-5" [_thread_blocked, id=4388, stack(0x00007f8653afb000,0x00007f8653bfc000)]
+  0x00007f8776c4b000 JavaThread "hz._hzInstance_1_development.partition-operation.thread-4" [_thread_blocked, id=4387, stack(0x00007f8653bfc000,0x00007f8653cfd000)]
+  0x00007f8776c49000 JavaThread "hz._hzInstance_1_development.partition-operation.thread-3" [_thread_blocked, id=4386, stack(0x00007f8653cfd000,0x00007f8653dfe000)]
+  0x00007f8776c47800 JavaThread "hz._hzInstance_1_development.partition-operation.thread-2" [_thread_blocked, id=4385, stack(0x00007f8653dfe000,0x00007f8653eff000)]
+  0x00007f8776c46000 JavaThread "hz._hzInstance_1_development.partition-operation.thread-1" [_thread_blocked, id=4384, stack(0x00007f8653eff000,0x00007f8654000000)]
+  0x00007f8776c43800 JavaThread "hz._hzInstance_1_development.partition-operation.thread-0" [_thread_blocked, id=4383, stack(0x00007f872805d000,0x00007f872815e000)]
+  0x00007f8776c42000 JavaThread "hz._hzInstance_1_development.InvocationMonitorThread" [_thread_blocked, id=4382, stack(0x00007f872815e000,0x00007f872825f000)]
+  0x00007f8776c37000 JavaThread "hz._hzInstance_1_development.migration" [_thread_blocked, id=4380, stack(0x00007f873c01b000,0x00007f873c11c000)]
+  0x00007f86ac004000 JavaThread "hz._hzInstance_1_development.MetricsRegistry.thread-2" [_thread_blocked, id=4379, stack(0x00007f873c31c000,0x00007f873c41d000)]
+  0x00007f8776e0c000 JavaThread "hz._hzInstance_1_development.MetricsRegistry.thread-1" [_thread_blocked, id=4378, stack(0x00007f873c41d000,0x00007f873c51e000)]
+  0x00007f87770aa000 JavaThread "hz._hzInstance_1_development.operation-parker" [_thread_blocked, id=4377, stack(0x00007f873c91e000,0x00007f873ca1f000)]
+  0x00007f87770a8000 JavaThread "hz._hzInstance_1_development.event-5" [_thread_blocked, id=4376, stack(0x00007f873ca1f000,0x00007f873cb20000)]
+  0x00007f87770a6000 JavaThread "hz._hzInstance_1_development.event-4" [_thread_blocked, id=4375, stack(0x00007f873cb20000,0x00007f873cc21000)]
+  0x00007f87770a4800 JavaThread "hz._hzInstance_1_development.event-3" [_thread_blocked, id=4374, stack(0x00007f873cc21000,0x00007f873cd22000)]
+  0x00007f87770a2800 JavaThread "hz._hzInstance_1_development.event-2" [_thread_blocked, id=4373, stack(0x00007f873cd22000,0x00007f873ce23000)]
+  0x00007f87770a1000 JavaThread "hz._hzInstance_1_development.event-1" [_thread_blocked, id=4372, stack(0x00007f873ce23000,0x00007f873cf24000)]
+  0x00007f87770bd000 JavaThread "hz._hzInstance_1_development.scheduled.thread-" [_thread_blocked, id=4371, stack(0x00007f873cf24000,0x00007f873d025000)]
+  0x00007f8660004800 JavaThread "Thread-16" daemon [_thread_blocked, id=4370, stack(0x00007f873d225000,0x00007f873d326000)]
+  0x00007f86e8007000 JavaThread "Thread-15" daemon [_thread_blocked, id=4368, stack(0x00007f873d427000,0x00007f873d528000)]
+  0x00007f86e8006000 JavaThread "Thread-14" daemon [_thread_blocked, id=4367, stack(0x00007f873d528000,0x00007f873d629000)]
+  0x00007f86dc118000 JavaThread "Thread-13" daemon [_thread_blocked, id=4366, stack(0x00007f873d629000,0x00007f873d72a000)]
+  0x00007f87767f6000 JavaThread "ContainerBackgroundProcessor[StandardEngine[glassfish-web]]" daemon [_thread_blocked, id=4326, stack(0x00007f873f42d000,0x00007f873f52e000)]
+  0x00007f8775b0d000 JavaThread "ContainerBackgroundProcessor[StandardEngine[glassfish-web].StandardHost[server].StandardContext[]]" daemon [_thread_blocked, id=4312, stack(0x00007f87440d2000,0x00007f87441d3000)]
+  0x00007f87754c2000 JavaThread "GFFileHandler log pump" daemon [_thread_blocked, id=4311, stack(0x00007f8744eb3000,0x00007f8744fb4000)]
+  0x00007f877423d800 JavaThread "EJB Container Timer" daemon [_thread_blocked, id=4310, stack(0x00007f8744fb4000,0x00007f87450b5000)]
+  0x00007f877515a000 JavaThread "GlassFish Kernel Main Thread" [_thread_blocked, id=4303, stack(0x00007f87458b9000,0x00007f87459ba000)]
+  0x00007f86d025a000 JavaThread "AutoDeployer" daemon [_thread_blocked, id=4302, stack(0x00007f87459ba000,0x00007f8745abb000)]
+  0x00007f874c27f800 JavaThread "DynamicReloader" daemon [_thread_blocked, id=4294, stack(0x00007f8745abb000,0x00007f8745bbc000)]
+  0x00007f87751ba800 JavaThread "PhoneHomeThread" [_thread_blocked, id=4293, stack(0x00007f87461e1000,0x00007f87462e2000)]
+  0x00007f86cc87e800 JavaThread "http-listener-kernel(9) SelectorRunner" daemon [_thread_in_native, id=4260, stack(0x00007f87466e2000,0x00007f87467e3000)]
+  0x00007f86cc79a000 JavaThread "http-listener-kernel(8) SelectorRunner" daemon [_thread_in_native, id=4248, stack(0x00007f87467e3000,0x00007f87468e4000)]
+  0x00007f86cc798000 JavaThread "http-listener-kernel(7) SelectorRunner" daemon [_thread_in_native, id=4246, stack(0x00007f87468e4000,0x00007f87469e5000)]
+  0x00007f86cc796800 JavaThread "http-listener-kernel(6) SelectorRunner" daemon [_thread_in_native, id=4245, stack(0x00007f87469e5000,0x00007f8746ae6000)]
+  0x00007f86cc794800 JavaThread "http-listener-kernel(5) SelectorRunner" daemon [_thread_in_native, id=4244, stack(0x00007f8746ae6000,0x00007f8746be7000)]
+  0x00007f86cc793000 JavaThread "http-listener-kernel(4) SelectorRunner" daemon [_thread_in_native, id=4243, stack(0x00007f8746be7000,0x00007f8746ce8000)]
+  0x00007f86cc791800 JavaThread "http-listener-kernel(3) SelectorRunner" daemon [_thread_in_native, id=4242, stack(0x00007f8746ce8000,0x00007f8746de9000)]
+  0x00007f86cc78f800 JavaThread "http-listener-kernel(2) SelectorRunner" daemon [_thread_in_native, id=4241, stack(0x00007f8746de9000,0x00007f8746eea000)]
+  0x00007f86cc78e000 JavaThread "http-listener-kernel(1) SelectorRunner" daemon [_thread_in_native, id=4240, stack(0x00007f8746eea000,0x00007f8746feb000)]
+  0x00007f86cc777800 JavaThread "http-listener-expirer(1)" daemon [_thread_blocked, id=4234, stack(0x00007f8746feb000,0x00007f87470ec000)]
+  0x00007f86cc775800 JavaThread "http-thread-pool::http-listener(10)" daemon [_thread_blocked, id=4224, stack(0x00007f87470ec000,0x00007f87471ed000)]
+  0x00007f86cc774000 JavaThread "http-thread-pool::http-listener(9)" daemon [_thread_blocked, id=4223, stack(0x00007f87471ed000,0x00007f87472ee000)]
+  0x00007f86cc772000 JavaThread "http-thread-pool::http-listener(8)" daemon [_thread_blocked, id=4210, stack(0x00007f87472ee000,0x00007f87473ef000)]
+  0x00007f86cc770000 JavaThread "http-thread-pool::http-listener(7)" daemon [_thread_blocked, id=4205, stack(0x00007f87473ef000,0x00007f87474f0000)]
+  0x00007f86cc76e000 JavaThread "http-thread-pool::http-listener(6)" daemon [_thread_blocked, id=4203, stack(0x00007f87474f0000,0x00007f87475f1000)]
+  0x00007f86cc76c800 JavaThread "http-thread-pool::http-listener(5)" daemon [_thread_blocked, id=4202, stack(0x00007f87475f1000,0x00007f87476f2000)]
+  0x00007f86cc76a800 JavaThread "http-thread-pool::http-listener(4)" daemon [_thread_blocked, id=4201, stack(0x00007f87476f2000,0x00007f87477f3000)]
+  0x00007f86cc769000 JavaThread "http-thread-pool::http-listener(3)" daemon [_thread_blocked, id=4200, stack(0x00007f87477f3000,0x00007f87478f4000)]
+  0x00007f86cc767800 JavaThread "http-thread-pool::http-listener(2)" daemon [_thread_blocked, id=4199, stack(0x00007f87478f4000,0x00007f87479f5000)]
+  0x00007f86cc766800 JavaThread "http-thread-pool::http-listener(1)" daemon [_thread_blocked, id=4198, stack(0x00007f87479f5000,0x00007f8747af6000)]
+  0x00007f86d4002000 JavaThread "pool-12-thread-1" daemon [_thread_blocked, id=4192, stack(0x00007f87547f9000,0x00007f87548fa000)]
+  0x00007f874c10a800 JavaThread "transaction-manager" daemon [_thread_blocked, id=4191, stack(0x00007f87548fa000,0x00007f87549fb000)]
+  0x00007f86e0001800 JavaThread "pool-6-thread-1" daemon [_thread_blocked, id=4179, stack(0x00007f875c004000,0x00007f875c105000)]
+  0x00007f8775892800 JavaThread "pool-3-thread-1" daemon [_thread_blocked, id=4175, stack(0x00007f875c39b000,0x00007f875c49c000)]
+  0x00007f8775890800 JavaThread "pool-2-thread-1" daemon [_thread_blocked, id=4174, stack(0x00007f875c49c000,0x00007f875c59d000)]
+  0x00007f877588f800 JavaThread "pool-1-thread-1" daemon [_thread_blocked, id=4173, stack(0x00007f875c59d000,0x00007f875c69e000)]
+  0x00007f877566c000 JavaThread "Timer-0" daemon [_thread_blocked, id=4162, stack(0x00007f875cb34000,0x00007f875cc35000)]
+  0x00007f877422e000 JavaThread "Service Thread" daemon [_thread_blocked, id=4029, stack(0x00007f875dad9000,0x00007f875dbda000)]
+  0x00007f8774222800 JavaThread "C1 CompilerThread3" daemon [_thread_blocked, id=4028, stack(0x00007f875dbdb000,0x00007f875dcdb000)]
+  0x00007f8774220000 JavaThread "C2 CompilerThread2" daemon [_thread_blocked, id=4027, stack(0x00007f875dcdc000,0x00007f875dddc000)]
+  0x00007f877421e800 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=4026, stack(0x00007f875dddd000,0x00007f875dedd000)]
+  0x00007f877421b800 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=4025, stack(0x00007f875dede000,0x00007f875dfde000)]
+  0x00007f8718001000 JavaThread "JDWP Command Reader" daemon [_thread_in_native, id=4010, stack(0x00007f875dfde000,0x00007f875e0df000)]
+  0x00007f8774219800 JavaThread "JDWP Event Helper Thread" daemon [_thread_blocked, id=4008, stack(0x00007f875e0df000,0x00007f875e1e0000)]
+  0x00007f8774216000 JavaThread "JDWP Transport Listener: dt_socket" daemon [_thread_blocked, id=4006, stack(0x00007f875e1e0000,0x00007f875e2e1000)]
+  0x00007f877420a000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=4005, stack(0x00007f875e4e5000,0x00007f875e5e6000)]
+  0x00007f87741d8000 JavaThread "Finalizer" daemon [_thread_blocked, id=4004, stack(0x00007f875e5e6000,0x00007f875e6e7000)]
+  0x00007f87741d5800 JavaThread "Reference Handler" daemon [_thread_blocked, id=4003, stack(0x00007f875e6e7000,0x00007f875e7e8000)]
+
+Other Threads:
+=>0x00007f87741cc000 VMThread [stack: 0x00007f875e7e9000,0x00007f875e8e9000] [id=4002]
+  0x00007f8774233000 WatcherThread [stack: 0x00007f875d9d9000,0x00007f875dad9000] [id=4030]
+
+VM state:at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x00007f877400ae30] Threads_lock - owner thread: 0x00007f87741cc000
+
+Heap:
+ PSYoungGen      total 1226240K, used 390269K [0x000000076cf00000, 0x00000007c0000000, 0x00000007c0000000)
+  eden space 1127424K, 29% used [0x000000076cf00000,0x0000000781776488,0x00000007b1c00000)
+  from space 98816K, 54% used [0x00000007b9f80000,0x00000007bd4292c8,0x00000007c0000000)
+  to   space 116736K, 0% used [0x00000007b1c00000,0x00000007b1c00000,0x00000007b8e00000)
+ ParOldGen       total 276480K, used 128992K [0x00000006c6c00000, 0x00000006d7a00000, 0x000000076cf00000)
+  object space 276480K, 46% used [0x00000006c6c00000,0x00000006ce9f8090,0x00000006d7a00000)
+ Metaspace       used 169365K, capacity 174776K, committed 175384K, reserved 1204224K
+  class space    used 18369K, capacity 19410K, committed 19752K, reserved 1048576K
+
+Card table byte_map: [0x00007f877940f000,0x00007f8779bda000] byte_map_base: 0x00007f8775dd9000
+
+Marking Bits: (ParMarkBitMap*) 0x00007f877d1b9de0
+ Begin Bits: [0x00007f8728360000, 0x00007f872c1b0000)
+ End Bits:   [0x00007f872c1b0000, 0x00007f8730000000)
+
+Polling page: 0x00007f877de37000
+
+CodeCache: size=245760Kb used=59487Kb max_used=59550Kb free=186272Kb
+ bounds [0x00007f8765000000, 0x00007f8768aa0000, 0x00007f8774000000]
+ total_blobs=14604 nmethods=13971 adapters=552
+ compilation: enabled
+
+Compilation events (10 events):
+Event: 1023.394 Thread 0x00007f877421e800 17738       4       org.jvnet.hk2.config.ConfigBean::equals (26 bytes)
+Event: 1023.395 Thread 0x00007f877421e800 nmethod 17738 0x00007f8768a0a2d0 code [0x00007f8768a0a420, 0x00007f8768a0a4f8]
+Event: 1023.427 Thread 0x00007f877421b800 nmethod 17716% 0x00007f8768a41b50 code [0x00007f8768a42640, 0x00007f8768a4cc68]
+Event: 1023.534 Thread 0x00007f8774220000 nmethod 17673 0x00007f8768a6e5d0 code [0x00007f8768a6f900, 0x00007f8768a7ed10]
+Event: 1023.904 Thread 0x00007f8774222800 17739       3       com.mongodb.connection.SingleServerCluster::access$100 (6 bytes)
+Event: 1023.904 Thread 0x00007f8774222800 nmethod 17739 0x00007f8768a0ced0 code [0x00007f8768a0d040, 0x00007f8768a0d1c8]
+Event: 1023.905 Thread 0x00007f8774222800 17740       3       com.mongodb.connection.MessageSettings::<init> (6 bytes)
+Event: 1023.905 Thread 0x00007f8774222800 nmethod 17740 0x00007f8768a0cb10 code [0x00007f8768a0cc80, 0x00007f8768a0ce28]
+Event: 1023.905 Thread 0x00007f8774222800 17741       3       com.mongodb.connection.ServerType$1::getClusterType (4 bytes)
+Event: 1023.905 Thread 0x00007f8774222800 nmethod 17741 0x00007f8768a0c7d0 code [0x00007f8768a0c940, 0x00007f8768a0ca90]
+
+GC Heap History (10 events):
+Event: 891.735 GC heap before
+{Heap before GC invocations=26 (full 5):
+ PSYoungGen      total 1224704K, used 1224685K [0x000000076cf00000, 0x00000007c0000000, 0x00000007c0000000)
+  eden space 1152000K, 100% used [0x000000076cf00000,0x00000007b3400000,0x00000007b3400000)
+  from space 72704K, 99% used [0x00000007bb900000,0x00000007bfffb570,0x00000007c0000000)
+  to   space 104448K, 0% used [0x00000007b3400000,0x00000007b3400000,0x00000007b9a00000)
+ ParOldGen       total 276480K, used 119985K [0x00000006c6c00000, 0x00000006d7a00000, 0x000000076cf00000)
+  object space 276480K, 43% used [0x00000006c6c00000,0x00000006ce12c5a8,0x00000006d7a00000)
+ Metaspace       used 140182K, capacity 144662K, committed 144920K, reserved 1177600K
+  class space    used 15874K, capacity 16897K, committed 16936K, reserved 1048576K
+Event: 891.760 GC heap after
+Heap after GC invocations=26 (full 5):
+ PSYoungGen      total 1256448K, used 29518K [0x000000076cf00000, 0x00000007c0000000, 0x00000007c0000000)
+  eden space 1152000K, 0% used [0x000000076cf00000,0x000000076cf00000,0x00000007b3400000)
+  from space 104448K, 28% used [0x00000007b3400000,0x00000007b50d3bb8,0x00000007b9a00000)
+  to   space 98816K, 0% used [0x00000007b9f80000,0x00000007b9f80000,0x00000007c0000000)
+ ParOldGen       total 276480K, used 142839K [0x00000006c6c00000, 0x00000006d7a00000, 0x000000076cf00000)
+  object space 276480K, 51% used [0x00000006c6c00000,0x00000006cf77dc68,0x00000006d7a00000)
+ Metaspace       used 140182K, capacity 144662K, committed 144920K, reserved 1177600K
+  class space    used 15874K, capacity 16897K, committed 16936K, reserved 1048576K
+}
+Event: 1015.370 GC heap before
+{Heap before GC invocations=27 (full 5):
+ PSYoungGen      total 1256448K, used 880434K [0x000000076cf00000, 0x00000007c0000000, 0x00000007c0000000)
+  eden space 1152000K, 73% used [0x000000076cf00000,0x00000007a0df8ef8,0x00000007b3400000)
+  from space 104448K, 28% used [0x00000007b3400000,0x00000007b50d3bb8,0x00000007b9a00000)
+  to   space 98816K, 0% used [0x00000007b9f80000,0x00000007b9f80000,0x00000007c0000000)
+ ParOldGen       total 276480K, used 142839K [0x00000006c6c00000, 0x00000006d7a00000, 0x000000076cf00000)
+  object space 276480K, 51% used [0x00000006c6c00000,0x00000006cf77dc68,0x00000006d7a00000)
+ Metaspace       used 146450K, capacity 151670K, committed 151960K, reserved 1183744K
+  class space    used 16598K, capacity 17709K, committed 17832K, reserved 1048576K
+Event: 1015.394 GC heap after
+Heap after GC invocations=27 (full 5):
+ PSYoungGen      total 1267712K, used 30746K [0x000000076cf00000, 0x00000007c0000000, 0x00000007c0000000)
+  eden space 1168896K, 0% used [0x000000076cf00000,0x000000076cf00000,0x00000007b4480000)
+  from space 98816K, 31% used [0x00000007b9f80000,0x00000007bbd86968,0x00000007c0000000)
+  to   space 93184K, 0% used [0x00000007b4480000,0x00000007b4480000,0x00000007b9f80000)
+ ParOldGen       total 276480K, used 142847K [0x00000006c6c00000, 0x00000006d7a00000, 0x000000076cf00000)
+  object space 276480K, 51% used [0x00000006c6c00000,0x00000006cf77fc68,0x00000006d7a00000)
+ Metaspace       used 146450K, capacity 151670K, committed 151960K, reserved 1183744K
+  class space    used 16598K, capacity 17709K, committed 17832K, reserved 1048576K
+}
+Event: 1015.394 GC heap before
+{Heap before GC invocations=28 (full 6):
+ PSYoungGen      total 1267712K, used 30746K [0x000000076cf00000, 0x00000007c0000000, 0x00000007c0000000)
+  eden space 1168896K, 0% used [0x000000076cf00000,0x000000076cf00000,0x00000007b4480000)
+  from space 98816K, 31% used [0x00000007b9f80000,0x00000007bbd86968,0x00000007c0000000)
+  to   space 93184K, 0% used [0x00000007b4480000,0x00000007b4480000,0x00000007b9f80000)
+ ParOldGen       total 276480K, used 142847K [0x00000006c6c00000, 0x00000006d7a00000, 0x000000076cf00000)
+  object space 276480K, 51% used [0x00000006c6c00000,0x00000006cf77fc68,0x00000006d7a00000)
+ Metaspace       used 146450K, capacity 151670K, committed 151960K, reserved 1183744K
+  class space    used 16598K, capacity 17709K, committed 17832K, reserved 1048576K
+Event: 1015.727 GC heap after
+Heap after GC invocations=28 (full 6):
+ PSYoungGen      total 1267712K, used 0K [0x000000076cf00000, 0x00000007c0000000, 0x00000007c0000000)
+  eden space 1168896K, 0% used [0x000000076cf00000,0x000000076cf00000,0x00000007b4480000)
+  from space 98816K, 0% used [0x00000007b9f80000,0x00000007b9f80000,0x00000007c0000000)
+  to   space 93184K, 0% used [0x00000007b4480000,0x00000007b4480000,0x00000007b9f80000)
+ ParOldGen       total 276480K, used 98249K [0x00000006c6c00000, 0x00000006d7a00000, 0x000000076cf00000)
+  object space 276480K, 35% used [0x00000006c6c00000,0x00000006ccbf2688,0x00000006d7a00000)
+ Metaspace       used 145659K, capacity 150614K, committed 151960K, reserved 1183744K
+  class space    used 16389K, capacity 17269K, committed 17832K, reserved 1048576K
+}
+Event: 1018.958 GC heap before
+{Heap before GC invocations=29 (full 6):
+ PSYoungGen      total 1267712K, used 1168896K [0x000000076cf00000, 0x00000007c0000000, 0x00000007c0000000)
+  eden space 1168896K, 100% used [0x000000076cf00000,0x00000007b4480000,0x00000007b4480000)
+  from space 98816K, 0% used [0x00000007b9f80000,0x00000007b9f80000,0x00000007c0000000)
+  to   space 93184K, 0% used [0x00000007b4480000,0x00000007b4480000,0x00000007b9f80000)
+ ParOldGen       total 276480K, used 98249K [0x00000006c6c00000, 0x00000006d7a00000, 0x000000076cf00000)
+  object space 276480K, 35% used [0x00000006c6c00000,0x00000006ccbf2688,0x00000006d7a00000)
+ Metaspace       used 148434K, capacity 153452K, committed 154648K, reserved 1185792K
+  class space    used 16608K, capacity 17512K, committed 17960K, reserved 1048576K
+Event: 1019.030 GC heap after
+Heap after GC invocations=29 (full 6):
+ PSYoungGen      total 1262080K, used 93156K [0x000000076cf00000, 0x00000007c0000000, 0x00000007c0000000)
+  eden space 1168896K, 0% used [0x000000076cf00000,0x000000076cf00000,0x00000007b4480000)
+  from space 93184K, 99% used [0x00000007b4480000,0x00000007b9f793b0,0x00000007b9f80000)
+  to   space 98816K, 0% used [0x00000007b9f80000,0x00000007b9f80000,0x00000007c0000000)
+ ParOldGen       total 276480K, used 128984K [0x00000006c6c00000, 0x00000006d7a00000, 0x000000076cf00000)
+  object space 276480K, 46% used [0x00000006c6c00000,0x00000006ce9f6090,0x00000006d7a00000)
+ Metaspace       used 148434K, capacity 153452K, committed 154648K, reserved 1185792K
+  class space    used 16608K, capacity 17512K, committed 17960K, reserved 1048576K
+}
+Event: 1022.436 GC heap before
+{Heap before GC invocations=30 (full 6):
+ PSYoungGen      total 1262080K, used 1262052K [0x000000076cf00000, 0x00000007c0000000, 0x00000007c0000000)
+  eden space 1168896K, 100% used [0x000000076cf00000,0x00000007b4480000,0x00000007b4480000)
+  from space 93184K, 99% used [0x00000007b4480000,0x00000007b9f793b0,0x00000007b9f80000)
+  to   space 98816K, 0% used [0x00000007b9f80000,0x00000007b9f80000,0x00000007c0000000)
+ ParOldGen       total 276480K, used 128984K [0x00000006c6c00000, 0x00000006d7a00000, 0x000000076cf00000)
+  object space 276480K, 46% used [0x00000006c6c00000,0x00000006ce9f6090,0x00000006d7a00000)
+ Metaspace       used 168131K, capacity 173498K, committed 174232K, reserved 1204224K
+  class space    used 18206K, capacity 19245K, committed 19624K, reserved 1048576K
+Event: 1022.453 GC heap after
+Heap after GC invocations=30 (full 6):
+ PSYoungGen      total 1226240K, used 53924K [0x000000076cf00000, 0x00000007c0000000, 0x00000007c0000000)
+  eden space 1127424K, 0% used [0x000000076cf00000,0x000000076cf00000,0x00000007b1c00000)
+  from space 98816K, 54% used [0x00000007b9f80000,0x00000007bd4292c8,0x00000007c0000000)
+  to   space 116736K, 0% used [0x00000007b1c00000,0x00000007b1c00000,0x00000007b8e00000)
+ ParOldGen       total 276480K, used 128992K [0x00000006c6c00000, 0x00000006d7a00000, 0x000000076cf00000)
+  object space 276480K, 46% used [0x00000006c6c00000,0x00000006ce9f8090,0x00000006d7a00000)
+ Metaspace       used 168131K, capacity 173498K, committed 174232K, reserved 1204224K
+  class space    used 18206K, capacity 19245K, committed 19624K, reserved 1048576K
+}
+
+Deoptimization events (10 events):
+Event: 1015.345 Thread 0x00007f8776c43800 Uncommon trap: reason=speculate_class_check action=maybe_recompile pc=0x00007f87684a975c method=com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(Ljava/lang/Object;)V @ 46
+Event: 1015.727 Thread 0x00007f86ac004000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f8767544c60 method=java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take()Ljava/util/concurrent/RunnableScheduledFuture; @ 136
+Event: 1020.700 Thread 0x00007f874c27f800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f87666b983c method=java.lang.reflect.Executable.getAllGenericParameterTypes()[Ljava/lang/reflect/Type; @ 48
+Event: 1021.113 Thread 0x00007f874c27f800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f876696b384 method=org.jboss.weld.util.Interceptors.addInterceptorBindings(Lorg/jboss/weld/annotated/enhanced/EnhancedAnnotatedType;Ljava/util/Collection;Ljava/util/Set;Lorg/jboss/weld/met
+Event: 1021.367 Thread 0x00007f874c27f800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f876888aab0 method=org.jboss.weld.annotated.enhanced.jlr.EnhancedAnnotatedFieldImpl.of(Ljavax/enterprise/inject/spi/AnnotatedField;Lorg/jboss/weld/annotated/enhanced/EnhancedAnnotatedType;
+Event: 1021.818 Thread 0x00007f874c27f800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f87666b1dac method=sun.reflect.generics.parser.SignatureParser.parseTypeArgument()Lsun/reflect/generics/tree/TypeArgument; @ 62
+Event: 1021.818 Thread 0x00007f874c27f800 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f87660a8adc method=sun.reflect.generics.reflectiveObjects.WildcardTypeImpl.getUpperBounds()[Ljava/lang/reflect/Type; @ 37
+Event: 1022.017 Thread 0x00007f874c27f800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f876553c06c method=org.jboss.weld.resolution.TypeSafeObserverResolver.matches(Lorg/jboss/weld/resolution/Resolvable;Ljavax/enterprise/inject/spi/ObserverMethod;)Z @ 54
+Event: 1022.871 Thread 0x00007f874c27f800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f8767bc938c method=javax.faces.component.UIComponentBase.populateDescriptorsMapIfNecessary()V @ 14
+Event: 1022.930 Thread 0x00007f8776c46000 Uncommon trap: reason=speculate_class_check action=maybe_recompile pc=0x00007f87684a975c method=com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(Ljava/lang/Object;)V @ 46
+
+Classes redefined (6 events):
+Event: 884.093 Thread 0x00007f87741cc000 redefined class name=com.avbravo.transporte.controller.ConductorController, count=1
+Event: 884.152 Thread 0x00007f87741cc000 redefined class name=com.avbravo.transporte.controller.ConductorController, count=1
+Event: 1012.930 Thread 0x00007f87741cc000 redefined class name=com.avbravo.transporte.controller.ConductorController, count=1
+Event: 1012.994 Thread 0x00007f87741cc000 redefined class name=com.avbravo.transporte.controller.ConductorController, count=2
+Event: 1013.058 Thread 0x00007f87741cc000 redefined class name=com.avbravo.transporte.controller.ConductorController, count=2
+Event: 1013.116 Thread 0x00007f87741cc000 redefined class name=com.avbravo.transporte.controller.ConductorController, count=1
+
+Internal exceptions (10 events):
+Event: 1022.931 Thread 0x00007f874c27f800 Exception <a 'sun/nio/fs/UnixException'> (0x000000077dff3140) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u172/10810/hotspot/src/share/vm/prims/jni.cpp, line 709]
+Event: 1022.932 Thread 0x00007f874c27f800 Exception <a 'sun/nio/fs/UnixException'> (0x000000077dff8358) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u172/10810/hotspot/src/share/vm/prims/jni.cpp, line 709]
+Event: 1022.932 Thread 0x00007f874c27f800 Exception <a 'sun/nio/fs/UnixException'> (0x000000077dffd5a0) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u172/10810/hotspot/src/share/vm/prims/jni.cpp, line 709]
+Event: 1022.932 Thread 0x00007f874c27f800 Exception <a 'sun/nio/fs/UnixException'> (0x000000077e0027e8) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u172/10810/hotspot/src/share/vm/prims/jni.cpp, line 709]
+Event: 1022.932 Thread 0x00007f874c27f800 Exception <a 'sun/nio/fs/UnixException'> (0x000000077e007bf0) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u172/10810/hotspot/src/share/vm/prims/jni.cpp, line 709]
+Event: 1022.933 Thread 0x00007f874c27f800 Exception <a 'sun/nio/fs/UnixException'> (0x000000077e00d018) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u172/10810/hotspot/src/share/vm/prims/jni.cpp, line 709]
+Event: 1022.933 Thread 0x00007f874c27f800 Exception <a 'sun/nio/fs/UnixException'> (0x000000077e0121e8) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u172/10810/hotspot/src/share/vm/prims/jni.cpp, line 709]
+Event: 1023.755 Thread 0x00007f8777b7e800 Exception <a 'java/net/SocketTimeoutException': Receive timed out> (0x0000000776c5c3b0) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u172/10810/hotspot/src/share/vm/prims/jni.cpp, line 735]
+Event: 1024.756 Thread 0x00007f8777b7e800 Exception <a 'java/net/SocketTimeoutException': Receive timed out> (0x0000000776c5c610) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u172/10810/hotspot/src/share/vm/prims/jni.cpp, line 735]
+Event: 1025.758 Thread 0x00007f8777b7e800 Exception <a 'java/net/SocketTimeoutException': Receive timed out> (0x0000000776c5c870) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u172/10810/hotspot/src/share/vm/prims/jni.cpp, line 735]
+
+Events (10 events):
+Event: 1025.758 Thread 0x00007f8777b7e800 DEOPT UNPACKING pc=0x00007f8765047784 sp=0x00007f86528e7210 mode 1
+Event: 1025.758 Thread 0x00007f8777b7e800 DEOPT PACKING pc=0x00007f8767e2a13c sp=0x00007f86528e7520
+Event: 1025.758 Thread 0x00007f8777b7e800 DEOPT UNPACKING pc=0x00007f8765047784 sp=0x00007f86528e7348 mode 1
+Event: 1025.758 Thread 0x00007f8777b7e800 DEOPT PACKING pc=0x00007f8767e22294 sp=0x00007f86528e76a0
+Event: 1025.758 Thread 0x00007f8777b7e800 DEOPT UNPACKING pc=0x00007f8765047784 sp=0x00007f86528e74e0 mode 1
+Event: 1025.805 Executing VM operation: GetCurrentContendedMonitor
+Event: 1025.805 Executing VM operation: GetCurrentContendedMonitor done
+Event: 1025.805 Executing VM operation: GetOwnedMonitorInfo
+Event: 1025.806 Executing VM operation: GetOwnedMonitorInfo done
+Event: 1025.811 Executing VM operation: GetOrSetLocal
+
+
+Dynamic libraries:
+00400000-00401000 r-xp 00000000 08:01 4196128                            /usr/local/jdk1.8.0_172/bin/java
+00600000-00601000 rw-p 00000000 08:01 4196128                            /usr/local/jdk1.8.0_172/bin/java
+018e1000-01daf000 rw-p 00000000 00:00 0                                  [heap]
+6c6c00000-6d7a00000 rw-p 00000000 00:00 0 
+6d7a00000-76cf00000 ---p 00000000 00:00 0 
+76cf00000-7c0000000 rw-p 00000000 00:00 0 
+7c0000000-7c134a000 rw-p 00000000 00:00 0 
+7c134a000-800000000 ---p 00000000 00:00 0 
+7f8647c00000-7f8647e00000 rw-p 00000000 00:00 0 
+7f8647e00000-7f8648000000 rw-p 00000000 00:00 0 
+7f8648000000-7f8648203000 rw-p 00000000 00:00 0 
+7f8648203000-7f864c000000 ---p 00000000 00:00 0 
+7f864c1bd000-7f864c3bd000 rw-p 00000000 00:00 0 
+7f864c3bd000-7f864c5bd000 rw-p 00000000 00:00 0 
+7f864c5bd000-7f864c7bd000 rw-p 00000000 00:00 0 
+7f864c7bd000-7f864c9bd000 rw-p 00000000 00:00 0 
+7f864c9bd000-7f864cbbd000 rw-p 00000000 00:00 0 
+7f864cbbd000-7f864cdbd000 rw-p 00000000 00:00 0 
+7f864cdbd000-7f864cfbd000 rw-p 00000000 00:00 0 
+7f864cfbd000-7f864d1bd000 rw-p 00000000 00:00 0 
+7f864d1bd000-7f864d3bd000 rw-p 00000000 00:00 0 
+7f864d3bd000-7f864d3c0000 ---p 00000000 00:00 0 
+7f864d3c0000-7f864d6be000 rw-p 00000000 00:00 0 
+7f864d6be000-7f864d6c1000 ---p 00000000 00:00 0 
+7f864d6c1000-7f864d7bf000 rw-p 00000000 00:00 0 
+7f864d7bf000-7f864d7c2000 ---p 00000000 00:00 0 
+7f864d7c2000-7f864d8c0000 rw-p 00000000 00:00 0 
+7f864d8c0000-7f864d8c3000 ---p 00000000 00:00 0 
+7f864d8c3000-7f864d9c1000 rw-p 00000000 00:00 0 
+7f864d9c1000-7f864d9c4000 ---p 00000000 00:00 0 
+7f864d9c4000-7f864dac2000 rw-p 00000000 00:00 0 
+7f864dac2000-7f864dac5000 ---p 00000000 00:00 0 
+7f864dac5000-7f864ddc3000 rw-p 00000000 00:00 0 
+7f864ddc3000-7f864ddc6000 ---p 00000000 00:00 0 
+7f864ddc6000-7f864dec4000 rw-p 00000000 00:00 0 
+7f864dec4000-7f864dec7000 ---p 00000000 00:00 0 
+7f864dec7000-7f864dfc5000 rw-p 00000000 00:00 0 
+7f864dfc5000-7f864dfc8000 ---p 00000000 00:00 0 
+7f864dfc8000-7f864e0c6000 rw-p 00000000 00:00 0 
+7f864e0c6000-7f864e0c9000 ---p 00000000 00:00 0 
+7f864e0c9000-7f864e3c7000 rw-p 00000000 00:00 0 
+7f864e3c7000-7f864e5c7000 rw-p 00000000 00:00 0 
+7f864e5c7000-7f864e7c7000 rw-p 00000000 00:00 0 
+7f864e7c7000-7f864e9c7000 rw-p 00000000 00:00 0 
+7f864e9c7000-7f864ebc7000 rw-p 00000000 00:00 0 
+7f864ebc7000-7f864edc7000 rw-p 00000000 00:00 0 
+7f864edc7000-7f864efc7000 rw-p 00000000 00:00 0 
+7f864efc7000-7f864f1c7000 rw-p 00000000 00:00 0 
+7f864f1c7000-7f864f3c7000 rw-p 00000000 00:00 0 
+7f864f3c7000-7f864f5c7000 rw-p 00000000 00:00 0 
+7f864f5c7000-7f864f5ca000 ---p 00000000 00:00 0 
+7f864f5ca000-7f864f6c8000 rw-p 00000000 00:00 0 
+7f864f6c8000-7f864f6cb000 ---p 00000000 00:00 0 
+7f864f6cb000-7f864f9c9000 rw-p 00000000 00:00 0 
+7f864f9c9000-7f864fbc9000 rw-p 00000000 00:00 0 
+7f864fcc4000-7f864fcc7000 ---p 00000000 00:00 0 
+7f864fcc7000-7f864ffc5000 rw-p 00000000 00:00 0 
+7f864ffc5000-7f86501c5000 rw-p 00000000 00:00 0 
+7f86501c5000-7f86503c5000 rw-p 00000000 00:00 0 
+7f86503c5000-7f86505c5000 rw-p 00000000 00:00 0 
+7f86505c5000-7f86507c5000 rw-p 00000000 00:00 0 
+7f86507c5000-7f86509c5000 rw-p 00000000 00:00 0 
+7f86509c5000-7f86509d4000 r-xp 00000000 08:01 57933918                   /lib/x86_64-linux-gnu/libnss_myhostname.so.2
+7f86509d4000-7f8650bd4000 ---p 0000f000 08:01 57933918                   /lib/x86_64-linux-gnu/libnss_myhostname.so.2
+7f8650bd4000-7f8650bd7000 r--p 0000f000 08:01 57933918                   /lib/x86_64-linux-gnu/libnss_myhostname.so.2
+7f8650bd7000-7f8650bd8000 rw-p 00012000 08:01 57933918                   /lib/x86_64-linux-gnu/libnss_myhostname.so.2
+7f8650bd8000-7f8650bdb000 ---p 00000000 00:00 0 
+7f8650bdb000-7f8650ed9000 rw-p 00000000 00:00 0 
+7f8650ed9000-7f86510d9000 rw-p 00000000 00:00 0 
+7f86510d9000-7f86512d9000 rw-p 00000000 00:00 0 
+7f86512d9000-7f86514d9000 rw-p 00000000 00:00 0 
+7f86514d9000-7f86516d9000 rw-p 00000000 00:00 0 
+7f86516d9000-7f86516dc000 ---p 00000000 00:00 0 
+7f86516dc000-7f86517da000 rw-p 00000000 00:00 0 
+7f86517da000-7f86517dd000 ---p 00000000 00:00 0 
+7f86517dd000-7f86518db000 rw-p 00000000 00:00 0 
+7f86518db000-7f86518de000 ---p 00000000 00:00 0 
+7f86518de000-7f8651bdc000 rw-p 00000000 00:00 0 
+7f8651bdc000-7f8651bdf000 ---p 00000000 00:00 0 
+7f8651bdf000-7f8651cdd000 rw-p 00000000 00:00 0 
+7f8651cdd000-7f8651ce0000 ---p 00000000 00:00 0 
+7f8651ce0000-7f8651dde000 rw-p 00000000 00:00 0 
+7f8651dde000-7f8651de1000 ---p 00000000 00:00 0 
+7f8651de1000-7f8651edf000 rw-p 00000000 00:00 0 
+7f8651edf000-7f8651ee2000 ---p 00000000 00:00 0 
+7f8651ee2000-7f8651fe0000 rw-p 00000000 00:00 0 
+7f8651fe0000-7f8651fe3000 ---p 00000000 00:00 0 
+7f8651fe3000-7f86520e1000 rw-p 00000000 00:00 0 
+7f86520e1000-7f86520e4000 ---p 00000000 00:00 0 
+7f86520e4000-7f86521e2000 rw-p 00000000 00:00 0 
+7f86521e2000-7f86521e5000 ---p 00000000 00:00 0 
+7f86521e5000-7f86522e3000 rw-p 00000000 00:00 0 
+7f86522e3000-7f86522e6000 ---p 00000000 00:00 0 
+7f86522e6000-7f86523e4000 rw-p 00000000 00:00 0 
+7f86523e4000-7f86523e7000 ---p 00000000 00:00 0 
+7f86523e7000-7f86524e5000 rw-p 00000000 00:00 0 
+7f86524e5000-7f86524e8000 ---p 00000000 00:00 0 
+7f86524e8000-7f86525e6000 rw-p 00000000 00:00 0 
+7f86525e6000-7f86525e9000 ---p 00000000 00:00 0 
+7f86525e9000-7f86526e7000 rw-p 00000000 00:00 0 
+7f86526e7000-7f86526ea000 ---p 00000000 00:00 0 
+7f86526ea000-7f86527e8000 rw-p 00000000 00:00 0 
+7f86527e8000-7f86527eb000 ---p 00000000 00:00 0 
+7f86527eb000-7f86528e9000 rw-p 00000000 00:00 0 
+7f86528e9000-7f86528ec000 ---p 00000000 00:00 0 
+7f86528ec000-7f86529ea000 rw-p 00000000 00:00 0 
+7f86529ea000-7f86529ed000 ---p 00000000 00:00 0 
+7f86529ed000-7f8652aeb000 rw-p 00000000 00:00 0 
+7f8652aeb000-7f8652aee000 ---p 00000000 00:00 0 
+7f8652aee000-7f8652bec000 rw-p 00000000 00:00 0 
+7f8652bec000-7f8652bef000 ---p 00000000 00:00 0 
+7f8652bef000-7f8652ced000 rw-p 00000000 00:00 0 
+7f8652ced000-7f8652cf0000 ---p 00000000 00:00 0 
+7f8652cf0000-7f8652dee000 rw-p 00000000 00:00 0 
+7f8652dee000-7f8652df1000 ---p 00000000 00:00 0 
+7f8652df1000-7f8652eef000 rw-p 00000000 00:00 0 
+7f8652eef000-7f8652ef2000 ---p 00000000 00:00 0 
+7f8652ef2000-7f8652ff0000 rw-p 00000000 00:00 0 
+7f8652ff0000-7f8652ff3000 ---p 00000000 00:00 0 
+7f8652ff3000-7f86530f1000 rw-p 00000000 00:00 0 
+7f86530f1000-7f86530f4000 ---p 00000000 00:00 0 
+7f86530f4000-7f86531f2000 rw-p 00000000 00:00 0 
+7f86531f2000-7f86531f5000 ---p 00000000 00:00 0 
+7f86531f5000-7f86532f3000 rw-p 00000000 00:00 0 
+7f86532f3000-7f86532f6000 ---p 00000000 00:00 0 
+7f86532f6000-7f86533f4000 rw-p 00000000 00:00 0 
+7f86533f4000-7f86533f7000 ---p 00000000 00:00 0 
+7f86533f7000-7f86534f5000 rw-p 00000000 00:00 0 
+7f86534f5000-7f86534f8000 ---p 00000000 00:00 0 
+7f86534f8000-7f86535f6000 rw-p 00000000 00:00 0 
+7f86535f6000-7f86535f9000 ---p 00000000 00:00 0 
+7f86535f9000-7f86536f7000 rw-p 00000000 00:00 0 
+7f86536f7000-7f86536fa000 ---p 00000000 00:00 0 
+7f86536fa000-7f86537f8000 rw-p 00000000 00:00 0 
+7f86537f8000-7f86537fb000 ---p 00000000 00:00 0 
+7f86537fb000-7f86538f9000 rw-p 00000000 00:00 0 
+7f86538f9000-7f86538fc000 ---p 00000000 00:00 0 
+7f86538fc000-7f86539fa000 rw-p 00000000 00:00 0 
+7f86539fa000-7f86539fd000 ---p 00000000 00:00 0 
+7f86539fd000-7f8653afb000 rw-p 00000000 00:00 0 
+7f8653afb000-7f8653afe000 ---p 00000000 00:00 0 
+7f8653afe000-7f8653bfc000 rw-p 00000000 00:00 0 
+7f8653bfc000-7f8653bff000 ---p 00000000 00:00 0 
+7f8653bff000-7f8653cfd000 rw-p 00000000 00:00 0 
+7f8653cfd000-7f8653d00000 ---p 00000000 00:00 0 
+7f8653d00000-7f8653dfe000 rw-p 00000000 00:00 0 
+7f8653dfe000-7f8653e01000 ---p 00000000 00:00 0 
+7f8653e01000-7f8653eff000 rw-p 00000000 00:00 0 
+7f8653eff000-7f8653f02000 ---p 00000000 00:00 0 
+7f8653f02000-7f8654000000 rw-p 00000000 00:00 0 
+7f8654000000-7f8654021000 rw-p 00000000 00:00 0 
+7f8654021000-7f8658000000 ---p 00000000 00:00 0 
+7f8658000000-7f86583a0000 rw-p 00000000 00:00 0 
+7f86583a0000-7f865c000000 ---p 00000000 00:00 0 
+7f865c000000-7f865c026000 rw-p 00000000 00:00 0 
+7f865c026000-7f8660000000 ---p 00000000 00:00 0 
+7f8660000000-7f8661e48000 rw-p 00000000 00:00 0 
+7f8661e48000-7f8664000000 ---p 00000000 00:00 0 
+7f8664000000-7f8664021000 rw-p 00000000 00:00 0 
+7f8664021000-7f8668000000 ---p 00000000 00:00 0 
+7f8668000000-7f8668021000 rw-p 00000000 00:00 0 
+7f8668021000-7f866c000000 ---p 00000000 00:00 0 
+7f866c000000-7f866c021000 rw-p 00000000 00:00 0 
+7f866c021000-7f8670000000 ---p 00000000 00:00 0 
+7f8670000000-7f8670021000 rw-p 00000000 00:00 0 
+7f8670021000-7f8674000000 ---p 00000000 00:00 0 
+7f8674000000-7f8674021000 rw-p 00000000 00:00 0 
+7f8674021000-7f8678000000 ---p 00000000 00:00 0 
+7f8678000000-7f8678021000 rw-p 00000000 00:00 0 
+7f8678021000-7f867c000000 ---p 00000000 00:00 0 
+7f867c000000-7f867c021000 rw-p 00000000 00:00 0 
+7f867c021000-7f8680000000 ---p 00000000 00:00 0 
+7f8680000000-7f8680021000 rw-p 00000000 00:00 0 
+7f8680021000-7f8684000000 ---p 00000000 00:00 0 
+7f8684000000-7f8684025000 rw-p 00000000 00:00 0 
+7f8684025000-7f8688000000 ---p 00000000 00:00 0 
+7f8688000000-7f8688021000 rw-p 00000000 00:00 0 
+7f8688021000-7f868c000000 ---p 00000000 00:00 0 
+7f868c000000-7f868c22a000 rw-p 00000000 00:00 0 
+7f868c22a000-7f8690000000 ---p 00000000 00:00 0 
+7f8690000000-7f8690144000 rw-p 00000000 00:00 0 
+7f8690144000-7f8694000000 ---p 00000000 00:00 0 
+7f8694000000-7f869471a000 rw-p 00000000 00:00 0 
+7f869471a000-7f8698000000 ---p 00000000 00:00 0 
+7f8698000000-7f86980df000 rw-p 00000000 00:00 0 
+7f86980df000-7f869c000000 ---p 00000000 00:00 0 
+7f869c000000-7f869c295000 rw-p 00000000 00:00 0 
+7f869c295000-7f86a0000000 ---p 00000000 00:00 0 
+7f86a0000000-7f86a030d000 rw-p 00000000 00:00 0 
+7f86a030d000-7f86a4000000 ---p 00000000 00:00 0 
+7f86a4000000-7f86a465b000 rw-p 00000000 00:00 0 
+7f86a465b000-7f86a8000000 ---p 00000000 00:00 0 
+7f86a8000000-7f86a8470000 rw-p 00000000 00:00 0 
+7f86a8470000-7f86ac000000 ---p 00000000 00:00 0 
+7f86ac000000-7f86ad4d7000 rw-p 00000000 00:00 0 
+7f86ad4d7000-7f86b0000000 ---p 00000000 00:00 0 
+7f86b0000000-7f86b17b3000 rw-p 00000000 00:00 0 
+7f86b17b3000-7f86b4000000 ---p 00000000 00:00 0 
+7f86b4000000-7f86b4021000 rw-p 00000000 00:00 0 
+7f86b4021000-7f86b8000000 ---p 00000000 00:00 0 
+7f86b8000000-7f86b8021000 rw-p 00000000 00:00 0 
+7f86b8021000-7f86bc000000 ---p 00000000 00:00 0 
+7f86bc000000-7f86bc021000 rw-p 00000000 00:00 0 
+7f86bc021000-7f86c0000000 ---p 00000000 00:00 0 
+7f86c0000000-7f86c0021000 rw-p 00000000 00:00 0 
+7f86c0021000-7f86c4000000 ---p 00000000 00:00 0 
+7f86c4000000-7f86c409a000 rw-p 00000000 00:00 0 
+7f86c409a000-7f86c8000000 ---p 00000000 00:00 0 
+7f86c8000000-7f86c8026000 rw-p 00000000 00:00 0 
+7f86c8026000-7f86cc000000 ---p 00000000 00:00 0 
+7f86cc000000-7f86cc89d000 rw-p 00000000 00:00 0 
+7f86cc89d000-7f86d0000000 ---p 00000000 00:00 0 
+7f86d0000000-7f86d025f000 rw-p 00000000 00:00 0 
+7f86d025f000-7f86d4000000 ---p 00000000 00:00 0 
+7f86d4000000-7f86d4021000 rw-p 00000000 00:00 0 
+7f86d4021000-7f86d8000000 ---p 00000000 00:00 0 
+7f86d8000000-7f86d8bc1000 rw-p 00000000 00:00 0 
+7f86d8bc1000-7f86dc000000 ---p 00000000 00:00 0 
+7f86dc000000-7f86dc136000 rw-p 00000000 00:00 0 
+7f86dc136000-7f86e0000000 ---p 00000000 00:00 0 
+7f86e0000000-7f86e0021000 rw-p 00000000 00:00 0 
+7f86e0021000-7f86e4000000 ---p 00000000 00:00 0 
+7f86e4000000-7f86e4021000 rw-p 00000000 00:00 0 
+7f86e4021000-7f86e8000000 ---p 00000000 00:00 0 
+7f86e8000000-7f86e8021000 rw-p 00000000 00:00 0 
+7f86e8021000-7f86ec000000 ---p 00000000 00:00 0 
+7f86ec000000-7f86ec021000 rw-p 00000000 00:00 0 
+7f86ec021000-7f86f0000000 ---p 00000000 00:00 0 
+7f86f0000000-7f86f00f5000 rw-p 00000000 00:00 0 
+7f86f00f5000-7f86f4000000 ---p 00000000 00:00 0 
+7f86f4000000-7f86f4382000 rw-p 00000000 00:00 0 
+7f86f4382000-7f86f8000000 ---p 00000000 00:00 0 
+7f86f8000000-7f86f8021000 rw-p 00000000 00:00 0 
+7f86f8021000-7f86fc000000 ---p 00000000 00:00 0 
+7f86fc000000-7f86ffb9c000 rw-p 00000000 00:00 0 
+7f86ffb9c000-7f8700000000 ---p 00000000 00:00 0 
+7f8700000000-7f87017ca000 rw-p 00000000 00:00 0 
+7f87017ca000-7f8704000000 ---p 00000000 00:00 0 
+7f8704000000-7f8707ffe000 rw-p 00000000 00:00 0 
+7f8707ffe000-7f8708000000 ---p 00000000 00:00 0 
+7f8708000000-7f870bd50000 rw-p 00000000 00:00 0 
+7f870bd50000-7f870c000000 ---p 00000000 00:00 0 
+7f870c000000-7f870c244000 rw-p 00000000 00:00 0 
+7f870c244000-7f8710000000 ---p 00000000 00:00 0 
+7f8710000000-7f8710021000 rw-p 00000000 00:00 0 
+7f8710021000-7f8714000000 ---p 00000000 00:00 0 
+7f8714000000-7f8714021000 rw-p 00000000 00:00 0 
+7f8714021000-7f8718000000 ---p 00000000 00:00 0 
+7f8718000000-7f8718194000 rw-p 00000000 00:00 0 
+7f8718194000-7f871c000000 ---p 00000000 00:00 0 
+7f871c000000-7f871c021000 rw-p 00000000 00:00 0 
+7f871c021000-7f8720000000 ---p 00000000 00:00 0 
+7f8720000000-7f8720021000 rw-p 00000000 00:00 0 
+7f8720021000-7f8724000000 ---p 00000000 00:00 0 
+7f8724000000-7f8724329000 rw-p 00000000 00:00 0 
+7f8724329000-7f8728000000 ---p 00000000 00:00 0 
+7f872805d000-7f8728060000 ---p 00000000 00:00 0 
+7f8728060000-7f872815e000 rw-p 00000000 00:00 0 
+7f872815e000-7f8728161000 ---p 00000000 00:00 0 
+7f8728161000-7f872825f000 rw-p 00000000 00:00 0 
+7f872825f000-7f8728262000 ---p 00000000 00:00 0 
+7f8728262000-7f8730000000 rw-p 00000000 00:00 0 
+7f8730000000-7f8730021000 rw-p 00000000 00:00 0 
+7f8730021000-7f8734000000 ---p 00000000 00:00 0 
+7f8734000000-7f8734021000 rw-p 00000000 00:00 0 
+7f8734021000-7f8738000000 ---p 00000000 00:00 0 
+7f8738000000-7f8738021000 rw-p 00000000 00:00 0 
+7f8738021000-7f873c000000 ---p 00000000 00:00 0 
+7f873c01b000-7f873c01e000 ---p 00000000 00:00 0 
+7f873c01e000-7f873c31c000 rw-p 00000000 00:00 0 
+7f873c31c000-7f873c31f000 ---p 00000000 00:00 0 
+7f873c31f000-7f873c41d000 rw-p 00000000 00:00 0 
+7f873c41d000-7f873c420000 ---p 00000000 00:00 0 
+7f873c420000-7f873c71e000 rw-p 00000000 00:00 0 
+7f873c71e000-7f873c91e000 rw-p 00000000 00:00 0 
+7f873c91e000-7f873c921000 ---p 00000000 00:00 0 
+7f873c921000-7f873ca1f000 rw-p 00000000 00:00 0 
+7f873ca1f000-7f873ca22000 ---p 00000000 00:00 0 
+7f873ca22000-7f873cb20000 rw-p 00000000 00:00 0 
+7f873cb20000-7f873cb23000 ---p 00000000 00:00 0 
+7f873cb23000-7f873cc21000 rw-p 00000000 00:00 0 
+7f873cc21000-7f873cc24000 ---p 00000000 00:00 0 
+7f873cc24000-7f873cd22000 rw-p 00000000 00:00 0 
+7f873cd22000-7f873cd25000 ---p 00000000 00:00 0 
+7f873cd25000-7f873ce23000 rw-p 00000000 00:00 0 
+7f873ce23000-7f873ce26000 ---p 00000000 00:00 0 
+7f873ce26000-7f873cf24000 rw-p 00000000 00:00 0 
+7f873cf24000-7f873cf27000 ---p 00000000 00:00 0 
+7f873cf27000-7f873d225000 rw-p 00000000 00:00 0 
+7f873d225000-7f873d228000 ---p 00000000 00:00 0 
+7f873d228000-7f873d326000 rw-p 00000000 00:00 0 
+7f873d326000-7f873d329000 ---p 00000000 00:00 0 
+7f873d329000-7f873d427000 rw-p 00000000 00:00 0 
+7f873d427000-7f873d42a000 ---p 00000000 00:00 0 
+7f873d42a000-7f873d528000 rw-p 00000000 00:00 0 
+7f873d528000-7f873d52b000 ---p 00000000 00:00 0 
+7f873d52b000-7f873d629000 rw-p 00000000 00:00 0 
+7f873d629000-7f873d62c000 ---p 00000000 00:00 0 
+7f873d62c000-7f873d72a000 rw-p 00000000 00:00 0 
+7f873d72a000-7f873d72d000 ---p 00000000 00:00 0 
+7f873d72d000-7f873d82b000 rw-p 00000000 00:00 0 
+7f873d82b000-7f873d82e000 ---p 00000000 00:00 0 
+7f873d82e000-7f873d92c000 rw-p 00000000 00:00 0 
+7f873d92c000-7f873d92f000 ---p 00000000 00:00 0 
+7f873d92f000-7f873dc2d000 rw-p 00000000 00:00 0 
+7f873dc2d000-7f873de2d000 rw-p 00000000 00:00 0 
+7f873de2d000-7f873e029000 rw-p 00000000 00:00 0 
+7f873e029000-7f873e02d000 ---p 00000000 00:00 0 
+7f873e02d000-7f873e22d000 rw-p 00000000 00:00 0 
+7f873e22d000-7f873e42d000 rw-p 00000000 00:00 0 
+7f873e42d000-7f873e62d000 rw-p 00000000 00:00 0 
+7f873e62d000-7f873e82d000 rw-p 00000000 00:00 0 
+7f873e82d000-7f873ea2d000 rw-p 00000000 00:00 0 
+7f873ea2d000-7f873ec2d000 rw-p 00000000 00:00 0 
+7f873ec2d000-7f873ee2d000 rw-p 00000000 00:00 0 
+7f873ee2d000-7f873f02d000 rw-p 00000000 00:00 0 
+7f873f02d000-7f873f22d000 rw-p 00000000 00:00 0 
+7f873f22d000-7f873f42d000 rw-p 00000000 00:00 0 
+7f873f42d000-7f873f430000 ---p 00000000 00:00 0 
+7f873f430000-7f873f72e000 rw-p 00000000 00:00 0 
+7f873f72e000-7f873f92e000 rw-p 00000000 00:00 0 
+7f873f92e000-7f873fb2e000 rw-p 00000000 00:00 0 
+7f873fb2e000-7f873fd2e000 rw-p 00000000 00:00 0 
+7f873fd2e000-7f873fdd0000 r-xp 00000000 08:01 9437409                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libawt.so
+7f873fdd0000-7f873ffd0000 ---p 000a2000 08:01 9437409                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libawt.so
+7f873ffd0000-7f873ffdc000 rw-p 000a2000 08:01 9437409                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libawt.so
+7f873ffdc000-7f8740000000 rw-p 00000000 00:00 0 
+7f8740000000-7f8740021000 rw-p 00000000 00:00 0 
+7f8740021000-7f8744000000 ---p 00000000 00:00 0 
+7f8744019000-7f874401b000 r--s 00009000 08:01 14026657                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/javase-3.3.0.jar
+7f874401b000-7f874401e000 r--s 00026000 08:01 14026603                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/antlr-runtime-3.5.2.jar
+7f874401e000-7f874402f000 r--s 000d2000 08:01 14026684                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/jackson-databind-2.1.4.jar
+7f874402f000-7f8744036000 r--s 0003f000 08:01 14026667                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/commons-codec-1.10.jar
+7f8744036000-7f8744097000 r--s 00461000 08:01 14026545                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/core-io-1.4.1.jar
+7f8744097000-7f87440ae000 r--s 0018d000 08:01 14026511                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/lombok-1.18.6.jar
+7f87440ae000-7f87440d2000 r--s 00341000 08:01 14026681                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/jdtcore-3.1.0.jar
+7f87440d2000-7f87440d5000 ---p 00000000 00:00 0 
+7f87440d5000-7f87443d3000 rw-p 00000000 00:00 0 
+7f87443d3000-7f87443ea000 r-xp 00000000 08:01 57938514                   /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f87443ea000-7f87445e9000 ---p 00017000 08:01 57938514                   /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f87445e9000-7f87445ea000 r--p 00016000 08:01 57938514                   /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f87445ea000-7f87445eb000 rw-p 00017000 08:01 57938514                   /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f87445ec000-7f87445f3000 r--s 0002e000 08:01 14026617                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/mango-core-1.4.0.jar
+7f87445f3000-7f87445f8000 r--s 00034000 08:01 14026618                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/gson-2.7.jar
+7f87445f8000-7f87445fa000 r--s 0000d000 08:01 14026678                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/commons-logging-1.1.1.jar
+7f87445fa000-7f87445fe000 r--s 0002e000 08:01 14026521                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/jmoordb-0.28.4.jar
+7f87445fe000-7f8744601000 r--s 00013000 08:01 14026622                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/commons-io-1.3.2.jar
+7f8744601000-7f8744633000 r-xp 00000000 08:01 9437367                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libsunec.so
+7f8744633000-7f8744832000 ---p 00032000 08:01 9437367                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libsunec.so
+7f8744832000-7f8744838000 rw-p 00031000 08:01 9437367                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libsunec.so
+7f8744838000-7f8744848000 rw-p 00000000 00:00 0 
+7f8744848000-7f874484a000 r--s 00009000 08:01 9437261                    /usr/local/jdk1.8.0_172/jre/lib/ext/sunec.jar
+7f874484a000-7f874484e000 r--s 0003a000 08:01 9437268                    /usr/local/jdk1.8.0_172/jre/lib/ext/sunpkcs11.jar
+7f874484f000-7f8744851000 r--s 0000e000 08:01 14026652                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/activation-1.1.jar
+7f8744851000-7f8744856000 r--s 00034000 08:01 14026675                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/commons-beanutils-1.8.0.jar
+7f8744856000-7f874485e000 r--s 00028000 08:01 14026680                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/xml-apis-1.3.02.jar
+7f874485e000-7f8744860000 r--s 0000e000 08:01 14026598                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/sql-to-mongo-db-query-converter-1.7.jar
+7f8744860000-7f8744865000 r--s 00093000 08:01 14026601                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/natty-0.12.jar
+7f8744865000-7f874486b000 r--s 00023000 08:01 14026676                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/commons-collections-2.1.jar
+7f874486b000-7f8744882000 r--s 000cc000 08:01 14026543                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/java-client-2.4.1.jar
+7f8744882000-7f8744887000 r--s 002f9000 08:01 8784255                    /usr/local/jdk1.8.0_172/jre/lib/charsets.jar
+7f8744887000-7f874488c000 r--s 0003f000 08:01 9437271                    /usr/local/jdk1.8.0_172/jre/lib/ext/sunjce_provider.jar
+7f874488c000-7f874489d000 r--s 0014c000 08:01 14026686                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/jfreechart-1.0.13.jar
+7f874489d000-7f87448a3000 r--s 00046000 08:01 14026679                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/jcommon-1.0.15.jar
+7f87448a3000-7f87448aa000 r--s 00058000 08:01 14026522                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/mongodb-driver-3.6.0.jar
+7f87448aa000-7f87448af000 r--s 00046000 08:01 14026654                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/twitter4j-core-4.0.6.jar
+7f87448af000-7f87448c0000 r--s 00089000 08:01 14026600                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/joda-time-2.9.4.jar
+7f87448c0000-7f87448c8000 r--s 0005d000 08:01 14026624                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/jsqlparser-1.2.jar
+7f87448c8000-7f87448d0000 r--s 0007d000 08:01 14026656                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/core-3.3.0.jar
+7f87448d0000-7f87448fb000 r--s 001fc000 08:01 14026623                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/guava-18.0.jar
+7f87448fb000-7f87448fe000 ---p 00000000 00:00 0 
+7f87448fe000-7f87449fc000 rw-p 00000000 00:00 0 
+7f87449fc000-7f8744a12000 r--s 000fb000 08:01 14026533                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/mongodb-driver-core-3.6.0.jar
+7f8744a12000-7f8744a1a000 r--s 00078000 08:01 14026651                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/mail-1.4.7.jar
+7f8744a1a000-7f8744a2e000 r--s 000da000 08:01 14026604                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/ical4j-1.0.2.jar
+7f8744a2e000-7f8744a39000 r--s 00088000 08:01 14026663                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/jai-imageio-core-1.3.1.jar
+7f8744a39000-7f8744a5a000 r--s 0015a000 08:01 14026670                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/bcprov-jdk14-138.jar
+7f8744a5a000-7f8744aac000 r--s 00421000 08:01 14026674                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/jasperreports-5.5.0.jar
+7f8744aac000-7f8744ab3000 r-xp 00000000 08:01 9437427                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libawt_headless.so
+7f8744ab3000-7f8744cb2000 ---p 00007000 08:01 9437427                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libawt_headless.so
+7f8744cb2000-7f8744cb3000 rw-p 00006000 08:01 9437427                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libawt_headless.so
+7f8744cb3000-7f8744eb3000 rw-p 00000000 00:00 0 
+7f8744eb3000-7f8744eb6000 ---p 00000000 00:00 0 
+7f8744eb6000-7f8744fb4000 rw-p 00000000 00:00 0 
+7f8744fb4000-7f8744fb7000 ---p 00000000 00:00 0 
+7f8744fb7000-7f87450b5000 rw-p 00000000 00:00 0 
+7f87450b5000-7f87450b8000 ---p 00000000 00:00 0 
+7f87450b8000-7f87451b6000 rw-p 00000000 00:00 0 
+7f87451b6000-7f87451b9000 ---p 00000000 00:00 0 
+7f87451b9000-7f87452b7000 rw-p 00000000 00:00 0 
+7f87452b7000-7f87452ba000 ---p 00000000 00:00 0 
+7f87452ba000-7f87455b8000 rw-p 00000000 00:00 0 
+7f87455b8000-7f87455bb000 ---p 00000000 00:00 0 
+7f87455bb000-7f87458b9000 rw-p 00000000 00:00 0 
+7f87458b9000-7f87458bc000 ---p 00000000 00:00 0 
+7f87458bc000-7f87459ba000 rw-p 00000000 00:00 0 
+7f87459ba000-7f87459bd000 ---p 00000000 00:00 0 
+7f87459bd000-7f8745abb000 rw-p 00000000 00:00 0 
+7f8745abb000-7f8745abe000 ---p 00000000 00:00 0 
+7f8745abe000-7f8745bbc000 rw-p 00000000 00:00 0 
+7f8745bbc000-7f8745bd3000 r-xp 00000000 08:01 57938701                   /lib/x86_64-linux-gnu/libresolv-2.27.so
+7f8745bd3000-7f8745dd3000 ---p 00017000 08:01 57938701                   /lib/x86_64-linux-gnu/libresolv-2.27.so
+7f8745dd3000-7f8745dd4000 r--p 00017000 08:01 57938701                   /lib/x86_64-linux-gnu/libresolv-2.27.so
+7f8745dd4000-7f8745dd5000 rw-p 00018000 08:01 57938701                   /lib/x86_64-linux-gnu/libresolv-2.27.so
+7f8745dd5000-7f8745dd7000 rw-p 00000000 00:00 0 
+7f8745dd7000-7f8745ddc000 r-xp 00000000 08:01 57938650                   /lib/x86_64-linux-gnu/libnss_dns-2.27.so
+7f8745ddc000-7f8745fdc000 ---p 00005000 08:01 57938650                   /lib/x86_64-linux-gnu/libnss_dns-2.27.so
+7f8745fdc000-7f8745fdd000 r--p 00005000 08:01 57938650                   /lib/x86_64-linux-gnu/libnss_dns-2.27.so
+7f8745fdd000-7f8745fde000 rw-p 00006000 08:01 57938650                   /lib/x86_64-linux-gnu/libnss_dns-2.27.so
+7f8745fde000-7f8745fe0000 r-xp 00000000 08:01 57938658                   /lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2
+7f8745fe0000-7f87461df000 ---p 00002000 08:01 57938658                   /lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2
+7f87461df000-7f87461e0000 r--p 00001000 08:01 57938658                   /lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2
+7f87461e0000-7f87461e1000 rw-p 00002000 08:01 57938658                   /lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2
+7f87461e1000-7f87461e4000 ---p 00000000 00:00 0 
+7f87461e4000-7f87464e2000 rw-p 00000000 00:00 0 
+7f87464e2000-7f87466e2000 rw-p 00000000 00:00 0 
+7f87466e2000-7f87466e5000 ---p 00000000 00:00 0 
+7f87466e5000-7f87467e3000 rw-p 00000000 00:00 0 
+7f87467e3000-7f87467e6000 ---p 00000000 00:00 0 
+7f87467e6000-7f87468e4000 rw-p 00000000 00:00 0 
+7f87468e4000-7f87468e7000 ---p 00000000 00:00 0 
+7f87468e7000-7f87469e5000 rw-p 00000000 00:00 0 
+7f87469e5000-7f87469e8000 ---p 00000000 00:00 0 
+7f87469e8000-7f8746ae6000 rw-p 00000000 00:00 0 
+7f8746ae6000-7f8746ae9000 ---p 00000000 00:00 0 
+7f8746ae9000-7f8746be7000 rw-p 00000000 00:00 0 
+7f8746be7000-7f8746bea000 ---p 00000000 00:00 0 
+7f8746bea000-7f8746ce8000 rw-p 00000000 00:00 0 
+7f8746ce8000-7f8746ceb000 ---p 00000000 00:00 0 
+7f8746ceb000-7f8746de9000 rw-p 00000000 00:00 0 
+7f8746de9000-7f8746dec000 ---p 00000000 00:00 0 
+7f8746dec000-7f8746eea000 rw-p 00000000 00:00 0 
+7f8746eea000-7f8746eed000 ---p 00000000 00:00 0 
+7f8746eed000-7f8746feb000 rw-p 00000000 00:00 0 
+7f8746feb000-7f8746fee000 ---p 00000000 00:00 0 
+7f8746fee000-7f87470ec000 rw-p 00000000 00:00 0 
+7f87470ec000-7f87470ef000 ---p 00000000 00:00 0 
+7f87470ef000-7f87471ed000 rw-p 00000000 00:00 0 
+7f87471ed000-7f87471f0000 ---p 00000000 00:00 0 
+7f87471f0000-7f87472ee000 rw-p 00000000 00:00 0 
+7f87472ee000-7f87472f1000 ---p 00000000 00:00 0 
+7f87472f1000-7f87473ef000 rw-p 00000000 00:00 0 
+7f87473ef000-7f87473f2000 ---p 00000000 00:00 0 
+7f87473f2000-7f87474f0000 rw-p 00000000 00:00 0 
+7f87474f0000-7f87474f3000 ---p 00000000 00:00 0 
+7f87474f3000-7f87475f1000 rw-p 00000000 00:00 0 
+7f87475f1000-7f87475f4000 ---p 00000000 00:00 0 
+7f87475f4000-7f87476f2000 rw-p 00000000 00:00 0 
+7f87476f2000-7f87476f5000 ---p 00000000 00:00 0 
+7f87476f5000-7f87477f3000 rw-p 00000000 00:00 0 
+7f87477f3000-7f87477f6000 ---p 00000000 00:00 0 
+7f87477f6000-7f87478f4000 rw-p 00000000 00:00 0 
+7f87478f4000-7f87478f7000 ---p 00000000 00:00 0 
+7f87478f7000-7f87479f5000 rw-p 00000000 00:00 0 
+7f87479f5000-7f87479f8000 ---p 00000000 00:00 0 
+7f87479f8000-7f8747af6000 rw-p 00000000 00:00 0 
+7f8747af6000-7f8747aff000 r-xp 00000000 08:01 9437424                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libmanagement.so
+7f8747aff000-7f8747cfe000 ---p 00009000 08:01 9437424                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libmanagement.so
+7f8747cfe000-7f8747cff000 rw-p 00008000 08:01 9437424                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libmanagement.so
+7f8747cff000-7f8747eff000 rw-p 00000000 00:00 0 
+7f8747eff000-7f8747f02000 ---p 00000000 00:00 0 
+7f8747f02000-7f8748000000 rw-p 00000000 00:00 0 
+7f8748000000-7f874806f000 rw-p 00000000 00:00 0 
+7f874806f000-7f874c000000 ---p 00000000 00:00 0 
+7f874c000000-7f874c29e000 rw-p 00000000 00:00 0 
+7f874c29e000-7f8750000000 ---p 00000000 00:00 0 
+7f8750000000-7f8750021000 rw-p 00000000 00:00 0 
+7f8750021000-7f8754000000 ---p 00000000 00:00 0 
+7f8754001000-7f8754003000 r--s 00005000 08:01 14026620                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/slf4j-api-1.6.1.jar
+7f8754003000-7f8754006000 ---p 00000000 00:00 0 
+7f8754006000-7f8754104000 rw-p 00000000 00:00 0 
+7f8754104000-7f8754107000 ---p 00000000 00:00 0 
+7f8754107000-7f8754405000 rw-p 00000000 00:00 0 
+7f8754405000-7f8754406000 r--s 00005000 08:01 14026666                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/jmoordbsecurity-0.2.jar
+7f8754406000-7f8754407000 r--s 0000c000 08:01 14026616                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/commons-cli-1.3.1.jar
+7f8754407000-7f8754409000 r--s 0000e000 08:01 14026662                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/jcommander-1.48.jar
+7f8754409000-7f875440b000 r--s 00007000 08:01 14026685                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/jackson-annotations-2.1.4.jar
+7f875440b000-7f8754413000 r--s 00049000 08:01 14026615                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/backport-util-concurrent-3.1.jar
+7f8754413000-7f8754426000 r--s 00211000 08:01 14026665                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/bootsfaces-1.4.0.jar
+7f8754426000-7f8754429000 r--s 00029000 08:01 25693326                   /tmp/payaramicro-rt3910260941856321265tmp/lib/install/applications/__xa_jdbc_ra/__xa_jdbc_ra.jar
+7f8754429000-7f875442c000 r--s 00029000 08:01 25437291                   /tmp/payaramicro-rt3910260941856321265tmp/lib/install/applications/__cp_jdbc_ra/__cp_jdbc_ra.jar
+7f875442c000-7f8754430000 r--s 00029000 08:01 25956371                   /tmp/payaramicro-rt3910260941856321265tmp/lib/install/applications/__dm_jdbc_ra/__dm_jdbc_ra.jar
+7f8754430000-7f8754433000 ---p 00000000 00:00 0 
+7f8754433000-7f8754531000 rw-p 00000000 00:00 0 
+7f8754531000-7f8754534000 r--s 00013000 08:01 14026514                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/transporteejb-19.2.7.jar
+7f8754534000-7f8754536000 r--s 00005000 08:01 14026520                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/commonejb-0.4.1.jar
+7f8754536000-7f8754538000 r--s 0000e000 08:01 14026642                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/jmoordbutils-0.3.1.jar
+7f8754538000-7f8754548000 r--s 000c4000 08:01 14026682                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/castor-1.2.jar
+7f8754548000-7f875454a000 r--s 00000000 08:01 14026621                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/slf4j-nop-1.6.1.jar
+7f875454a000-7f8754550000 r--s 0002b000 08:01 14026677                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/commons-digester-2.1.jar
+7f8754550000-7f875457e000 r--s 00472000 08:01 14026513                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/primefaces-7.0.jar
+7f875457e000-7f8754582000 r--s 0002f000 08:01 14026683                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/jackson-core-2.1.4.jar
+7f8754582000-7f8754586000 r--s 0002b000 08:01 14026669                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/bcmail-jdk14-138.jar
+7f8754586000-7f8754589000 r--s 000c6000 08:01 14026664                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/jmoordbjsf-0.7.2.jar
+7f8754589000-7f87545a2000 r--s 000fe000 08:01 14026546                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/rxjava-1.2.3.jar
+7f87545a2000-7f87545a7000 r--s 00041000 08:01 14026599                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/commons-lang-2.6.jar
+7f87545a7000-7f87545a9000 r--s 000a7000 08:01 14026512                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/font-awesome-4.7.0.jar
+7f87545a9000-7f87545ca000 r--s 0015a000 08:01 14026672                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/bcprov-jdk14-1.38.jar
+7f87545ca000-7f87545d6000 r--s 00108000 08:01 14026668                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/itext-2.1.7.jar
+7f87545d6000-7f87545de000 r--s 00058000 08:01 14026524                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/bson-3.6.0.jar
+7f87545de000-7f87545e2000 r--s 0002b000 08:01 14026673                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/bcmail-jdk14-1.38.jar
+7f87545e2000-7f87545e6000 r--s 0002e000 08:01 14026653                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/javax.mail-api-1.5.6.jar
+7f87545e6000-7f87545f9000 r--s 00345000 08:01 8784261                    /usr/local/jdk1.8.0_172/jre/lib/resources.jar
+7f87545f9000-7f87547f9000 rw-p 00000000 00:00 0 
+7f87547f9000-7f87547fc000 ---p 00000000 00:00 0 
+7f87547fc000-7f87548fa000 rw-p 00000000 00:00 0 
+7f87548fa000-7f87548fd000 ---p 00000000 00:00 0 
+7f87548fd000-7f87549fb000 rw-p 00000000 00:00 0 
+7f87549fb000-7f87549fe000 ---p 00000000 00:00 0 
+7f87549fe000-7f8754afc000 rw-p 00000000 00:00 0 
+7f8754afc000-7f8754aff000 ---p 00000000 00:00 0 
+7f8754aff000-7f8754bfd000 rw-p 00000000 00:00 0 
+7f8754bfd000-7f8754c00000 ---p 00000000 00:00 0 
+7f8754c00000-7f8754cfe000 rw-p 00000000 00:00 0 
+7f8754cfe000-7f8754d01000 ---p 00000000 00:00 0 
+7f8754d01000-7f8754fff000 rw-p 00000000 00:00 0 
+7f8754fff000-7f8758000000 rw-p 00000000 00:00 0 
+7f8758000000-7f8758021000 rw-p 00000000 00:00 0 
+7f8758021000-7f875c000000 ---p 00000000 00:00 0 
+7f875c000000-7f875c001000 r--s 00005000 08:01 14026671                   /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte/WEB-INF/lib/bctsp-jdk14-1.38.jar
+7f875c001000-7f875c004000 r--s 00029000 08:01 25437289                   /tmp/payaramicro-rt3910260941856321265tmp/lib/install/applications/__ds_jdbc_ra/__ds_jdbc_ra.jar
+7f875c004000-7f875c007000 ---p 00000000 00:00 0 
+7f875c007000-7f875c105000 rw-p 00000000 00:00 0 
+7f875c105000-7f875c109000 r--s 0003e000 08:01 7866437                    /usr/local/jdk1.8.0_172/db/lib/derbynet.jar
+7f875c109000-7f875c10f000 r--s 00089000 08:01 7866434                    /usr/local/jdk1.8.0_172/db/lib/derbyclient.jar
+7f875c10f000-7f875c111000 r--s 0000b000 08:01 7866438                    /usr/local/jdk1.8.0_172/db/lib/derbyoptionaltools.jar
+7f875c111000-7f875c115000 r--s 00035000 08:01 7866432                    /usr/local/jdk1.8.0_172/db/lib/derbytools.jar
+7f875c115000-7f875c117000 r--s 0000b000 08:01 7866438                    /usr/local/jdk1.8.0_172/db/lib/derbyoptionaltools.jar
+7f875c117000-7f875c11b000 r--s 0003e000 08:01 7866437                    /usr/local/jdk1.8.0_172/db/lib/derbynet.jar
+7f875c11b000-7f875c11f000 r--s 00035000 08:01 7866432                    /usr/local/jdk1.8.0_172/db/lib/derbytools.jar
+7f875c11f000-7f875c125000 r--s 00089000 08:01 7866434                    /usr/local/jdk1.8.0_172/db/lib/derbyclient.jar
+7f875c125000-7f875c150000 r--s 002cc000 08:01 7866442                    /usr/local/jdk1.8.0_172/db/lib/derby.jar
+7f875c150000-7f875c153000 r--s 00019000 08:01 7866443                    /usr/local/jdk1.8.0_172/db/lib/derbyLocale_zh_TW.jar
+7f875c153000-7f875c155000 r--s 00019000 08:01 7866444                    /usr/local/jdk1.8.0_172/db/lib/derbyLocale_zh_CN.jar
+7f875c155000-7f875c157000 r--s 0001c000 08:01 7866435                    /usr/local/jdk1.8.0_172/db/lib/derbyLocale_ru.jar
+7f875c157000-7f875c15a000 r--s 00014000 08:01 7866439                    /usr/local/jdk1.8.0_172/db/lib/derbyLocale_pt_BR.jar
+7f875c15a000-7f875c15c000 r--s 00015000 08:01 7866426                    /usr/local/jdk1.8.0_172/db/lib/derbyLocale_pl.jar
+7f875c15c000-7f875c15e000 r--s 0001b000 08:01 7866433                    /usr/local/jdk1.8.0_172/db/lib/derbyLocale_ko_KR.jar
+7f875c15e000-7f875c161000 r--s 0001c000 08:01 7866430                    /usr/local/jdk1.8.0_172/db/lib/derbyLocale_ja_JP.jar
+7f875c161000-7f875c163000 r--s 00018000 08:01 7866440                    /usr/local/jdk1.8.0_172/db/lib/derbyLocale_it.jar
+7f875c163000-7f875c165000 r--s 00016000 08:01 7866428                    /usr/local/jdk1.8.0_172/db/lib/derbyLocale_hu.jar
+7f875c165000-7f875c167000 r--s 0001a000 08:01 7866429                    /usr/local/jdk1.8.0_172/db/lib/derbyLocale_fr.jar
+7f875c167000-7f875c169000 r--s 00018000 08:01 7866427                    /usr/local/jdk1.8.0_172/db/lib/derbyLocale_es.jar
+7f875c169000-7f875c16b000 r--s 0001a000 08:01 7866436                    /usr/local/jdk1.8.0_172/db/lib/derbyLocale_de_DE.jar
+7f875c16b000-7f875c16e000 r--s 00015000 08:01 7866445                    /usr/local/jdk1.8.0_172/db/lib/derbyLocale_cs.jar
+7f875c16e000-7f875c199000 r--s 002cc000 08:01 7866442                    /usr/local/jdk1.8.0_172/db/lib/derby.jar
+7f875c199000-7f875c19c000 ---p 00000000 00:00 0 
+7f875c19c000-7f875c29a000 rw-p 00000000 00:00 0 
+7f875c29a000-7f875c29d000 ---p 00000000 00:00 0 
+7f875c29d000-7f875c39b000 rw-p 00000000 00:00 0 
+7f875c39b000-7f875c39e000 ---p 00000000 00:00 0 
+7f875c39e000-7f875c49c000 rw-p 00000000 00:00 0 
+7f875c49c000-7f875c49f000 ---p 00000000 00:00 0 
+7f875c49f000-7f875c59d000 rw-p 00000000 00:00 0 
+7f875c59d000-7f875c5a0000 ---p 00000000 00:00 0 
+7f875c5a0000-7f875c89e000 rw-p 00000000 00:00 0 
+7f875c89e000-7f875c934000 r--s 0110d000 08:01 9437264                    /usr/local/jdk1.8.0_172/jre/lib/ext/jfxrt.jar
+7f875c934000-7f875cb34000 rw-p 00000000 00:00 0 
+7f875cb34000-7f875cb37000 ---p 00000000 00:00 0 
+7f875cb37000-7f875ce35000 rw-p 00000000 00:00 0 
+7f875ce35000-7f875d035000 rw-p 00000000 00:00 0 
+7f875d035000-7f875d03c000 r--s 00000000 08:01 22678667                   /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
+7f875d03c000-7f875d060000 r--p 00000000 08:01 24250786                   /usr/share/locale-langpack/es/LC_MESSAGES/libc.mo
+7f875d060000-7f875d07c000 r--s 00393000 08:01 9437263                    /usr/local/jdk1.8.0_172/jre/lib/ext/cldrdata.jar
+7f875d07c000-7f875d086000 r--s 00116000 08:01 9437270                    /usr/local/jdk1.8.0_172/jre/lib/ext/localedata.jar
+7f875d086000-7f875d087000 r--s 00002000 08:01 7866431                    /usr/local/jdk1.8.0_172/db/lib/derbyrun.jar
+7f875d087000-7f875d08a000 r--s 0001a000 08:01 8784268                    /usr/local/jdk1.8.0_172/jre/lib/jce.jar
+7f875d08a000-7f875d08c000 r--s 00004000 08:01 24908197                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/yubikey-authentication.jar
+7f875d08c000-7f875d08e000 r--s 00004000 08:01 24908196                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/yubico-validation-client2.jar
+7f875d08e000-7f875d095000 r--s 00044000 08:01 24908195                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/yasson.jar
+7f875d095000-7f875d098000 r--s 00012000 08:01 24908194                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/wrapper.jar
+7f875d098000-7f875d09a000 r--s 0000a000 08:01 24908193                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/work-management.jar
+7f875d09a000-7f875d09b000 r--s 00000000 08:01 24908190                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/weld-integration-fragment.jar
+7f875d09b000-7f875d09c000 r--s 00001000 08:01 24908174                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/tyrus-container-glassfish-ejb.jar
+7f875d09c000-7f875d09d000 r--s 00001000 08:01 24908172                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/tyrus-container-glassfish-cdi.jar
+7f875d09d000-7f875d09f000 r--s 0006b000 08:01 24908161                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/schemas.jar
+7f875d09f000-7f875d0a2000 r--s 00020000 08:01 24908160                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/schema2beans-repackaged.jar
+7f875d0a2000-7f875d0a4000 r--s 00008000 08:01 24908156                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/resources-runtime.jar
+7f875d0a4000-7f875d0a7000 r--s 00024000 08:01 24908152                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/pkg-client.jar
+7f875d0a7000-7f875d0a9000 r--s 00003000 08:01 24908151                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/phonehome-bootstrap.jar
+7f875d0a9000-7f875d0ab000 r--s 00002000 08:01 24908143                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/payara-rest-endpoints.jar
+7f875d0ab000-7f875d0ac000 r--s 00009000 08:01 24908142                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/payara-micro-service-5.182.jar
+7f875d0ac000-7f875d0ae000 r--s 00012000 08:01 24908141                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/payara-micro-core-5.182.jar
+7f875d0ae000-7f875d0b0000 r--s 00006000 08:01 24908140                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/payara-micro-cdi-5.182.jar
+7f875d0b0000-7f875d0b1000 r--s 00006000 08:01 24908139                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/payara-jsr107.jar
+7f875d0b1000-7f875d0bb000 r--s 00061000 08:01 24908138                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/payara-jbatch-5.182.jar
+7f875d0bb000-7f875d0be000 r--s 00012000 08:01 24908134                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/osgi-adapter.jar
+7f875d0be000-7f875d0c1000 r--s 00012000 08:01 24908133                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/org.eclipse.persistence.oracle.jar
+7f875d0c1000-7f875d0ca000 r--s 0008f000 08:01 24908132                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/org.eclipse.persistence.moxy.jar
+7f875d0ca000-7f875d0cc000 r--s 0000a000 08:01 24908131                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/org.eclipse.persistence.jpa.modelgen.processor.jar
+7f875d0cc000-7f875d0ea000 r--s 0012b000 08:01 24908130                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/org.eclipse.persistence.jpa.jpql.jar
+7f875d0ea000-7f875d101000 r--s 00140000 08:01 24908129                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/org.eclipse.persistence.jpa.jar
+7f875d101000-7f875d107000 r--s 0004c000 08:01 24908128                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/org.eclipse.persistence.dbws.jar
+7f875d107000-7f875d10e000 r--s 00048000 08:01 24908126                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/org.eclipse.persistence.asm.jar
+7f875d10e000-7f875d113000 r--s 0002a000 08:01 24908125                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/org.eclipse.persistence.antlr.jar
+7f875d113000-7f875d115000 r--s 00009000 08:01 24908122                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/opentracing-repackaged.jar
+7f875d115000-7f875d117000 r--s 00000000 08:01 24908121                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/opentracing-cdi.jar
+7f875d117000-7f875d119000 r--s 00003000 08:01 24908119                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/oauth2-client-integration.jar
+7f875d119000-7f875d11b000 r--s 00004000 08:01 24908116                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/notification-eventbus-core.jar
+7f875d11b000-7f875d11d000 r--s 00004000 08:01 24908114                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/notification-cdi-eventbus-core.jar
+7f875d11d000-7f875d11f000 r--s 00004000 08:01 24908109                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-opentracing.jar
+7f875d11f000-7f875d121000 r--s 00001000 08:01 24908108                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-opentracing-repackaged.jar
+7f875d121000-7f875d123000 r--s 00001000 08:01 24908107                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-opentracing-api.jar
+7f875d123000-7f875d127000 r--s 00020000 08:01 24908106                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-openapi.jar
+7f875d127000-7f875d12d000 r--s 00010000 08:01 24908105                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-openapi-api.jar
+7f875d12d000-7f875d130000 r--s 00018000 08:01 24908104                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-metrics.jar
+7f875d130000-7f875d132000 r--s 00004000 08:01 24908103                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-metrics-api.jar
+7f875d132000-7f875d138000 r--s 00046000 08:01 24908113                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/nimbus-jose-jwt.jar
+7f875d138000-7f875d13a000 r--s 00007000 08:01 24908102                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-jwt-auth.jar
+7f875d13a000-7f875d13b000 r--s 00002000 08:01 24908101                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-jwt-auth-api.jar
+7f875d13b000-7f875d13c000 r--s 00005000 08:01 24908100                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-healthcheck.jar
+7f875d13c000-7f875d13e000 r--s 00002000 08:01 24908099                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-health-api.jar
+7f875d13e000-7f875d141000 r--s 0000d000 08:01 24908098                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-fault-tolerance.jar
+7f875d141000-7f875d143000 r--s 00003000 08:01 24908097                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-fault-tolerance-api.jar
+7f875d143000-7f875d145000 r--s 00002000 08:01 24908096                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-config.jar
+7f875d145000-7f875d148000 r--s 00015000 08:01 24908095                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-config-service.jar
+7f875d148000-7f875d149000 r--s 00003000 08:01 24908094                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-config-api.jar
+7f875d149000-7f875d14a000 r--s 00001000 08:01 24908085                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jstl-connector.jar
+7f875d14a000-7f875d14d000 r--s 0000a000 08:01 24908084                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jsr107-repackaged.jar
+7f875d14d000-7f875d14e000 r--s 00001000 08:01 24908083                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jspcaching-connector.jar
+7f875d14e000-7f875d14f000 r--s 00001000 08:01 24908082                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jsonp-jaxrs.jar
+7f875d14f000-7f875d152000 r--s 0001b000 08:01 24908081                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/json-smart.jar
+7f875d152000-7f875d154000 r--s 00003000 08:01 24908080                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jsf-connector.jar
+7f875d154000-7f875d156000 r--s 0000a000 08:01 24908079                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jpa-container.jar
+7f875d156000-7f875d157000 r--s 00000000 08:01 24908078                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jndi-properties.jar
+7f875d157000-7f875d15a000 r--s 0000c000 08:01 24908076                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jmx-monitoring-5.182.jar
+7f875d15a000-7f875d15b000 r--s 00004000 08:01 24908075                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jms-handlers-5.182.jar
+7f875d15b000-7f875d15d000 r--s 00002000 08:01 24908073                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-proxy-client.jar
+7f875d15d000-7f875d15f000 r--s 00008000 08:01 24908072                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-mvc.jar
+7f875d15f000-7f875d160000 r--s 00004000 08:01 24908071                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-mvc-jsp.jar
+7f875d160000-7f875d161000 r--s 00001000 08:01 24908070                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-mvc-connector.jar
+7f875d161000-7f875d163000 r--s 00004000 08:01 24908069                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-microprofile-rest-client.jar
+7f875d163000-7f875d165000 r--s 0000e000 08:01 24908068                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-media-sse.jar
+7f875d165000-7f875d168000 r--s 0000e000 08:01 24908067                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-media-multipart.jar
+7f875d168000-7f875d16a000 r--s 00005000 08:01 24908066                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-media-moxy.jar
+7f875d16a000-7f875d16b000 r--s 00001000 08:01 24908065                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-media-json-processing.jar
+7f875d16b000-7f875d16d000 r--s 00010000 08:01 24908064                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-media-json-jackson.jar
+7f875d16d000-7f875d16e000 r--s 00002000 08:01 24908063                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-media-json-binding.jar
+7f875d16e000-7f875d171000 r--s 0000d000 08:01 24908061                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-hk2.jar
+7f875d171000-7f875d172000 r--s 00005000 08:01 24908060                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-gf-ejb.jar
+7f875d172000-7f875d175000 r--s 0000f000 08:01 24908059                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-entity-filtering.jar
+7f875d175000-7f875d177000 r--s 00003000 08:01 24908058                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-container-servlet.jar
+7f875d177000-7f875d179000 r--s 00005000 08:01 24908056                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-container-grizzly2-http.jar
+7f875d179000-7f875d17c000 r--s 0000a000 08:01 24908053                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-cdi1x.jar
+7f875d17c000-7f875d17d000 r--s 00002000 08:01 24908052                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-cdi1x-transaction.jar
+7f875d17d000-7f875d17f000 r--s 00002000 08:01 24908051                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-cdi1x-servlet.jar
+7f875d17f000-7f875d181000 r--s 00008000 08:01 24908050                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-bean-validation.jar
+7f875d181000-7f875d183000 r--s 0000e000 08:01 24908047                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jdbc-admin.jar
+7f875d183000-7f875d184000 r--s 00001000 08:01 24908046                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jcip-annotations-repackaged.jar
+7f875d184000-7f875d187000 r--s 0001a000 08:01 24908044                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jboss-classfilewriter.jar
+7f875d187000-7f875d189000 r--s 00003000 08:01 24908120                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/opentracing-adapter.jar
+7f875d189000-7f875d18b000 r--s 00003000 08:01 24908043                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jaxrs-client-tracing.jar
+7f875d18b000-7f875d1c0000 r--s 00355000 08:01 24908039                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.servlet.jsp.jstl.jar
+7f875d1c0000-7f875d1c1000 r--s 00007000 08:01 24908038                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.servlet.jsp.jstl-api.jar
+7f875d1c1000-7f875d1c4000 r--s 0001d000 08:01 24908033                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.security.enterprise.jar
+7f875d1c4000-7f875d1c7000 r--s 00006000 08:01 24908032                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.security.enterprise-api.jar
+7f875d1c7000-7f875d1c9000 r--s 00004000 08:01 24904517                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.json.bind-api.jar
+7f875d1c9000-7f875d1cc000 r--s 0000d000 08:01 24904163                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.jms-api-2.0.1.jar
+7f875d1cc000-7f875d1cd000 r--s 00004000 08:01 24903974                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javamail-runtime.jar
+7f875d1cd000-7f875d1ce000 r--s 00000000 08:01 24903970                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javaee.jar
+7f875d1ce000-7f875d1cf000 r--s 00004000 08:01 24903969                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javaee-kernel.jar
+7f875d1cf000-7f875d1d0000 r--s 00002000 08:01 24903965                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jaspic-servlet-utils.jar
+7f875d1d0000-7f875d1d2000 r--s 00009000 08:01 24903963                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jackson-dataformat-yaml.jar
+7f875d1d2000-7f875d1d5000 r--s 00016000 08:01 24903962                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jackson-dataformat-xml.jar
+7f875d1d5000-7f875d1d7000 r--s 00005000 08:01 24903957                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/inmemory.jacc.provider.jar
+7f875d1d7000-7f875d1d9000 r--s 00008000 08:01 24903948                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/hibernate-validator-cdi.jar
+7f875d1d9000-7f875d1db000 r--s 00014000 08:01 24908049                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jdbc-runtime.jar
+7f875d1db000-7f875d1dc000 r--s 00002000 08:01 24903946                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/healthcheck-cpool.jar
+7f875d1dc000-7f875d1de000 r--s 00004000 08:01 24903943                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/hazelcast-ejb-timer-5.182.jar
+7f875d1de000-7f875d1df000 r--s 00003000 08:01 24903942                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/hazelcast-eclipselink-coordination.jar
+7f875d1df000-7f875d21f000 r--s 004ac000 08:01 24908127                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/org.eclipse.persistence.core.jar
+7f875d21f000-7f875d220000 r--s 00003000 08:01 24903941                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/hazelcast-eclipselink-coordination-5.182.jar
+7f875d220000-7f875d222000 r--s 00012000 08:01 24908186                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/web-ha.jar
+7f875d222000-7f875d223000 r--s 00002000 08:01 24903939                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/ha-hazelcast-store.jar
+7f875d223000-7f875d232000 r--s 001ae000 08:01 24903937                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/h2.jar
+7f875d232000-7f875d233000 r--s 00000000 08:01 24903935                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/grizzly-npn-osgi.jar
+7f875d233000-7f875d235000 r--s 0001d000 08:01 24903934                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/grizzly-npn-bootstrap.jar
+7f875d235000-7f875d236000 r--s 00000000 08:01 24903931                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/glassfish-oracle-jdbc-driver-packages.jar
+7f875d236000-7f875d23d000 r--s 00045000 08:01 24903928                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/glassfish-grizzly-extra-all.jar
+7f875d23d000-7f875d23f000 r--s 00000000 08:01 24903927                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/glassfish-extra-jre-packages.jar
+7f875d23f000-7f875d240000 r--s 00001000 08:01 24903926                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/glassfish-embedded-static-shell.jar
+7f875d240000-7f875d241000 r--s 00000000 08:01 24903925                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/glassfish-embedded-shell.jar
+7f875d241000-7f875d243000 r--s 00016000 08:01 24903921                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/glassfish-batch-connector-5.182.jar
+7f875d243000-7f875d244000 r--s 0000b000 08:01 24903920                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/glassfish-batch-commands-5.182.jar
+7f875d244000-7f875d246000 r--s 00001000 08:01 24903916                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/gf-jpa-connector.jar
+7f875d246000-7f875d247000 r--s 00004000 08:01 24903918                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/gf-weld-connector.jar
+7f875d247000-7f875d270000 r--s 00277000 08:01 24908192                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/weld-osgi-bundle.jar
+7f875d270000-7f875d272000 r--s 00004000 08:01 24908188                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/web-sse.jar
+7f875d272000-7f875d274000 r--s 00006000 08:01 24908184                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/web-embed-api.jar
+7f875d274000-7f875d275000 r--s 0000c000 08:01 24908189                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/websecurity.jar
+7f875d275000-7f875d27c000 r--s 00080000 08:01 24908037                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.servlet.jsp.jar
+7f875d27c000-7f875d280000 r--s 0001c000 08:01 24908042                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.ws.rs-api.jar
+7f875d280000-7f875d283000 r--s 0000f000 08:01 24908062                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-media-jaxb.jar
+7f875d283000-7f875d288000 r--s 0002d000 08:01 24908054                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-client.jar
+7f875d288000-7f875d29b000 r--s 000c8000 08:01 24908074                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-server.jar
+7f875d29b000-7f875d29c000 r--s 00003000 08:01 24908110                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/microprofile-rest-client-api.jar
+7f875d29c000-7f875d2b4000 r--s 00109000 08:01 24908055                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-common.jar
+7f875d2b4000-7f875d2b6000 r--s 0000d000 08:01 24908057                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jersey-container-servlet-core.jar
+7f875d2b6000-7f875d2b8000 r--s 0000b000 08:01 24908175                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/tyrus-container-grizzly-client.jar
+7f875d2b8000-7f875d2ba000 r--s 00002000 08:01 24908179                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/tyrus-spi.jar
+7f875d2ba000-7f875d2c1000 r--s 00057000 08:01 24908177                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/tyrus-core.jar
+7f875d2c1000-7f875d2c3000 r--s 00010000 08:01 24908171                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/tyrus-client.jar
+7f875d2c3000-7f875d2c5000 r--s 00007000 08:01 24908041                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.websocket-api.jar
+7f875d2c5000-7f875d2c6000 r--s 00003000 08:01 24908178                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/tyrus-server.jar
+7f875d2c6000-7f875d2c8000 r--s 00005000 08:01 24908176                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/tyrus-container-servlet.jar
+7f875d2c8000-7f875d2d6000 r--s 00112000 08:01 24908183                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/web-core.jar
+7f875d2d6000-7f875d2d9000 r--s 0001a000 08:01 24908187                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/web-naming.jar
+7f875d2d9000-7f875d2db000 r--s 00008000 08:01 24903917                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/gf-web-connector.jar
+7f875d2db000-7f875d2de000 r--s 0000b000 08:01 24908036                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.servlet.jsp-api.jar
+7f875d2de000-7f875d2e0000 r--s 00019000 08:01 24908181                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/war-util.jar
+7f875d2e0000-7f875d2e4000 r--s 0002f000 08:01 24908182                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/web-cli.jar
+7f875d2e4000-7f875d2ed000 r--s 0009a000 08:01 24908185                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/web-glue.jar
+7f875d2ed000-7f875d31d000 r--s 00379000 08:01 24904159                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.faces.jar
+7f875d31d000-7f875d320000 r--s 00027000 08:01 24908191                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/weld-integration.jar
+7f875d320000-7f875d322000 r--s 00006000 08:01 24903915                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/gf-jms-injection-5.182.jar
+7f875d322000-7f875d323000 r--s 00000000 08:01 24903911                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/flashlight-extra-jdk-packages.jar
+7f875d323000-7f875d324000 r--s 00000000 08:01 24903910                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/flashlight-agent.jar
+7f875d324000-7f875d326000 r--s 00016000 08:01 24903909                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/ejb.security-5.182.jar
+7f875d326000-7f875d328000 r--s 00011000 08:01 24903907                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/ejb-full-container-5.182.jar
+7f875d328000-7f875d329000 r--s 00004000 08:01 24903914                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/gf-ejb-connector.jar
+7f875d329000-7f875d32a000 r--s 00006000 08:01 24908144                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/persistence-common.jar
+7f875d32a000-7f875d32e000 r--s 00011000 08:01 24908169                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/stats77.jar
+7f875d32e000-7f875d33b000 r--s 000de000 08:01 24903906                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/ejb-container.jar
+7f875d33b000-7f875d33c000 r--s 00002000 08:01 24903905                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/ejb-client.jar
+7f875d33c000-7f875d33e000 r--s 0004d000 08:01 24903904                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/dtds.jar
+7f875d33e000-7f875d340000 r--s 00017000 08:01 24903900                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/deployment-client.jar
+7f875d340000-7f875d342000 r--s 0000c000 08:01 24903899                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/deployment-autodeploy.jar
+7f875d342000-7f875d345000 r--s 00031000 08:01 24903898                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/deployment-admin.jar
+7f875d345000-7f875d347000 r--s 00006000 08:01 24903971                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javamail-connector.jar
+7f875d347000-7f875d348000 r--s 00002000 08:01 24903913                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/gf-connectors-connector.jar
+7f875d348000-7f875d34a000 r--s 00004000 08:01 24908091                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/libpam4j-repackaged.jar
+7f875d34a000-7f875d34b000 r--s 00002000 08:01 24903908                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/ejb-internal-api.jar
+7f875d34b000-7f875d34d000 r--s 0000d000 08:01 24903967                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jaspic.provider.framework.jar
+7f875d34d000-7f875d34e000 r--s 0000c000 08:01 24908034                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.security.jacc-api.jar
+7f875d34e000-7f875d350000 r--s 0000b000 08:01 24908031                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.security.auth.message-api.jar
+7f875d350000-7f875d357000 r--s 0004d000 08:01 24908162                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/security-ee.jar
+7f875d357000-7f875d358000 r--s 00002000 08:01 24903924                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/glassfish-ee-api.jar
+7f875d358000-7f875d359000 r--s 00007000 08:01 24903902                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/deployment-javaee-core.jar
+7f875d359000-7f875d360000 r--s 0007b000 08:01 24903896                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/connectors-runtime.jar
+7f875d360000-7f875d361000 r--s 00007000 08:01 24903894                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/connectors-inbound-runtime-5.182.jar
+7f875d361000-7f875d363000 r--s 00003000 08:01 24908048                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jdbc-config.jar
+7f875d363000-7f875d367000 r--s 0002c000 08:01 24903893                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/connectors-admin.jar
+7f875d367000-7f875d369000 r--s 0000c000 08:01 24904140                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.enterprise.concurrent.jar
+7f875d369000-7f875d36b000 r--s 00002000 08:01 24904136                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.enterprise.concurrent-api.jar
+7f875d36b000-7f875d36c000 r--s 00004000 08:01 24908135                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/osgi-resource-locator.jar
+7f875d36c000-7f875d36e000 r--s 00007000 08:01 24903938                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/ha-api.jar
+7f875d36e000-7f875d371000 r--s 00019000 08:01 24908154                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/resources-connector.jar
+7f875d371000-7f875d374000 r--s 00016000 08:01 24903895                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/connectors-internal-api.jar
+7f875d374000-7f875d377000 r--s 00012000 08:01 24903930                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/glassfish-naming.jar
+7f875d377000-7f875d37d000 r--s 00029000 08:01 24903897                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/container-common.jar
+7f875d37d000-7f875d380000 r--s 00017000 08:01 24908112                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/monitoring-core.jar
+7f875d380000-7f875d383000 r--s 0000a000 08:01 24904157                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.enterprise.deploy-api.jar
+7f875d383000-7f875d387000 r--s 00016000 08:01 24908035                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.servlet-api.jar
+7f875d387000-7f875d396000 r--s 000b6000 08:01 24903903                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/dol.jar
+7f875d396000-7f875d398000 r--s 00002000 08:01 24908124                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/orb-enabler.jar
+7f875d398000-7f875d39b000 r--s 0000c000 08:01 24908123                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/orb-connector.jar
+7f875d39b000-7f875d39d000 r--s 00007000 08:01 24903922                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/glassfish-corba-internal-api.jar
+7f875d39d000-7f875d3ba000 r--s 00133000 08:01 24903923                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/glassfish-corba-omgapi.jar
+7f875d3ba000-7f875d3bc000 r--s 00005000 08:01 24904162                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.interceptor-api.jar
+7f875d3bc000-7f875d3be000 r--s 0000f000 08:01 24908086                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jta.jar
+7f875d3be000-7f875d3c4000 r--s 0002a000 08:01 24908026                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.persistence.jar
+7f875d3c4000-7f875d3c6000 r--s 00005000 08:01 24908170                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/transaction-internal-api.jar
+7f875d3c6000-7f875d3ca000 r--s 0000e000 08:01 24908030                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.resource-api.jar
+7f875d3ca000-7f875d3d0000 r--s 00059000 08:01 24908087                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jts.jar
+7f875d3d0000-7f875d3d3000 r--s 0001b000 08:01 24903890                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/concurrent-impl.jar
+7f875d3d3000-7f875d3d5000 r--s 0000e000 08:01 24908118                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/nucleus-resources.jar
+7f875d3d5000-7f875d3d7000 r--s 00005000 08:01 24903889                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/concurrent-connector.jar
+7f875d3d7000-7f875d3de000 r--s 0003f000 08:01 24908167                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/snakeyaml.jar
+7f875d3de000-7f875d3e4000 r--s 00055000 08:01 24908165                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/server-mgmt.jar
+7f875d3e4000-7f875d3e6000 r--s 00009000 08:01 24903887                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/cli-optional.jar
+7f875d3e6000-7f875d3eb000 r--s 00017000 08:01 24903884                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/cdi-api.jar
+7f875d3eb000-7f875d3ec000 r--s 00000000 08:01 24903883                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/cdi-api-fragment.jar
+7f875d3ec000-7f875d3f7000 r--s 0009a000 08:01 24903882                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/bcel.jar
+7f875d3f7000-7f875d3f9000 r--s 00016000 08:01 24903881                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/asm.jar
+7f875d3f9000-7f875d3fc000 r--s 00012000 08:01 24903880                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/asm-xml.jar
+7f875d3fc000-7f875d3fe000 r--s 00010000 08:01 24903879                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/asm-util.jar
+7f875d3fe000-7f875d400000 r--s 0000a000 08:01 24903878                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/asm-tree.jar
+7f875d400000-7f875d401000 r--s 00012000 08:01 24903874                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/asm-commons.jar
+7f875d401000-7f875d403000 r--s 00002000 08:01 24903873                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/appserver-cli.jar
+7f875d403000-7f875d404000 r--s 00000000 08:01 24903870                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/appserv-rt.jar
+7f875d404000-7f875d406000 r--s 00009000 08:01 24903867                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/annotation-framework.jar
+7f875d406000-7f875d408000 r--s 00006000 08:01 24908014                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.management.j2ee-api.jar
+7f875d408000-7f875d40b000 r--s 00012000 08:01 24903866                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/amx-javaee.jar
+7f875d40b000-7f875d40e000 r--s 0001c000 08:01 24903945                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/healthcheck-core.jar
+7f875d40e000-7f875d40f000 r--s 00003000 08:01 24903947                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/healthcheck-stuck.jar
+7f875d40f000-7f875d410000 r--s 00003000 08:01 24908137                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/payara-executor-service.jar
+7f875d410000-7f875d4d2000 r--s 007f7000 08:01 24903944                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/hazelcast.jar
+7f875d4d2000-7f875d4d5000 r--s 00016000 08:01 24903940                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/hazelcast-bootstrap.jar
+7f875d4d5000-7f875d4dd000 r--s 00098000 08:01 24907779                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.mail.jar
+7f875d4dd000-7f875d509000 r--s 00208000 08:01 24903936                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/guava.jar
+7f875d509000-7f875d50b000 r--s 00006000 08:01 24908040                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.transaction-api.jar
+7f875d50b000-7f875d50e000 r--s 0000d000 08:01 24904117                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.ejb-api.jar
+7f875d50e000-7f875d510000 r--s 00007000 08:01 24908136                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/payara-api.jar
+7f875d510000-7f875d514000 r--s 00014000 08:01 24908115                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/notification-core.jar
+7f875d514000-7f875d517000 r--s 00010000 08:01 24908153                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/requesttracing-core.jar
+7f875d517000-7f875d519000 r--s 00000000 08:01 24903869                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/api-exporter.jar
+7f875d519000-7f875d51c000 r--s 0001e000 08:01 24903932                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/glassfish.jar
+7f875d51c000-7f875d520000 r--s 00020000 08:01 24903912                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/flashlight-framework.jar
+7f875d520000-7f875d52b000 r--s 000b8000 08:01 24908088                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/kernel.jar
+7f875d52b000-7f875d530000 r--s 00038000 08:01 24908077                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jmxremote_optional-repackaged.jar
+7f875d530000-7f875d532000 r--s 00010000 08:01 24903929                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/glassfish-mbeanserver.jar
+7f875d532000-7f875d53b000 r--s 00068000 08:01 24903865                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/amx-core.jar
+7f875d53b000-7f875d53f000 r--s 00033000 08:01 24904134                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.el.jar
+7f875d53f000-7f875d541000 r--s 00001000 08:01 24903863                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/admin-core.jar
+7f875d541000-7f875d542000 r--s 00002000 08:01 24908166                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/simple-glassfish-api.jar
+7f875d542000-7f875d543000 r--s 00007000 08:01 24903964                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jackson-module-jaxb-annotations.jar
+7f875d543000-7f875d547000 r--s 0004b000 08:01 24903960                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jackson-core.jar
+7f875d547000-7f875d55a000 r--s 00135000 08:01 24903961                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jackson-databind.jar
+7f875d55a000-7f875d55d000 r--s 0000e000 08:01 24903959                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jackson-annotations.jar
+7f875d55d000-7f875d560000 r--s 0000b000 08:01 24908090                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/ldapbp-repackaged.jar
+7f875d560000-7f875d562000 r--s 0000b000 08:01 24908149                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/pfl-tf-tools.jar
+7f875d562000-7f875d56b000 r--s 0004c000 08:01 24908148                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/pfl-dynamic.jar
+7f875d56b000-7f875d571000 r--s 00051000 08:01 24908145                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/pfl-asm.jar
+7f875d571000-7f875d577000 r--s 0002c000 08:01 24908147                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/pfl-basic.jar
+7f875d577000-7f875d57c000 r--s 0002d000 08:01 24903933                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/gmbal.jar
+7f875d57c000-7f875d580000 r--s 0002a000 08:01 24903901                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/deployment-common.jar
+7f875d580000-7f875d589000 r--s 00071000 08:01 24908164                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/security.jar
+7f875d589000-7f875d58e000 r--s 00021000 08:01 24908163                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/security-services.jar
+7f875d58e000-7f875d593000 r--s 0001e000 08:01 24903958                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/internal-api.jar
+7f875d593000-7f875d5b0000 r--s 000f8000 08:01 24903949                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/hibernate-validator.jar
+7f875d5b0000-7f875d5c6000 r-xp 00000000 08:01 9437416                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libnet.so
+7f875d5c6000-7f875d7c6000 ---p 00016000 08:01 9437416                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libnet.so
+7f875d7c6000-7f875d7c7000 rw-p 00016000 08:01 9437416                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libnet.so
+7f875d7c7000-7f875d7d8000 r-xp 00000000 08:01 9437419                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libnio.so
+7f875d7d8000-7f875d9d7000 ---p 00011000 08:01 9437419                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libnio.so
+7f875d9d7000-7f875d9d8000 rw-p 00010000 08:01 9437419                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libnio.so
+7f875d9d8000-7f875d9d9000 ---p 00000000 00:00 0 
+7f875d9d9000-7f875dad9000 rw-p 00000000 00:00 0 
+7f875dad9000-7f875dadc000 ---p 00000000 00:00 0 
+7f875dadc000-7f875dbda000 rw-p 00000000 00:00 0 
+7f875dbda000-7f875dbdb000 ---p 00000000 00:00 0 
+7f875dbdb000-7f875dbde000 ---p 00000000 00:00 0 
+7f875dbde000-7f875dcdb000 rw-p 00000000 00:00 0 
+7f875dcdb000-7f875dcdc000 ---p 00000000 00:00 0 
+7f875dcdc000-7f875dcdf000 ---p 00000000 00:00 0 
+7f875dcdf000-7f875dddc000 rw-p 00000000 00:00 0 
+7f875dddc000-7f875dddd000 ---p 00000000 00:00 0 
+7f875dddd000-7f875dde0000 ---p 00000000 00:00 0 
+7f875dde0000-7f875dedd000 rw-p 00000000 00:00 0 
+7f875dedd000-7f875dede000 ---p 00000000 00:00 0 
+7f875dede000-7f875dee1000 ---p 00000000 00:00 0 
+7f875dee1000-7f875dfde000 rw-p 00000000 00:00 0 
+7f875dfde000-7f875dfe1000 ---p 00000000 00:00 0 
+7f875dfe1000-7f875e0df000 rw-p 00000000 00:00 0 
+7f875e0df000-7f875e0e2000 ---p 00000000 00:00 0 
+7f875e0e2000-7f875e1e0000 rw-p 00000000 00:00 0 
+7f875e1e0000-7f875e1e3000 ---p 00000000 00:00 0 
+7f875e1e3000-7f875e2e1000 rw-p 00000000 00:00 0 
+7f875e2e1000-7f875e2e5000 r-xp 00000000 08:01 9437379                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libdt_socket.so
+7f875e2e5000-7f875e4e4000 ---p 00004000 08:01 9437379                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libdt_socket.so
+7f875e4e4000-7f875e4e5000 rw-p 00003000 08:01 9437379                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libdt_socket.so
+7f875e4e5000-7f875e4e8000 ---p 00000000 00:00 0 
+7f875e4e8000-7f875e5e6000 rw-p 00000000 00:00 0 
+7f875e5e6000-7f875e5e9000 ---p 00000000 00:00 0 
+7f875e5e9000-7f875e6e7000 rw-p 00000000 00:00 0 
+7f875e6e7000-7f875e6ea000 ---p 00000000 00:00 0 
+7f875e6ea000-7f875e7e8000 rw-p 00000000 00:00 0 
+7f875e7e8000-7f875e7e9000 ---p 00000000 00:00 0 
+7f875e7e9000-7f8760000000 rw-p 00000000 00:00 0 
+7f8760000000-7f8760025000 rw-p 00000000 00:00 0 
+7f8760025000-7f8764000000 ---p 00000000 00:00 0 
+7f8764000000-7f8764003000 r--s 00015000 08:01 24908150                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/pfl-tf.jar
+7f8764003000-7f8764010000 r--s 00085000 08:01 24903891                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/config-api.jar
+7f8764010000-7f8764016000 r--s 00051000 08:01 24903864                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/admin-util.jar
+7f8764016000-7f8764036000 r--s 001ae000 08:01 24908117                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/nucleus-grizzly-all.jar
+7f8764036000-7f8765000000 rw-p 00000000 00:00 0 
+7f8765000000-7f8768aa0000 rwxp 00000000 00:00 0 
+7f8768aa0000-7f8774000000 ---p 00000000 00:00 0 
+7f8774000000-7f8777dea000 rw-p 00000000 00:00 0 
+7f8777dea000-7f8778000000 ---p 00000000 00:00 0 
+7f8778000000-7f8778002000 r--s 00010000 08:01 24908146                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/pfl-basic-tools.jar
+7f8778002000-7f8778003000 r--s 00005000 08:01 24908168                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/ssl-impl.jar
+7f8778003000-7f8778007000 r--s 0002e000 08:01 24908092                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/logging.jar
+7f8778007000-7f8778009000 r--s 0000e000 08:01 24908089                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/launcher.jar
+7f8778009000-7f877800c000 r--s 0001c000 08:01 24904632                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.json.jar
+7f877800c000-7f877800e000 r--s 0000e000 08:01 24908111                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/mimepull.jar
+7f877800e000-7f8778010000 r--s 0000a000 08:01 24908093                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/management-api.jar
+7f8778010000-7f8778012000 r--s 0000e000 08:01 24903886                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/classmate.jar
+7f8778012000-7f8778014000 r--s 0000f000 08:01 24908045                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/jboss-logging.jar
+7f8778014000-7f8778019000 r--s 00012000 08:01 24908180                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/validation-api.jar
+7f8778019000-7f877801e000 r--s 00030000 08:01 24903951                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/hk2-config.jar
+7f877801e000-7f8778026000 r--s 00029000 08:01 24903919                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/glassfish-api.jar
+7f8778026000-7f8778032000 r--s 00077000 08:01 24903888                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/common-util.jar
+7f8778032000-7f8778485000 rw-p 00000000 00:00 0 
+7f8778485000-7f877865f000 r--s 03d6a000 08:01 8784257                    /usr/local/jdk1.8.0_172/jre/lib/rt.jar
+7f877865f000-7f87786d5000 rw-p 00000000 00:00 0 
+7f87786d5000-7f87786d6000 ---p 00000000 00:00 0 
+7f87786d6000-7f87787d6000 rw-p 00000000 00:00 0 
+7f87787d6000-7f87787d7000 ---p 00000000 00:00 0 
+7f87787d7000-7f87788d7000 rw-p 00000000 00:00 0 
+7f87788d7000-7f87788d8000 ---p 00000000 00:00 0 
+7f87788d8000-7f87789d8000 rw-p 00000000 00:00 0 
+7f87789d8000-7f87789d9000 ---p 00000000 00:00 0 
+7f87789d9000-7f8778ad9000 rw-p 00000000 00:00 0 
+7f8778ad9000-7f8778ada000 ---p 00000000 00:00 0 
+7f8778ada000-7f8778bda000 rw-p 00000000 00:00 0 
+7f8778bda000-7f8778bdb000 ---p 00000000 00:00 0 
+7f8778bdb000-7f8778cdb000 rw-p 00000000 00:00 0 
+7f8778cdb000-7f8778cdc000 ---p 00000000 00:00 0 
+7f8778cdc000-7f8778ddc000 rw-p 00000000 00:00 0 
+7f8778ddc000-7f8778ddd000 ---p 00000000 00:00 0 
+7f8778ddd000-7f8778f64000 rw-p 00000000 00:00 0 
+7f8778f64000-7f877940f000 ---p 00000000 00:00 0 
+7f877940f000-7f8779496000 rw-p 00000000 00:00 0 
+7f8779496000-7f8779940000 ---p 00000000 00:00 0 
+7f8779940000-7f8779bd9000 rw-p 00000000 00:00 0 
+7f8779bd9000-7f8779cc5000 rw-p 00000000 00:00 0 
+7f8779cc5000-7f8779f9a000 ---p 00000000 00:00 0 
+7f8779f9a000-7f8779fb5000 r-xp 00000000 08:01 9437412                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libzip.so
+7f8779fb5000-7f877a1b5000 ---p 0001b000 08:01 9437412                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libzip.so
+7f877a1b5000-7f877a1b6000 rw-p 0001b000 08:01 9437412                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libzip.so
+7f877a1b6000-7f877a1c1000 r-xp 00000000 08:01 57938652                   /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7f877a1c1000-7f877a3c0000 ---p 0000b000 08:01 57938652                   /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7f877a3c0000-7f877a3c1000 r--p 0000a000 08:01 57938652                   /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7f877a3c1000-7f877a3c2000 rw-p 0000b000 08:01 57938652                   /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7f877a3c2000-7f877a3c8000 rw-p 00000000 00:00 0 
+7f877a3c8000-7f877a3df000 r-xp 00000000 08:01 57938646                   /lib/x86_64-linux-gnu/libnsl-2.27.so
+7f877a3df000-7f877a5de000 ---p 00017000 08:01 57938646                   /lib/x86_64-linux-gnu/libnsl-2.27.so
+7f877a5de000-7f877a5df000 r--p 00016000 08:01 57938646                   /lib/x86_64-linux-gnu/libnsl-2.27.so
+7f877a5df000-7f877a5e0000 rw-p 00017000 08:01 57938646                   /lib/x86_64-linux-gnu/libnsl-2.27.so
+7f877a5e0000-7f877a5e2000 rw-p 00000000 00:00 0 
+7f877a5e2000-7f877a5ed000 r-xp 00000000 08:01 57938663                   /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7f877a5ed000-7f877a7ec000 ---p 0000b000 08:01 57938663                   /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7f877a7ec000-7f877a7ed000 r--p 0000a000 08:01 57938663                   /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7f877a7ed000-7f877a7ee000 rw-p 0000b000 08:01 57938663                   /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7f877a7ee000-7f877a7f6000 r-xp 00000000 08:01 57938648                   /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7f877a7f6000-7f877a9f6000 ---p 00008000 08:01 57938648                   /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7f877a9f6000-7f877a9f7000 r--p 00008000 08:01 57938648                   /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7f877a9f7000-7f877a9f8000 rw-p 00009000 08:01 57938648                   /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7f877a9f8000-7f877b3c7000 r--p 00000000 08:01 22419933                   /usr/lib/locale/locale-archive
+7f877b3c7000-7f877b3c9000 r-xp 00000000 08:01 9437381                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libnpt.so
+7f877b3c9000-7f877b5c9000 ---p 00002000 08:01 9437381                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libnpt.so
+7f877b5c9000-7f877b5ca000 rw-p 00002000 08:01 9437381                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libnpt.so
+7f877b5ca000-7f877b604000 r-xp 00000000 08:01 9437399                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libjdwp.so
+7f877b604000-7f877b803000 ---p 0003a000 08:01 9437399                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libjdwp.so
+7f877b803000-7f877b804000 rw-p 00039000 08:01 9437399                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libjdwp.so
+7f877b804000-7f877b805000 rw-p 00000000 00:00 0 
+7f877b805000-7f877b830000 r-xp 00000000 08:01 9437406                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libjava.so
+7f877b830000-7f877ba2f000 ---p 0002b000 08:01 9437406                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libjava.so
+7f877ba2f000-7f877ba31000 rw-p 0002a000 08:01 9437406                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libjava.so
+7f877ba31000-7f877ba3e000 r-xp 00000000 08:01 9437411                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libverify.so
+7f877ba3e000-7f877bc3e000 ---p 0000d000 08:01 9437411                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libverify.so
+7f877bc3e000-7f877bc40000 rw-p 0000d000 08:01 9437411                    /usr/local/jdk1.8.0_172/jre/lib/amd64/libverify.so
+7f877bc40000-7f877bc47000 r-xp 00000000 08:01 57938703                   /lib/x86_64-linux-gnu/librt-2.27.so
+7f877bc47000-7f877be46000 ---p 00007000 08:01 57938703                   /lib/x86_64-linux-gnu/librt-2.27.so
+7f877be46000-7f877be47000 r--p 00006000 08:01 57938703                   /lib/x86_64-linux-gnu/librt-2.27.so
+7f877be47000-7f877be48000 rw-p 00007000 08:01 57938703                   /lib/x86_64-linux-gnu/librt-2.27.so
+7f877be48000-7f877bfe5000 r-xp 00000000 08:01 57938625                   /lib/x86_64-linux-gnu/libm-2.27.so
+7f877bfe5000-7f877c1e4000 ---p 0019d000 08:01 57938625                   /lib/x86_64-linux-gnu/libm-2.27.so
+7f877c1e4000-7f877c1e5000 r--p 0019c000 08:01 57938625                   /lib/x86_64-linux-gnu/libm-2.27.so
+7f877c1e5000-7f877c1e6000 rw-p 0019d000 08:01 57938625                   /lib/x86_64-linux-gnu/libm-2.27.so
+7f877c1e6000-7f877cec2000 r-xp 00000000 08:01 9437388                    /usr/local/jdk1.8.0_172/jre/lib/amd64/server/libjvm.so
+7f877cec2000-7f877d0c2000 ---p 00cdc000 08:01 9437388                    /usr/local/jdk1.8.0_172/jre/lib/amd64/server/libjvm.so
+7f877d0c2000-7f877d19c000 rw-p 00cdc000 08:01 9437388                    /usr/local/jdk1.8.0_172/jre/lib/amd64/server/libjvm.so
+7f877d19c000-7f877d1e7000 rw-p 00000000 00:00 0 
+7f877d1e7000-7f877d3ce000 r-xp 00000000 08:01 57938562                   /lib/x86_64-linux-gnu/libc-2.27.so
+7f877d3ce000-7f877d5ce000 ---p 001e7000 08:01 57938562                   /lib/x86_64-linux-gnu/libc-2.27.so
+7f877d5ce000-7f877d5d2000 r--p 001e7000 08:01 57938562                   /lib/x86_64-linux-gnu/libc-2.27.so
+7f877d5d2000-7f877d5d4000 rw-p 001eb000 08:01 57938562                   /lib/x86_64-linux-gnu/libc-2.27.so
+7f877d5d4000-7f877d5d8000 rw-p 00000000 00:00 0 
+7f877d5d8000-7f877d5db000 r-xp 00000000 08:01 57938585                   /lib/x86_64-linux-gnu/libdl-2.27.so
+7f877d5db000-7f877d7da000 ---p 00003000 08:01 57938585                   /lib/x86_64-linux-gnu/libdl-2.27.so
+7f877d7da000-7f877d7db000 r--p 00002000 08:01 57938585                   /lib/x86_64-linux-gnu/libdl-2.27.so
+7f877d7db000-7f877d7dc000 rw-p 00003000 08:01 57938585                   /lib/x86_64-linux-gnu/libdl-2.27.so
+7f877d7dc000-7f877d7f2000 r-xp 00000000 08:01 7472155                    /usr/local/jdk1.8.0_172/lib/amd64/jli/libjli.so
+7f877d7f2000-7f877d9f1000 ---p 00016000 08:01 7472155                    /usr/local/jdk1.8.0_172/lib/amd64/jli/libjli.so
+7f877d9f1000-7f877d9f2000 rw-p 00015000 08:01 7472155                    /usr/local/jdk1.8.0_172/lib/amd64/jli/libjli.so
+7f877d9f2000-7f877da0c000 r-xp 00000000 08:01 57938695                   /lib/x86_64-linux-gnu/libpthread-2.27.so
+7f877da0c000-7f877dc0b000 ---p 0001a000 08:01 57938695                   /lib/x86_64-linux-gnu/libpthread-2.27.so
+7f877dc0b000-7f877dc0c000 r--p 00019000 08:01 57938695                   /lib/x86_64-linux-gnu/libpthread-2.27.so
+7f877dc0c000-7f877dc0d000 rw-p 0001a000 08:01 57938695                   /lib/x86_64-linux-gnu/libpthread-2.27.so
+7f877dc0d000-7f877dc11000 rw-p 00000000 00:00 0 
+7f877dc11000-7f877dc38000 r-xp 00000000 08:01 57938534                   /lib/x86_64-linux-gnu/ld-2.27.so
+7f877dc38000-7f877dc39000 r--s 00002000 08:01 24903892                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/config-types.jar
+7f877dc39000-7f877dc3b000 r--s 00002000 08:01 24908159                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/scattered-archive-api.jar
+7f877dc3b000-7f877dc42000 r--s 00059000 08:01 24903877                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/asm-repackaged.jar
+7f877dc42000-7f877dc45000 r--s 00013000 08:01 24903885                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/class-model.jar
+7f877dc45000-7f877dc48000 r--s 0000c000 08:01 24903954                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/hk2-runlevel.jar
+7f877dc48000-7f877dc52000 r--s 000ab000 08:01 24903982                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javassist.jar
+7f877dc52000-7f877dc56000 r--s 0002b000 08:01 24903953                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/hk2-locator.jar
+7f877dc56000-7f877dc5a000 r--s 00019000 08:01 24903952                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/hk2-core.jar
+7f877dc5a000-7f877dc5c000 r--s 00002000 08:01 24903868                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/aopalliance-repackaged.jar
+7f877dc5c000-7f877dc61000 r--s 00029000 08:01 24903950                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/hk2-api.jar
+7f877dc61000-7f877dc62000 r--s 00001000 08:01 24904160                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.inject.jar
+7f877dc62000-7f877dc64000 r--s 00005000 08:01 24904111                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/javax.annotation-api.jar
+7f877dc64000-7f877dc67000 r--s 0001e000 08:01 24903955                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/hk2-utils.jar
+7f877dc67000-7f877dc68000 r--s 00000000 08:01 24903956                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/hk2.jar
+7f877dc68000-7f877dc6c000 r--s 0002a000 08:01 24903862                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/admin-cli.jar
+7f877dc6c000-7f877dc6e000 r--s 00006000 08:01 24903861                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/accessors-smart.jar
+7f877dc6e000-7f877dc6f000 r--s 00029000 08:01 24903860                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/__xa_jdbc_ra.rar
+7f877dc6f000-7f877dc74000 r--s 0009d000 08:01 8784262                    /usr/local/jdk1.8.0_172/jre/lib/jsse.jar
+7f877dc74000-7f877dd1d000 rw-p 00000000 00:00 0 
+7f877dd1d000-7f877dd1e000 ---p 00000000 00:00 0 
+7f877dd1e000-7f877dd21000 ---p 00000000 00:00 0 
+7f877dd21000-7f877de22000 rw-p 00000000 00:00 0 
+7f877de22000-7f877de23000 r--s 00029000 08:01 24903859                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/__ds_jdbc_ra.rar
+7f877de23000-7f877de24000 r--s 00029000 08:01 24903858                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/__dm_jdbc_ra.rar
+7f877de24000-7f877de25000 r--s 00029000 08:01 24903857                   /tmp/payaramicro-rt3910260941856321265tmp/runtime/__cp_jdbc_ra.rar
+7f877de25000-7f877de2e000 r--s 0440e000 08:01 9832077                    /home/avbravo/.m2/repository/fish/payara/extras/payara-micro/5.182/payara-micro-5.182.jar
+7f877de2e000-7f877de36000 rw-s 00000000 08:01 19797914                   /tmp/hsperfdata_avbravo/3990
+7f877de36000-7f877de37000 rw-p 00000000 00:00 0 
+7f877de37000-7f877de38000 ---p 00000000 00:00 0 
+7f877de38000-7f877de39000 r--p 00027000 08:01 57938534                   /lib/x86_64-linux-gnu/ld-2.27.so
+7f877de39000-7f877de3a000 rw-p 00028000 08:01 57938534                   /lib/x86_64-linux-gnu/ld-2.27.so
+7f877de3a000-7f877de3b000 rw-p 00000000 00:00 0 
+7ffd4474d000-7ffd4476e000 rw-p 00000000 00:00 0                          [stack]
+7ffd447be000-7ffd447c1000 r--p 00000000 00:00 0                          [vvar]
+7ffd447c1000-7ffd447c3000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+VM Arguments:
+jvm_args: -Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=35755 -Dgav=com.avbravo:transporte:19.3.3 
+java_command: /home/avbravo/.m2/repository/fish/payara/extras/payara-micro/5.182/payara-micro-5.182.jar --autoBindHttp --deploy /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte
+java_class_path (initial): /home/avbravo/.m2/repository/fish/payara/extras/payara-micro/5.182/payara-micro-5.182.jar
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=/usr/local/jdk1.8.0_172
+JRE_HOME=/usr/local/jdk1.8.0_172/jre
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/jdk1.8.0_172/bin:/home/avbravo/mongodb/bin:/home/avbravo/apache-ant-1.10.5/bin:/home/avbravo/apachenetbeans9.0/java/maven/bin
+USERNAME=avbravo
+SHELL=/bin/bash
+DISPLAY=:0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0xad2ab0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGBUS: [libjvm.so+0xad2ab0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGFPE: [libjvm.so+0x92a790], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGPIPE: [libjvm.so+0x92a790], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGXFSZ: [libjvm.so+0x92a790], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGILL: [libjvm.so+0x92a790], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGUSR1: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGUSR2: [libjvm.so+0x92bff0], sa_mask[0]=00100000000000000000000000000000, sa_flags=SA_RESTART|SA_SIGINFO
+SIGHUP: [libjvm.so+0x92d3f0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGINT: SIG_IGN, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGTERM: [libjvm.so+0x92d3f0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGQUIT: [libjvm.so+0x92d3f0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+
+
+---------------  S Y S T E M  ---------------
+
+OS:DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=18.04
+DISTRIB_CODENAME=bionic
+DISTRIB_DESCRIPTION="Ubuntu 18.04.2 LTS"
+
+uname:Linux 4.15.0-46-generic #49-Ubuntu SMP Wed Feb 6 09:33:07 UTC 2019 x86_64
+libc:glibc 2.27 NPTL 2.27 
+rlimit: STACK 8192k, CORE 0k, NPROC 63612, NOFILE 1048576, AS infinity
+load average:1.65 0.90 0.87
+
+/proc/meminfo:
+MemTotal:       16328044 kB
+MemFree:         3639928 kB
+MemAvailable:    9486672 kB
+Buffers:          912120 kB
+Cached:          4726860 kB
+SwapCached:            0 kB
+Active:          8568408 kB
+Inactive:        3133404 kB
+Active(anon):    6064640 kB
+Inactive(anon):    31648 kB
+Active(file):    2503768 kB
+Inactive(file):  3101756 kB
+Unevictable:         232 kB
+Mlocked:             232 kB
+SwapTotal:       2097148 kB
+SwapFree:        2097148 kB
+Dirty:               272 kB
+Writeback:             0 kB
+AnonPages:       6061088 kB
+Mapped:           639416 kB
+Shmem:             33460 kB
+Slab:             748260 kB
+SReclaimable:     577208 kB
+SUnreclaim:       171052 kB
+KernelStack:       22528 kB
+PageTables:        71036 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    10261168 kB
+Committed_AS:   15207776 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:         0 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:      513072 kB
+DirectMap2M:    14069760 kB
+DirectMap1G:     3145728 kB
+
+
+CPU:total 8 (initial active 8) (4 cores per cpu, 2 threads per core) family 6 model 94 stepping 3, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, erms, rtm, 3dnowpref, lzcnt, ht, tsc, tscinvbit, bmi1, bmi2, adx
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
+stepping	: 3
+microcode	: 0xc6
+cpu MHz		: 3191.944
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 0
+cpu cores	: 4
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf
+bogomips	: 6816.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
+stepping	: 3
+microcode	: 0xc6
+cpu MHz		: 3155.300
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 1
+cpu cores	: 4
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf
+bogomips	: 6816.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
+stepping	: 3
+microcode	: 0xc6
+cpu MHz		: 3195.618
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 2
+cpu cores	: 4
+apicid		: 4
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf
+bogomips	: 6816.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
+stepping	: 3
+microcode	: 0xc6
+cpu MHz		: 3110.480
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 3
+cpu cores	: 4
+apicid		: 6
+initial apicid	: 6
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf
+bogomips	: 6816.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 4
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
+stepping	: 3
+microcode	: 0xc6
+cpu MHz		: 2922.003
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 0
+cpu cores	: 4
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf
+bogomips	: 6816.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 5
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
+stepping	: 3
+microcode	: 0xc6
+cpu MHz		: 2806.149
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 1
+cpu cores	: 4
+apicid		: 3
+initial apicid	: 3
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf
+bogomips	: 6816.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 6
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
+stepping	: 3
+microcode	: 0xc6
+cpu MHz		: 3079.356
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 2
+cpu cores	: 4
+apicid		: 5
+initial apicid	: 5
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf
+bogomips	: 6816.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 7
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
+stepping	: 3
+microcode	: 0xc6
+cpu MHz		: 3244.761
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 3
+cpu cores	: 4
+apicid		: 7
+initial apicid	: 7
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf
+bogomips	: 6816.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+
+
+Memory: 4k page, physical 16328044k(3639896k free), swap 2097148k(2097148k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (25.172-b11) for linux-amd64 JRE (1.8.0_172-b11), built on Mar 28 2018 21:44:09 by "java_re" with gcc 4.3.0 20080428 (Red Hat 4.3.0-8)
+
+time: Tue Apr 16 14:34:06 2019
+elapsed time: 1025 seconds (0d 0h 17m 5s)
+
