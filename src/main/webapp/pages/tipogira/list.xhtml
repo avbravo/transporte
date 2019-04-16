@@ -19,13 +19,13 @@
                 border-color: #428BCA;
             } 
         </style>
-       
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.tipogira.list}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
 
-          <b:growl  id="msgs"/>
-         
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
+
+            <b:growl  id="msgs"/>
+
             <b:panel title="#{msg['titlelist.tipogira']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
@@ -34,60 +34,47 @@
 
                     <p:outputLabel value="#{msg['field.idtipogira']}"/>
                     <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
-completeMethod="#{tipogiraController.tipogiraServices.complete}" 
-labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"     listener="#{tipogiraController.handleAutocompleteOfListXhtml}"
-                                                  value="#{tipogiraController.tipogiraSelected}"
-                                                  itemLabel=" #{p.idtipogira}"
-                                                  field="idtipogira"
-                                                  update=" :form:dataTable"/>
+                                             completeMethod="#{tipogiraController.tipogiraServices.complete}" 
+                                             labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"  
+                                             listener="#{tipogiraController.handleAutocompleteOfListXhtml}"
+                                             value="#{tipogiraController.tipogiraSearch}"
+                                             itemLabel=" #{p.idtipogira}"
+                                             field="idtipogira"
+                                             update=" :form:dataTable"/>
 
-               
-                      
-                      
 
                 </b:panelGrid>
-                   <b:row>
-                  
-                    <b:column medium-screen="6">
-                        <jmoordbjsf:search label="#{msg['field.idtipogira']}"
-                                  value="#{tipogiraController.lookupServices.idtipogira}"
-                                  renderedList="#{applicationMenu.tipogira.list}"  
-                                  search="#{tipogiraController.searchBy('idtipogira')}"
-                                  />
-                    </b:column>
-                </b:row>
+               
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <jmoordbjsf:paginator 
-                    rowPage="#{tipogiraController.rowPage}"
-                    clear="#{tipogiraController.clear()}"
-                    first="#{tipogiraController.first()}"
-                    back="#{tipogiraController.back()}"
-                    next="#{tipogiraController.next()}"
-                    last="#{tipogiraController.last()}"
+                  <jmoordbjsf:paginator
+                    controller="#{tipogiraController}"                        
+                    rowPage="#{tipogiraController.rowPage}"                   
                     page="#{tipogiraController.page}"
                     pages="#{tipogiraController.pages}"
-                 skip="ajax:tipogiraController.skip(tipogiraController.page)" 
-                    new="#{tipogiraController.prepare('gonew',tipogiraController.tipogira)}"
-                    printAll="#{tipogiraController.printAll()}"
+                    skip="ajax:tipogiraController.skip()" 
+                    url = "/pages/tipogira/new.xhtml"
                     />
                 <b:dataTable value="#{tipogiraController.tipogiraDataModel}"
                              var="item"
                              id="dataTable2"
                              paginated="false"
                              onpage="console.log('page');">
- 
+
                     <b:dataTableColumn value="#{item.idtipogira}" label="#{msg['field.idtipogira']}"/>
 
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
-                  
+
                     <b:dataTableColumn label="">
+                                             
+                         <jmoordbjsf:column
 
-                        <jmoordbjsf:column
+                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{tipogiraController}"
+                            url="/pages/tipogira/view.xhtml"
+                            item="#{item}"
 
-                            edit="#{tipogiraController.prepare('view',item)}"
-                            delete="#{tipogiraController.delete(item,false)}"
-                            rendered="#{applicationMenu.tipogira.delete}"
                             />
                     </b:dataTableColumn>
 
@@ -96,6 +83,6 @@ labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"     listener="#{tipogiraCon
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tipogira.list}" />
+      <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
     </ui:define>
 </ui:composition>

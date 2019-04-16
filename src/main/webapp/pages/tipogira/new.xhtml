@@ -19,22 +19,21 @@
             }
         </style>
     
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.tipogira.create}" onkeypress="if (event.keyCode == 13) {
+         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <jmoordbjsf:toolbarnew label="#{msg['field.idtipogira']}"
-                       title="#{msg['titleview.tipogira']}"
-                       value="#{tipogiraController.tipogira.idtipogira}"
-                       isnew="#{tipogiraController.isNew()}"
-                          disabled="#{tipogiraController.writable}"
-                       new="#{tipogiraController.prepare('new',tipogiraController.tipogira)}"
-                       rendererList="#{applicationMenu.tipogira.list}"
-                       list="#{tipogiraController.prepare('golist',tipogiraController.tipogira)}"
+               <jmoordbjsf:toolbarnew label="#{msg['field.idtipogira']}"
+                                       title="#{msg['titleview.tipogira']}"
+                                       value="#{tipogiraController.tipogira.idtipogira}"
+                                       disabled="#{tipogiraController.writable}"
+                                       rendererList="#{p:ifGranted('ADMINISTRADOR')}"
+                                       controller="#{tipogiraController}"                                       
+                                       url  = "/pages/tipogira/list.xhtml"
 
-                       />
+                                       />
                 <b:panel title="#{app['title.data']}" look="primary" rendered="#{tipogiraController.writable}">
 
 
@@ -45,8 +44,9 @@
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{tipogiraController.tipogira.activo}" id="activo"  required="true"/>
 
-                        <jmoordbjsf:save rendered="#{tipogiraController.writable and applicationMenu.tipogira.create}"
-                                      save="#{tipogiraController.save()}" />
+                          <jmoordbjsf:toolbarsave
+                            rendered="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{tipogiraController}"   />
 
 
                     </b:panelGrid>
@@ -55,7 +55,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tipogira.create}" />
+             <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
 
         <br/><br/><br/>
     </ui:define>

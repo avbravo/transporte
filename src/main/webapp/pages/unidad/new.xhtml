@@ -18,14 +18,14 @@
                 border-color: #428BCA;
             }
         </style>
-        
+
         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
+                        return false;
+                    }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-    <jmoordbjsf:toolbarnew label="#{msg['field.idrol']}"
+                <jmoordbjsf:toolbarnew label="#{msg['field.idrol']}"
                                        title="#{msg['titleview.unidad']}"
                                        value="#{unidadController.unidad.idunidad}"
                                        disabled="#{unidadController.writable}"
@@ -44,7 +44,7 @@
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{unidadController.unidad.activo}" id="activo"  required="true"/>
 
-                   <jmoordbjsf:toolbarsave
+                        <jmoordbjsf:toolbarsave
                             rendered="#{p:ifGranted('ADMINISTRADOR')}"
                             controller="#{unidadController}"   />
 
@@ -55,7 +55,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.unidad.create}" />
+            <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
 
         <br/><br/><br/>
     </ui:define>

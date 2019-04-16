@@ -19,7 +19,7 @@
             }
         </style>
        
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.tipogira.query}" onkeypress="if (event.keyCode == 13) {
+         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -34,19 +34,17 @@
                         <jmoordbjsf:yesno value="#{tipogiraController.tipogira.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
-                    <jmoordbjsf:toolbarview 
-                        renderedDelete="#{applicationMenu.tipogira.delete and tipogiraController.writable }"
-                        renderedEdit="#{applicationMenu.tipogira.edit and tipogiraController.writable}" 
-                        renderedList="#{applicationMenu.tipogira.list and tipogiraController.writable}"
-                        edit="#{tipogiraController.edit()}"
-                        delete="#{tipogiraController.delete(tipogiraController.tipogira,true)}"
-                        print="#{tipogiraController.print()}"
-                        url="#{tipogiraController.prepare('golist',tipogiraController.tipogira)}"
+                   <jmoordbjsf:toolbarview 
+                        renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
+                        controller="#{tipogiraController}"
+                        url  = "/pages/tipogira/list.xhtml"
                         />
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tipogira.query}" />
+              <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>
