@@ -166,7 +166,6 @@ public class FacultadController implements Serializable, IController {
                 case "descripcion":
                     if (JmoordbContext.get("_fieldsearchfacultad") != null) {
                         facultadSearch.setDescripcion(JmoordbContext.get("_fieldsearchfacultad").toString());
-                        //  doc = new Document("descripcion", facultadSearch.getDescripcion());
                         facultadList = facultadRepository.findRegexInTextPagination("descripcion", facultadSearch.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
 
                     } else {

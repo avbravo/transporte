@@ -19,7 +19,7 @@
             }
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.sugerencia.create}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                      return false;
                  }">
             <h:panelGroup id="content" layout="block"> 
@@ -28,12 +28,10 @@
                 <jmoordbjsf:toolbarnew label="#{msg['field.idsugerencia']}"
                                        title="#{msg['titleview.sugerencia']}"
                                        value="#{sugerenciaController.sugerencia.idsugerencia}"
-                                       isnew="#{sugerenciaController.isNew()}"
                                        disabled="#{sugerenciaController.writable}"
-                                       new="#{sugerenciaController.prepare('new',sugerenciaController.sugerencia)}"
-                                       rendererList="#{applicationMenu.sugerencia.list}"
-                                       list="#{sugerenciaController.prepare('golist',sugerenciaController.sugerencia)}"
-
+                                       rendererList="#{p:ifGranted('ADMINISTRADOR')}"
+                                       controller="#{sugerenciaController}"                                       
+                                       url  = "/pages/sugerencia/list.xhtml"
                                        />
                 <b:panel title="#{app['title.data']}" look="primary" rendered="#{sugerenciaController.writable}">
 
@@ -42,14 +40,14 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{sugerenciaController.writable}"> 
 
                         <p:outputLabel  value="#{msg['field.descripcion']}" />
-                        <b:inputTextarea rows="2" span="8" value="#{sugerenciaController.sugerencia.descripcion}" id="descripcion"  />
+                        <b:inputTextarea rows="5" span="8" value="#{sugerenciaController.sugerencia.descripcion}" id="descripcion"  />
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{sugerenciaController.sugerencia.activo}" id="activo"  required="true"/>
 
-                        <jmoordbjsf:save rendered="#{sugerenciaController.writable and applicationMenu.sugerencia.create}"
-                                         save="#{sugerenciaController.save()}" />
-
+                       <jmoordbjsf:toolbarsave
+                            rendered="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{sugerenciaController}"   />
 
                     </b:panelGrid>
 
@@ -57,7 +55,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.sugerencia.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
 
         <br/><br/><br/>
     </ui:define>

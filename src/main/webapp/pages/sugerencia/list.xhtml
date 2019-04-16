@@ -19,14 +19,14 @@
                 border-color: #428BCA;
             } 
         </style>
-       
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.sugerencia.list}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
 
-          <b:growl  id="msgs"/>
-         
-          <b:panel title="#{msg['titlelist.sugerencia']}" id="content"   look="primary" > 
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
+
+            <b:growl  id="msgs"/>
+
+            <b:panel title="#{msg['titlelist.sugerencia']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
 
@@ -34,61 +34,60 @@
 
                     <p:outputLabel value="#{msg['field.idsugerencia']}"/>
                     <jmoordbjsf:autocomplete converter="#{sugerenciaConverter}"
-completeMethod="#{sugerenciaController.sugerenciaServices.complete}" 
-labeltip1="#{msg['field.sugerencia']} #{p.idsugerencia}"     listener="#{sugerenciaController.handleAutocompleteOfListXhtml}"
-                                                  value="#{sugerenciaController.sugerenciaSelected}"
-                                                  itemLabel=" #{p.idsugerencia}"
-                                                  field="idsugerencia"
-                                                  update=" :form:dataTable"/>
+                                             completeMethod="#{sugerenciaController.sugerenciaServices.complete}" 
+                                             labeltip1="#{msg['field.sugerencia']} #{p.idsugerencia}"   
+                                             listener="#{sugerenciaController.handleAutocompleteOfListXhtml}"
+                                             value="#{sugerenciaController.sugerenciaSearch}"
+                                             itemLabel=" #{p.idsugerencia}"
+                                             field="idsugerencia"
+                                             update=" :form:dataTable"/>
 
-               
-                      
-                      
+
+
+
 
                 </b:panelGrid>
-                   <b:row>
-                  
+                <b:row>
+
                     <b:column medium-screen="6">
-                        <jmoordbjsf:search label="#{msg['field.idsugerencia']}"
-                                  value="#{sugerenciaController.lookupServices.idsugerencia}"
-                                  renderedList="#{applicationMenu.sugerencia.list}"  
-                                  search="#{sugerenciaController.searchBy('idsugerencia')}"
-                                  />
+                        <jmoordbjsf:search label="#{msg['field.descripcion']}"
+                                           value="#{sugerenciaController.sugerenciaSearch.descripcion}"
+                                           renderedList="#{p:ifGranted('ADMINISTRADOR')}"  
+                                           search="#{sugerenciaController.searchBy('descripcion',sugerenciaController.sugerenciaSearch.descripcion)}"
+                                           />
                     </b:column>
                 </b:row>
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <jmoordbjsf:paginator 
-                    rowPage="#{sugerenciaController.rowPage}"
-                    clear="#{sugerenciaController.clear()}"
-                    first="#{sugerenciaController.first()}"
-                    back="#{sugerenciaController.back()}"
-                    next="#{sugerenciaController.next()}"
-                    last="#{sugerenciaController.last()}"
+                <jmoordbjsf:paginator
+                    controller="#{sugerenciaController}"                        
+                    rowPage="#{sugerenciaController.rowPage}"                   
                     page="#{sugerenciaController.page}"
                     pages="#{sugerenciaController.pages}"
-                 skip="ajax:sugerenciaController.skip(sugerenciaController.page)" 
-                    new="#{sugerenciaController.prepare('gonew',sugerenciaController.sugerencia)}"
-                    printAll="#{sugerenciaController.printAll()}"
+                    skip="ajax:sugerenciaController.skip()" 
+                    url = "/pages/sugerencia/new.xhtml"
                     />
                 <b:dataTable value="#{sugerenciaController.sugerenciaDataModel}"
                              var="item"
                              id="dataTable2"
                              paginated="false"
                              onpage="console.log('page');">
- 
+
                     <b:dataTableColumn value="#{item.idsugerencia}" label="#{msg['field.idsugerencia']}"/>
                     <b:dataTableColumn value="#{item.descripcion}" label="#{msg['field.descripcion']}"/>
 
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
-                  
+
                     <b:dataTableColumn label="">
 
-                        <jmoordbjsf:column
+                           <jmoordbjsf:column
 
-                            edit="#{sugerenciaController.prepare('view',item)}"
-                            delete="#{sugerenciaController.delete(item,false)}"
-                            rendered="#{applicationMenu.sugerencia.delete}"
+                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{sugerenciaController}"
+                            url="/pages/sugerencia/view.xhtml"
+                            item="#{item}"
+
                             />
                     </b:dataTableColumn>
 
@@ -97,6 +96,6 @@ labeltip1="#{msg['field.sugerencia']} #{p.idsugerencia}"     listener="#{sugeren
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.sugerencia.list}" />
+       <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
     </ui:define>
 </ui:composition>

@@ -18,10 +18,10 @@
                 border-color: #428BCA;
             }
         </style>
-       
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.sugerencia.query}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
@@ -30,25 +30,23 @@
                         <p:outputLabel  value="#{msg['field.idsugerencia']}" />
                         <p:outputLabel  value="#{sugerenciaController.sugerencia.idsugerencia}" id="idsugerencia"   />
 
-                          <p:outputLabel  value="#{msg['field.descripcion']}" />
-     <b:inputTextarea rows="2" span="8" value="#{sugerenciaController.sugerencia.descripcion}" id="descripcion"  />
-                     <p:outputLabel  value="#{msg['field.activo']}" />
+                        <p:outputLabel  value="#{msg['field.descripcion']}" />
+                        <b:inputTextarea rows="5" span="8" value="#{sugerenciaController.sugerencia.descripcion}" id="descripcion"  />
+                        <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{sugerenciaController.sugerencia.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
-                    <jmoordbjsf:toolbarview 
-                        renderedDelete="#{applicationMenu.sugerencia.delete and sugerenciaController.writable }"
-                        renderedEdit="#{applicationMenu.sugerencia.edit and sugerenciaController.writable}" 
-                        renderedList="#{applicationMenu.sugerencia.list and sugerenciaController.writable}"
-                        edit="#{sugerenciaController.edit()}"
-                        delete="#{sugerenciaController.delete(sugerenciaController.sugerencia,true)}"
-                        print="#{sugerenciaController.print()}"
-                        url="#{sugerenciaController.prepare('golist',sugerenciaController.sugerencia)}"
+                   <jmoordbjsf:toolbarview 
+                        renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
+                        controller="#{sugerenciaController}"
+                        url  = "/pages/sugerencia/list.xhtml"
                         />
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.sugerencia.query}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>
