@@ -19,13 +19,13 @@
                 border-color: #428BCA;
             } 
         </style>
-       
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.tipovehiculo.list}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
 
-          <b:growl  id="msgs"/>
-         
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
+
+            <b:growl  id="msgs"/>
+
             <b:panel title="#{msg['titlelist.tipovehiculo']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
@@ -34,60 +34,44 @@
 
                     <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
                     <jmoordbjsf:autocomplete converter="#{tipovehiculoConverter}"
-completeMethod="#{tipovehiculoController.tipovehiculoServices.complete}" 
-labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"        listener="#{tipovehiculoController.handleAutocompleteOfListXhtml}"
-                                                  value="#{tipovehiculoController.tipovehiculoSelected}"
-                                                  itemLabel=" #{p.idtipovehiculo}"
-                                                  field="idtipovehiculo"
-                                                  update=" :form:dataTable"/>
-
-               
-                      
-                      
+                                             completeMethod="#{tipovehiculoController.tipovehiculoServices.complete}" 
+                                             labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"      
+                                             listener="#{tipovehiculoController.handleAutocompleteOfListXhtml}"
+                                             value="#{tipovehiculoController.tipovehiculoSearch}"
+                                             itemLabel=" #{p.idtipovehiculo}"
+                                             field="idtipovehiculo"
+                                             update=" :form:dataTable"/>
 
                 </b:panelGrid>
-                   <b:row>
-                  
-                    <b:column medium-screen="6">
-                        <jmoordbjsf:search label="#{msg['field.idtipovehiculo']}"
-                                  value="#{tipovehiculoController.lookupServices.idtipovehiculo}"
-                                  renderedList="#{applicationMenu.tipovehiculo.list}"  
-                                  search="#{tipovehiculoController.searchBy('idtipovehiculo')}"
-                                  />
-                    </b:column>
-                </b:row>
+               
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <jmoordbjsf:paginator 
-                    rowPage="#{tipovehiculoController.rowPage}"
-                    clear="#{tipovehiculoController.clear()}"
-                    first="#{tipovehiculoController.first()}"
-                    back="#{tipovehiculoController.back()}"
-                    next="#{tipovehiculoController.next()}"
-                    last="#{tipovehiculoController.last()}"
+               <jmoordbjsf:paginator
+                    controller="#{tipovehiculoController}"                        
+                    rowPage="#{tipovehiculoController.rowPage}"                   
                     page="#{tipovehiculoController.page}"
                     pages="#{tipovehiculoController.pages}"
-                 skip="ajax:tipovehiculoController.skip(tipovehiculoController.page)" 
-                    new="#{tipovehiculoController.prepare('gonew',tipovehiculoController.tipovehiculo)}"
-                    printAll="#{tipovehiculoController.printAll()}"
+                    skip="ajax:tipovehiculoController.skip()" 
+                    url = "/pages/tipovehiculo/new.xhtml"
                     />
                 <b:dataTable value="#{tipovehiculoController.tipovehiculoDataModel}"
                              var="item"
                              id="dataTable2"
                              paginated="false"
                              onpage="console.log('page');">
- 
+
                     <b:dataTableColumn value="#{item.idtipovehiculo}" label="#{msg['field.idtipovehiculo']}"/>
 
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
-                  
+
                     <b:dataTableColumn label="">
 
-                        <jmoordbjsf:column
-
-                            edit="#{tipovehiculoController.prepare('view',item)}"
-                            delete="#{tipovehiculoController.delete(item,false)}"
-                            rendered="#{applicationMenu.tipovehiculo.delete}"
+                       <jmoordbjsf:column
+                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{tipovehiculoController}"
+                            url="/pages/tipovehiculo/view.xhtml"
+                            item="#{item}"
                             />
                     </b:dataTableColumn>
 
@@ -96,6 +80,6 @@ labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"        listener="
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tipovehiculo.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
     </ui:define>
 </ui:composition>

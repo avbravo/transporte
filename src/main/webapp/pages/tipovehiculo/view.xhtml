@@ -19,7 +19,7 @@
             }
         </style>
        
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.tipovehiculo.query}" onkeypress="if (event.keyCode == 13) {
+         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -34,19 +34,17 @@
                         <jmoordbjsf:yesno value="#{tipovehiculoController.tipovehiculo.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
-                    <jmoordbjsf:toolbarview 
-                        renderedDelete="#{applicationMenu.tipovehiculo.delete and tipovehiculoController.writable }"
-                        renderedEdit="#{applicationMenu.tipovehiculo.edit and tipovehiculoController.writable}" 
-                        renderedList="#{applicationMenu.tipovehiculo.list and tipovehiculoController.writable}"
-                        edit="#{tipovehiculoController.edit()}"
-                        delete="#{tipovehiculoController.delete(tipovehiculoController.tipovehiculo,true)}"
-                        print="#{tipovehiculoController.print()}"
-                        url="#{tipovehiculoController.prepare('golist',tipovehiculoController.tipovehiculo)}"
+                      <jmoordbjsf:toolbarview 
+                        renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
+                        controller="#{tipovehiculoController}"
+                        url  = "/pages/tipovehiculo/list.xhtml"
                         />
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tipovehiculo.query}" />
+     <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>
