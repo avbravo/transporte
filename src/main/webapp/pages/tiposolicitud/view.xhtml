@@ -18,10 +18,10 @@
                 border-color: #428BCA;
             }
         </style>
-       
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.tiposolicitud.query}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
@@ -30,23 +30,21 @@
                         <p:outputLabel  value="#{msg['field.idtiposolicitud']}" />
                         <p:outputLabel  value="#{tiposolicitudController.tiposolicitud.idtiposolicitud}" id="idtiposolicitud"   />
 
-                     <p:outputLabel  value="#{msg['field.activo']}" />
+                        <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{tiposolicitudController.tiposolicitud.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
                     <jmoordbjsf:toolbarview 
-                        renderedDelete="#{applicationMenu.tiposolicitud.delete and tiposolicitudController.writable }"
-                        renderedEdit="#{applicationMenu.tiposolicitud.edit and tiposolicitudController.writable}" 
-                        renderedList="#{applicationMenu.tiposolicitud.list and tiposolicitudController.writable}"
-                        edit="#{tiposolicitudController.edit()}"
-                        delete="#{tiposolicitudController.delete(tiposolicitudController.tiposolicitud,true)}"
-                        print="#{tiposolicitudController.print()}"
-                        url="#{tiposolicitudController.prepare('golist',tiposolicitudController.tiposolicitud)}"
+                        renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
+                        controller="#{tiposolicitudController}"
+                        url  = "/pages/tiposolicitud/list.xhtml"
                         />
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tiposolicitud.query}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

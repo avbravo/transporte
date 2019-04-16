@@ -18,23 +18,22 @@
                 border-color: #428BCA;
             }
         </style>
-    
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.tiposolicitud.create}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
                 <jmoordbjsf:toolbarnew label="#{msg['field.idtiposolicitud']}"
-                       title="#{msg['titleview.tiposolicitud']}"
-                       value="#{tiposolicitudController.tiposolicitud.idtiposolicitud}"
-                       isnew="#{tiposolicitudController.isNew()}"
-                          disabled="#{tiposolicitudController.writable}"
-                       new="#{tiposolicitudController.prepare('new',tiposolicitudController.tiposolicitud)}"
-                       rendererList="#{applicationMenu.tiposolicitud.list}"
-                       list="#{tiposolicitudController.prepare('golist',tiposolicitudController.tiposolicitud)}"
+                                       title="#{msg['titleview.tiposolicitud']}"
+                                       value="#{tiposolicitudController.tiposolicitud.idtiposolicitud}"
+                                       disabled="#{tiposolicitudController.writable}"
+                                       rendererList="#{p:ifGranted('ADMINISTRADOR')}"
+                                       controller="#{tiposolicitudController}"                                       
+                                       url  = "/pages/tiposolicitud/list.xhtml"
 
-                       />
+                                       />
                 <b:panel title="#{app['title.data']}" look="primary" rendered="#{tiposolicitudController.writable}">
 
 
@@ -45,9 +44,10 @@
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{tiposolicitudController.tiposolicitud.activo}" id="activo"  required="true"/>
 
-                        <jmoordbjsf:save rendered="#{tiposolicitudController.writable and applicationMenu.tiposolicitud.create}"
-                                      save="#{tiposolicitudController.save()}" />
 
+                        <jmoordbjsf:toolbarsave
+                            rendered="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{tiposolicitudController}"   />
 
                     </b:panelGrid>
 
@@ -55,7 +55,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tiposolicitud.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
 
         <br/><br/><br/>
     </ui:define>

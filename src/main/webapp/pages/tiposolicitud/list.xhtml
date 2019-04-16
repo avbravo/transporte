@@ -19,13 +19,13 @@
                 border-color: #428BCA;
             } 
         </style>
-       
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.tiposolicitud.list}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
 
-          <b:growl  id="msgs"/>
-         
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
+
+            <b:growl  id="msgs"/>
+
             <b:panel title="#{msg['titlelist.tiposolicitud']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
@@ -34,60 +34,56 @@
 
                     <p:outputLabel value="#{msg['field.idtiposolicitud']}"/>
                     <jmoordbjsf:autocomplete converter="#{tiposolicitudConverter}"
-completeMethod="#{tiposolicitudController.tiposolicitudServices.complete}" 
-labeltip1="#{msg['field.tiposolicitud']} #{p.idtiposolicitud}"     listener="#{tiposolicitudController.handleAutocompleteOfListXhtml}"
-                                                  value="#{tiposolicitudController.tiposolicitudSelected}"
-                                                  itemLabel=" #{p.idtiposolicitud}"
-                                                  field="idtiposolicitud"
-                                                  update=" :form:dataTable"/>
+                                             completeMethod="#{tiposolicitudController.tiposolicitudServices.complete}" 
+                                             labeltip1="#{msg['field.tiposolicitud']} #{p.idtiposolicitud}"  
+                                             listener="#{tiposolicitudController.handleAutocompleteOfListXhtml}"
+                                             value="#{tiposolicitudController.tiposolicitudSearch}"
+                                             itemLabel=" #{p.idtiposolicitud}"
+                                             field="idtiposolicitud"
+                                             update=" :form:dataTable"/>
 
-               
-                      
-                      
+
+
+
 
                 </b:panelGrid>
-                   <b:row>
-                  
-                    <b:column medium-screen="6">
-                        <jmoordbjsf:search label="#{msg['field.idtiposolicitud']}"
-                                  value="#{tiposolicitudController.lookupServices.idtiposolicitud}"
-                                  renderedList="#{applicationMenu.tiposolicitud.list}"  
-                                  search="#{tiposolicitudController.searchBy('idtiposolicitud')}"
-                                  />
+                 <b:row>
+                    <b:column medium-screen="4">
+                        <jmoordbjsf:search label="#{msg['field.activo']}"
+                                           value="#{tiposolicitudController.tiposolicitudSearch.activo}"
+                                           renderedList="#{p:ifGranted('ADMINISTRADOR')}"  
+                                           search="#{tiposolicitudController.searchBy('activo',tiposolicitudController.tiposolicitudSearch.activo)}"
+                                           />
                     </b:column>
                 </b:row>
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <jmoordbjsf:paginator 
-                    rowPage="#{tiposolicitudController.rowPage}"
-                    clear="#{tiposolicitudController.clear()}"
-                    first="#{tiposolicitudController.first()}"
-                    back="#{tiposolicitudController.back()}"
-                    next="#{tiposolicitudController.next()}"
-                    last="#{tiposolicitudController.last()}"
+               <jmoordbjsf:paginator
+                    controller="#{tiposolicitudController}"                        
+                    rowPage="#{tiposolicitudController.rowPage}"                   
                     page="#{tiposolicitudController.page}"
                     pages="#{tiposolicitudController.pages}"
-                 skip="ajax:tiposolicitudController.skip(tiposolicitudController.page)" 
-                    new="#{tiposolicitudController.prepare('gonew',tiposolicitudController.tiposolicitud)}"
-                    printAll="#{tiposolicitudController.printAll()}"
+                    skip="ajax:tiposolicitudController.skip()" 
+                    url = "/pages/tiposolicitud/new.xhtml"
                     />
                 <b:dataTable value="#{tiposolicitudController.tiposolicitudDataModel}"
                              var="item"
                              id="dataTable2"
                              paginated="false"
                              onpage="console.log('page');">
- 
+
                     <b:dataTableColumn value="#{item.idtiposolicitud}" label="#{msg['field.idtiposolicitud']}"/>
 
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
-                  
+
                     <b:dataTableColumn label="">
 
-                        <jmoordbjsf:column
-
-                            edit="#{tiposolicitudController.prepare('view',item)}"
-                            delete="#{tiposolicitudController.delete(item,false)}"
-                            rendered="#{applicationMenu.tiposolicitud.delete}"
+                      <jmoordbjsf:column
+                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{tiposolicitudController}"
+                            url="/pages/tiposolicitud/view.xhtml"
+                            item="#{item}"
                             />
                     </b:dataTableColumn>
 
@@ -96,6 +92,6 @@ labeltip1="#{msg['field.tiposolicitud']} #{p.idtiposolicitud}"     listener="#{t
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.tiposolicitud.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
     </ui:define>
 </ui:composition>

@@ -63,6 +63,7 @@ public class TiposolicitudController implements Serializable, IControllerOld {
     //Entity
     Tiposolicitud tiposolicitud;
     Tiposolicitud tiposolicitudSelected;
+    Tiposolicitud tiposolicitudSearch = new Tiposolicitud();
 
     //List
     List<Tiposolicitud> tiposolicitudList = new ArrayList<>();
