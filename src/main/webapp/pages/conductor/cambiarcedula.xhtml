@@ -19,7 +19,7 @@
             }
         </style>
        
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.conductorcambiarcedula.edit}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"   rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -28,7 +28,7 @@
                                   actionListener="#{conductorController.findByCedula()}"/>
                 <jmoordbjsf:messages id="msg"/> 
                 <b:panel title="#{msg['titleview.changecedula']}" look="primary"> 
-                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{loginController.loggedIn}"> 
+                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{p:ifGranted('ADMINISTRADOR')}"> 
                         <p:outputLabel  value="#{msg['field.cedula']}" />
                         <b:inputText       
                             style="text-transform: uppercase"
@@ -86,7 +86,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or ! applicationMenu.conductorcambiarcedula.edit}" />
+                   <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

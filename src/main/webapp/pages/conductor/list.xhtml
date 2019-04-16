@@ -19,13 +19,13 @@
                 border-color: #428BCA;
             } 
         </style>
-       
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.conductor.list}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
 
-          <b:growl  id="msgs"/>
-         
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
+
+            <b:growl  id="msgs"/>
+
             <b:panel title="#{msg['titlelist.conductor']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
@@ -34,53 +34,50 @@
 
                     <p:outputLabel value="#{msg['field.cedula']}"/>
                     <jmoordbjsf:autocomplete converter="#{conductorConverter}"
-completeMethod="#{conductorController.conductorServices.complete}"
-labeltip1="#{msg['field.cedula']} #{p.cedula}"
-labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{conductorController.handleAutocompleteOfListXhtml}"
-                                                  value="#{conductorController.conductorSelected}"
-                                                  itemLabel=" #{p.cedula}"
-                                                  field="cedula"
-                                                  update=" :form:dataTable"/>
-                    
+                                             completeMethod="#{conductorController.conductorServices.complete}"
+                                             labeltip1="#{msg['field.cedula']} #{p.cedula}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}"    
+                                             listener="#{conductorController.handleAutocompleteOfListXhtml}"
+                                             value="#{conductorController.conductorSearch}"
+                                             itemLabel=" #{p.cedula}"
+                                             field="cedula"
+                                             update=" :form:dataTable"/>
+
                     <p:outputLabel value="#{msg['field.nombre']}"/>
                     <jmoordbjsf:autocomplete converter="#{conductorConverter}"
-completeMethod="#{conductorController.conductorServices.complete}"
-labeltip1="#{msg['field.cedula']} #{p.cedula}"
-labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{conductorController.handleAutocompleteOfListXhtml}"
-                                                  value="#{conductorController.conductorSelected}"
-                                                  itemLabel=" #{p.nombre}"
-                                                  field="nombre"
-                                                  update=" :form:dataTable"/>
+                                             completeMethod="#{conductorController.conductorServices.complete}"
+                                             labeltip1="#{msg['field.cedula']} #{p.cedula}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}" 
+                                             listener="#{conductorController.handleAutocompleteOfListXhtml}"
+                                             value="#{conductorController.conductorSearch}"
+                                             itemLabel=" #{p.nombre}"
+                                             field="nombre"
+                                             update=" :form:dataTable"/>
 
-               
-                      
-                      
+
+
+
 
                 </b:panelGrid>
-                  <b:row>
-                  
+                <b:row>
+
                     <b:column medium-screen="6">
                         <jmoordbjsf:search label="#{msg['field.nombre']}"
-                                  value="#{conductorController.lookupServices.nombre}"
-                                  renderedList="#{applicationMenu.conductor.list}"  
-                                  search="#{conductorController.searchBy('nombre')}"
-                                  />
+                                           value="#{conductorController.conductorSearch.nombre}"
+                                           renderedList="#{p:ifGranted('ADMINISTRADOR')}" 
+                                           search="#{conductorController.searchBy('nombre',conductorController.conductorSearch.nombre)}"
+                                           />
                     </b:column>
                 </b:row>
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <jmoordbjsf:paginator 
-                    rowPage="#{conductorController.rowPage}"
-                    clear="#{conductorController.clear()}"
-                    first="#{conductorController.first()}"
-                    back="#{conductorController.back()}"
-                    next="#{conductorController.next()}"
-                    last="#{conductorController.last()}"
+                <jmoordbjsf:paginator
+                    controller="#{conductorController}"                        
+                    rowPage="#{conductorController.rowPage}"                   
                     page="#{conductorController.page}"
                     pages="#{conductorController.pages}"
-                 skip="ajax:conductorController.skip(conductorController.page)" 
-                    new="#{conductorController.prepare('gonew',conductorController.conductor)}"
-                    printAll="#{conductorController.printAll()}"
+                    skip="ajax:conductorController.skip()" 
+                    url = "/pages/conductor/new.xhtml"
                     />
                 <b:dataTable value="#{conductorController.conductorDataModel}"
                              var="item"
@@ -96,14 +93,15 @@ labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{conductorControlle
 
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
                     <b:dataTableColumn value="#{item.escontrol}" label="#{msg['field.escontrol']}" />
-                  
+
                     <b:dataTableColumn label="">
 
-                        <jmoordbjsf:column
-
-                            edit="#{conductorController.prepare('view',item)}"
-                            delete="#{conductorController.delete(item,false)}"
-                            rendered="#{applicationMenu.conductor.delete}"
+                      <jmoordbjsf:column
+                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{conductorController}"
+                            url="/pages/conductor/view.xhtml"
+                            item="#{item}"
                             />
                     </b:dataTableColumn>
 
@@ -112,6 +110,6 @@ labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{conductorControlle
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.conductor.list}" />
+         <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}"/>
     </ui:define>
 </ui:composition>

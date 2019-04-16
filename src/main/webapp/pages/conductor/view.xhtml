@@ -19,7 +19,7 @@
             }
         </style>
        
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.conductor.query}" onkeypress="if (event.keyCode == 13) {
+         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -52,18 +52,16 @@
 
                     </b:panelGrid>
                     <jmoordbjsf:toolbarview 
-                        renderedDelete="#{applicationMenu.conductor.delete and conductorController.writable }"
-                        renderedEdit="#{applicationMenu.conductor.edit and conductorController.writable}" 
-                        renderedList="#{applicationMenu.conductor.list and conductorController.writable}"
-                        edit="#{conductorController.edit()}"
-                        delete="#{conductorController.delete(conductorController.conductor,true)}"
-                        print="#{conductorController.print()}"
-                        url="#{conductorController.prepare('golist',conductorController.conductor)}"
+                        renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
+                        controller="#{conductorController}"
+                        url  = "/pages/conductor/list.xhtml"                        
                         />
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.conductor.query}" />
+      <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

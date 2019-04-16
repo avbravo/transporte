@@ -19,22 +19,22 @@
             }
         </style>
       
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.conductor.create}" onkeypress="if (event.keyCode == 13) {
+         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <jmoordbjsf:toolbarnew label="#{msg['field.cedula']}"
-                       title="#{msg['titleview.conductor']}"
-                       value="#{conductorController.conductor.cedula}"
-                        disabled="#{conductorController.writable}"
-                       isnew="#{conductorController.isNew()}"
-                       new="#{conductorController.prepare('new',conductorController.conductor)}"
-                       rendererList="#{applicationMenu.conductor.list}"
-                       list="#{conductorController.prepare('golist',conductorController.conductor)}"
+               
+                <jmoordbjsf:toolbarnew label="#{msg['field.descripcion']}"
+                                       title="#{msg['titleview.conductor']}"
+                                       value="#{conductorController.conductor.cedula}"
+                                       disabled="#{conductorController.writable}"
+                                       rendererList="#{p:ifGranted('ADMINISTRADOR')}"
+                                       controller="#{conductorController}"                                       
+                                       url  = "/pages/conductor/list.xhtml"
 
-                       />
+                                       />
                 <b:panel title="#{app['title.data']}" look="primary" rendered="#{conductorController.writable}">
 
 
@@ -59,8 +59,9 @@
                         <p:outputLabel  value="#{msg['field.escontrol']}" />
                         <jmoordbjsf:noyes value="#{conductorController.conductor.escontrol}" id="escontrol"  required="true"/>
 
-                        <jmoordbjsf:save rendered="#{conductorController.writable and applicationMenu.conductor.create}"
-                                      save="#{conductorController.save()}" />
+                       <jmoordbjsf:toolbarsave
+                            rendered="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{conductorController}"   />
 
 
                     </b:panelGrid>
@@ -69,7 +70,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.conductor.create}" />
+          <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
 
         <br/><br/><br/>
     </ui:define>

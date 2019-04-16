@@ -6,6 +6,9 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
+import com.avbravo.jmoordb.configuration.JmoordbContext;
+import com.avbravo.jmoordb.configuration.JmoordbControllerEnvironment;
+import com.avbravo.jmoordb.interfaces.IController;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.jmoordb.interfaces.IControllerOld;
@@ -14,13 +17,18 @@ import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.transporte.security.LoginController;
- 
+
 import com.avbravo.transporte.util.ResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ConductorDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
 
 import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.datamodel.ConductorDataModel;
+import com.avbravo.transporteejb.entity.Conductor;
+import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.repository.ConductorRepository;
+import com.avbravo.transporteejb.repository.ConductorRepository;
+import com.avbravo.transporteejb.services.ConductorServices;
 import com.avbravo.transporteejb.services.ConductorServices;
 import static com.mongodb.client.model.Filters.eq;
 
@@ -34,6 +42,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
+import lombok.Getter;
+import lombok.Setter;
 import org.bson.Document;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
@@ -45,58 +55,49 @@ import org.primefaces.event.SelectEvent;
  */
 @Named
 @ViewScoped
-public class ConductorController implements Serializable, IControllerOld {
-// <editor-fold defaultstate="collapsed" desc="fields">  
+@Getter
+@Setter
+public class ConductorController implements Serializable, IController {
 
+// <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
 
-//    @Inject
-//private transient ExternalContext externalContext;
     private Boolean writable = false;
-    private String cedulanueva;
     //DataModel
     private ConductorDataModel conductorDataModel;
+    private String cedulanueva = "";
 
     Integer page = 1;
     Integer rowPage = 25;
-
     List<Integer> pages = new ArrayList<>();
-    //
 
     //Entity
-    Conductor conductor;
+    Conductor conductor = new Conductor();
     Conductor conductorSelected;
+    Conductor conductorSearch = new Conductor();
 
     //List
     List<Conductor> conductorList = new ArrayList<>();
-    List<Conductor> conductorFiltered = new ArrayList<>();
 
     //Repository
     @Inject
     ConductorRepository conductorRepository;
     @Inject
     RevisionHistoryRepository revisionHistoryRepository;
-
     //Services
-   @Inject
-ErrorInfoServices errorServices;
     @Inject
     AutoincrementableServices autoincrementableServices;
-    
     @Inject
-    LookupServices lookupServices;
-
-    @Inject
-    RevisionHistoryServices revisionHistoryServices;
-
+    ErrorInfoServices errorServices;
     @Inject
     ConductorServices conductorServices;
     @Inject
+    RevisionHistoryServices revisionHistoryServices;
+    @Inject
     ResourcesFiles rf;
+
     @Inject
     Printer printer;
-    @Inject
-    LoginController loginController;
 
     //List of Relations
     //Repository of Relations
@@ -107,591 +108,99 @@ ErrorInfoServices errorServices;
         return conductorRepository.listOfPage(rowPage);
     }
 
-    public void setPages(List<Integer> pages) {
-        this.pages = pages;
-    }
-
-    public String getCedulanueva() {
-        return cedulanueva;
-    }
-
-    public void setCedulanueva(String cedulanueva) {
-        this.cedulanueva = cedulanueva;
-    }
-
-    public LookupServices getLookupServices() {
-        return lookupServices;
-    }
-
-    public void setLookupServices(LookupServices lookupServices) {
-        this.lookupServices = lookupServices;
-    }
-
-   
-    public Integer getPage() {
-        return page;
-    }
-
-    public void setPage(Integer page) {
-        this.page = page;
-    }
-
-    public Integer getRowPage() {
-        return rowPage;
-    }
-
-    public void setRowPage(Integer rowPage) {
-        this.rowPage = rowPage;
-    }
-
-    public ConductorServices getConductorServices() {
-        return conductorServices;
-    }
-
-    public void setConductorServices(ConductorServices conductorServices) {
-        this.conductorServices = conductorServices;
-    }
-
-    public List<Conductor> getConductorList() {
-        return conductorList;
-    }
-
-    public void setConductorList(List<Conductor> conductorList) {
-        this.conductorList = conductorList;
-    }
-
-    public List<Conductor> getConductorFiltered() {
-        return conductorFiltered;
-    }
-
-    public void setConductorFiltered(List<Conductor> conductorFiltered) {
-        this.conductorFiltered = conductorFiltered;
-    }
-
-    public Conductor getConductor() {
-        return conductor;
-    }
-
-    public void setConductor(Conductor conductor) {
-        this.conductor = conductor;
-    }
-
-    public Conductor getConductorSelected() {
-        return conductorSelected;
-    }
-
-    public void setConductorSelected(Conductor conductorSelected) {
-        this.conductorSelected = conductorSelected;
-    }
-
-    public ConductorDataModel getConductorDataModel() {
-        return conductorDataModel;
-    }
-
-    public void setConductorDataModel(ConductorDataModel conductorDataModel) {
-        this.conductorDataModel = conductorDataModel;
-    }
-
-    public Boolean getWritable() {
-        return writable;
-    }
-
-    public void setWritable(Boolean writable) {
-        this.writable = writable;
-    }
-
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
     public ConductorController() {
     }
 
     // </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="preRenderView()">
-    @Override
-    public String preRenderView(String action) {
-        //acciones al llamar el formulario despues del init    
-        return "";
-    }
-// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="init">
-
     @PostConstruct
     public void init() {
         try {
-            String action = loginController.get("conductor");
-            String id = loginController.get("idconductor");
-            String pageSession = loginController.get("pageconductor");
-            //Search
-
-            if (loginController.get("searchconductor") == null || loginController.get("searchconductor").equals("")) {
-                loginController.put("searchconductor", "_init");
-            }
-            writable = false;
-
-            conductorList = new ArrayList<>();
-            conductorFiltered = new ArrayList<>();
-            conductor = new Conductor();
-            conductorDataModel = new ConductorDataModel(conductorList);
-
-            if (pageSession != null) {
-                page = Integer.parseInt(pageSession);
-            }
-            Integer c = conductorRepository.sizeOfPage(rowPage);
-            page = page > c ? c : page;
-            if (action != null) {
-                switch (action) {
-                    case "gonew":
-                        conductor = new Conductor();
-                        conductorSelected = conductor;
-                        writable = false;
-
-                        break;
-                    case "view":
-                        if (id != null) {
-                            Optional<Conductor> optional = conductorRepository.find("idconductor", Integer.parseInt(id));
-                            if (optional.isPresent()) {
-                                conductor = optional.get();
-                                conductorSelected = conductor;
-                                writable = true;
-
-                            }
-                        }
-                        break;
-                    case "golist":
-                        move(page);
-                        break;
-                }
-            } else {
-                move(page);
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="reset">
-
-    @Override
-    public void reset() {
-
-        PrimeFaces.current().resetInputs(":form:content");
-        prepare("new", conductor);
-    }// </editor-fold>
-
-// <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-    public String prepare(String action, Conductor item) {
-        String url = "";
-        try {
-            loginController.put("pageconductor", page.toString());
-            loginController.put("conductor", action);
-
-            switch (action) {
-                case "new":
-                    conductor = new Conductor();
-                    conductorSelected = new Conductor();
-
-                    writable = false;
-                    break;
-
-                case "view":
-
-                    conductorSelected = item;
-                    conductor = conductorSelected;
-                    loginController.put("idconductor", conductor.getIdconductor().toString());
-
-                    url = "/pages/conductor/view.xhtml";
-                    break;
-
-                case "golist":
-                    url = "/pages/conductor/list.xhtml";
-                    break;
-
-                case "gonew":
-                    url = "/pages/conductor/new.xhtml";
-                    break;
-
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-
-        return url;
-    }// </editor-fold>
-
-// <editor-fold defaultstate="collapsed" desc="showAll">
-    @Override
-    public String showAll() {
-        try {
-            conductorList = new ArrayList<>();
-            conductorFiltered = new ArrayList<>();
-            conductorList = conductorRepository.findAll();
-            conductorFiltered = conductorList;
-            conductorDataModel = new ConductorDataModel(conductorList);
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="isNew">
-
-    @Override
-    public String isNew() {
-        try {
-            writable = true;
-            if (JsfUtil.isVacio(conductor.getCedula())) {
-                writable = false;
-                return "";
-            }
-            conductor.setCedula(conductor.getCedula().toUpperCase());
-
-            List<Conductor> list = conductorRepository.findBy(new Document("cedula", conductor.getCedula()));
-            if (!list.isEmpty()) {
-                writable = false;
-
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return "";
-            } else {
-                String id = conductor.getCedula();
-                conductor = new Conductor();
-                conductor.setCedula(id);
-                conductor.setEscontrol("no");
-                conductorSelected = new Conductor();
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="save">
-
-    @Override
-    public String save() {
-        try {
-            conductor.setCedula(conductor.getCedula().toUpperCase());
-            List<Conductor> list = conductorRepository.findBy(new Document("cedula", conductor.getCedula()));
-            if (!list.isEmpty()) {
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return null;
-            }
-            
-            if(conductor.getEscontrol().equals("si")){
-                 Integer numeroescontrol = conductorRepository.count(eq("escontrol","si"));
-            if(numeroescontrol >= 1){
-                  JsfUtil.warningMessage(rf.getMessage("warning.conductorcontrolyaexiste"));
-                return "";
-            }
-            }
-           
-            
-            
-            Integer id = autoincrementableServices.getContador("conductor");
-            conductor.setIdconductor(id);
-            //Lo datos del usuario
-            conductor.setUserInfo(conductorRepository.generateListUserinfo(loginController.getUsername(), "create"));
-            if (conductorRepository.save(conductor)) {
-                //guarda el contenido anterior
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(),
-                        "create", "conductor", conductorRepository.toDocument(conductor).toString()));
-
-                JsfUtil.successMessage(rf.getAppMessage("info.save"));
-                reset();
-            } else {
-                JsfUtil.successMessage("save() " + conductorRepository.getException().toString());
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="edit">
-
-    @Override
-    public String edit() {
-        try {
-
-            if(conductor.getEscontrol().equals("si")){
-                 List<Conductor> list = conductorRepository.findBy(eq("escontrol","si"));
-            if(!list.isEmpty()){
-                Boolean found =false;
-                for(Conductor c:list){
-                    if(c.getCedula().equals(conductor.getCedula())){
-                        found=true;
-                    }
-                }
-                if(list.size()<=1 &&found){
-                    
-                }else{
-                    JsfUtil.warningMessage(rf.getMessage("warning.conductorcontrolyaexiste"));
-                return "";
-                }
-                  
-            }
-            }
-           
-            
-            conductor.getUserInfo().add(conductorRepository.generateUserinfo(loginController.getUsername(), "update"));
-
-            //guarda el contenido actualizado
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(),
-                    "update", "conductor", conductorRepository.toDocument(conductor).toString()));
-
-            conductorRepository.update(conductor);
-            JsfUtil.successMessage(rf.getAppMessage("info.update"));
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="delete(Object item, Boolean deleteonviewpage)">
-
-    @Override
-    public String delete(Object item, Boolean deleteonviewpage) {
-        String path = "";
-        try {
-            conductor = (Conductor) item;
-
-            if (!conductorServices.isDeleted(conductor)) {
-                JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
-                return "";
-            }
-            conductorSelected = conductor;
-            if (conductorRepository.delete("idconductor", conductor.getIdconductor())) {
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(), "delete", "conductor", conductorRepository.toDocument(conductor).toString()));
-                JsfUtil.successMessage(rf.getAppMessage("info.delete"));
-
-                if (!deleteonviewpage) {
-                    conductorList.remove(conductor);
-                    conductorFiltered = conductorList;
-                    conductorDataModel = new ConductorDataModel(conductorList);
-
-                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageconductor", page.toString());
-
-                } else {
-                    conductor = new Conductor();
-                    conductorSelected = new Conductor();
-                    writable = false;
-
-                }
-
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        // path = deleteonviewpage ? "/pages/conductor/list.xhtml" : "";
-        path = "";
-        return path;
-    }// </editor-fold>
-
-// <editor-fold defaultstate="collapsed" desc="deleteAll">
-    @Override
-    public String deleteAll() {
-        if (conductorRepository.deleteAll() != 0) {
-            JsfUtil.successMessage(rf.getAppMessage("info.delete"));
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="print">
-
-    @Override
-    public String print() {
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pageconductor", page.toString());
-            List<Conductor> list = new ArrayList<>();
-            list.add(conductor);
-            String ruta = "/resources/reportes/conductor/details.jasper";
+// autoincrementablebRepository.setDatabase("commondb");
+            /*
+            configurar el ambiente del controller
+             */
             HashMap parameters = new HashMap();
-            // parameters.put("P_parametro", "valor");
-            printer.imprimir(list, ruta, parameters);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return null;
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="printAll">
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            //    parameters.put("P_EMPRESA", jmoordb_user.getEmpresa().getDescripcion());
 
-    @Override
-    public String printAll() {
-        try {
-            List<Conductor> list = new ArrayList<>();
-            list = conductorRepository.findAll(new Document("idconductor", 1));
+            JmoordbControllerEnvironment jmc = new JmoordbControllerEnvironment.Builder()
+                    .withController(this)
+                    .withRepository(conductorRepository)
+                    .withEntity(conductor)
+                    .withService(conductorServices)
+                    .withNameFieldOfPage("page")
+                    .withNameFieldOfRowPage("rowPage")
+                    .withTypeKey("secondary")
+                    .withSearchLowerCase(false)
+                    .withPathReportDetail("/resources/reportes/conductor/details.jasper")
+                    .withPathReportAll("/resources/reportes/conductor/all.jasper")
+                    .withparameters(parameters)
+                    .build();
 
-            String ruta = "/resources/reportes/conductor/all.jasper";
-            HashMap parameters = new HashMap();
-            // parameters.put("P_parametro", "valor");
-            printer.imprimir(list, ruta, parameters);
+            start();
+
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-        return null;
     }// </editor-fold>
+
 // <editor-fold defaultstate="collapsed" desc="handleSelect">
-
     public void handleSelect(SelectEvent event) {
         try {
-         
-       
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-    }// </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
-    public void handleAutocompleteOfListXhtml(SelectEvent event) {
-        try {
-            conductorList.removeAll(conductorList);
-            conductorList.add(conductorSelected);
-            conductorFiltered = conductorList;
-            conductorDataModel = new ConductorDataModel(conductorList);
-             
-             
-             
-            
-            
-            loginController.put("searchconductor", "idconductor");
-            lookupServices.setIdconductor(conductorSelected.getIdconductor());
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
-// <editor-fold defaultstate="collapsed" desc="last">
-    @Override
-    public String last() {
-        try {
-            page = conductorRepository.sizeOfPage(rowPage);
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="first">
-
-    @Override
-    public String first() {
-        try {
-            page = 1;
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="next">
-
-    @Override
-    public String next() {
-        try {
-            if (page < (conductorRepository.sizeOfPage(rowPage))) {
-                page++;
-            }
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="back">
-
-    @Override
-    public String back() {
-        try {
-            if (page > 1) {
-                page--;
-            }
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="skip(Integer page)">
-
-    @Override
-    public String skip(Integer page) {
-        try {
-            this.page = page;
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="move">
-
+// <editor-fold defaultstate="collapsed" desc="move(Integer page)">
     @Override
     public void move(Integer page) {
-
         try {
-
+            this.page = page;
+            conductorDataModel = new ConductorDataModel(conductorList);
             Document doc;
-            switch (loginController.get("searchconductor")) {
+
+            switch ((String) JmoordbContext.get("searchconductor")) {
                 case "_init":
-                      case "_autocomplete":
+                case "_autocomplete":
                     conductorList = conductorRepository.findPagination(page, rowPage);
-
                     break;
-              
-                case "idconductor":
-                    if (lookupServices.getIdconductor() != null) {
-                         conductorList = conductorRepository.findBy(new Document("idconductor", lookupServices.getIdconductor()), new Document("idconductor", -1));
+
+                case "cedula":
+                    if (JmoordbContext.get("_fieldsearchconductor") != null) {
+                        conductorSearch.setCedula(JmoordbContext.get("_fieldsearchconductor").toString());
+                        doc = new Document("cedula", conductorSearch.getCedula());
+                        conductorList = conductorRepository.findPagination(doc, page, rowPage, new Document("cedula", -1));
                     } else {
-                             conductorList = conductorRepository.findPagination(page, rowPage);
+                        conductorList = conductorRepository.findPagination(page, rowPage);
                     }
-                   
-                    break;
-                case "nombre":
 
-                    conductorList = conductorRepository.findRegexInTextPagination("nombre", lookupServices.getNombre(), true, page, rowPage, new Document("nombre", -1));
+                    break;
+                case "activo":
+                    if (JmoordbContext.get("_fieldsearchconductor") != null) {
+                        conductorSearch.setActivo(JmoordbContext.get("_fieldsearchconductor").toString());
+                        doc = new Document("activo", conductorSearch.getActivo());
+                        conductorList = conductorRepository.findPagination(doc, page, rowPage, new Document("cedula", -1));
+                    } else {
+                        conductorList = conductorRepository.findPagination(page, rowPage);
+                    }
                     break;
 
                 default:
-
                     conductorList = conductorRepository.findPagination(page, rowPage);
                     break;
             }
 
-            conductorFiltered = conductorList;
-
             conductorDataModel = new ConductorDataModel(conductorList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+
         }
-    }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="clear">
-    @Override
-    public String clear() {
-        try {
-            loginController.put("searchconductor", "_init");
-            page = 1;
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
-    @Override
-    public String searchBy(String string) {
-        try {
-
-            loginController.put("searchconductor", string);
-
-            writable = true;
-            move(page);
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="clearCedula()">
@@ -701,7 +210,7 @@ ErrorInfoServices errorServices;
             conductor.setCedula("");
             writable = false;
         } catch (Exception e) {
-                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }
@@ -730,7 +239,7 @@ ErrorInfoServices errorServices;
             }
 
         } catch (Exception e) {
-                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
 
         return "";
@@ -753,21 +262,29 @@ ErrorInfoServices errorServices;
             }
 
             conductor.setCedula(cedulanueva);
-
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), loginController.getUsername(),
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getIdconductor().toString(), jmoordb_user.getUsername(),
                     "update", "conductor", conductorRepository.toDocument(conductor).toString()));
 
             conductorRepository.update(conductor);
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
-
-    @Override
-    public Integer sizeOfPage() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    
+     // <editor-fold defaultstate="collapsed" desc="beforeSave()">
+    public Boolean beforeSave() {
+        try {
+            conductor.setIdconductor(autoincrementableServices.getContador("conductor"));
+            return true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
     }
-
+    // </editor-fold>
+    
 }
