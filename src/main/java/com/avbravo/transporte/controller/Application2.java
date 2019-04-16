@@ -6,8 +6,12 @@
 package com.avbravo.transporte.controller;
 
 import com.avbravo.jmoordb.mongodb.history.entity.Configuracion;
+import com.avbravo.jmoordbutils.JsfUtil;
+import com.avbravo.transporteejb.entity.Vehiculo;
+import java.util.List;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
+import org.bson.Document;
 
 /**
  *
@@ -37,5 +41,6 @@ public class Application2 {
     
     //-----------------
     
+
     
 }

@@ -19,7 +19,7 @@
             }
         </style>
         
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.vehiculocambiarplaca.edit}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -57,7 +57,7 @@
                             <f:facet name="append">
                                 <b:commandButton immediate="true"
                                                  look="primary"
-                                                 iconAwesome="fa-share" 
+                                                 iconAwesome="fa-search" 
                                                  update=":form:content "
                                                  title="#{app['button.search']}" 
                                                  action="#{vehiculoController.findByPlaca()}"/>
@@ -89,7 +89,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or ! applicationMenu.vehiculocambiarplaca.edit}" />
+      <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

@@ -20,7 +20,7 @@
             } 
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.vehiculo.list}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                      return false;
                  }">
 
@@ -37,8 +37,9 @@
                                              completeMethod="#{vehiculoController.vehiculoServices.complete}" 
                                              labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
                                              labeltip2="#{msg['field.marca']} #{p.marca}"
-                                             labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
-                                             value="#{vehiculoController.vehiculoSelected}"
+                                             labeltip3="#{msg['field.modelo']} #{p.modelo}"   
+                                             listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
+                                             value="#{vehiculoController.vehiculoSearch}"
                                              itemLabel=" #{p.placa}"
                                              field="placa"
                                              update=" :form:dataTable"/>
@@ -48,8 +49,9 @@
                                              completeMethod="#{vehiculoController.vehiculoServices.complete}" 
                                              labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
                                              labeltip2="#{msg['field.marca']} #{p.marca}"
-                                             labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
-                                             value="#{vehiculoController.vehiculoSelected}"
+                                             labeltip3="#{msg['field.modelo']} #{p.modelo}"  
+                                             listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
+                                             value="#{vehiculoController.vehiculoSearch}"
                                              itemLabel=" #{p.marca}"
                                              field="marca"
                                              update=" :form:dataTable"/>
@@ -60,8 +62,9 @@
                                              completeMethod="#{vehiculoController.vehiculoServices.complete}" 
                                              labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
                                              labeltip2="#{msg['field.marca']} #{p.marca}"
-                                             labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
-                                             value="#{vehiculoController.vehiculoSelected}"
+                                             labeltip3="#{msg['field.modelo']} #{p.modelo}" 
+                                             listener="#{vehiculoController.handleAutocompleteOfListXhtml}"
+                                             value="#{vehiculoController.vehiculoSearch}"
                                              itemLabel=" #{p.modelo}"
                                              field="modelo"
                                              update=" :form:dataTable"/>
@@ -71,30 +74,16 @@
 
 
                 </b:panelGrid>
-                <b:row>
-
-                    <b:column medium-screen="6">
-                        <jmoordbjsf:search label="#{msg['field.idvehiculo']}"
-                                           value="#{vehiculoController.lookupServices.idvehiculo}"
-                                           renderedList="#{applicationMenu.vehiculo.list}"  
-                                           search="#{vehiculoController.searchBy('idvehiculo')}"
-                                           />
-                    </b:column>
-                </b:row>
+                
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <jmoordbjsf:paginator 
-                    rowPage="#{vehiculoController.rowPage}"
-                    clear="#{vehiculoController.clear()}"
-                    first="#{vehiculoController.first()}"
-                    back="#{vehiculoController.back()}"
-                    next="#{vehiculoController.next()}"
-                    last="#{vehiculoController.last()}"
+                 <jmoordbjsf:paginator
+                    controller="#{vehiculoController}"                        
+                    rowPage="#{vehiculoController.rowPage}"                   
                     page="#{vehiculoController.page}"
                     pages="#{vehiculoController.pages}"
-                    skip="ajax:vehiculoController.skip(vehiculoController.page)" 
-                    new="#{vehiculoController.prepare('gonew',vehiculoController.vehiculo)}"
-                    printAll="#{vehiculoController.printAll()}"
+                    skip="ajax:vehiculoController.skip()" 
+                    url = "/pages/vehiculo/new.xhtml"
                     />
                 <b:dataTable value="#{vehiculoController.vehiculoDataModel}"
                              var="item"
@@ -118,11 +107,12 @@
 
                     <b:dataTableColumn label="">
 
-                        <jmoordbjsf:column
-
-                            edit="#{vehiculoController.prepare('view',item)}"
-                            delete="#{vehiculoController.delete(item,false)}"
-                            rendered="#{applicationMenu.vehiculo.delete}"
+                          <jmoordbjsf:column
+                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{vehiculoController}"
+                            url="/pages/vehiculo/view.xhtml"
+                            item="#{item}"
                             />
                     </b:dataTableColumn>
 
@@ -131,6 +121,6 @@
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.vehiculo.list}" />
+                <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}"/>
     </ui:define>
 </ui:composition>

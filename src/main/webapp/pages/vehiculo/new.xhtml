@@ -19,23 +19,21 @@
                 border-color: #428BCA;
             }
         </style>
-      
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.vehiculo.create}" onkeypress="if (event.keyCode == 13) {
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <jmoordbjsf:toolbarnew label="#{msg['field.placa']}"
-                       title="#{msg['titleview.vehiculo']}"
-                       value="#{vehiculoController.vehiculo.placa}"
-                       isnew="#{vehiculoController.isNew()}"
-                          disabled="#{vehiculoController.writable}"
-                       new="#{vehiculoController.prepare('new',vehiculoController.vehiculo)}"
-                       rendererList="#{applicationMenu.vehiculo.list}"
-                       list="#{vehiculoController.prepare('golist',vehiculoController.vehiculo)}"
-
-                       />
+                <jmoordbjsf:toolbarnew label="#{msg['field.descripcion']}"
+                                       title="#{msg['titleview.vehiculo']}"
+                                       value="#{vehiculoController.vehiculo.placa}"
+                                       disabled="#{vehiculoController.writable}"
+                                       rendererList="#{p:ifGranted('ADMINISTRADOR')}"
+                                       controller="#{vehiculoController}"                                       
+                                       url  = "/pages/vehiculo/list.xhtml"
+                                       />
                 <b:panel title="#{app['title.data']}" look="primary" rendered="#{vehiculoController.writable}">
 
 
@@ -60,19 +58,20 @@
                         <jmoordbjsf:inputText value="#{vehiculoController.vehiculo.pasajeros}" id="pasajeros" span="4" label="#{msg['field.pasajeros']}" />
 
                         <p:outputLabel  value="#{msg['field.tipovehiculo']}" />
-                     
-                        
-                         <jmoordbjsf:autocomplete converter="#{tipovehiculoConverter}"
-completeMethod="#{tipovehiculoController.tipovehiculoServices.complete}" 
-labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"         listener="#{vehiculoController.handleSelect}"
-                                                      value="#{vehiculoController.vehiculo.tipovehiculo}"
-                                               itemLabel="#{p.idtipovehiculo}"
-                                               dropdown="true"
-                                               required="true"
-                                               minQueryLength="0"
-                                               field="idtipovehiculo"
-                                               />
-                                        
+
+
+                        <jmoordbjsf:autocomplete converter="#{tipovehiculoConverter}"
+                                                 completeMethod="#{vehiculoController.tipovehiculoServices.complete}" 
+                                                 labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"     
+                                                 listener="#{vehiculoController.handleSelect}"
+                                                 value="#{vehiculoController.vehiculo.tipovehiculo}"
+                                                 itemLabel="#{p.idtipovehiculo}"
+                                                 dropdown="true"
+                                                 required="true"
+                                                 minQueryLength="0"
+                                                 field="idtipovehiculo"
+                                                 />
+
 
                         <p:outputLabel  value="#{msg['field.combustible']}" />
                         <b:selectOneMenu value="#{vehiculoController.vehiculo.combustible}"
@@ -93,8 +92,9 @@ labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"         listener=
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{vehiculoController.vehiculo.activo}" id="activo"  required="true"/>
 
-                        <jmoordbjsf:save rendered="#{vehiculoController.writable and applicationMenu.vehiculo.create}"
-                                save="#{vehiculoController.save()}" />
+                <jmoordbjsf:toolbarsave
+                            rendered="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{vehiculoController}"   />
 
 
                     </b:panelGrid>
@@ -103,7 +103,7 @@ labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"         listener=
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.vehiculo.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
 
         <br/><br/><br/>
     </ui:define>
