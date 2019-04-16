@@ -19,7 +19,7 @@
             }
         </style>
        
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.estatus.query}" onkeypress="if (event.keyCode == 13) {
+         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -34,19 +34,17 @@
                         <jmoordbjsf:yesno value="#{estatusController.estatus.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
-                    <jmoordbjsf:toolbarview 
-                        renderedDelete="#{applicationMenu.estatus.delete and estatusController.writable }"
-                        renderedEdit="#{applicationMenu.estatus.edit and estatusController.writable}" 
-                        renderedList="#{applicationMenu.estatus.list and estatusController.writable}"
-                        edit="#{estatusController.edit()}"
-                        delete="#{estatusController.delete(estatusController.estatus,true)}"
-                        print="#{estatusController.print()}"
-                        url="#{estatusController.prepare('golist',estatusController.estatus)}"
+                      <jmoordbjsf:toolbarview 
+                        renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
+                        controller="#{estatusController}"
+                        url  = "/pages/estatus/list.xhtml"
                         />
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.estatus.query}" />
+          <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>

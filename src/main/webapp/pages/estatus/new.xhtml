@@ -19,22 +19,20 @@
             }
         </style>
         
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.estatus.create}" onkeypress="if (event.keyCode == 13) {
+         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
                 <jmoordbjsf:toolbarnew label="#{msg['field.idestatus']}"
-                       title="#{msg['titleview.estatus']}"
-                       value="#{estatusController.estatus.idestatus}"
-                       isnew="#{estatusController.isNew()}"
-                        disabled="#{estatusController.writable}"
-                       new="#{estatusController.prepare('new',estatusController.estatus)}"
-                       rendererList="#{applicationMenu.estatus.list}"
-                       list="#{estatusController.prepare('golist',estatusController.estatus)}"
-
-                       />
+                                       title="#{msg['titleview.estatus']}"
+                                       value="#{estatusController.estatus.idestatus}"
+                                       disabled="#{estatusController.writable}"
+                                       rendererList="#{p:ifGranted('ADMINISTRADOR')}"
+                                       controller="#{estatusController}"                                       
+                                       url  = "/pages/estatus/list.xhtml"
+                                       />
                 <b:panel title="#{app['title.data']}" look="primary" rendered="#{estatusController.writable}">
 
 
@@ -45,8 +43,9 @@
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{estatusController.estatus.activo}" id="activo"  required="true"/>
 
-                        <jmoordbjsf:save rendered="#{estatusController.writable and applicationMenu.estatus.create}"
-                                      save="#{estatusController.save()}" />
+                         <jmoordbjsf:toolbarsave
+                            rendered="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{estatusController}"   />
 
 
                     </b:panelGrid>
@@ -55,7 +54,7 @@
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.estatus.create}" />
+      <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
 
         <br/><br/><br/>
     </ui:define>

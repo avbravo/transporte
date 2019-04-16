@@ -19,13 +19,13 @@
                 border-color: #428BCA;
             } 
         </style>
-       
-         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.estatus.list}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
 
-          <b:growl  id="msgs"/>
-         
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+                     return false;
+                 }">
+
+            <b:growl  id="msgs"/>
+
             <b:panel title="#{msg['titlelist.estatus']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
@@ -34,42 +34,29 @@
 
                     <p:outputLabel value="#{msg['field.idestatus']}"/>
                     <jmoordbjsf:autocomplete converter="#{estatusConverter}"
-completeMethod="#{estatusController.estatusServices.complete}"
-labeltip1="#{msg['field.estatus']} #{p.idestatus}"   listener="#{estatusController.handleAutocompleteOfListXhtml}"
-                                                  value="#{estatusController.estatusSelected}"
-                                                  itemLabel=" #{p.idestatus}"
-                                                  field="idestatus"
-                                                  update=" :form:dataTable"/>
+                                             completeMethod="#{estatusController.estatusServices.complete}"
+                                             labeltip1="#{msg['field.estatus']} #{p.idestatus}" 
+                                             listener="#{estatusController.handleAutocompleteOfListXhtml}"
+                                             value="#{estatusController.estatusSearch}"
+                                             itemLabel=" #{p.idestatus}"
+                                             field="idestatus"
+                                             update=" :form:dataTable"/>
 
-               
-                      
-                      
+
+
+
 
                 </b:panelGrid>
-                  <b:row>
-                  
-                    <b:column medium-screen="6">
-                        <jmoordbjsf:search label="#{msg['field.estatus']}"
-                                  value="#{estatusController.lookupServices.idestatus}"
-                                  renderedList="#{applicationMenu.estatus.list}"  
-                                  search="#{estatusController.searchBy('idestatus')}"
-                                  />
-                    </b:column>
-                </b:row>
+              
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <jmoordbjsf:paginator 
-                    rowPage="#{estatusController.rowPage}"
-                    clear="#{estatusController.clear()}"
-                    first="#{estatusController.first()}"
-                    back="#{estatusController.back()}"
-                    next="#{estatusController.next()}"
-                    last="#{estatusController.last()}"
+                <jmoordbjsf:paginator
+                    controller="#{estatusController}"                        
+                    rowPage="#{estatusController.rowPage}"                   
                     page="#{estatusController.page}"
                     pages="#{estatusController.pages}"
-                 skip="ajax:estatusController.skip(estatusController.page)" 
-                    new="#{estatusController.prepare('gonew',estatusController.estatus)}"
-                    printAll="#{estatusController.printAll()}"
+                    skip="ajax:estatusController.skip()" 
+                    url = "/pages/estatus/new.xhtml"
                     />
                 <b:dataTable value="#{estatusController.estatusDataModel}"
                              var="item"
@@ -80,14 +67,15 @@ labeltip1="#{msg['field.estatus']} #{p.idestatus}"   listener="#{estatusControll
                     <b:dataTableColumn value="#{item.idestatus}" label="#{msg['field.idestatus']}"/>
 
                     <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
-                  
+
                     <b:dataTableColumn label="">
 
-                        <jmoordbjsf:column
-
-                            edit="#{estatusController.prepare('view',item)}"
-                            delete="#{estatusController.delete(item,false)}"
-                            rendered="#{applicationMenu.estatus.delete}"
+                       <jmoordbjsf:column
+                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{estatusController}"
+                            url="/pages/estatus/view.xhtml"
+                            item="#{item}"
                             />
                     </b:dataTableColumn>
 
@@ -96,6 +84,6 @@ labeltip1="#{msg['field.estatus']} #{p.idestatus}"   listener="#{estatusControll
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.estatus.list}" />
+          <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
     </ui:define>
 </ui:composition>
