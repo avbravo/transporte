@@ -20,37 +20,29 @@
             }
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudDocente.create}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('DOCENTE')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
 
-                <jmoordbjsf:toolbarnewdate label="#{msg['field.fechagira']}"
-                                    title="#{msg['titleview.solicituddocente']}"
-                                    value="#{solicitudDocenteController.solicitud.fecha}"
-                                    isnew="#{solicitudDocenteController.isNew()}"
-                                    disabled="#{solicitudDocenteController.writable}"
-                                    new="#{solicitudDocenteController.prepare('new',solicitudDocenteController.solicitud)}"
-                                    rendererList="#{applicationMenu.solicitud.list}"
-                                    list="#{solicitudDocenteController.prepare('golist',solicitudDocenteController.solicitud)}"
 
-                                    />
 
-                <b:panel title="#{app['title.data']}" look="primary" rendered="#{solicitudDocenteController.writable}">
+                <b:panel title="#{app['title.data']}" look="primary" rendered="#{p:ifGranted('DOCENTE')}">
 
 
 
-                    <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{solicitudDocenteController.writable}"> 
+                    <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('DOCENTE')}"> 
 
 
                         <p:outputLabel  value="#{msg['field.solicitadopor']}" />
                         <b:column>
                             <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-                                                     completeMethod="#{usuarioController.usuarioServices.complete}"
+                                                     completeMethod="#{solicitudDocenteController.usuarioServices.complete}"
                                                      labeltip1="#{msg['field.username']} #{p.username}"
-                                                     labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudDocenteController.handleSelect}"
+                                                     labeltip2="#{msg['field.nombre']} #{p.nombre}"  
+                                                     listener="#{solicitudDocenteController.handleSelect}"
                                                      value="#{solicitudDocenteController.solicita}"
                                                      itemLabel=" #{p.nombre}"
                                                      field="nombre"
@@ -103,9 +95,10 @@
 
                         <p:outputLabel value="#{msg['field.responsable']}"/>
                         <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-                                                 completeMethod="#{usuarioController.usuarioServices.complete}"
+                                                 completeMethod="#{solicitudDocenteController.usuarioServices.complete}"
                                                  labeltip1="#{msg['field.username']} #{p.username}"
-                                                 labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{solicitudDocenteController.handleSelect}"
+                                                 labeltip2="#{msg['field.nombre']} #{p.nombre}"   
+                                                 listener="#{solicitudDocenteController.handleSelect}"
                                                  value="#{solicitudDocenteController.responsable}"
                                                  itemLabel=" #{p.nombre}"
                                                  field="nombre"
@@ -124,9 +117,10 @@
 
                         <p:outputLabel  value="#{msg['field.semestre']}" />
                         <jmoordbjsf:autocomplete converter="#{semestreConverter}"
-                                                 completeMethod="#{semestreController.semestreServices.complete}"
+                                                 completeMethod="#{solicitudDocenteController.semestreServices.complete}"
                                                  labeltip1="#{p.idsemestre}"
-                                                 labeltip2="#{p.descripcion}"     listener="#{solicitudDocenteController.handleSelect}"
+                                                 labeltip2="#{p.descripcion}"    
+                                                 listener="#{solicitudDocenteController.handleSelect}"
                                                  value="#{solicitudDocenteController.solicitud.semestre}"
                                                  itemLabel="#{p.idsemestre}"
                                                  dropdown="true"
@@ -149,7 +143,7 @@
                         <p:autoComplete dropdown="true"
                                         multiple="true"
                                         scrollHeight="250"
-                                        size="55"
+                                     
                                         emptyMessage="#{app['info.nohayregistros']}"
                                         value="#{solicitudDocenteController.facultadList}"
                                         completeMethod="#{solicitudDocenteController.completeFiltradoFacultad}"
@@ -221,8 +215,9 @@
 
                         <p:outputLabel value="#{msg['field.idtipogira']}"/>
                         <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
-                                                 completeMethod="#{tipogiraController.tipogiraServices.complete}" 
-                                                 labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"     listener="#{solicitudDocenteController.handleSelect}"
+                                                 completeMethod="#{solicitudDocenteController.tipogiraServices.complete}" 
+                                                 labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"  
+                                                 listener="#{solicitudDocenteController.handleSelect}"
                                                  value="#{solicitudDocenteController.solicitud.tipogira}"
                                                  itemLabel=" #{p.idtipogira}"
                                                  field="idtipogira"
@@ -274,40 +269,35 @@
 
                         <p:outputLabel  value="#{msg['field.observaciones']}" />
                         <b:inputTextarea rows="2" span="8" value="#{solicitudDocenteController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
-
-
-                        <p:outputLabel  value="#{msg['field.sugerencia']}" style="font-size: 25;" />
-                        <b:dataTable value="#{sugerenciaController.sugerenciaDataModel}"
-                                     var="item"
-                                     id="dataTable2"
-                                     paginated="false"
-                                     onpage="console.log('page');">
-
-                            <b:dataTableColumn value="#{item.descripcion}" label="#{msg['field.descripcion']}"/>
-
-
-
-                        </b:dataTable>
-
-
-
-
-
-
-
-
-
-                        <jmoordbjsf:save rendered="#{solicitudDocenteController.writable and applicationMenu.solicitud.create}"
-                                         save="#{solicitudDocenteController.save()}" />
-
+                
 
                     </b:panelGrid>
 
+                    <b:row>
 
+                        <b:column span="12">
+                            <p:dataList value="#{sugerenciaController.sugerenciaDataModel}" var="item" type="ordered">
+                                <f:facet name="header">
+                                    <p:outputLabel value="#{msg['field.sugerencia']}"/>
+                                </f:facet>
+                                #{item.descripcion}
+                            </p:dataList>
+
+                        </b:column>
+                    </b:row>
+
+                    <b:row>
+
+                        <b:column span="4">
+                            <jmoordbjsf:toolbarsave
+                                rendered="#{p:ifGranted('DOCENTE')}"
+                                controller="#{solicitudDocenteController}"   />
+                        </b:column>
+                    </b:row>
                 </b:panel>
             </h:panelGroup>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudDocente.create}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('DOCENTE')}"/>
 
         <br/><br/><br/>
     </ui:define>

@@ -20,7 +20,7 @@
             } 
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudDocente.list}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('DOCENTE')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
@@ -39,20 +39,16 @@
 
                 </b:panelGrid>
             </b:panel>
-            <b:panel id="dataTable" look="primary">
-                <jmoordbjsf:paginator 
-                    rowPage="#{solicitudDocenteController.rowPage}"
-                    clear="#{solicitudDocenteController.clear()}"
-                    first="#{solicitudDocenteController.first()}"
-                    back="#{solicitudDocenteController.back()}"
-                    next="#{solicitudDocenteController.next()}"
-                    last="#{solicitudDocenteController.last()}"
+            <b:panel id="dataTable" look="primary" title="#{msg['titlelist.solicituddocente']}">
+                 <jmoordbjsf:paginator
+                    controller="#{solicitudDocenteController}"                        
+                    rowPage="#{solicitudDocenteController.rowPage}"                   
                     page="#{solicitudDocenteController.page}"
                     pages="#{solicitudDocenteController.pages}"
-                    skip="ajax:solicitudDocenteController.skip(solicitudDocenteController.page)" 
-                    new="#{solicitudDocenteController.prepare('gonew',solicitudDocenteController.solicitud)}"
-                    printAll="#{solicitudDocenteController.printAll()}"
+                    skip="ajax:solicitudDocenteController.skip()" 
+                    url = "/pages/solicituddocente/new.xhtml"
                     />
+               
                 <b:dataTable value="#{solicitudDocenteController.solicitudDataModel}"
                              var="item"
                              id="dataTable2"
@@ -100,11 +96,14 @@
 
                     <b:dataTableColumn label="">
 
-                        <jmoordbjsf:column_view
-
-                            edit="#{solicitudDocenteController.prepare('view',item)}"
-                            rendered="#{applicationMenu.solicitud.delete}"
+                        
+                           <jmoordbjsf:column_view
+                            renderedEdit="#{p:ifGranted('DOCENTE')}"
+                            controller="#{solicitudDocenteController}"
+                            url="/pages/solicituddocente/view.xhtml"
+                            item="#{item}"
                             />
+                    
                     </b:dataTableColumn>
 
                 </b:dataTable>
@@ -112,6 +111,6 @@
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudDocente.list}" />
+    <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('DOCENTE')}"/>
     </ui:define>
 </ui:composition>

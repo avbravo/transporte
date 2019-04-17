@@ -145,15 +145,28 @@ public class RolController implements Serializable, IController {
 
             switch ((String) JmoordbContext.get("searchrol")) {
                 case "_init":
-                case "_autocomplete":
-                    rolList = rolRepository.findPagination(page, rowPage);
+                     rolList = rolRepository.findPagination(page, rowPage);
                     break;
+                case "_autocomplete":
+                   break;
 
+                   
                 case "idrol":
                     if (JmoordbContext.get("_fieldsearchrol") != null) {
                         rolSearch.setIdrol(JmoordbContext.get("_fieldsearchrol").toString());
                         doc = new Document("idrol",rolSearch.getIdrol());
                         rolList = rolRepository.findPagination(doc, page, rowPage, new Document("idrol", -1));
+                    } else {
+                        rolList = rolRepository.findPagination(page, rowPage);
+                    }
+
+                    break;
+                    
+                     case "rol":
+                    if (JmoordbContext.get("_fieldsearchrol") != null) {
+                        rolSearch.setRol(JmoordbContext.get("_fieldsearchrol").toString());
+                        rolList = rolRepository.findRegexInTextPagination("rol", rolSearch.getRol(), true, page, rowPage, new Document("rol", -1));
+
                     } else {
                         rolList = rolRepository.findPagination(page, rowPage);
                     }
