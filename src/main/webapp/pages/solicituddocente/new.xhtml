@@ -29,7 +29,7 @@
 
 
 
-                <b:panel title="#{app['title.data']}" look="primary" rendered="#{p:ifGranted('DOCENTE')}">
+                <b:panel title="#{msg['title.solicituddocente']}" look="primary" rendered="#{p:ifGranted('DOCENTE')}">
 
 
 
@@ -276,7 +276,7 @@
                     <b:row>
 
                         <b:column span="12">
-                            <p:dataList value="#{solicitudController.sugerenciaDataModel}" var="item" type="ordered">
+                            <p:dataList value="#{solicitudDocenteController.sugerenciaDataModel}" var="item" type="ordered">
                                 <f:facet name="header">
                                     <p:outputLabel value="#{msg['field.sugerencia']}"/>
                                 </f:facet>
@@ -284,15 +284,33 @@
                             </p:dataList>
 
                         </b:column>
+                        
+                    </b:row>
+                        <b:row>
+                                <b:column span="2">
+                                    <h:outputText value="#{msg['field.leyoSugerencias']}" />
+                            </b:column>
+                                <b:column span="4">
+                                    <p:inputSwitch onLabel="#{msg['field.yes']}"
+                                                   offLabel="#{msg['field.no']}"
+                                          value="#{solicitudDocenteController.leyoSugerencias}" />
+                            </b:column>
                     </b:row>
 
+                    
                     <b:row>
 
+                         
                         <b:column span="4">
-                            <jmoordbjsf:toolbarsave
-                                rendered="#{p:ifGranted('DOCENTE')}"
-                                controller="#{solicitudDocenteController}"   />
+                            <jmoordbjsf:toolbarnewsavereturn
+                                renderedNew="#{p:ifGranted('DOCENTE')}"
+                                renderedSave="#{p:ifGranted('DOCENTE')}"
+                                renderedList="#{p:ifGranted('DOCENTE')}"
+                                controller="#{solicitudDocenteController}" 
+                             url  = "/pages/solicituddocente/list.xhtml"
+                                />
                         </b:column>
+                     
                     </b:row>
                 </b:panel>
             </h:panelGroup>

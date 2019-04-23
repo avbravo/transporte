@@ -11,12 +11,15 @@ import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.CarreraRepository;
 import com.avbravo.commonejb.repository.FacultadRepository;
 import com.avbravo.commonejb.services.SemestreServices;
+import com.avbravo.jmoordb.configuration.JmoordbConfiguration;
 import com.avbravo.jmoordb.configuration.JmoordbContext;
 import com.avbravo.jmoordb.configuration.JmoordbControllerEnvironment;
 import com.avbravo.jmoordb.interfaces.IController;
 import com.avbravo.jmoordb.mongodb.history.repository.AutoincrementablebRepository;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.repository.Repository;
+import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
@@ -49,6 +52,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -84,7 +88,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     private static final long serialVersionUID = 1L;
 
     private Boolean writable = false;
-    private Boolean leyoSugerencias=false;
+    private Boolean leyoSugerencias = false;
     //DataModel
     private SolicitudDataModel solicitudDataModel;
     private SugerenciaDataModel sugerenciaDataModel;
@@ -140,8 +144,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     AutoincrementablebRepository autoincrementablebRepository;
     @Inject
     ErrorInfoServices errorServices;
-@Inject
-EstatusServices estatusServices;
+    @Inject
+    EstatusServices estatusServices;
     @Inject
     SemestreServices semestreServices;
     @Inject
@@ -170,6 +174,13 @@ EstatusServices estatusServices;
         return solicitudRepository.listOfPage(rowPage);
     }
 
+//    public SugerenciaDataModel getSugerenciaDataModel() {
+//          sugerenciaList = sugerenciaRepository.findBy("activo", "si");
+//            sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
+//
+//        return sugerenciaDataModel;
+//    }
+//    
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
     public SolicitudDocenteController() {
@@ -180,7 +191,7 @@ EstatusServices estatusServices;
     @PostConstruct
     public void init() {
         try {
-            autoincrementablebRepository.setDatabase("commondb");
+            //autoincrementablebRepository.setDatabase("transporte");
             /*
             configurar el ambiente del contsolicitudler
              */
@@ -209,7 +220,7 @@ EstatusServices estatusServices;
             String action = JmoordbContext.get("solicitud").toString();
             if (action.equals("gonew")) {
                 inicializar();
-              
+
             }
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -269,13 +280,123 @@ EstatusServices estatusServices;
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="beforeSave()">
+    @Override
     public Boolean beforeSave() {
         try {
-            if(!leyoSugerencias){
-               JsfUtil.warningDialog("titulo", "Por favor lea las sugerencias");
-               return false;
-            }
+
             solicitud.setIdsolicitud(autoincrementableServices.getContador("solicitud"));
+            solicitud.setFecha(DateUtil.getFechaActual());
+            usuarioList = new ArrayList<>();
+            usuarioList.add(solicita);
+            usuarioList.add(responsable);
+            solicitud.setUsuario(usuarioList);
+
+//             List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+//            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+//            solicitud.setTipovehiculo(tipovehiculoList);
+//
+//            solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
+//
+//            String textsearch = "ADMINISTRATIVO";
+//            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+//           Rol jmoordb_rol = (Rol) JmoordbContext.get("jmoordb_rol");
+//            if (jmoordb_rol.getIdrol().toUpperCase().equals("DOCENTE")) {
+//                textsearch = "DOCENTE";
+//            }
+//            solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
+//            
+            if (!solicitudServices.isValid(solicitud)) {
+                return false;
+            }
+            if (!leyoSugerencias) {
+                JsfUtil.warningDialog("Advertencia", "Por favor lea las sugerencias");
+                return false;
+            }
+
+            Integer solicitudesGuardadas = 0;
+            solicitud.setSolicitudpadre(0);
+            return true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean afterSave(Boolean saved)">
+    @Override
+    public Boolean afterSave(Boolean saved) {
+        try {
+            if (saved) {
+
+                Integer solicitudesGuardadas = 0;
+                solicitud.setSolicitudpadre(0);
+                for (Integer index = 0; index < solicitud.getNumerodevehiculos(); index++) {
+                    if (index == 0) {
+
+                    } else {
+
+                        Integer idsolicitud = autoincrementableServices.getContador("solicitud");
+                        solicitud.setIdsolicitud(idsolicitud);
+                        Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
+                        if (optional.isPresent()) {
+                            JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
+                            return null;
+                        }
+                        //Lo datos del usuario
+                        Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+                        solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
+                        if (solicitudRepository.save(solicitud)) {
+                            //guarda el contenido anterior
+                            JmoordbConfiguration jmc = new JmoordbConfiguration();
+                            Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
+                            RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
+                            repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                                    "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+//enviarEmails();
+
+                            //si cambia el email o celular del responsable actualizar ese usuario
+                            if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
+                                usuarioRepository.update(responsable);
+                                //actuliza el que esta en el login
+                                if (responsable.getUsername().equals(jmoordb_user.getUsername())) {
+                                    //  loginController.setUsuario(responsable);
+                                }
+                            }
+                            solicitudesGuardadas++;
+
+                        } else {
+                            JsfUtil.successMessage("save() " + solicitudRepository.getException().toString());
+                        }
+                        //Asigna la solicitud padre para las demas solicitudes
+                        if (index.equals(0)) {
+                            solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
+                        }
+                    }
+                }//for
+
+//             List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+//            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+//            solicitud.setTipovehiculo(tipovehiculoList);
+//
+//            solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
+//
+//            String textsearch = "ADMINISTRATIVO";
+//            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+//           Rol jmoordb_rol = (Rol) JmoordbContext.get("jmoordb_rol");
+//            if (jmoordb_rol.getIdrol().toUpperCase().equals("DOCENTE")) {
+//                textsearch = "DOCENTE";
+//            }
+//            solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
+//            
+                facultadList = new ArrayList<>();
+                carreraList = new ArrayList<>();
+
+                JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") + " : " + solicitudesGuardadas.toString() + " " + rf.getMessage("info.solicitudesde") + solicitud.getNumerodevehiculos());
+                reset();
+            } else {
+                //No guardo el primero
+            }
             return true;
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -720,11 +841,11 @@ EstatusServices estatusServices;
         return _found;
     }
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Boolean inicializar()">
-    private String inicializar(){
+    private String inicializar() {
         try {
-              Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             Date idsecond = solicitud.getFecha();
             Integer id = solicitud.getIdsolicitud();
 
@@ -786,21 +907,21 @@ EstatusServices estatusServices;
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
 
             String textsearch = "ADMINISTRATIVO";
-          Rol rol = (Rol)  JmoordbContext.get("jmoordb_rol");
+            Rol rol = (Rol) JmoordbContext.get("jmoordb_rol");
             if (rol.getIdrol().toUpperCase().equals("DOCENTE")) {
                 textsearch = "DOCENTE";
             }
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
             solicitudSelected = solicitud;
-            leyoSugerencias=false;
+            leyoSugerencias = false;
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-       return "";
+        return "";
     }
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="handleSelectCopiarDesde(SelectEvent event)">
     public void handleSelectCopiarDesde(SelectEvent event) {
         try {
