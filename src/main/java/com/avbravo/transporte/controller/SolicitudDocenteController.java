@@ -195,7 +195,7 @@ EstatusServices estatusServices;
                     .withService(solicitudServices)
                     .withNameFieldOfPage("page")
                     .withNameFieldOfRowPage("rowPage")
-                    .withTypeKey("secondary")
+                    .withTypeKey("primary")
                     .withSearchLowerCase(false)
                     .withPathReportDetail("/resources/reportes/solicitud/details.jasper")
                     .withPathReportAll("/resources/reportes/solicitud/all.jasper")
