@@ -118,6 +118,7 @@ public class SemestreController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/rol/details.jasper")
                     .withPathReportAll("/resources/reportes/rol/all.jasper")
                     .withparameters(parameters)
+                     .withResetInSave(true)
                     .build();
 
             start();

@@ -62,8 +62,8 @@
                                 labelvalue2="#{p.usuario.get(0).nombre}"
                                 labeltip3="#{msg['field.responsable']}"
                                 labelvalue3="#{p.usuario.get(1).nombre}"
-                                labeltip4="#{msg['field.mision']} "
-                                labelvalue4="#{p.mision}" 
+                                labeltip4="#{msg['field.objetivo']} "
+                                labelvalue4="#{p.objetivo}" 
                                 labeltip5="#{msg['field.lugares']}" 
                                 labelvalue5="#{p.lugares}"
                                 calendarsize="20"
@@ -84,7 +84,7 @@
 
                                 listener="#{solicitudDocenteController.handleSelectCopiarDesde}"
                                 value="#{solicitudDocenteController.solicitudCopiar}"
-                                itemLabel=" #{p.mision}"
+                                itemLabel=" #{p.objetivo}"
                                 field="mision"
                                 dropdown="true"
                                 minQueryLength="0"
@@ -143,7 +143,7 @@
                         <p:autoComplete dropdown="true"
                                         multiple="true"
                                         scrollHeight="250"
-                                     
+
                                         emptyMessage="#{app['info.nohayregistros']}"
                                         value="#{solicitudDocenteController.facultadList}"
                                         completeMethod="#{solicitudDocenteController.completeFiltradoFacultad}"
@@ -259,6 +259,16 @@
                                              label="#{msg['field.fechahoraregreso']}" />
 
 
+
+
+                        <p:outputLabel  value="#{msg['field.rangoagenda']}" />
+                        <p:selectCheckboxMenu id="multiple" value="#{solicitudDocenteController.diasSelected}" label="#{msg['field.rangoagenda']}" multiple="true"
+                                              required="true" 
+                                              requiredMessage="#{msg['field.rangoagenda']} #{app['info.required']}"
+                                              panelStyle="width:250px">
+                            <f:selectItems value="#{solicitudDocenteController.diasList}" />
+                        </p:selectCheckboxMenu>
+
                         <p:outputLabel  value="#{msg['field.lugarllegada']}" />
                         <jmoordbjsf:inputText span="8" value="#{solicitudDocenteController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
 
@@ -269,7 +279,7 @@
 
                         <p:outputLabel  value="#{msg['field.observaciones']}" />
                         <b:inputTextarea rows="2" span="8" value="#{solicitudDocenteController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
-                
+
 
                     </b:panelGrid>
 
@@ -284,33 +294,33 @@
                             </p:dataList>
 
                         </b:column>
-                        
+
                     </b:row>
-                        <b:row>
-                                <b:column span="2">
-                                    <h:outputText value="#{msg['field.leyoSugerencias']}" />
-                            </b:column>
-                                <b:column span="4">
-                                    <p:inputSwitch onLabel="#{msg['field.yes']}"
-                                                   offLabel="#{msg['field.no']}"
-                                          value="#{solicitudDocenteController.leyoSugerencias}" />
-                            </b:column>
+                    <b:row>
+                        <b:column span="2">
+                            <h:outputText value="#{msg['field.leyoSugerencias']}" />
+                        </b:column>
+                        <b:column span="4">
+                            <p:inputSwitch onLabel="#{msg['field.yes']}"
+                                           offLabel="#{msg['field.no']}"
+                                           value="#{solicitudDocenteController.leyoSugerencias}" />
+                        </b:column>
                     </b:row>
 
-                    
+
                     <b:row>
 
-                         
+
                         <b:column span="4">
                             <jmoordbjsf:toolbarnewsavereturn
                                 renderedNew="#{p:ifGranted('DOCENTE')}"
                                 renderedSave="#{p:ifGranted('DOCENTE')}"
                                 renderedList="#{p:ifGranted('DOCENTE')}"
                                 controller="#{solicitudDocenteController}" 
-                             url  = "/pages/solicituddocente/list.xhtml"
+                                url  = "/pages/solicituddocente/list.xhtml"
                                 />
                         </b:column>
-                     
+
                     </b:row>
                 </b:panel>
             </h:panelGroup>

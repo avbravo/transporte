@@ -131,6 +131,7 @@ public class UnidadController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/unidad/details.jasper")
                     .withPathReportAll("/resources/reportes/unidad/all.jasper")
                     .withparameters(parameters)
+                     .withResetInSave(true)
                     .build();
 
             start();

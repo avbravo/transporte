@@ -49,7 +49,7 @@
                     url = "/pages/solicituddocente/new.xhtml"
                     />
 
-    
+
 
                 <p:dataGrid var="item" value="#{solicitudDocenteController.solicitudDataModel}" columns="3" layout="grid"
                             rows="12" paginator="false" id="cars" 
@@ -66,10 +66,7 @@
                             <p:outputLabel value="#{item.solicitudpadre}" style="color: #009900;"/>
 
 
-
-                            <h:outputText  value="#{msg['field.idsolicitud']}"/>
-
-                            <h:outputText value="#{item.idsolicitud}" />
+                         
 
                             <p:outputLabel value="#{msg['field.fechapartida']}" />
                             <p:calendar  disabled="true"  size="8"                                  
@@ -92,7 +89,7 @@
                                          size="8" 
                                          pattern="HH:mm:ss a" value="#{item.fechahoraregreso}"  />
 
-<p:outputLabel value="#{msg['field.objetivo']}"  />
+                            <p:outputLabel value="#{msg['field.objetivo']}"  />
                             <p:outputLabel value="#{item.objetivo}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
                             <p:outputLabel value="#{msg['field.lugares']}"/>
                             <p:outputLabel value="#{item.lugares}"  style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />

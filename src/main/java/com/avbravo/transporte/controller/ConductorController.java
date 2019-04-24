@@ -138,6 +138,7 @@ public class ConductorController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/conductor/details.jasper")
                     .withPathReportAll("/resources/reportes/conductor/all.jasper")
                     .withparameters(parameters)
+                     .withResetInSave(true)
                     .build();
 
             start();

@@ -48,6 +48,7 @@ import com.avbravo.transporteejb.services.UsuarioServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -164,6 +165,9 @@ public class SolicitudDocenteController implements Serializable, IController {
     ResourcesFiles rf;
     @Inject
     Printer printer;
+    //
+     private String[] diasSelected;
+    private List<String> diasList;
 
     //List of Relations
     //Repository of Relations
@@ -191,6 +195,17 @@ public class SolicitudDocenteController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
+            
+           diasList = new ArrayList<String>();
+        diasList.add("Dia/ Dias Consecutivo");
+        diasList.add("Lunes");
+        diasList.add("Martes");
+        diasList.add("Miercoles");
+        diasList.add("Jueves");
+        diasList.add("Viernes");
+        diasList.add("Sabado");
+        diasList.add("Domingo");
+        
             //autoincrementablebRepository.setDatabase("transporte");
             /*
             configurar el ambiente del contsolicitudler
@@ -211,6 +226,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/solicitud/details.jasper")
                     .withPathReportAll("/resources/reportes/solicitud/all.jasper")
                     .withparameters(parameters)
+                     .withResetInSave(false)
                     .build();
 
             start();
@@ -283,18 +299,48 @@ public class SolicitudDocenteController implements Serializable, IController {
     @Override
     public Boolean beforeSave() {
         try {
-
+          
             solicitud.setIdsolicitud(autoincrementableServices.getContador("solicitud"));
             solicitud.setFecha(DateUtil.getFechaActual());
             usuarioList = new ArrayList<>();
             usuarioList.add(solicita);
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
+            
+             List<String> rangoAgenda = new ArrayList<>();
+            Integer c=0;
+           Boolean rs=false;
+             for(String d:diasSelected){
+                 if(d.equals("Dia/ Dias Consecutivo")){
+                     rs=true;
+                 }
+                 c++;
+                 rangoAgenda.add(d);
+             }
+             if(c > 1 && rs){
+                  JsfUtil.warningDialog("Advertencia", "Cuando selecciona Dia/ Dias Consecutivo no puede seleccionar otro valor");
+                return false;
+             }
+            solicitud.setRangoagenda(rangoAgenda);
+            
+            solicitud.setFacultad(facultadList);
+            solicitud.setCarrera(carreraList);
+            
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+              unidadList = new ArrayList<>();
+            unidadList.add(jmoordb_user.getUnidad());
+            solicitud.setUnidad(unidadList);
+            
               solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
             solicitud.setFechaestatus(DateUtil.fechaActual());
             solicitud.setActivo("si");
 
-      
+               String textsearch = "ADMINISTRATIVO";
+            Rol rol = (Rol) JmoordbContext.get("jmoordb_rol");
+            if (rol.getIdrol().toUpperCase().equals("DOCENTE")) {
+                textsearch = "DOCENTE";
+            }
+      solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
             if (!solicitudServices.isValid(solicitud)) {
                 return false;
             }
@@ -302,7 +348,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 JsfUtil.warningDialog("Advertencia", "Por favor lea las sugerencias");
                 return false;
             }
-
+   
             Integer solicitudesGuardadas = 0;
             solicitud.setSolicitudpadre(0);
             return true;
@@ -370,6 +416,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 reset();
             } else {
                 //No guardo el primero
+                  
             }
             return true;
         } catch (Exception e) {
@@ -855,6 +902,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud.setFechahoraregreso(solicitud.getFecha());
             unidadList = new ArrayList<>();
             unidadList.add(jmoordb_user.getUnidad());
+            solicitud.setUnidad(unidadList);
 
             Integer mes = DateUtil.mesDeUnaFecha(solicitud.getFecha());
 

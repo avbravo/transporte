@@ -117,6 +117,7 @@ public class TipogiraController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/tipogira/details.jasper")
                     .withPathReportAll("/resources/reportes/tipogira/all.jasper")
                     .withparameters(parameters)
+                     .withResetInSave(true)
                     .build();
 
             start();

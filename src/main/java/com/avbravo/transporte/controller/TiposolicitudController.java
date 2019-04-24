@@ -117,6 +117,7 @@ public class TiposolicitudController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/tiposolicitud/details.jasper")
                     .withPathReportAll("/resources/reportes/tiposolicitud/all.jasper")
                     .withparameters(parameters)
+                     .withResetInSave(true)
                     .build();
 
             start();

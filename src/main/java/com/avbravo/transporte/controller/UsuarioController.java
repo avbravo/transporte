@@ -130,6 +130,7 @@ public class UsuarioController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/usuario/details.jasper")
                     .withPathReportAll("/resources/reportes/usuario/all.jasper")
                     .withparameters(parameters)
+                     .withResetInSave(true)
                     .build();
 
             start();

@@ -132,6 +132,7 @@ public class SugerenciaController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/sugerencia/details.jasper")
                     .withPathReportAll("/resources/reportes/sugerencia/all.jasper")
                     .withparameters(parameters)
+                     .withResetInSave(true)
                     .build();
 
             start();

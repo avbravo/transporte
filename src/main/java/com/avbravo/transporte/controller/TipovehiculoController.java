@@ -117,6 +117,7 @@ public class TipovehiculoController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/tipovehiculo/details.jasper")
                     .withPathReportAll("/resources/reportes/tipovehiculo/all.jasper")
                     .withparameters(parameters)
+                     .withResetInSave(true)
                     .build();
 
             start();
