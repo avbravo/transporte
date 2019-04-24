@@ -290,21 +290,11 @@ public class SolicitudDocenteController implements Serializable, IController {
             usuarioList.add(solicita);
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
+              solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
+            solicitud.setFechaestatus(DateUtil.fechaActual());
+            solicitud.setActivo("si");
 
-//             List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
-//            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
-//            solicitud.setTipovehiculo(tipovehiculoList);
-//
-//            solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
-//
-//            String textsearch = "ADMINISTRATIVO";
-//            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-//           Rol jmoordb_rol = (Rol) JmoordbContext.get("jmoordb_rol");
-//            if (jmoordb_rol.getIdrol().toUpperCase().equals("DOCENTE")) {
-//                textsearch = "DOCENTE";
-//            }
-//            solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
-//            
+      
             if (!solicitudServices.isValid(solicitud)) {
                 return false;
             }
@@ -329,8 +319,8 @@ public class SolicitudDocenteController implements Serializable, IController {
         try {
             if (saved) {
 
-                Integer solicitudesGuardadas = 0;
-                solicitud.setSolicitudpadre(0);
+                Integer solicitudesGuardadas = 1;
+                solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
                 for (Integer index = 0; index < solicitud.getNumerodevehiculos(); index++) {
                     if (index == 0) {
 
@@ -369,26 +359,10 @@ public class SolicitudDocenteController implements Serializable, IController {
                             JsfUtil.successMessage("save() " + solicitudRepository.getException().toString());
                         }
                         //Asigna la solicitud padre para las demas solicitudes
-                        if (index.equals(0)) {
-                            solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
-                        }
+                     
                     }
                 }//for
 
-//             List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
-//            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
-//            solicitud.setTipovehiculo(tipovehiculoList);
-//
-//            solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
-//
-//            String textsearch = "ADMINISTRATIVO";
-//            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-//           Rol jmoordb_rol = (Rol) JmoordbContext.get("jmoordb_rol");
-//            if (jmoordb_rol.getIdrol().toUpperCase().equals("DOCENTE")) {
-//                textsearch = "DOCENTE";
-//            }
-//            solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
-//            
                 facultadList = new ArrayList<>();
                 carreraList = new ArrayList<>();
 

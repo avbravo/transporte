@@ -40,7 +40,7 @@
                 </b:panelGrid>
             </b:panel>
             <b:panel id="dataTable" look="primary" title="#{msg['titlelist.solicituddocente']}">
-                 <jmoordbjsf:paginator
+                <jmoordbjsf:paginator
                     controller="#{solicitudDocenteController}"                        
                     rowPage="#{solicitudDocenteController.rowPage}"                   
                     page="#{solicitudDocenteController.page}"
@@ -48,7 +48,7 @@
                     skip="ajax:solicitudDocenteController.skip()" 
                     url = "/pages/solicituddocente/new.xhtml"
                     />
-               
+
                 <b:dataTable value="#{solicitudDocenteController.solicitudDataModel}"
                              var="item"
                              id="dataTable2"
@@ -56,7 +56,7 @@
                              onpage="console.log('page');">
 
                     <b:dataTableColumn value="#{item.idsolicitud}" label="#{msg['field.idsolicitud']}"/>
-                   <b:dataTableColumn  label="#{msg['field.solicitudpadre']}">
+                    <b:dataTableColumn  label="#{msg['field.solicitudpadre']}">
                         <p:outputLabel value="#{item.solicitudpadre}" style="color: #009900;" rendered="#{item.solicitudpadre gt 0}"/>
                     </b:dataTableColumn>
 
@@ -96,21 +96,81 @@
 
                     <b:dataTableColumn label="">
 
-                        
-                           <jmoordbjsf:column_view
+
+                        <jmoordbjsf:column_view
                             renderedEdit="#{p:ifGranted('DOCENTE')}"
                             controller="#{solicitudDocenteController}"
                             url="/pages/solicituddocente/view.xhtml"
                             item="#{item}"
                             />
-                    
+
                     </b:dataTableColumn>
 
                 </b:dataTable>
+
+                <p:dataGrid var="item" value="#{solicitudDocenteController.solicitudDataModel}" columns="3" layout="grid"
+                            rows="12" paginator="false" id="cars" 
+                            >
+
+                    <f:facet name="header">
+                        Cars for Sale
+                    </f:facet>
+
+                    <p:panel header="#{item.idsolicitud}" style="text-align:center">
+                        <h:panelGrid columns="2" style="width:100%">
+
+                            <p:outputLabel  value="#{msg['field.solicitudpadre']}"/>
+                            <p:outputLabel value="#{item.solicitudpadre}" style="color: #009900;"/>
+
+
+
+                            <h:outputText  value="#{msg['field.idsolicitud']}"/>
+
+                            <h:outputText value="#{item.idsolicitud}" />
+
+                            <p:outputLabel value="#{msg['field.fechapartida']}" />
+                            <p:calendar  disabled="true"  size="8"                                  
+                                         style="background-color: grey;"
+                                         pattern="dd/MM/yyyy" value="#{item.fechahorapartida}"  />
+
+                            <p:outputLabel value="#{msg['field.horapartida']}" />
+                            <p:calendar  disabled="true"    
+                                         size="8" 
+                                         pattern="HH:mm:ss a" value="#{item.fechahorapartida}"  />
+
+                            <p:outputLabel value="#{msg['field.fecharegreso']}" />
+                            <p:calendar  disabled="true"    
+                                         size="8" 
+                                         pattern="dd/MM/yyyy" value="#{item.fechahoraregreso}"  />
+
+
+                            <p:outputLabel value="#{msg['field.horaregreso']}" />
+                            <p:calendar  disabled="true"   
+                                         size="8" 
+                                         pattern="HH:mm:ss a" value="#{item.fechahoraregreso}"  />
+
+<p:outputLabel value="#{msg['field.objetivo']}"  />
+                            <p:outputLabel value="#{item.objetivo}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
+                            <p:outputLabel value="#{msg['field.lugares']}"/>
+                            <p:outputLabel value="#{item.lugares}"  style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
+                            <p:outputLabel value="#{msg['field.estatus']}" />
+                            <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
+
+
+                            <jmoordbjsf:column_view
+                                renderedEdit="#{p:ifGranted('DOCENTE')}"
+                                controller="#{solicitudDocenteController}"
+                                url="/pages/solicituddocente/view.xhtml"
+                                item="#{item}"
+                                />
+                        </h:panelGrid>
+                    </p:panel>
+
+                </p:dataGrid>
             </b:panel>
 
         </b:form>
 
-    <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('DOCENTE')}"/>
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('DOCENTE')}"/>
     </ui:define>
 </ui:composition>
