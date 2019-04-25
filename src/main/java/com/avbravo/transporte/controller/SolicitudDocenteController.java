@@ -345,6 +345,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (!solicitudServices.isValid(solicitud)) {
                 return false;
             }
+            
+            
             if (!leyoSugerencias) {
                 JsfUtil.warningDialog("Advertencia", "Por favor lea las sugerencias");
                 return false;
@@ -500,8 +502,8 @@ public class SolicitudDocenteController implements Serializable, IController {
                                     //Lo datos del usuario
                                     Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
                                     solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
-                                    Date newDatePartida = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horapartida, mesPartida);
-                                    Date newDateRegreso = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horaregreso, mesRegreso);
+                                    Date newDatePartida = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horapartida, minutopartida);
+                                    Date newDateRegreso = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horaregreso, minutoregreso);
                                     System.out.println("====== > new date partida "+newDatePartida + " ==> new date regreso "+newDateRegreso);
                                     solicitud.setFechahorapartida(newDatePartida);
                                     solicitud.setFechahoraregreso(newDateRegreso);
