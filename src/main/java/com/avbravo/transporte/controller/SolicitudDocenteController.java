@@ -91,6 +91,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
     private Boolean writable = false;
     private Boolean leyoSugerencias = false;
+    Boolean diasconsecutivos = false;
     //DataModel
     private SolicitudDataModel solicitudDataModel;
     private SugerenciaDataModel sugerenciaDataModel;
@@ -120,7 +121,9 @@ public class SolicitudDocenteController implements Serializable, IController {
     List<Tiposolicitud> tiposolicitudList = new ArrayList<>();
     List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
     List<Tipovehiculo> suggestionsTipovehiculo = new ArrayList<>();
-
+    //
+    private String[] diasSelected;
+    private List<String> diasList;
     List<Facultad> suggestionsFacultad = new ArrayList<>();
     List<Carrera> suggestionsCarrera = new ArrayList<>();
     List<Unidad> suggestionsUnidad = new ArrayList<>();
@@ -166,9 +169,6 @@ public class SolicitudDocenteController implements Serializable, IController {
     ResourcesFiles rf;
     @Inject
     Printer printer;
-    //
-    private String[] diasSelected;
-    private List<String> diasList;
 
     //List of Relations
     //Repository of Relations
@@ -296,6 +296,274 @@ public class SolicitudDocenteController implements Serializable, IController {
 
     }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="Boolean localValid()">
+    public Boolean localValid() {
+        try {
+            diasconsecutivos = false;
+            solicitud.setFecha(DateUtil.getFechaActual());
+            usuarioList = new ArrayList<>();
+            usuarioList.add(solicita);
+            usuarioList.add(responsable);
+            solicitud.setUsuario(usuarioList);
+
+            List<String> rangoAgenda = new ArrayList<>();
+            Integer c = 0;
+
+            for (String d : diasSelected) {
+                if (d.equals("Dia/ Dias Consecutivo")) {
+                    diasconsecutivos = true;
+                }
+                c++;
+                rangoAgenda.add(d);
+            }
+            if (c > 1 && diasconsecutivos) {
+                JsfUtil.warningDialog("Advertencia", "Cuando selecciona Dia/ Dias Consecutivo no puede seleccionar otro valor");
+                return false;
+            }
+            solicitud.setRangoagenda(rangoAgenda);
+
+            solicitud.setFacultad(facultadList);
+            solicitud.setCarrera(carreraList);
+
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            unidadList = new ArrayList<>();
+            unidadList.add(jmoordb_user.getUnidad());
+            solicitud.setUnidad(unidadList);
+
+            solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
+            solicitud.setFechaestatus(DateUtil.fechaActual());
+            solicitud.setActivo("si");
+
+            String textsearch = "ADMINISTRATIVO";
+            Rol rol = (Rol) JmoordbContext.get("jmoordb_rol");
+            if (rol.getIdrol().toUpperCase().equals("DOCENTE")) {
+                textsearch = "DOCENTE";
+            }
+            solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
+            if (!solicitudServices.isValid(solicitud)) {
+                return false;
+            }
+
+            if (!leyoSugerencias) {
+                JsfUtil.warningDialog("Advertencia", "Por favor lea las sugerencias");
+                return false;
+            }
+
+            return true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean insert()">
+    public Boolean insert() {
+        try {
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            Integer idsolicitud = autoincrementableServices.getContador("solicitud");
+            solicitud.setIdsolicitud(idsolicitud);
+            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
+            if (optional.isPresent()) {
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
+                return null;
+            }
+            //Lo datos del usuario
+
+            solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
+            if (solicitudRepository.save(solicitud)) {
+                //guarda el contenido anterior
+                JmoordbConfiguration jmc = new JmoordbConfiguration();
+                Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
+                RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
+                repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                        "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+
+            } else {
+                JsfUtil.successMessage("save() " + solicitudRepository.getException().toString());
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean isValidDayName(String name)">
+    private Boolean isValidDayName(String name) {
+        Boolean valid = false;
+        try {
+            for (String rango : solicitud.getRangoagenda()) {
+                //verificar que dia es
+                if (name.equals(rango.toUpperCase())) {
+                    valid = true;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="List<FechaDiaUtils> validarRangoFechas(Integer anioPartida, String nombreMesPartida)">
+    /**
+     * valida el rango de las fechas validas
+     *
+     * @param anioPartida
+     * @param nombreMesPartida
+     * @return
+     */
+    private List<FechaDiaUtils> validarRangoFechas(Integer anioPartida, String nombreMesPartida) {
+        List<FechaDiaUtils> fechaDiaUtilsSaveList = new ArrayList<>();
+        try {
+            List<FechaDiaUtils> fechaDiaUtilsInicialList = DateUtil.nameOfDayOfDateOfMonth(anioPartida, nombreMesPartida);
+
+//convertir la fecha de solicitud a LocalDate
+            LocalDate ld = DateUtil.convertirJavaDateToLocalDate(solicitud.getFechahorapartida());
+            LocalDate ld2 = DateUtil.convertirJavaDateToLocalDate(solicitud.getFechahoraregreso());
+            //Buscar si esta en el intervalo de dias entre las fechas
+            fechaDiaUtilsInicialList.forEach((fdu) -> {
+                LocalDate l = fdu.getDate();
+                if (l.isEqual(ld) || l.isEqual(ld2) || (l.isAfter(ld) && l.isBefore(ld2))) {
+                    fechaDiaUtilsSaveList.add(fdu);
+                }
+            });
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return fechaDiaUtilsSaveList;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String save()">
+    @Override
+    public String save() {
+        try {
+            if (!localValid()) {
+                return "";
+            }
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+
+            //si cambia el email o celular del responsable actualizar ese usuario
+            if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
+                usuarioRepository.update(responsable);
+                //actuliza el que esta en el login
+                if (responsable.getUsername().equals(jmoordb_user.getUsername())) {
+                    //  loginController.setUsuario(responsable);
+                }
+            }
+            Integer solicitudesGuardadas = 0;
+            solicitud.setSolicitudpadre(0);
+
+            /**
+             * Si es dias consecutivos es un solo intervalo para la reservacion
+             * se creara una solicitud para cada vehiculos solicitado
+             */
+            if (diasconsecutivos) {
+                for (Integer index = 0; index < solicitud.getNumerodevehiculos(); index++) {
+                    if (insert()) {
+                        solicitudesGuardadas++;
+                    }
+                    //Asigna la solicitud padre para las demas solicitudes
+                    solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
+                }//for
+            } else {
+
+                /*
+                No son dias consecutivo
+                Se deben descomponer las fechas
+                verificar si son dias validos
+                Descomponener la fecha de inicio
+                 */
+                Date fechahorapartidad = solicitud.getFechahorapartida();
+                Date fechahoraregreso = solicitud.getFechahoraregreso();
+
+                Integer diaPartida = DateUtil.diaDeUnaFecha(solicitud.getFechahorapartida());
+                Integer mesPartida = DateUtil.mesDeUnaFechaStartEneroWith0(solicitud.getFechahorapartida());
+                String nombreMesPartida = DateUtil.nombreMes(mesPartida);
+                Integer anioPartida = DateUtil.anioDeUnaFecha(solicitud.getFechahorapartida());
+                Integer horapartida = DateUtil.horaDeUnaFecha(solicitud.getFechahorapartida());
+                Integer minutopartida = DateUtil.minutosDeUnaFecha(solicitud.getFechahorapartida());
+                //descomponer la fecha de regreso
+                Integer diaRegreso = DateUtil.diaDeUnaFecha(solicitud.getFechahoraregreso());
+                Integer mesRegreso = DateUtil.mesDeUnaFechaStartEneroWith0(solicitud.getFechahoraregreso());
+                String nombreMesRegreso = DateUtil.nombreMes(mesRegreso);
+                Integer anioRegreso = DateUtil.anioDeUnaFecha(solicitud.getFechahoraregreso());
+                Integer horaregreso = DateUtil.horaDeUnaFecha(solicitud.getFechahoraregreso());
+                Integer minutoregreso = DateUtil.minutosDeUnaFecha(solicitud.getFechahoraregreso());
+
+                //Determinar cuantos meses hay
+                Integer meses = 0;
+                if (mesPartida > mesRegreso) {
+                    meses = (mesRegreso + 12) - mesPartida;
+                } else {
+                    meses = mesRegreso - mesPartida;
+                }
+                //mismo mes
+                if (meses == 0) {
+
+                    List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
+                    fechasValidasList = validarRangoFechas(anioPartida, nombreMesPartida);
+                    //recorre todos los vehiculos 
+                    for (int i = 0; i < solicitud.getNumerodevehiculos(); i++) {
+                        if (fechasValidasList.isEmpty()) {
+                            //no hay fechas para guardar
+                            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos"));
+
+                        } else {
+                            //ESTOS SON LOS QUE SE GUARDARIAN
+
+                            for (FechaDiaUtils f : fechasValidasList) {
+                                //si es un dia valido
+                                if (isValidDayName(f.getName())) {
+
+                                    /**
+                                     * crear la nueva fechahora de partida crear
+                                     * la nueva fechahora de regreso
+                                     */
+                                    Date newDatePartida = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horapartida, minutopartida);
+                                    Date newDateRegreso = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horaregreso, minutoregreso);
+
+                                    solicitud.setFechahorapartida(newDatePartida);
+                                    solicitud.setFechahoraregreso(newDateRegreso);
+                                    if (insert()) {
+                                        solicitudesGuardadas++;
+                                    }
+                                    solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
+
+                                }
+
+                            }
+
+                        }//isEmpty
+                    } //getNumerodevehiculos
+
+                } else {
+                    // mas de un mes recorrer todos los meses en ese intervalo
+                    if (meses > 0) {
+
+                    }
+                }
+
+            }//no son dias consecutivos
+
+            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") + " : " + solicitudesGuardadas.toString() + " " + rf.getMessage("info.solicitudesde") + solicitud.getNumerodevehiculos());
+            //Enviar los emails
+            facultadList = new ArrayList<>();
+            carreraList = new ArrayList<>();
+            reset();
+
+            return "";
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="beforeSave()">
     @Override
     public Boolean beforeSave() {
@@ -345,8 +613,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (!solicitudServices.isValid(solicitud)) {
                 return false;
             }
-            
-            
+
             if (!leyoSugerencias) {
                 JsfUtil.warningDialog("Advertencia", "Por favor lea las sugerencias");
                 return false;
@@ -354,202 +621,6 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             Integer solicitudesGuardadas = 0;
             solicitud.setSolicitudpadre(0);
-            return true;
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return false;
-    }
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Boolean afterSave(Boolean saved)">
-    @Override
-    public Boolean afterSave(Boolean saved) {
-        try {
-            if (saved) {
-
-                Integer solicitudesGuardadas = 1;
-                solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
-                for (Integer index = 0; index < solicitud.getNumerodevehiculos(); index++) {
-                    if (index == 0) {
-
-                    } else {
-
-                        Integer idsolicitud = autoincrementableServices.getContador("solicitud");
-                        solicitud.setIdsolicitud(idsolicitud);
-                        Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
-                        if (optional.isPresent()) {
-                            JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                            return null;
-                        }
-                        //Lo datos del usuario
-                        Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-                        solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
-                        if (solicitudRepository.save(solicitud)) {
-                            //guarda el contenido anterior
-                            JmoordbConfiguration jmc = new JmoordbConfiguration();
-                            Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
-                            RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
-                            repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
-                                    "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
-//enviarEmails();
-
-                            //si cambia el email o celular del responsable actualizar ese usuario
-                            if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
-                                usuarioRepository.update(responsable);
-                                //actuliza el que esta en el login
-                                if (responsable.getUsername().equals(jmoordb_user.getUsername())) {
-                                    //  loginController.setUsuario(responsable);
-                                }
-                            }
-                            solicitudesGuardadas++;
-
-                        } else {
-                            JsfUtil.successMessage("save() " + solicitudRepository.getException().toString());
-                        }
-                        //Asigna la solicitud padre para las demas solicitudes
-
-                    }//else
-                }//for
-
-                facultadList = new ArrayList<>();
-                carreraList = new ArrayList<>();
-
-                //Ver las fechas
-                /*
-                Descomponener la fecha de inicio
-                 */
-                Date fechahorapartidad = solicitud.getFechahorapartida();
-                Date fechahoraregreso = solicitud.getFechahoraregreso();
-                
-                Integer diaPartida = DateUtil.diaDeUnaFecha(solicitud.getFechahorapartida());
-                Integer mesPartida = DateUtil.mesDeUnaFechaStartEneroWith0(solicitud.getFechahorapartida());
-                String nombreMesPartida = DateUtil.nombreMes(mesPartida);
-                Integer anioPartida = DateUtil.anioDeUnaFecha(solicitud.getFechahorapartida());
-                Integer horapartida = DateUtil.horaDeUnaFecha(solicitud.getFechahorapartida());
-                Integer minutopartida = DateUtil.minutosDeUnaFecha(solicitud.getFechahorapartida());
-                //descomponer la fecha de regreso
-                Integer diaRegreso= DateUtil.diaDeUnaFecha(solicitud.getFechahoraregreso());
-                Integer mesRegreso = DateUtil.mesDeUnaFechaStartEneroWith0(solicitud.getFechahoraregreso());
-                String nombreMesRegreso= DateUtil.nombreMes(mesRegreso);
-                Integer anioRegreso= DateUtil.anioDeUnaFecha(solicitud.getFechahoraregreso());
-                  Integer horaregreso = DateUtil.horaDeUnaFecha(solicitud.getFechahoraregreso());
-                Integer minutoregreso = DateUtil.minutosDeUnaFecha(solicitud.getFechahoraregreso());
-                
-
-                //Determinar cuantos meses hay
-                Integer meses = 0;
-                if (mesPartida > mesRegreso) {
-                    meses = (mesRegreso+ 12) - mesPartida;
-                } else {
-                    meses = mesRegreso - mesPartida;
-                }
-                //mismo mes
-                if (meses == 0) {
-                    List<FechaDiaUtils> fechaDiaUtilsInicialList = DateUtil.nameOfDayOfDateOfMonth(anioPartida, nombreMesPartida);
-                    List<FechaDiaUtils> fechaDiaUtilsSaveList = new ArrayList<>();
-
-                    System.out.println(" FECHAS DE SOLICITUD ---> " + solicitud.getFechahorapartida() + " hasta " + solicitud.getFechahoraregreso());
-                    LocalDate ld = DateUtil.convertirJavaDateToLocalDate(solicitud.getFechahorapartida());
-                    LocalDate ld2 = DateUtil.convertirJavaDateToLocalDate(solicitud.getFechahoraregreso());
-                    System.out.println("******* PARTIDA" + ld + " Regreso " + ld2);
-                    for (FechaDiaUtils fdu : fechaDiaUtilsInicialList) {
-                        System.out.println("  name:" + fdu.getName() + " letter:" + fdu.getLetter() + "date: " + fdu.getDate());
-                        LocalDate l = fdu.getDate();
-
-                        if (l.isEqual(ld) || l.isEqual(ld2) || (l.isAfter(ld) && l.isBefore(ld2))) {
-                            fechaDiaUtilsSaveList.add(fdu);
-                            System.out.println("{-------" + l + "------------> ESTA EN EL INTERVALO......}");
-                        } else {
-                            //System.out.println(l+"------------> NO ESTA EN EL INTERVALO......"); 
-                        }
-
-                    }
-                    //recorre todos los vehiculos 
-                    for (int i = 0; i < solicitud.getNumerodevehiculos(); i++) {
-
-                        if (fechaDiaUtilsSaveList.isEmpty()) {
-                            //no hay fechas para guardar
-                            System.out.println("no hay fechas para guardar");
-                        } else {
-                            //ESTOS SON LOS QUE SE GUARDARIAN
-                            System.out.println("----<FECHAS PARA GUARDAR>-----");
-                            for (FechaDiaUtils f : fechaDiaUtilsSaveList) {
-                                System.out.println("name:" + f.getName() + " letter:" + f.getLetter() + "date: " + f.getDate());
-                                //RANGO
-                                Boolean valido = false;
-                                for (String rango : solicitud.getRangoagenda()) {
-                                    if (rango.equals("Dia/ Dias Consecutivo")) {
-                                        // guardarlo porque es todo el intervalo
-                                        valido = true;
-                                    } else {
-                                        //verificar que dia es
-                                        if (f.getName().equals(rango.toUpperCase())) {
-                                            // Guardo porque coincide el dia
-                                            valido = true;
-                                        }
-                                    }
-                                }
-                                if (valido) {
-                                    //Se guarda ya que coincide las fechas
-                                    Integer idsolicitud = autoincrementableServices.getContador("solicitud");
-                                    solicitud.setIdsolicitud(idsolicitud);
-                                    Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
-                                    if (optional.isPresent()) {
-                                        JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                                        return null;
-                                    }
-                                    //Lo datos del usuario
-                                    Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-                                    solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
-                                    Date newDatePartida = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horapartida, minutopartida);
-                                    Date newDateRegreso = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horaregreso, minutoregreso);
-                                    System.out.println("====== > new date partida "+newDatePartida + " ==> new date regreso "+newDateRegreso);
-                                    solicitud.setFechahorapartida(newDatePartida);
-                                    solicitud.setFechahoraregreso(newDateRegreso);
-                                    if (solicitudRepository.save(solicitud)) {
-                                        //guarda el contenido anterior
-                                        JmoordbConfiguration jmc = new JmoordbConfiguration();
-                                        Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
-                                        RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
-                                        repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
-                                                "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
-//enviarEmails();
-
-                                        //si cambia el email o celular del responsable actualizar ese usuario
-                                        if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
-                                            usuarioRepository.update(responsable);
-                                            //actuliza el que esta en el login
-                                            if (responsable.getUsername().equals(jmoordb_user.getUsername())) {
-                                                //  loginController.setUsuario(responsable);
-                                            }
-                                        }
-                                        solicitudesGuardadas++;
-
-                                    } else {
-                                        JsfUtil.successMessage("save() " + solicitudRepository.getException().toString());
-                                    }
-                                    //Asigna la solicitud padre para las demas solicitudes
-
-                                }
-
-                            }
-
-                        }//isEmpty
-                    } //getNumerodevehiculos
-
-                } else {
-                    if (meses > 0) {
-
-                    }
-                }
-
-                JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") + " : " + solicitudesGuardadas.toString() + " " + rf.getMessage("info.solicitudesde") + solicitud.getNumerodevehiculos());
-                reset();
-            } else {
-                //No guardo el primero
-
-            }
             return true;
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());

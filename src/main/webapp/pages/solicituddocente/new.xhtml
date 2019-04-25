@@ -50,7 +50,10 @@
                                                      minQueryLength="0"
                                                      disabled="true"
                                                      />
-                            <p:outputLabel  value="#{msg['field.copiardesde']}" />
+                           
+
+                        </b:column>
+                         <p:outputLabel  value="#{msg['field.copiardesde']}" />
 
 
                             <jmoordbjsf:autocompleteWithCalendarDateTime
@@ -90,8 +93,6 @@
                                 minQueryLength="0"
                                 update=":form:panel"
                                 />
-
-                        </b:column>
 
                         <p:outputLabel value="#{msg['field.responsable']}"/>
                         <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
@@ -285,7 +286,7 @@
 
                     <b:row>
 
-                        <b:column span="12">
+                        <b:column span="8">
                             <p:dataList value="#{solicitudDocenteController.sugerenciaDataModel}" var="item" type="ordered">
                                 <f:facet name="header">
                                     <p:outputLabel value="#{msg['field.sugerencia']}"/>

@@ -135,6 +135,9 @@ public class RolController implements Serializable, IController {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
+    
+   
+    
 
 // <editor-fold defaultstate="collapsed" desc="move(Integer page)">
     @Override
