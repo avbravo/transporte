@@ -417,26 +417,34 @@ public class SolicitudDocenteController implements Serializable, IController {
                 /*
                 Descomponener la fecha de inicio
                  */
-                Integer diaInicio = DateUtil.diaDeUnaFecha(solicitud.getFechahorapartida());
-                Integer numeroMesInicio = DateUtil.mesDeUnaFechaStartEneroWith0(solicitud.getFechahorapartida());
-                String nombreMesInicio = DateUtil.nombreMes(numeroMesInicio);
-                Integer anioInicial = DateUtil.anioDeUnaFecha(solicitud.getFechahorapartida());
+                Date fechahorapartidad = solicitud.getFechahorapartida();
+                Date fechahoraregreso = solicitud.getFechahoraregreso();
+                
+                Integer diaPartida = DateUtil.diaDeUnaFecha(solicitud.getFechahorapartida());
+                Integer mesPartida = DateUtil.mesDeUnaFechaStartEneroWith0(solicitud.getFechahorapartida());
+                String nombreMesPartida = DateUtil.nombreMes(mesPartida);
+                Integer anioPartida = DateUtil.anioDeUnaFecha(solicitud.getFechahorapartida());
+                Integer horapartida = DateUtil.horaDeUnaFecha(solicitud.getFechahorapartida());
+                Integer minutopartida = DateUtil.minutosDeUnaFecha(solicitud.getFechahorapartida());
                 //descomponer la fecha de regreso
-                Integer diaFin = DateUtil.diaDeUnaFecha(solicitud.getFechahoraregreso());
-                Integer numeroMesFin = DateUtil.mesDeUnaFechaStartEneroWith0(solicitud.getFechahoraregreso());
-                String nombreMesFin = DateUtil.nombreMes(numeroMesFin);
-                Integer anioFin = DateUtil.anioDeUnaFecha(solicitud.getFechahoraregreso());
+                Integer diaRegreso= DateUtil.diaDeUnaFecha(solicitud.getFechahoraregreso());
+                Integer mesRegreso = DateUtil.mesDeUnaFechaStartEneroWith0(solicitud.getFechahoraregreso());
+                String nombreMesRegreso= DateUtil.nombreMes(mesRegreso);
+                Integer anioRegreso= DateUtil.anioDeUnaFecha(solicitud.getFechahoraregreso());
+                  Integer horaregreso = DateUtil.horaDeUnaFecha(solicitud.getFechahoraregreso());
+                Integer minutoregreso = DateUtil.minutosDeUnaFecha(solicitud.getFechahoraregreso());
+                
 
                 //Determinar cuantos meses hay
                 Integer meses = 0;
-                if (numeroMesInicio > numeroMesFin) {
-                    meses = (numeroMesFin + 12) - numeroMesInicio;
+                if (mesPartida > mesRegreso) {
+                    meses = (mesRegreso+ 12) - mesPartida;
                 } else {
-                    meses = numeroMesFin - numeroMesInicio;
+                    meses = mesRegreso - mesPartida;
                 }
                 //mismo mes
                 if (meses == 0) {
-                    List<FechaDiaUtils> fechaDiaUtilsInicialList = DateUtil.nameOfDayOfDateOfMonth(anioInicial, nombreMesInicio);
+                    List<FechaDiaUtils> fechaDiaUtilsInicialList = DateUtil.nameOfDayOfDateOfMonth(anioPartida, nombreMesPartida);
                     List<FechaDiaUtils> fechaDiaUtilsSaveList = new ArrayList<>();
 
                     System.out.println(" FECHAS DE SOLICITUD ---> " + solicitud.getFechahorapartida() + " hasta " + solicitud.getFechahoraregreso());
@@ -492,6 +500,11 @@ public class SolicitudDocenteController implements Serializable, IController {
                                     //Lo datos del usuario
                                     Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
                                     solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
+                                    Date newDatePartida = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horapartida, mesPartida);
+                                    Date newDateRegreso = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horaregreso, mesRegreso);
+                                    System.out.println("====== > new date partida "+newDatePartida + " ==> new date regreso "+newDateRegreso);
+                                    solicitud.setFechahorapartida(newDatePartida);
+                                    solicitud.setFechahoraregreso(newDateRegreso);
                                     if (solicitudRepository.save(solicitud)) {
                                         //guarda el contenido anterior
                                         JmoordbConfiguration jmc = new JmoordbConfiguration();
