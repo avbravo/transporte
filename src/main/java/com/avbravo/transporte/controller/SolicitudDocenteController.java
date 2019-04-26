@@ -95,6 +95,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     //DataModel
     private SolicitudDataModel solicitudDataModel;
     private SugerenciaDataModel sugerenciaDataModel;
+    private Date varFechaHoraPartida;
+    private Date varFechaHoraRegreso;
 
     Integer page = 1;
     Integer rowPage = 25;
@@ -419,16 +421,21 @@ public class SolicitudDocenteController implements Serializable, IController {
         List<FechaDiaUtils> fechaDiaUtilsSaveList = new ArrayList<>();
         try {
             List<FechaDiaUtils> fechaDiaUtilsInicialList = DateUtil.nameOfDayOfDateOfMonth(anioPartida, nombreMesPartida);
+          
 
 //convertir la fecha de solicitud a LocalDate
-            LocalDate start = DateUtil.convertirJavaDateToLocalDate(solicitud.getFechahorapartida());
-            LocalDate end = DateUtil.convertirJavaDateToLocalDate(solicitud.getFechahoraregreso());
+            LocalDate start = DateUtil.convertirJavaDateToLocalDate(varFechaHoraPartida);
+            LocalDate end = DateUtil.convertirJavaDateToLocalDate(varFechaHoraRegreso);
+
+    
             //Buscar si esta en el intervalo de dias entre las fechas
             fechaDiaUtilsInicialList.forEach((fdu) -> {
                 LocalDate l = fdu.getDate();
+  
                 if (l.isEqual(start) || l.isEqual(end) || (l.isAfter(start) && l.isBefore(end))) {
                     fechaDiaUtilsSaveList.add(fdu);
-                }
+                   
+                } 
             });
 
         } catch (Exception e) {
@@ -436,7 +443,7 @@ public class SolicitudDocenteController implements Serializable, IController {
         }
         return fechaDiaUtilsSaveList;
     }  // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="String save()">
+    // <editor-fold defaultstate="collapsed" desc="Integer procesar(List<FechaDiaUtils> fechasValidasList, Integer horapartida, Integer minutopartida, Integer horaregreso, Integer minutoregreso) ">
 
     private Integer procesar(List<FechaDiaUtils> fechasValidasList, Integer horapartida, Integer minutopartida, Integer horaregreso, Integer minutoregreso) {
         Integer solicitudesGuardadas = 0;
@@ -487,7 +494,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
             Integer solicitudesGuardadas = 0;
             solicitud.setSolicitudpadre(0);
-
+            varFechaHoraPartida = solicitud.getFechahorapartida();
+            varFechaHoraRegreso = solicitud.getFechahoraregreso();
             /**
              * Si es dias consecutivos es un solo intervalo para la reservacion
              * se creara una solicitud para cada vehiculos solicitado
@@ -542,7 +550,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                         if (fechasValidasList.isEmpty()) {
                             //no hay fechas para guardar
                             JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos"));
-return "";
+                            return "";
                         } else {
                             //ESTOS SON LOS QUE SE GUARDARIAN
                             solicitudesGuardadas = procesar(fechasValidasList, horapartida, minutopartida, horaregreso, minutoregreso);
@@ -553,22 +561,28 @@ return "";
                 } else {
                     // mas de un mes recorrer todos los meses en ese intervalo
                     if (meses > 0) {
-                        List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
+
                         for (int i = 0; i <= meses; i++) {
                             //Verificar si es el mismo año
                             if (anioPartida.equals(anioRegreso)) {
                                 Integer m = mesPartida + i;
                                 String nameOfMohth = DateUtil.nombreMes(m);
+                                System.out.println("===>nameOfMonth " + nameOfMohth);
                                 List<FechaDiaUtils> list = validarRangoFechas(anioPartida, nameOfMohth);
+                                List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                                 if (list == null || list.isEmpty()) {
-  JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes;"+nameOfMohth);
-  //return "";
+                                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes;" + nameOfMohth);
+                                    //return "";
                                 } else {
                                     list.forEach((f) -> {
                                         fechasValidasList.add(f);
                                     });
                                 }
-                                  solicitudesGuardadas = procesar(fechasValidasList, horapartida, minutopartida, horaregreso, minutoregreso);
+                                if (fechasValidasList == null || fechasValidasList.isEmpty()) {
+
+                                } else {
+                                    solicitudesGuardadas = procesar(fechasValidasList, horapartida, minutopartida, horaregreso, minutoregreso);
+                                }
 
                             } else {
                                 //cambio el año   
@@ -595,71 +609,6 @@ return "";
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="beforeSave()">
-    @Override
-    public Boolean beforeSave() {
-        try {
-
-            solicitud.setIdsolicitud(autoincrementableServices.getContador("solicitud"));
-            solicitud.setFecha(DateUtil.getFechaActual());
-            usuarioList = new ArrayList<>();
-            usuarioList.add(solicita);
-            usuarioList.add(responsable);
-            solicitud.setUsuario(usuarioList);
-
-            List<String> rangoAgenda = new ArrayList<>();
-            Integer c = 0;
-            Boolean rs = false;
-            for (String d : diasSelected) {
-                if (d.equals("Dia/ Dias Consecutivo")) {
-                    rs = true;
-                }
-                c++;
-                rangoAgenda.add(d);
-            }
-            if (c > 1 && rs) {
-                JsfUtil.warningDialog("Advertencia", "Cuando selecciona Dia/ Dias Consecutivo no puede seleccionar otro valor");
-                return false;
-            }
-            solicitud.setRangoagenda(rangoAgenda);
-
-            solicitud.setFacultad(facultadList);
-            solicitud.setCarrera(carreraList);
-
-            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            unidadList = new ArrayList<>();
-            unidadList.add(jmoordb_user.getUnidad());
-            solicitud.setUnidad(unidadList);
-
-            solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
-            solicitud.setFechaestatus(DateUtil.fechaActual());
-            solicitud.setActivo("si");
-
-            String textsearch = "ADMINISTRATIVO";
-            Rol rol = (Rol) JmoordbContext.get("jmoordb_rol");
-            if (rol.getIdrol().toUpperCase().equals("DOCENTE")) {
-                textsearch = "DOCENTE";
-            }
-            solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
-            if (!solicitudServices.isValid(solicitud)) {
-                return false;
-            }
-
-            if (!leyoSugerencias) {
-                JsfUtil.warningDialog("Advertencia", "Por favor lea las sugerencias");
-                return false;
-            }
-
-            Integer solicitudesGuardadas = 0;
-            solicitud.setSolicitudpadre(0);
-            return true;
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return false;
-    }
-    // </editor-fold>
-
     // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
     public String columnColor(String estatus) {
         String color = "";
