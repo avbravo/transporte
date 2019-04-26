@@ -421,12 +421,12 @@ public class SolicitudDocenteController implements Serializable, IController {
             List<FechaDiaUtils> fechaDiaUtilsInicialList = DateUtil.nameOfDayOfDateOfMonth(anioPartida, nombreMesPartida);
 
 //convertir la fecha de solicitud a LocalDate
-            LocalDate ld = DateUtil.convertirJavaDateToLocalDate(solicitud.getFechahorapartida());
-            LocalDate ld2 = DateUtil.convertirJavaDateToLocalDate(solicitud.getFechahoraregreso());
+            LocalDate start = DateUtil.convertirJavaDateToLocalDate(solicitud.getFechahorapartida());
+            LocalDate end = DateUtil.convertirJavaDateToLocalDate(solicitud.getFechahoraregreso());
             //Buscar si esta en el intervalo de dias entre las fechas
             fechaDiaUtilsInicialList.forEach((fdu) -> {
                 LocalDate l = fdu.getDate();
-                if (l.isEqual(ld) || l.isEqual(ld2) || (l.isAfter(ld) && l.isBefore(ld2))) {
+                if (l.isEqual(start) || l.isEqual(end) || (l.isAfter(start) && l.isBefore(end))) {
                     fechaDiaUtilsSaveList.add(fdu);
                 }
             });
@@ -435,9 +435,39 @@ public class SolicitudDocenteController implements Serializable, IController {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return fechaDiaUtilsSaveList;
-    }
+    }  // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String save()">
 
+    private Integer procesar(List<FechaDiaUtils> fechasValidasList, Integer horapartida, Integer minutopartida, Integer horaregreso, Integer minutoregreso) {
+        Integer solicitudesGuardadas = 0;
+        try {
+            for (FechaDiaUtils f : fechasValidasList) {
+                //si es un dia valido
+                if (isValidDayName(f.getName())) {
+                    /**
+                     * crear la nueva fechahora de partida crear la nueva
+                     * fechahora de regreso
+                     */
+                    Date newDatePartida = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horapartida, minutopartida);
+                    Date newDateRegreso = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horaregreso, minutoregreso);
+
+                    solicitud.setFechahorapartida(newDatePartida);
+                    solicitud.setFechahoraregreso(newDateRegreso);
+                    if (insert()) {
+                        solicitudesGuardadas++;
+                    }
+                    solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
+
+                }
+
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return solicitudesGuardadas;
+    }
     // </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc="String save()">
     @Override
     public String save() {
@@ -504,7 +534,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 }
                 //mismo mes
                 if (meses == 0) {
-
+// Encontrar las fechas en el rango
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                     fechasValidasList = validarRangoFechas(anioPartida, nombreMesPartida);
                     //recorre todos los vehiculos 
@@ -512,31 +542,10 @@ public class SolicitudDocenteController implements Serializable, IController {
                         if (fechasValidasList.isEmpty()) {
                             //no hay fechas para guardar
                             JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos"));
-
+return "";
                         } else {
                             //ESTOS SON LOS QUE SE GUARDARIAN
-
-                            for (FechaDiaUtils f : fechasValidasList) {
-                                //si es un dia valido
-                                if (isValidDayName(f.getName())) {
-
-                                    /**
-                                     * crear la nueva fechahora de partida crear
-                                     * la nueva fechahora de regreso
-                                     */
-                                    Date newDatePartida = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horapartida, minutopartida);
-                                    Date newDateRegreso = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horaregreso, minutoregreso);
-
-                                    solicitud.setFechahorapartida(newDatePartida);
-                                    solicitud.setFechahoraregreso(newDateRegreso);
-                                    if (insert()) {
-                                        solicitudesGuardadas++;
-                                    }
-                                    solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
-
-                                }
-
-                            }
+                            solicitudesGuardadas = procesar(fechasValidasList, horapartida, minutopartida, horaregreso, minutoregreso);
 
                         }//isEmpty
                     } //getNumerodevehiculos
@@ -544,6 +553,28 @@ public class SolicitudDocenteController implements Serializable, IController {
                 } else {
                     // mas de un mes recorrer todos los meses en ese intervalo
                     if (meses > 0) {
+                        List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
+                        for (int i = 0; i <= meses; i++) {
+                            //Verificar si es el mismo año
+                            if (anioPartida.equals(anioRegreso)) {
+                                Integer m = mesPartida + i;
+                                String nameOfMohth = DateUtil.nombreMes(m);
+                                List<FechaDiaUtils> list = validarRangoFechas(anioPartida, nameOfMohth);
+                                if (list == null || list.isEmpty()) {
+  JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes;"+nameOfMohth);
+  //return "";
+                                } else {
+                                    list.forEach((f) -> {
+                                        fechasValidasList.add(f);
+                                    });
+                                }
+                                  solicitudesGuardadas = procesar(fechasValidasList, horapartida, minutopartida, horaregreso, minutoregreso);
+
+                            } else {
+                                //cambio el año   
+                            }
+
+                        }
 
                     }
                 }
