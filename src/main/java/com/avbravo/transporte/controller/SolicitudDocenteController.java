@@ -97,6 +97,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     private SugerenciaDataModel sugerenciaDataModel;
     private Date varFechaHoraPartida;
     private Date varFechaHoraRegreso;
+    private Integer varAnio;
 
     Integer page = 1;
     Integer rowPage = 25;
@@ -496,6 +497,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud.setSolicitudpadre(0);
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
+       
             /**
              * Si es dias consecutivos es un solo intervalo para la reservacion
              * se creara una solicitud para cada vehiculos solicitado
@@ -533,6 +535,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 Integer horaregreso = DateUtil.horaDeUnaFecha(solicitud.getFechahoraregreso());
                 Integer minutoregreso = DateUtil.minutosDeUnaFecha(solicitud.getFechahoraregreso());
 
+                     varAnio= anioPartida;
                 //Determinar cuantos meses hay
                 Integer meses = 0;
                 if (mesPartida > mesRegreso) {
@@ -561,13 +564,12 @@ public class SolicitudDocenteController implements Serializable, IController {
                 } else {
                     // mas de un mes recorrer todos los meses en ese intervalo
                     if (meses > 0) {
-
+                        System.out.println("==> meses "+meses);
                         for (int i = 0; i <= meses; i++) {
                             //Verificar si es el mismo año
                             if (anioPartida.equals(anioRegreso)) {
-                                Integer m = mesPartida + i;
-                                String nameOfMohth = DateUtil.nombreMes(m);
-                                System.out.println("===>nameOfMonth " + nameOfMohth);
+                                Integer m = mesPartida + i;                                
+                                String nameOfMohth = DateUtil.nombreMes(m);                                
                                 List<FechaDiaUtils> list = validarRangoFechas(anioPartida, nameOfMohth);
                                 List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                                 if (list == null || list.isEmpty()) {
@@ -586,6 +588,30 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                             } else {
                                 //cambio el año   
+                                Integer m = mesPartida + i;
+                                if(m>=12){
+                                    m=0;
+                                   varAnio= varAnio+1;
+                                }
+                                System.out.println("===> m: "+m + " ==mesPartida "+mesPartida + "==>i "+i);
+                                String nameOfMohth = DateUtil.nombreMes(m);
+                                System.out.println("===>nameOfMonth " + nameOfMohth);
+                                List<FechaDiaUtils> list = validarRangoFechas(varAnio, nameOfMohth);
+                                List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
+                                if (list == null || list.isEmpty()) {
+                                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes;" + nameOfMohth);
+                                    //return "";
+                                } else {
+                                    list.forEach((f) -> {
+                                        fechasValidasList.add(f);
+                                    });
+                                }
+                                if (fechasValidasList == null || fechasValidasList.isEmpty()) {
+
+                                } else {
+                                    solicitudesGuardadas = procesar(fechasValidasList, horapartida, minutopartida, horaregreso, minutoregreso);
+                                }
+
                             }
 
                         }
