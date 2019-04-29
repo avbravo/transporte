@@ -35,6 +35,7 @@ import com.avbravo.transporteejb.entity.Tiposolicitud;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
+import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.SugerenciaRepository;
 import com.avbravo.transporteejb.repository.TipovehiculoRepository;
@@ -74,6 +75,10 @@ import lombok.Setter;
 import org.bson.Document;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
+import org.primefaces.model.DefaultScheduleEvent;
+import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.ScheduleEvent;
+import org.primefaces.model.ScheduleModel;
 // </editor-fold>
 
 /**
@@ -98,6 +103,14 @@ public class SolicitudDocenteController implements Serializable, IController {
     private Date varFechaHoraPartida;
     private Date varFechaHoraRegreso;
     private Integer varAnio;
+
+    private Integer totalAprobado = 0;
+    private Integer totalSolicitado = 0;
+    private Integer totalRechazadoCancelado = 0;
+    private Integer totalViajes = 0;
+
+    private ScheduleModel eventModel;
+    private ScheduleEvent event = new DefaultScheduleEvent();
 
     Integer page = 1;
     Integer rowPage = 25;
@@ -199,6 +212,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
+            eventModel = new DefaultScheduleModel();
+            // eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", DateUtil.fechaHoraActual(), DateUtil.fechaHoraActual()));
 
             diasList = new ArrayList<String>();
             diasList.add("Dia/ Dias Consecutivo");
@@ -236,12 +251,13 @@ public class SolicitudDocenteController implements Serializable, IController {
             start();
             sugerenciaList = sugerenciaRepository.findBy("activo", "si");
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
-
+            cargarSchedule();
             String action = JmoordbContext.get("solicitud").toString();
             if (action.equals("gonew")) {
                 inicializar();
 
             }
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -422,21 +438,19 @@ public class SolicitudDocenteController implements Serializable, IController {
         List<FechaDiaUtils> fechaDiaUtilsSaveList = new ArrayList<>();
         try {
             List<FechaDiaUtils> fechaDiaUtilsInicialList = DateUtil.nameOfDayOfDateOfMonth(anioPartida, nombreMesPartida);
-          
 
 //convertir la fecha de solicitud a LocalDate
             LocalDate start = DateUtil.convertirJavaDateToLocalDate(varFechaHoraPartida);
             LocalDate end = DateUtil.convertirJavaDateToLocalDate(varFechaHoraRegreso);
 
-    
             //Buscar si esta en el intervalo de dias entre las fechas
             fechaDiaUtilsInicialList.forEach((fdu) -> {
                 LocalDate l = fdu.getDate();
-  
+
                 if (l.isEqual(start) || l.isEqual(end) || (l.isAfter(start) && l.isBefore(end))) {
                     fechaDiaUtilsSaveList.add(fdu);
-                   
-                } 
+
+                }
             });
 
         } catch (Exception e) {
@@ -497,7 +511,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud.setSolicitudpadre(0);
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
-       
+
             /**
              * Si es dias consecutivos es un solo intervalo para la reservacion
              * se creara una solicitud para cada vehiculos solicitado
@@ -535,7 +549,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 Integer horaregreso = DateUtil.horaDeUnaFecha(solicitud.getFechahoraregreso());
                 Integer minutoregreso = DateUtil.minutosDeUnaFecha(solicitud.getFechahoraregreso());
 
-                     varAnio= anioPartida;
+                varAnio = anioPartida;
                 //Determinar cuantos meses hay
                 Integer meses = 0;
                 if (mesPartida > mesRegreso) {
@@ -564,12 +578,12 @@ public class SolicitudDocenteController implements Serializable, IController {
                 } else {
                     // mas de un mes recorrer todos los meses en ese intervalo
                     if (meses > 0) {
-                        System.out.println("==> meses "+meses);
+                        System.out.println("==> meses " + meses);
                         for (int i = 0; i <= meses; i++) {
                             //Verificar si es el mismo año
                             if (anioPartida.equals(anioRegreso)) {
-                                Integer m = mesPartida + i;                                
-                                String nameOfMohth = DateUtil.nombreMes(m);                                
+                                Integer m = mesPartida + i;
+                                String nameOfMohth = DateUtil.nombreMes(m);
                                 List<FechaDiaUtils> list = validarRangoFechas(anioPartida, nameOfMohth);
                                 List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                                 if (list == null || list.isEmpty()) {
@@ -589,11 +603,11 @@ public class SolicitudDocenteController implements Serializable, IController {
                             } else {
                                 //cambio el año   
                                 Integer m = mesPartida + i;
-                                if(m>=12){
-                                    m=0;
-                                   varAnio= varAnio+1;
+                                if (m >= 12) {
+                                    m = 0;
+                                    varAnio = varAnio + 1;
                                 }
-                                System.out.println("===> m: "+m + " ==mesPartida "+mesPartida + "==>i "+i);
+                                System.out.println("===> m: " + m + " ==mesPartida " + mesPartida + "==>i " + i);
                                 String nameOfMohth = DateUtil.nombreMes(m);
                                 System.out.println("===>nameOfMonth " + nameOfMohth);
                                 List<FechaDiaUtils> list = validarRangoFechas(varAnio, nameOfMohth);
@@ -1165,5 +1179,99 @@ public class SolicitudDocenteController implements Serializable, IController {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="cargarSchedule()">
+    public void cargarSchedule() {
+        try {
+            totalAprobado = 0;
+            totalSolicitado = 0;
+            totalRechazadoCancelado = 0;
+            totalViajes = 0;
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            Document doc = new Document("usuario.username", jmoordb_user.getUsername());
+            List<Solicitud> list = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
+            eventModel = new DefaultScheduleModel();
+            if (!list.isEmpty()) {
+                list.forEach((a) -> {
+                    String car = "{ ";
+                    car = a.getTipovehiculo().stream().map((t) -> t.getIdtipovehiculo() + " ").reduce(car, String::concat);
+                    car += " }";
+                    String tema = "schedule-blue";
+                    switch (a.getEstatus().getIdestatus()) {
+                        case "SOLICITADO":
+                            totalSolicitado++;
+                            tema = "schedule-orange";
+//                            tema="schedule-blue";
+                            break;
+                        case "APROBADO":
+                            totalAprobado++;
+                            String viajest = "{";
+                            viajest = a.getViaje().stream().map((t) -> t.getIdviaje() + " ").reduce(viajest, String::concat);
+                            viajest = "}";
+                            car += viajest;
+                            tema = "schedule-green";
+                            break;
+                        case "RECHAZADO":
+                            totalRechazadoCancelado++;
+                            tema = "schedule-red";
+                            break;
+                        case "CANCELADO":
+                            totalRechazadoCancelado++;
+                            tema = "schedule-red";
+                            break;
+                    }
+//                    eventModel.addEvent(
+//                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
+//                    );
+                    eventModel.addEvent(
+                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision: " + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus()
+                                    + car,
+                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
+//                    eventModel.addEvent(
+//                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision: " + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus()
+//                                    + car,
+//                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
+                    );
+                });
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="onEventSelect(SelectEvent selectEvent)">
+    public void onEventSelect(SelectEvent selectEvent) {
+        try {
+
+            event = (ScheduleEvent) selectEvent.getObject();
+
+            String title = event.getTitle();
+            Integer i = title.indexOf("M");
+
+            Integer idsolicitud = 0;
+            if (i != -1) {
+                idsolicitud = Integer.parseInt(title.substring(1, i).trim());
+            }
+            solicitud.setIdsolicitud(idsolicitud);
+            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
+            if (optional.isPresent()) {
+                solicitud = optional.get();
+
+                solicita = solicitud.getUsuario().get(0);
+                responsable = solicitud.getUsuario().get(1);
+                facultadList = solicitud.getFacultad();
+                unidadList = solicitud.getUnidad();
+                carreraList = solicitud.getCarrera();
+                solicitudSelected = solicitud;
+
+            }
+
+        } catch (Exception e) {
+
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+    } // </editor-fold>
 
 }

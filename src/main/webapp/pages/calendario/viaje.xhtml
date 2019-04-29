@@ -8,8 +8,8 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
-                 
-                 > 
+
+                > 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -22,11 +22,11 @@
 
         </style>
 
-         <jmoordbjsf:cssschedule/>  
-         <jmoordbjsf:jsschedule/>
-       
+        <jmoordbjsf:cssschedule/>  
+        <jmoordbjsf:jsschedule/>
+
         <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.calendariobuses.list}" onkeypress="if (event.keyCode == 13) {
-                    return false;
+                return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
 
@@ -37,14 +37,14 @@
 
                     <b:row/>
                     <b:row/>
-                    
-                   
+
+
 
                     <!--                    <b:panelGrid id="panel" colSpans="2,10" size="xs" > -->
- <p:commandButton id="toPrint"  ajax="false"
-                 icon="fa fa-print">
-        <p:printer target="schedule" />
-    </p:commandButton>  
+                    <p:commandButton id="toPrint"  ajax="false"
+                                     icon="fa fa-print">
+                        <p:printer target="schedule" />
+                    </p:commandButton>  
                     <p:schedule id="schedule"       
                                 rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
                                 value="#{calendarioSolicitudViajesController.eventModel}" widgetVar="myschedule" timeZone="GMT-5" locale="es">
@@ -166,7 +166,7 @@
 
                             </b:dataTable>
                         </p:tab>
-                    
+
 
                     </p:tabView>
 
@@ -242,12 +242,12 @@
 
                         <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
                         <jmoordbjsf:autocomplete converter="#{tipovehiculoConverter}"
-completeMethod="#{solicitudManualAdministrativoController.completeFiltradoTipovehiculo}"
-labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"  
+                                                 completeMethod="#{solicitudManualAdministrativoController.completeFiltradoTipovehiculo}"
+                                                 labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"  
 
 
 
-/>
+                                                 />
 
 
 
@@ -282,15 +282,15 @@ labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"
 
                         <p:outputLabel  value="#{msg['field.facultad']}"  rendered="#{calendarioSolicitudViajesController.esDocente}" />
                         <jmoordbjsf:autocomplete converter="#{facultadConverter}"
-completeMethod="#{calendarioSolicitudViajesController.completeFiltradoFacultad}"
-labeltip1="#{msg['field.descripcion']} #{p.descripcion}"  />
+                                                 completeMethod="#{calendarioSolicitudViajesController.completeFiltradoFacultad}"
+                                                 labeltip1="#{msg['field.descripcion']} #{p.descripcion}"  />
 
 
 
                         <p:outputLabel  value="#{msg['field.carrera']}" rendered="#{calendarioSolicitudViajesController.esDocente}" />
                         <jmoordbjsf:autocomplete converter="#{carreraConverter}"
-completeMethod="#{calendarioSolicitudViajesController.completeFiltradoCarrera}"
-labeltip1="#{msg['field.descripcion']} #{p.descripcion}"  />  
+                                                 completeMethod="#{calendarioSolicitudViajesController.completeFiltradoCarrera}"
+                                                 labeltip1="#{msg['field.descripcion']} #{p.descripcion}"  />  
 
 
 
@@ -298,8 +298,8 @@ labeltip1="#{msg['field.descripcion']} #{p.descripcion}"  />
 
                         <p:outputLabel value="#{msg['field.idunidad']}" />
                         <jmoordbjsf:autocomplete converter="#{unidadConverter}"
-completeMethod="#{calendarioSolicitudViajesController.completeFiltradoUnidad}"
-labeltip1="#{msg['field.unidad']} #{p.idunidad}"   />
+                                                 completeMethod="#{calendarioSolicitudViajesController.completeFiltradoUnidad}"
+                                                 labeltip1="#{msg['field.unidad']} #{p.idunidad}"   />
 
                         <p:outputLabel  value="#{msg['field.objetivo']}" rendered="#{calendarioSolicitudViajesController.esDocente}" />
                         <b:inputTextarea rows="2" disabled="true" rendered="#{calendarioSolicitudViajesController.esDocente}" value="#{calendarioSolicitudViajesController.solicitud.objetivo}"    />
@@ -325,55 +325,55 @@ labeltip1="#{msg['field.unidad']} #{p.idunidad}"   />
                         <p:outputLabel value="#{msg['field.idestatus']}" />
 
                         <jmoordbjsf:autocomplete converter="#{estatusConverter}"
-completeMethod="#{estatusController.estatusServices.complete}"
-labeltip1="#{msg['field.estatus']} #{p.idestatus}"    listener="#{calendarioSolicitudViajesController.handleSelectEstatus}"
-                                                value="#{calendarioSolicitudViajesController.estatusSelected}"
-                                                rendered="#{applicationMenu.menuBarAdministracion}"
-                                                itemLabel=" #{p.idestatus}"
-                                                size="15"
-                                                field="idestatus"
-                                                dropdown="true"
-                                                fromstart="true"
-                                                minQueryLength="0"
-                                                update=""
-                                                />
+                                                 completeMethod="#{estatusController.estatusServices.complete}"
+                                                 labeltip1="#{msg['field.estatus']} #{p.idestatus}"    listener="#{calendarioSolicitudViajesController.handleSelectEstatus}"
+                                                 value="#{calendarioSolicitudViajesController.estatusSelected}"
+                                                 rendered="#{applicationMenu.menuBarAdministracion}"
+                                                 itemLabel=" #{p.idestatus}"
+                                                 size="15"
+                                                 field="idestatus"
+                                                 dropdown="true"
+                                                 fromstart="true"
+                                                 minQueryLength="0"
+                                                 update=""
+                                                 />
 
 
                         <p:outputLabel value="#{msg['field.viajes']}"  rendered="#{calendarioSolicitudViajesController.esAprobado}"/>
-                      
-                        
-                         <jmoordbjsf:autocompleteWithCalendarDateTime
-                                converter="#{viajeConverter}"
-                                completeMethod="#{calendarioSolicitudViajesController.completeViajesDisponibles}"
-                                rendered="#{calendarioSolicitudViajesController.esAprobado}"
-                                labeltip1="#{msg['field.lugarpartida']}"
-                                labelvalue1="#{p.lugarpartida}"   
-                                
-                                calendarsize="20"
-                                columnpaneltip="2"
-                                calendardatelabel1="#{msg['field.fechainicio']}"
-                                calendardatevalue1="#{p.fechahorainicioreserva}" 
-
-                                calendartimelabel1="#{msg['field.horainicio']}"
-                                calendartimevalue1="#{p.fechahorainicioreserva}"  
-
-                                calendardatelabel2="#{msg['field.fecharegreso']}" 
-                                calendardatevalue2="#{p.fechahorafinreserva}"  
 
 
-                                calendartimelabel2="#{msg['field.horaregreso']}" 
-                                calendartimevalue2="#{p.fechahorafinreserva}"  
+                        <jmoordbjsf:autocompleteWithCalendarDateTime
+                            converter="#{viajeConverter}"
+                            completeMethod="#{calendarioSolicitudViajesController.completeViajesDisponibles}"
+                            rendered="#{calendarioSolicitudViajesController.esAprobado}"
+                            labeltip1="#{msg['field.lugarpartida']}"
+                            labelvalue1="#{p.lugarpartida}"   
+
+                            calendarsize="20"
+                            columnpaneltip="2"
+                            calendardatelabel1="#{msg['field.fechainicio']}"
+                            calendardatevalue1="#{p.fechahorainicioreserva}" 
+
+                            calendartimelabel1="#{msg['field.horainicio']}"
+                            calendartimevalue1="#{p.fechahorainicioreserva}"  
+
+                            calendardatelabel2="#{msg['field.fecharegreso']}" 
+                            calendardatevalue2="#{p.fechahorafinreserva}"  
 
 
-                                listener="#{calendarioSolicitudViajesController.handleSelect}"
-                                value="#{calendarioSolicitudViajesController.viajesDisponiblesList}"
-                                itemLabel="( #{p.idviaje} )"
-                                field="idsolicitud"
-                                fromstart="true"
-                                dropdown="true"
-                                minQueryLength="0"
-                                update="eventDetails"
-                                />
+                            calendartimelabel2="#{msg['field.horaregreso']}" 
+                            calendartimevalue2="#{p.fechahorafinreserva}"  
+
+
+                            listener="#{calendarioSolicitudViajesController.handleSelect}"
+                            value="#{calendarioSolicitudViajesController.viajesDisponiblesList}"
+                            itemLabel="( #{p.idviaje} )"
+                            field="idsolicitud"
+                            fromstart="true"
+                            dropdown="true"
+                            minQueryLength="0"
+                            update="eventDetails"
+                            />
 
                         <b:commandButton value="#{app['button.close']}"
                                          iconAwesome="fa-close"
