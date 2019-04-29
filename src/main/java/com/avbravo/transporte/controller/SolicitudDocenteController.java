@@ -577,7 +577,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                 } else {
                     // mas de un mes recorrer todos los meses en ese intervalo
-                    if (meses > 0) {
+                    if (meses > 0 && meses <= 24) {
                         System.out.println("==> meses " + meses);
                         for (int i = 0; i <= meses; i++) {
                             //Verificar si es el mismo año
@@ -603,17 +603,22 @@ public class SolicitudDocenteController implements Serializable, IController {
                             } else {
                                 //cambio el año   
                                 Integer m = mesPartida + i;
-                                if (m >= 12) {
-                                    m = 0;
+                                if (m == 12) {
                                     varAnio = varAnio + 1;
                                 }
+                                if (m >= 12) {
+                                    m = m - 12;
+
+                                }
+                                System.out.println("===========================================================");
                                 System.out.println("===> m: " + m + " ==mesPartida " + mesPartida + "==>i " + i);
                                 String nameOfMohth = DateUtil.nombreMes(m);
-                                System.out.println("===>nameOfMonth " + nameOfMohth);
+                                System.out.println("===>nameOfMonth " + nameOfMohth + "varAnio "+varAnio);
                                 List<FechaDiaUtils> list = validarRangoFechas(varAnio, nameOfMohth);
                                 List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                                 if (list == null || list.isEmpty()) {
-                                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes;" + nameOfMohth);
+                                    System.out.println("===> no tiene dias validos en ese rango");
+                                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes: " + nameOfMohth);
                                     //return "";
                                 } else {
                                     list.forEach((f) -> {
@@ -630,12 +635,16 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                         }
 
+                    }else{
+                         JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.verifiqueestasolicitandomas24meses") );
+                         return "";
                     }
                 }
 
             }//no son dias consecutivos
 
-            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") + " : " + solicitudesGuardadas.toString() + " " + rf.getMessage("info.solicitudesde") + solicitud.getNumerodevehiculos());
+//            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") + " : " + solicitudesGuardadas.toString() + " " + rf.getMessage("info.solicitudesde") + solicitud.getNumerodevehiculos());
+            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") );
             //Enviar los emails
             facultadList = new ArrayList<>();
             carreraList = new ArrayList<>();
@@ -1228,10 +1237,10 @@ public class SolicitudDocenteController implements Serializable, IController {
                             new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision: " + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus()
                                     + car,
                                     a.getFechahorapartida(), a.getFechahoraregreso(), tema)
-//                    eventModel.addEvent(
-//                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision: " + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus()
-//                                    + car,
-//                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
+                    //                    eventModel.addEvent(
+                    //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision: " + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus()
+                    //                                    + car,
+                    //                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
                     );
                 });
             }
