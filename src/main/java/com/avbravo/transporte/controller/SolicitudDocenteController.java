@@ -387,7 +387,10 @@ public class SolicitudDocenteController implements Serializable, IController {
                 return null;
             }
             //Lo datos del usuario
+            List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
 
+            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+            solicitud.setTipovehiculo(tipovehiculoList);
             solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
                 //guarda el contenido anterior
@@ -555,7 +558,12 @@ public class SolicitudDocenteController implements Serializable, IController {
                 if (mesPartida > mesRegreso) {
                     meses = (mesRegreso + 12) - mesPartida;
                 } else {
-                    meses = mesRegreso - mesPartida;
+                    if(anioPartida < anioRegreso){
+                          meses = (mesRegreso +12)- mesPartida;
+                    }else{
+                          meses = mesRegreso - mesPartida;
+                    }
+                  
                 }
                 //mismo mes
                 if (meses == 0) {
@@ -577,8 +585,8 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                 } else {
                     // mas de un mes recorrer todos los meses en ese intervalo
-                    if (meses > 0 && meses <= 24) {
-                        System.out.println("==> meses " + meses);
+                    if (meses > 0 && meses <= 12) {
+                    //     // System.out.println("==> meses " + meses);
                         for (int i = 0; i <= meses; i++) {
                             //Verificar si es el mismo año
                             if (anioPartida.equals(anioRegreso)) {
@@ -610,14 +618,14 @@ public class SolicitudDocenteController implements Serializable, IController {
                                     m = m - 12;
 
                                 }
-                                System.out.println("===========================================================");
-                                System.out.println("===> m: " + m + " ==mesPartida " + mesPartida + "==>i " + i);
+                              //   // System.out.println("===========================================================");
+                             //    // System.out.println("===> m: " + m + " ==mesPartida " + mesPartida + "==>i " + i);
                                 String nameOfMohth = DateUtil.nombreMes(m);
-                                System.out.println("===>nameOfMonth " + nameOfMohth + "varAnio "+varAnio);
+                              //   // System.out.println("===>nameOfMonth " + nameOfMohth + "varAnio " + varAnio);
                                 List<FechaDiaUtils> list = validarRangoFechas(varAnio, nameOfMohth);
                                 List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                                 if (list == null || list.isEmpty()) {
-                                    System.out.println("===> no tiene dias validos en ese rango");
+                                     // System.out.println("===> no tiene dias validos en ese rango");
                                     JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes: " + nameOfMohth);
                                     //return "";
                                 } else {
@@ -635,16 +643,16 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                         }
 
-                    }else{
-                         JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.verifiqueestasolicitandomas24meses") );
-                         return "";
+                    } else {
+                        JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.verifiqueestasolicitandomas12meses"));
+                        return "";
                     }
                 }
 
             }//no son dias consecutivos
 
 //            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") + " : " + solicitudesGuardadas.toString() + " " + rf.getMessage("info.solicitudesde") + solicitud.getNumerodevehiculos());
-            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") );
+            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes"));
             //Enviar los emails
             facultadList = new ArrayList<>();
             carreraList = new ArrayList<>();
@@ -1197,15 +1205,15 @@ public class SolicitudDocenteController implements Serializable, IController {
             totalRechazadoCancelado = 0;
             totalViajes = 0;
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            Document doc = new Document("usuario.username", jmoordb_user.getUsername());
-            List<Solicitud> list = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+            Document doc = new Document("usuario.0.username", jmoordb_user.getUsername());
 
+         List<Solicitud> list = solicitudRepository.findBy(doc,new Document("idsolicitud", -1));
             eventModel = new DefaultScheduleModel();
             if (!list.isEmpty()) {
                 list.forEach((a) -> {
-                    String car = "{ ";
-                    car = a.getTipovehiculo().stream().map((t) -> t.getIdtipovehiculo() + " ").reduce(car, String::concat);
-                    car += " }";
+                    String texto = "{ ";
+                    texto = a.getTipovehiculo().stream().map((t) -> t.getIdtipovehiculo() + " ").reduce(texto, String::concat);
+                   texto += " }";
                     String tema = "schedule-blue";
                     switch (a.getEstatus().getIdestatus()) {
                         case "SOLICITADO":
@@ -1218,7 +1226,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                             String viajest = "{";
                             viajest = a.getViaje().stream().map((t) -> t.getIdviaje() + " ").reduce(viajest, String::concat);
                             viajest = "}";
-                            car += viajest;
+                            texto += viajest;
                             tema = "schedule-green";
                             break;
                         case "RECHAZADO":
@@ -1234,8 +1242,8 @@ public class SolicitudDocenteController implements Serializable, IController {
 //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
 //                    );
                     eventModel.addEvent(
-                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision: " + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus()
-                                    + car,
+                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : " + a.getEstatus().getIdestatus() + " Mision: " + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " "
+                                    + texto,
                                     a.getFechahorapartida(), a.getFechahoraregreso(), tema)
                     //                    eventModel.addEvent(
                     //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision: " + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus()
@@ -1257,7 +1265,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             event = (ScheduleEvent) selectEvent.getObject();
 
             String title = event.getTitle();
-            Integer i = title.indexOf("M");
+            Integer i = title.indexOf(":");
 
             Integer idsolicitud = 0;
             if (i != -1) {

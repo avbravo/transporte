@@ -20,47 +20,7 @@
             } 
         
         </style>
-        <style type="text/css">
-
-            .schedule-orange, .schedule-orange .fc-event-skin, .schedule-orange a{
-                background-color: orange; 
-                color: black;
-                border-color: darkorange;
-            }
-            .schedule-yellow, .schedule-yellow .fc-event-skin, .schedule-yellow a{
-                background-color: goldenrod; 
-                color: black;
-                border-color: darkgoldenrod;
-            }
-            .schedule-blue, .schedule-bluee .fc-event-skin, .schedule-blue a{
-                background-color: blue; 
-                color: black;
-                border-color: darkblue;
-            }
-
-            .schedule-gray, .schedule-gray .fc-event-skin, .schedule-gray a{
-                background-color: #d4d0c8; 
-                color: black;
-                border-color: darkgray;
-            }
-
-            .schedule-magenta, .schedule-magenta .fc-event-skin, .schedule-magenta a{
-                background-color: magenta; 
-                color: black;
-                border-color: darkmagenta;
-            }
-            .schedule-green, .schedule-green .fc-event-skin, .schedule-green a{
-                background-color: green; 
-                color: black;
-                border-color: darkgreen;
-            }
-            .schedule-red, .schedule-red .fc-event-skin, .schedule-red a{
-                background-color: red; 
-                color: black;
-                border-color: darkred;
-            }
-        </style>
-        
+      
         <jmoordbjsf:cssschedule/>  
         <jmoordbjsf:jsschedule/>
 
@@ -73,8 +33,7 @@
             <b:panel title="#{msg['titlelist.solicituddocente']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <p:schedule id="schedule"  
-                            
-                             rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
+                                 rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
                             value="#{solicitudDocenteController.eventModel}"
                             widgetVar="myschedule" timeZone="GMT-5" locale="es">
                     <p:ajax  event="eventSelect"  listener="#{solicitudDocenteController.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
