@@ -23,6 +23,7 @@ import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.dates.FechaDiaUtils;
+import com.avbravo.jmoordbutils.email.ManagerEmail;
 import com.avbravo.jmoordbutils.printer.Printer;
 
 import com.avbravo.transporte.util.ResourcesFiles;
@@ -35,7 +36,6 @@ import com.avbravo.transporteejb.entity.Tiposolicitud;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
-import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.SugerenciaRepository;
 import com.avbravo.transporteejb.repository.TipovehiculoRepository;
@@ -654,6 +654,11 @@ public class SolicitudDocenteController implements Serializable, IController {
 //            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") + " : " + solicitudesGuardadas.toString() + " " + rf.getMessage("info.solicitudesde") + solicitud.getNumerodevehiculos());
             JsfUtil.successMessage(rf.getMessage("info.savesolicitudes"));
             //Enviar los emails
+            
+            ManagerEmail managerEmail = new ManagerEmail();
+           // String message="Estimado docente,"  + "\n\n Se creo su solicitud para viajes";
+            //managerEmail.send("avbravo@gmail.com","Solicitudes de Transporte", message, "avbravo@gmail.com","javnet180denver$");
+            
             facultadList = new ArrayList<>();
             carreraList = new ArrayList<>();
             reset();
