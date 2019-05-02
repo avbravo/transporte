@@ -54,10 +54,10 @@
     
     
     <context-param>
-    <param-name>primefaces.THEME</param-name>
-    <param-value>nova-light</param-value>
-</context-param>
-     <!--
+        <param-name>primefaces.THEME</param-name>
+        <param-value>nova-light</param-value>
+    </context-param>
+    <!--
 JAVA EE 8 API SECURITY
     -->
     <security-constraint>
@@ -77,13 +77,13 @@ JAVA EE 8 API SECURITY
     <security-role>
         <role-name>ADMINISTRADOR</role-name>
     </security-role>
-   <security-role>
+    <security-role>
         <role-name>DOCENTE</role-name>
     </security-role>
-   <security-role>
+    <security-role>
         <role-name>ADMINISTRATIVO</role-name>
     </security-role>
-   <security-role>
+    <security-role>
         <role-name>SECRETARIA</role-name>
     </security-role>
 </web-app>
