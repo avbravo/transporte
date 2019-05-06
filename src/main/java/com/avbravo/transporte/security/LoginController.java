@@ -304,6 +304,7 @@ public class LoginController implements Serializable, SecurityInterface {
 // <editor-fold defaultstate="collapsed" desc="doLogin">
     public String doLogin() {
         try {
+       
 
 //   String version=    getClass().getPackage().getImplementationVersion();
 //            System.out.println("---> numero "+version);

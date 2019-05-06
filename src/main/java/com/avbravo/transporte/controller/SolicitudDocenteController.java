@@ -128,6 +128,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     Solicitud solicitudCopiar = new Solicitud();
 
     //List
+    List<Solicitud> solicitudGuardadasList = new ArrayList<>();
     List<Solicitud> solicitudList = new ArrayList<>();
     List<Solicitud> solicitudFiltered = new ArrayList<>();
     List<Unidad> unidadList = new ArrayList<>();
@@ -393,6 +394,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud.setTipovehiculo(tipovehiculoList);
             solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
+
+                solicitudGuardadasList.add(solicitud);
                 //guarda el contenido anterior
                 JmoordbConfiguration jmc = new JmoordbConfiguration();
                 Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
@@ -497,6 +500,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     @Override
     public String save() {
         try {
+            solicitudGuardadasList = new ArrayList<>();
             if (!localValid()) {
                 return "";
             }
@@ -558,12 +562,12 @@ public class SolicitudDocenteController implements Serializable, IController {
                 if (mesPartida > mesRegreso) {
                     meses = (mesRegreso + 12) - mesPartida;
                 } else {
-                    if(anioPartida < anioRegreso){
-                          meses = (mesRegreso +12)- mesPartida;
-                    }else{
-                          meses = mesRegreso - mesPartida;
+                    if (anioPartida < anioRegreso) {
+                        meses = (mesRegreso + 12) - mesPartida;
+                    } else {
+                        meses = mesRegreso - mesPartida;
                     }
-                  
+
                 }
                 //mismo mes
                 if (meses == 0) {
@@ -586,7 +590,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 } else {
                     // mas de un mes recorrer todos los meses en ese intervalo
                     if (meses > 0 && meses <= 12) {
-                    //     // System.out.println("==> meses " + meses);
+                        //     // System.out.println("==> meses " + meses);
                         for (int i = 0; i <= meses; i++) {
                             //Verificar si es el mismo año
                             if (anioPartida.equals(anioRegreso)) {
@@ -618,14 +622,12 @@ public class SolicitudDocenteController implements Serializable, IController {
                                     m = m - 12;
 
                                 }
-                              //   // System.out.println("===========================================================");
-                             //    // System.out.println("===> m: " + m + " ==mesPartida " + mesPartida + "==>i " + i);
+
                                 String nameOfMohth = DateUtil.nombreMes(m);
-                              //   // System.out.println("===>nameOfMonth " + nameOfMohth + "varAnio " + varAnio);
+
                                 List<FechaDiaUtils> list = validarRangoFechas(varAnio, nameOfMohth);
                                 List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                                 if (list == null || list.isEmpty()) {
-                                     // System.out.println("===> no tiene dias validos en ese rango");
                                     JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes: " + nameOfMohth);
                                     //return "";
                                 } else {
@@ -652,13 +654,30 @@ public class SolicitudDocenteController implements Serializable, IController {
             }//no son dias consecutivos
 
 //            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") + " : " + solicitudesGuardadas.toString() + " " + rf.getMessage("info.solicitudesde") + solicitud.getNumerodevehiculos());
-            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes"));
-            //Enviar los emails
-            
+            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") + " :" + solicitudesGuardadas.SIZE);
+            //Enviar los emails de confirmacion de la solicitud
+
+            String texto = "";
+            for (Solicitud s : solicitudGuardadasList) {
+                texto += "#:" + s.getIdsolicitud() + " Partida: " + s.getFechahorapartida() + " Regreso: " + s.getFechahoraregreso() + " Mision: " + s.getMision() + "\n";
+
+            }
+            String mensaje = "Su solicitud ha";
+            if (solicitudGuardadasList.size() > 1) {
+                mensaje = "Sus solicitudes se han ";
+            }
+            mensaje += "  registrado en el sistema "
+                    + "\n este pendiente de la aprobaciòn o rechazo de la misma"
+                    + "\n se le enviara un correo informandole al respecto"
+                    + "\n o puede ingresar al sistema y consultar su estatus."
+                    + "\n"
+                    + texto
+                    + "\n Muchas gracias.";
+
             ManagerEmail managerEmail = new ManagerEmail();
-           // String message="Estimado docente,"  + "\n\n Se creo su solicitud para viajes";
-            //managerEmail.send("avbravo@gmail.com","Solicitudes de Transporte", message, "avbravo@gmail.com","javnet180denver$");
-            
+
+            managerEmail.sendOutlook(responsable.getEmail(), "Solicitudes de Transporte", mensaje, "aristides.villarreal@utp.ac.pa", "Controljav180den");
+
             facultadList = new ArrayList<>();
             carreraList = new ArrayList<>();
             reset();
@@ -1212,13 +1231,13 @@ public class SolicitudDocenteController implements Serializable, IController {
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             Document doc = new Document("usuario.0.username", jmoordb_user.getUsername());
 
-         List<Solicitud> list = solicitudRepository.findBy(doc,new Document("idsolicitud", -1));
+            List<Solicitud> list = solicitudRepository.findBy(doc, new Document("idsolicitud", -1));
             eventModel = new DefaultScheduleModel();
             if (!list.isEmpty()) {
                 list.forEach((a) -> {
                     String texto = "{ ";
                     texto = a.getTipovehiculo().stream().map((t) -> t.getIdtipovehiculo() + " ").reduce(texto, String::concat);
-                   texto += " }";
+                    texto += " }";
                     String tema = "schedule-blue";
                     switch (a.getEstatus().getIdestatus()) {
                         case "SOLICITADO":
