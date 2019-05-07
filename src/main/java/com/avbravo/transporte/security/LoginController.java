@@ -304,7 +304,11 @@ public class LoginController implements Serializable, SecurityInterface {
 // <editor-fold defaultstate="collapsed" desc="doLogin">
     public String doLogin() {
         try {
-       
+
+//            ManagerEmail managerEmail = new ManagerEmail();
+//            
+//                 managerEmail.sendOutlook("avbravo@gmail.com", "Solicitudes de Transporte", "Prueba", "aristides.villarreal@utp.ac.pa", "Controljav180den");
+//            managerEmail.getOutlook("aristides.villarreal@utp.ac.pa", "Controljav180den");
 
 //   String version=    getClass().getPackage().getImplementationVersion();
 //            System.out.println("---> numero "+version);

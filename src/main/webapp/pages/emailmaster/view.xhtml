@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
+    <ui:define name="content">
+        <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            }
+        </style>
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+            <h:panelGroup id="content" layout="block"> 
+
+                <jmoordbjsf:messages id="msg"/>
+                <b:panel title="#{msg['titleview.jmoordbEmailMaster']}"  look="primary">
+                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{jmoordbEmailMasterController.writable}"> 
+                        <p:outputLabel  value="#{msg['field.email']}" />
+                        <p:outputLabel  value="#{jmoordbEmailMasterController.jmoordbEmailMaster.email}" id="email"   />
+                        <p:outputLabel  value="#{msg['field.password']}" />
+                        <jmoordbjsf:password value="#{jmoordbEmailMasterController.jmoordbEmailMaster.password}" id="password"  label="#{msg['field.password']}" />
+
+                        <p:outputLabel  value="#{msg['field.passwordnuevorepetir']}" />
+                        <jmoordbjsf:password value="#{jmoordbEmailMasterController.passwordnewrepeat}" id="passwordrepetido"  label="#{msg['field.passwordnuevorepetir']}" />
+
+
+                        <p:outputLabel  value="#{msg['field.mail_smtp_host']}" />
+                        <jmoordbjsf:inputText value="#{jmoordbEmailMasterController.jmoordbEmailMaster.mail_smtp_host}" id="mail_smtp_host"  label="#{msg['field.mail_smtp_host']}" />
+
+                        <p:outputLabel  value="#{msg['field.mail_smtp_auth']}" />
+                        <jmoordbjsf:inputText value="#{jmoordbEmailMasterController.jmoordbEmailMaster.mail_smtp_auth}" id="mail_smtp_auth"  label="#{msg['field.mail_smtp_auth']}" />
+                        <p:outputLabel  value="#{msg['field.mail_smtp_port']}" />
+                        <jmoordbjsf:inputText value="#{jmoordbEmailMasterController.jmoordbEmailMaster.mail_smtp_port}" id="mail_smtp_port"  label="#{msg['field.mail_smtp_port']}" />
+
+
+
+                        <p:outputLabel  value="#{msg['field.stmpclient']}" />
+                        <p:splitButton id="basic" value="#{msg['field.stmpclient']}"  update="form:content" >
+
+                            <p:menuitem value="365 Outlook" action="#{jmoordbEmailMasterController.outlook}" update=":form:content" icon="pi pi-refresh" />
+                            <p:separator />
+                            <p:menuitem value="Gmail" action="#{jmoordbEmailMasterController.gmail}" update=":form:content" icon="pi pi-refresh" />
+
+                        </p:splitButton>  
+
+                        <p:outputLabel  value="#{msg['field.mail_smtp_starttls_enable']}" />
+
+                        <jmoordbjsf:yesno value="#{jmoordbEmailMasterController.jmoordbEmailMaster.mail_smtp_starttls_enable}" id="mail_smtp_starttls_enable"  required="true"/>
+
+
+
+                        <p:outputLabel  value="#{msg['field.activo']}" />
+                        <jmoordbjsf:yesno value="#{jmoordbEmailMasterController.jmoordbEmailMaster.activo}" id="activo"  required="true"/>
+
+                    </b:panelGrid>
+                    <jmoordbjsf:toolbarview 
+                        renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
+                        controller="#{jmoordbEmailMasterController}"
+                        url  = "/pages/emailmaster/list.xhtml"
+                        />
+                </b:panel>
+            </h:panelGroup>
+        </b:form>
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
+        <br/><br/><br/>
+    </ui:define>
+</ui:composition>

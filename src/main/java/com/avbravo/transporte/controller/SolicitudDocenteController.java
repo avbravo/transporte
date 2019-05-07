@@ -671,7 +671,6 @@ public class SolicitudDocenteController implements Serializable, IController {
                     + "\n se le enviara un correo informandole al respecto"
                     + "\n o puede ingresar al sistema y consultar su estatus."
                     + "\n"
-                    + texto
                     + "\n Muchas gracias.";
 
             ManagerEmail managerEmail = new ManagerEmail();
