@@ -210,6 +210,7 @@ public class JmoordbEmailMasterController implements Serializable, IController {
                 return false;
             }
             jmoordbEmailMaster.setPassword(JsfUtil.encriptar(jmoordbEmailMaster.getPassword()));
+            passwordnewrepeat = jmoordbEmailMaster.getPassword();
             return true;
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
