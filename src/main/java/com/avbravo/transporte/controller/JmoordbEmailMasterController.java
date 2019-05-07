@@ -205,12 +205,12 @@ public class JmoordbEmailMasterController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getMessage("warning.emailnovalido"));
                 return false;
             }
-
+jmoordbEmailMaster.setPassword(JsfUtil.encriptar(jmoordbEmailMaster.getPassword()));
             if (!validPassword()) {
                 return false;
             }
-            jmoordbEmailMaster.setPassword(JsfUtil.encriptar(jmoordbEmailMaster.getPassword()));
-            passwordnewrepeat = jmoordbEmailMaster.getPassword();
+            
+        
             return true;
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
