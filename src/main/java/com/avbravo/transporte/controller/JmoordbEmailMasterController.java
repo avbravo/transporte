@@ -189,6 +189,9 @@ public class JmoordbEmailMasterController implements Serializable, IController {
             if (!validPassword()) {
                 return false;
             }
+            if(jmoordbEmailMaster.getMail_smtp_starttls_enable().equals("si")){
+                jmoordbEmailMaster.setMail_smtp_starttls_enable("true");
+            }
             jmoordbEmailMaster.setPassword(JsfUtil.encriptar(jmoordbEmailMaster.getPassword()));
             return true;
         } catch (Exception e) {

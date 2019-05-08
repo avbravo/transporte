@@ -19,6 +19,8 @@ import com.avbravo.jmoordb.mongodb.history.repository.AutoincrementablebReposito
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.repository.Repository;
+import com.avbravo.jmoordb.pojos.JmoordbEmailMaster;
+import com.avbravo.jmoordb.profiles.repository.JmoordbEmailMasterRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JsfUtil;
@@ -47,6 +49,9 @@ import com.avbravo.transporteejb.services.TipogiraServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
+import com.mongodb.client.model.Filters;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.or;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -73,6 +78,7 @@ import javax.mail.internet.MimeMessage;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
@@ -151,6 +157,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     CarreraRepository carreraRepository;
     @Inject
     FacultadRepository facultadRepository;
+    @Inject
+    JmoordbEmailMasterRepository jmoordbEmailMasterRepository;
     @Inject
     SolicitudRepository solicitudRepository;
     @Inject
@@ -394,8 +402,10 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitud.setTipovehiculo(tipovehiculoList);
             solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
+                Solicitud sol = new Solicitud();
+                sol = (Solicitud) JsfUtil.copyBeans(sol, solicitud);
+                solicitudGuardadasList.add(sol);
 
-                solicitudGuardadasList.add(solicitud);
                 //guarda el contenido anterior
                 JmoordbConfiguration jmc = new JmoordbConfiguration();
                 Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
@@ -653,29 +663,81 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             }//no son dias consecutivos
 
-//            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") + " : " + solicitudesGuardadas.toString() + " " + rf.getMessage("info.solicitudesde") + solicitud.getNumerodevehiculos());
-            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") + " :" + solicitudesGuardadas.SIZE);
+            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes"));
             //Enviar los emails de confirmacion de la solicitud
 
-            String texto = "";
+            /**
+             * Enviar un email al docente y al mismo administrador
+             */
+            Solicitud s0 = solicitudGuardadasList.get(0);
+
+            String varFacultadName = "";
+            String varCarreraName = "";
+            for (Facultad f : s0.getFacultad()) {
+                varFacultadName += "" + f.getDescripcion();
+            }
+            for (Carrera c : s0.getCarrera()) {
+                varCarreraName = "" + c.getDescripcion();
+            }
+            String header = "\n Detalle de la solicitud:"
+                    + "\nObjetivo : " + s0.getObjetivo()
+                    + "\nObservaciones: " + s0.getObservaciones()
+                    + "\nLugares: " + s0.getLugares()
+                    + "\nFacultad: " + varFacultadName
+                    + "\nCarrera: " + varCarreraName
+                    + "\nEstatus: " + s0.getEstatus().getIdestatus() + "";
+
+            String texto = "\n____________________SOLICITUDES________________________________"
+                    + "\n|#              |      Partida      |                Regreso |"
+                    + "\n_________________________________________________________________";
             for (Solicitud s : solicitudGuardadasList) {
-                texto += "#:" + s.getIdsolicitud() + " Partida: " + s.getFechahorapartida() + " Regreso: " + s.getFechahoraregreso() + " Mision: " + s.getMision() + "\n";
+                texto += "\n|" + s.getIdsolicitud()
+                        + " | " + DateUtil.dateFormatToString(s.getFechahorapartida(), "dd/MM/yyyy hh:mm")
+                        + " | " + DateUtil.dateFormatToString(s.getFechahoraregreso(), "dd/MM/yyyy hh:mm")
+                        + "\n_________________________________________________________________";
 
             }
+
+            String mensajeAdmin = "Hay solicitudes realizadas de :" + solicita.getNombre()
+                    + "\nemail:" + solicita.getEmail()
+                    + "\n" + header
+                    + "\n" + texto
+                    + "\n Por favor ingrese al sistema de transporte para verificarlas.";
             String mensaje = "Su solicitud ha";
             if (solicitudGuardadasList.size() > 1) {
                 mensaje = "Sus solicitudes se han ";
             }
-            mensaje += "  registrado en el sistema "
+            mensaje += "  registrado en el sistema de Transporte"
                     + "\n este pendiente de la aprobaciòn o rechazo de la misma"
                     + "\n se le enviara un correo informandole al respecto"
                     + "\n o puede ingresar al sistema y consultar su estatus."
                     + "\n"
+                    + "\n " + header
+                    + texto
                     + "\n Muchas gracias.";
 
             ManagerEmail managerEmail = new ManagerEmail();
 
-            managerEmail.sendOutlook(responsable.getEmail(), "Solicitudes de Transporte", mensaje, "aristides.villarreal@utp.ac.pa", "Controljav180den");
+            List<JmoordbEmailMaster> jmoordbEmailMasterList = jmoordbEmailMasterRepository.findBy(new Document("activo", "si"));
+            if (jmoordbEmailMasterList == null || jmoordbEmailMasterList.isEmpty()) {
+
+            } else {
+                JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
+                //enviar al docente
+                managerEmail.sendOutlook(responsable.getEmail(), "Solicitudes de Transporte", mensaje, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
+                Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
+                List<Usuario> usuarioList = usuarioRepository.filters(filter);
+                if (usuarioList == null || usuarioList.isEmpty()) {
+
+                } else {
+                    for (Usuario u : usuarioList) {
+                        managerEmail.sendOutlook(u.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                    }
+
+                }
+                //managerEmail.sendOutlook(responsable.getEmail(), "Solicitudes de Transporte", mensaje, "aristides.villarreal@utp.ac.pa", "Controljav180den");
+            }
 
             facultadList = new ArrayList<>();
             carreraList = new ArrayList<>();
