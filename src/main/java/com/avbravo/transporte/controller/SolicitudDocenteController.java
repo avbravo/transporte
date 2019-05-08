@@ -261,8 +261,12 @@ public class SolicitudDocenteController implements Serializable, IController {
             sugerenciaList = sugerenciaRepository.findBy("activo", "si");
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
             cargarSchedule();
-            String action = JmoordbContext.get("solicitud").toString();
-            if (action.equals("gonew")) {
+            String action="gonew";
+            if(JmoordbContext.get("solicitud") != null){              
+                 action = JmoordbContext.get("solicitud").toString();
+            }
+           
+            if (action == null || action.equals("gonew")  ) {
                 inicializar();
 
             }
@@ -372,6 +376,16 @@ public class SolicitudDocenteController implements Serializable, IController {
                 return false;
             }
 
+           Integer periodo =Integer.parseInt(solicitud.getPeriodoacademico());
+            if(DateUtil.anioActual() > periodo){
+                 JsfUtil.warningDialog("Advertencia", "Año actual es mayor que el periodo academico");
+                return false;
+            }
+            Integer diferencia = periodo - DateUtil.anioActual();
+            if(diferencia > 1){
+                 JsfUtil.warningDialog("Advertencia", "El periodo academico debe revisarlo");
+                return false;
+            }
             if (!leyoSugerencias) {
                 JsfUtil.warningDialog("Advertencia", "Por favor lea las sugerencias");
                 return false;
@@ -414,7 +428,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                         "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             } else {
-                JsfUtil.successMessage("save() " + solicitudRepository.getException().toString());
+                JsfUtil.successMessage("insert() " + solicitudRepository.getException().toString());
                 return false;
             }
             return true;
@@ -663,7 +677,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             }//no son dias consecutivos
 
-            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes"));
+            JsfUtil.infoDialog("Mensaje",rf.getMessage("info.savesolicitudes"));
             //Enviar los emails de confirmacion de la solicitud
 
             /**
@@ -731,7 +745,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             } else {
                 JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
                 //enviar al docente
-                managerEmail.sendOutlook(responsable.getEmail(), "Solicitudes de Transporte", mensaje, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+             //   managerEmail.sendOutlook(responsable.getEmail(), "Solicitudes de Transporte", mensaje, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
                 //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
                 Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
                 List<Usuario> usuarioList = usuarioRepository.filters(filter);

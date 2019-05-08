@@ -383,7 +383,7 @@ public class LoginController implements Serializable, SecurityInterface {
                     validadorRoles.validarRoles(rol.getIdrol());
                     switch (rol.getIdrol()) {
                         case "DOCENTE":
-                            return "/faces/pages/solicituddocente/list.xhtml?faces-redirect=true";
+                            return "/faces/pages/solicituddocente/new.xhtml?faces-redirect=true";
                         case "ADMINISTRATIVO":
                             return "/faces/pages/solicituddocente/list.xhtml?faces-redirect=true";
                         case "ADMINISTRADOR":

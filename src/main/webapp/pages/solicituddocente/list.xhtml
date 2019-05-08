@@ -30,39 +30,11 @@
 
             <b:growl  id="msgs"/>
 
-            <b:panel title="#{msg['titlelist.solicituddocente']}" id="content"   look="primary" > 
-                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-                <p:schedule id="schedule"  
-                                 rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
-                            value="#{solicitudDocenteController.eventModel}"
-                            widgetVar="myschedule" timeZone="GMT-5" locale="es">
-                    <p:ajax  event="eventSelect"  listener="#{solicitudDocenteController.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+          <b:panel title="#{msg['titlelist.solicituddocente']}" id="content"   look="primary" > 
+              <b:commandButton value="Crear solicitud" action="new" look="primary"/>
+  </b:panel>
 
-                </p:schedule>
-                <b:panel id="colores" autoUpdate="true" >
-                    <b:row >
-
-                        <b:column span="3">
-                            <p:outputLabel value="#{msg['label.solicitado']} #{solicitudDocenteController.totalSolicitado}" style="color:orange"/>
-                        </b:column>
-                        <b:column span="3">
-                            <p:outputLabel value="#{msg['label.aprobado']} #{solicitudDocenteController.totalAprobado}" style="color:green"/>
-                        </b:column>
-                        <b:column span="3">
-                            <p:outputLabel value="#{msg['label.rechazadocancelado']} #{solicitudDocenteController.totalRechazadoCancelado}" style="color:red"/>
-                        </b:column>
-                        <b:column span="3">
-                            <p:outputLabel value="#{msg['label.viaje']} #{solicitudDocenteController.totalViajes}" style="color:blue"/>
-
-                        </b:column>
-
-                    </b:row>
-
-
-
-                </b:panel>
-
-            </b:panel>
+         
             <b:panel id="dataTable" look="primary" title="#{msg['titlelist.solicituddocente']}">
                 <jmoordbjsf:paginator
                     controller="#{solicitudDocenteController}"                        
