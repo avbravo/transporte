@@ -673,18 +673,25 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             String varFacultadName = "";
             String varCarreraName = "";
+            String varRango = "";
             for (Facultad f : s0.getFacultad()) {
                 varFacultadName += "" + f.getDescripcion();
             }
             for (Carrera c : s0.getCarrera()) {
                 varCarreraName = "" + c.getDescripcion();
             }
+            for (String r : s0.getRangoagenda()) {
+                varRango = "" + r;
+            }
             String header = "\n Detalle de la solicitud:"
                     + "\nObjetivo : " + s0.getObjetivo()
                     + "\nObservaciones: " + s0.getObservaciones()
                     + "\nLugares: " + s0.getLugares()
+                    + "\nLugar de partida: " + s0.getLugarpartida()
+                    + "\nLugar de llegada: " + s0.getLugarllegada()
                     + "\nFacultad: " + varFacultadName
                     + "\nCarrera: " + varCarreraName
+                    + "\nRango: " + varRango
                     + "\nEstatus: " + s0.getEstatus().getIdestatus() + "";
 
             String texto = "\n____________________SOLICITUDES________________________________"
