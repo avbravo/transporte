@@ -11,40 +11,27 @@ import com.avbravo.jmoordb.configuration.JmoordbControllerEnvironment;
 import com.avbravo.jmoordb.interfaces.IController;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
-import com.avbravo.jmoordb.interfaces.IControllerOld;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
-import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
-import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.transporte.security.LoginController;
 
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.UnidadDataModel;
 import com.avbravo.transporteejb.entity.Unidad;
-
-import com.avbravo.transporte.util.LookupServices;
-import com.avbravo.transporteejb.datamodel.UnidadDataModel;
-import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.repository.UnidadRepository;
-import com.avbravo.transporteejb.repository.UnidadRepository;
-import com.avbravo.transporteejb.services.UnidadServices;
 import com.avbravo.transporteejb.services.UnidadServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.faces.context.FacesContext;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
-import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
 
@@ -153,6 +140,8 @@ public class UnidadController implements Serializable, IController {
     @Override
     public void move(Integer page) {
         try {
+ 
+              JsfUtil.infoDialog("texto",rf.getAppMessage("info.save"));
             this.page = page;
             unidadDataModel = new UnidadDataModel(unidadList);
             Document doc;
