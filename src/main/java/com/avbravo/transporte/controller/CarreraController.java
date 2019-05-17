@@ -21,7 +21,7 @@ import com.avbravo.jmoordb.interfaces.IController;
 import com.avbravo.jmoordb.mongodb.history.repository.AutoincrementablebRepository;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
-import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.entity.Usuario;
 
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public class CarreraController implements Serializable, IController {
     @Inject
     CarreraServices carreraServices;
     @Inject
-    ResourcesFiles rf;
+    JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
 

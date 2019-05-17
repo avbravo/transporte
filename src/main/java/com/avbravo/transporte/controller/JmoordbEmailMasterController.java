@@ -18,7 +18,7 @@ import com.avbravo.jmoordb.profiles.repository.JmoordbEmailMasterRepository;
 import com.avbravo.jmoordb.services.JmoordbEmailMasterServices;
 import com.avbravo.jmoordbutils.JsfUtil;
 
-import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.entity.Usuario;
 
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ public class JmoordbEmailMasterController implements Serializable, IController {
     @Inject
     JmoordbEmailMasterServices jmoordbEmailMasterServices;
     @Inject
-    ResourcesFiles rf;
+    JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
 

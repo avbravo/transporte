@@ -13,7 +13,7 @@ import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
  
-import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.TipogiraDataModel;
 import com.avbravo.transporteejb.entity.Tipogira;
 import com.avbravo.transporteejb.entity.Usuario;
@@ -74,7 +74,7 @@ public class TipogiraController implements Serializable, IController {
     @Inject
     TipogiraServices tipogiraServices;
     @Inject
-    ResourcesFiles rf;
+    JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
 

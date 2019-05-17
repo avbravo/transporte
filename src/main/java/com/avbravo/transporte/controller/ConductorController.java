@@ -18,7 +18,7 @@ import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.transporte.security.LoginController;
 
-import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ConductorDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
 
@@ -94,7 +94,7 @@ public class ConductorController implements Serializable, IController {
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
-    ResourcesFiles rf;
+    JmoordbResourcesFiles rf;
 
     @Inject
     Printer printer;

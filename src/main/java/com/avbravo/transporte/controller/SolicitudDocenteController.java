@@ -28,7 +28,7 @@ import com.avbravo.jmoordbutils.dates.FechaDiaUtils;
 import com.avbravo.jmoordbutils.email.ManagerEmail;
 import com.avbravo.jmoordbutils.printer.Printer;
 
-import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.datamodel.SugerenciaDataModel;
 import com.avbravo.transporteejb.entity.Rol;
@@ -191,7 +191,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     @Inject
     UsuarioServices usuarioServices;
     @Inject
-    ResourcesFiles rf;
+    JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
 

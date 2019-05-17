@@ -9,7 +9,7 @@ package com.avbravo.transporte.controller;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.transporte.security.LoginController;
-import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 
@@ -46,7 +46,7 @@ ErrorInfoServices errorServices;
     @Inject
     LoginController loginController;
     @Inject
-    ResourcesFiles rf;
+    JmoordbResourcesFiles rf;
 
     Integer totalSolicitado;
     Integer totalAprobado;

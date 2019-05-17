@@ -21,7 +21,7 @@ import com.avbravo.jmoordbsecurity.SecurityInterface;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.email.ManagerEmail;
 import com.avbravo.transporte.roles.ValidadorRoles;
-import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.repository.RolRepository;
@@ -83,7 +83,7 @@ public class LoginController implements Serializable, SecurityInterface {
     @Inject
     AccessInfoRepository accessInfoRepository;
     @Inject
-    ResourcesFiles rf;
+    JmoordbResourcesFiles rf;
     @Inject
     ValidadorRoles validadorRoles;
     Boolean loggedIn = false;

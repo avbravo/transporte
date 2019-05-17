@@ -19,7 +19,7 @@ import com.avbravo.jmoordb.mongodb.history.repository.AutoincrementablebReposito
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 
-import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.entity.Usuario;
 
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class FacultadController implements Serializable, IController {
     @Inject
     FacultadServices facultadServices;
     @Inject
-    ResourcesFiles rf;
+    JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
 

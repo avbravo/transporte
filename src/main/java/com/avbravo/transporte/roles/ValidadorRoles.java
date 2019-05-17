@@ -7,7 +7,7 @@ package com.avbravo.transporte.roles;
 
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordbutils.JsfUtil;
-import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -28,7 +28,7 @@ public class ValidadorRoles implements Serializable {
     @Inject
     ErrorInfoServices errorServices ;
     @Inject
-    ResourcesFiles rf;
+    JmoordbResourcesFiles rf;
     @Inject
     RolAdministrador rolAdministrador;
     @Inject

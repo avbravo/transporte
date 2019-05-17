@@ -8,7 +8,7 @@ package com.avbravo.transporte.security;
 import com.avbravo.jmoordb.configuration.JmoordbContext;
 import com.avbravo.jmoordbutils.JsfUtil;
 
-import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
@@ -31,7 +31,7 @@ public class CustomInMemoryIdentityStore implements IdentityStore {
 
     private String rolValue = "";
     @Inject
-    ResourcesFiles rf;
+    JmoordbResourcesFiles rf;
     @Inject
     UsuarioRepository usuarioRepository;
 

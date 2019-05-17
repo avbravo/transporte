@@ -22,7 +22,7 @@ import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.transporte.security.LoginController;
  
 import com.avbravo.transporte.util.LookupServices;
-import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Estatus;
@@ -199,7 +199,7 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     @Inject
     ViajeServices viajesServices;
     @Inject
-    ResourcesFiles rf;
+    JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
     @Inject

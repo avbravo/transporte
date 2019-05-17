@@ -18,7 +18,7 @@ import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
  
 
-import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 
 import com.avbravo.transporteejb.entity.Usuario;
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ public class SemestreController implements Serializable, IController {
     @Inject
     SemestreServices semestreServices;
     @Inject
-    ResourcesFiles rf;
+    JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
 

@@ -16,7 +16,7 @@ import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
-import com.avbravo.transporte.util.ResourcesFiles;
+import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.VehiculoDataModel;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
@@ -96,7 +96,7 @@ public class VehiculoController implements Serializable, IController {
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
-    ResourcesFiles rf;
+    JmoordbResourcesFiles rf;
 
     @Inject
     Printer printer;
