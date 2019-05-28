@@ -688,9 +688,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             String varFacultadName = "";
             String varCarreraName = "";
             String varRango = "";
-            for (Facultad f : s0.getFacultad()) {
-                varFacultadName += "" + f.getDescripcion();
-            }
+            varFacultadName = s0.getFacultad().stream().map((f) -> "" + f.getDescripcion()).reduce(varFacultadName, String::concat);
             for (Carrera c : s0.getCarrera()) {
                 varCarreraName = "" + c.getDescripcion();
             }
