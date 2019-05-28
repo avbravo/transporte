@@ -362,6 +362,8 @@ public class LoginController implements Serializable, SecurityInterface {
 
             JmoordbContext.put("jmoordb_user", usuario);
             JmoordbContext.put("jmoordb_rol", rol);
+            
+            
 //---Injectarlo en el Session
             switch (continueAuthentication()) {
                 case SEND_CONTINUE:

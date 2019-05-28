@@ -50,11 +50,7 @@
             <version>1.3</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jmoordbjsf</artifactId>
-            <version>0.7.5</version>
-        </dependency>
+      
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>transporteejb</artifactId>
@@ -75,6 +71,11 @@
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbsecurity</artifactId>
             <version>0.2</version>
+        </dependency>
+          <dependency>
+            <groupId>com.github.avbravo</groupId>
+            <artifactId>jmoordbjsf</artifactId>
+            <version>0.8.1</version>
         </dependency>
         
     </dependencies>
