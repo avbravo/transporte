@@ -25,10 +25,10 @@ import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.dates.FechaDiaUtils;
-import com.avbravo.jmoordbutils.email.ManagerEmail;
 import com.avbravo.jmoordbutils.printer.Printer;
 
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import com.avbravo.jmoordbutils.email.ManagerEmail;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.datamodel.SugerenciaDataModel;
 import com.avbravo.transporteejb.entity.Rol;
@@ -49,7 +49,6 @@ import com.avbravo.transporteejb.services.TipogiraServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
-import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.or;
 
@@ -743,7 +742,11 @@ public class SolicitudDocenteController implements Serializable, IController {
             } else {
                 JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
                 //enviar al docente
-             //   managerEmail.sendOutlook(responsable.getEmail(), "Solicitudes de Transporte", mensaje, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+          //  managerEmail.sendOutlook(responsable.getEmail(), "Solicitudes de Transporte", mensaje, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+          
+     
+                managerEmail.sendOutlook(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+               
                 //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
                 Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
                 List<Usuario> usuarioList = usuarioRepository.filters(filter);
@@ -752,6 +755,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 } else {
                     for (Usuario u : usuarioList) {
                         managerEmail.sendOutlook(u.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+
                     }
 
                 }

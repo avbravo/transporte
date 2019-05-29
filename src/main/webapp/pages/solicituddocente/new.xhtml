@@ -7,8 +7,9 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions" 
-                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"> 
+
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
+              > 
     <ui:define name="content">
         <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
 
@@ -19,7 +20,17 @@
                 border-color: #428BCA;
             }
         </style>
-     
+        <script type="text/javascript">
+            function start() {
+                this.progressInterval = setInterval(function () {
+                    PF('pb').setValue(PF('pb').getValue() + 10);
+                }, 2000);
+            }
+            function cancel() {
+                clearInterval(this.progressInterval);
+                PF('pb').setValue(0);
+            }
+        </script>
 
         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('DOCENTE')}" onkeypress="if (event.keyCode == 13) {
                     return false;
@@ -37,6 +48,7 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('DOCENTE')}"> 
 
 
+
                         <p:outputLabel  value="#{msg['field.solicitadopor']}" />
                         <b:column>
                             <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
@@ -51,49 +63,49 @@
                                                      minQueryLength="0"
                                                      disabled="true"
                                                      />
-                           
+
 
                         </b:column>
-                         <p:outputLabel  value="#{msg['field.copiarsolicituddesde']}" />
+                        <p:outputLabel  value="#{msg['field.copiarsolicituddesde']}" />
 
 
-                            <jmoordbjsf:autocompleteWithCalendarDateTime
-                                converter="#{solicitudConverter}"
-                                completeMethod="#{solicitudDocenteController.completeSolicitudParaCopiar}"    
-                                labeltip1="#{msg['field.idsolicitud']}"
-                                labelvalue1="#{p.idsolicitud}"   
-                                labeltip2="#{msg['field.solicitadopor']}" 
-                                labelvalue2="#{p.usuario.get(0).nombre}"
-                                labeltip3="#{msg['field.responsable']}"
-                                labelvalue3="#{p.usuario.get(1).nombre}"
-                                labeltip4="#{msg['field.objetivo']} "
-                                labelvalue4="#{p.objetivo}" 
-                                labeltip5="#{msg['field.lugares']}" 
-                                labelvalue5="#{p.lugares}"
-                                calendarsize="20"
-                                columnpaneltip="2"
-                                calendardatelabel1="#{msg['field.fechapartida']}" 
-                                calendardatevalue1="#{p.fechahorapartida}" 
+                        <jmoordbjsf:autocompleteWithCalendarDateTime
+                            converter="#{solicitudConverter}"
+                            completeMethod="#{solicitudDocenteController.completeSolicitudParaCopiar}"    
+                            labeltip1="#{msg['field.idsolicitud']}"
+                            labelvalue1="#{p.idsolicitud}"   
+                            labeltip2="#{msg['field.solicitadopor']}" 
+                            labelvalue2="#{p.usuario.get(0).nombre}"
+                            labeltip3="#{msg['field.responsable']}"
+                            labelvalue3="#{p.usuario.get(1).nombre}"
+                            labeltip4="#{msg['field.objetivo']} "
+                            labelvalue4="#{p.objetivo}" 
+                            labeltip5="#{msg['field.lugares']}" 
+                            labelvalue5="#{p.lugares}"
+                            calendarsize="20"
+                            columnpaneltip="2"
+                            calendardatelabel1="#{msg['field.fechapartida']}" 
+                            calendardatevalue1="#{p.fechahorapartida}" 
 
-                                calendartimelabel1="#{msg['field.horapartida']}"
-                                calendartimevalue1="#{p.fechahorapartida}"  
+                            calendartimelabel1="#{msg['field.horapartida']}"
+                            calendartimevalue1="#{p.fechahorapartida}"  
 
-                                calendardatelabel2="#{msg['field.fecharegreso']}" 
-                                calendardatevalue2="#{p.fechahoraregreso}"  
-
-
-                                calendartimelabel2="#{msg['field.horaregreso']}" 
-                                calendartimevalue2="#{p.fechahoraregreso}"  
+                            calendardatelabel2="#{msg['field.fecharegreso']}" 
+                            calendardatevalue2="#{p.fechahoraregreso}"  
 
 
-                                listener="#{solicitudDocenteController.handleSelectCopiarDesde}"
-                                value="#{solicitudDocenteController.solicitudCopiar}"
-                                itemLabel=" #{p.objetivo}"
-                                field="mision"
-                                dropdown="true"
-                                minQueryLength="0"
-                                update=":form:panel"
-                                />
+                            calendartimelabel2="#{msg['field.horaregreso']}" 
+                            calendartimevalue2="#{p.fechahoraregreso}"  
+
+
+                            listener="#{solicitudDocenteController.handleSelectCopiarDesde}"
+                            value="#{solicitudDocenteController.solicitudCopiar}"
+                            itemLabel=" #{p.objetivo}"
+                            field="mision"
+                            dropdown="true"
+                            minQueryLength="0"
+                            update=":form:panel"
+                            />
 
                         <p:outputLabel value="#{msg['field.responsable']}"/>
                         <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
@@ -309,9 +321,12 @@
                         </b:column>
                     </b:row>
 
-
                     <b:row>
 
+                        
+                        <jmoordbjsf:ajaxstatus/>
+
+                       
 
                         <b:column span="4">
                             <jmoordbjsf:toolbarnewsavereturn
