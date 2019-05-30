@@ -27,7 +27,7 @@
 <!--            <p>#{msg['label.sistematransporte']}</p>
             <p>#{msg['label.solicitudes']}</p>-->
 
-            <b:panel collapsible="false">
+            <b:panel collapsible="false" >
                 <f:facet name="heading">
                     <i class="fa fa-battery-three-quarters" style="padding-right:20px" />
                     <h:outputText value="#{msg['title.solicitudes']}" />
@@ -98,7 +98,7 @@
                 </b:row>
             </b:panel>
 
-            <b:panel collapsible="false">
+            <b:panel collapsible="false" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}">
                 <f:facet name="heading">
                     <i class="fa fa-car" style="padding-right:20px" />
                     <h:outputText value="#{msg['title.vehiculos']}" />

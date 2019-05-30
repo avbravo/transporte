@@ -260,12 +260,12 @@ public class SolicitudDocenteController implements Serializable, IController {
             sugerenciaList = sugerenciaRepository.findBy("activo", "si");
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
             cargarSchedule();
-            String action="gonew";
-            if(JmoordbContext.get("solicitud") != null){              
-                 action = JmoordbContext.get("solicitud").toString();
+            String action = "gonew";
+            if (JmoordbContext.get("solicitud") != null) {
+                action = JmoordbContext.get("solicitud").toString();
             }
-           
-            if (action == null || action.equals("gonew")  ) {
+
+            if (action == null || action.equals("gonew")) {
                 inicializar();
 
             }
@@ -375,14 +375,14 @@ public class SolicitudDocenteController implements Serializable, IController {
                 return false;
             }
 
-           Integer periodo =Integer.parseInt(solicitud.getPeriodoacademico());
-            if(DateUtil.anioActual() > periodo){
-                 JsfUtil.warningDialog("Advertencia", "Año actual es mayor que el periodo academico");
+            Integer periodo = Integer.parseInt(solicitud.getPeriodoacademico());
+            if (DateUtil.anioActual() > periodo) {
+                JsfUtil.warningDialog("Advertencia", "Año actual es mayor que el periodo academico");
                 return false;
             }
             Integer diferencia = periodo - DateUtil.anioActual();
-            if(diferencia > 1){
-                 JsfUtil.warningDialog("Advertencia", "El periodo academico debe revisarlo");
+            if (diferencia > 1) {
+                JsfUtil.warningDialog("Advertencia", "El periodo academico debe revisarlo");
                 return false;
             }
             if (!leyoSugerencias) {
@@ -676,7 +676,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             }//no son dias consecutivos
 
-            JsfUtil.infoDialog("Mensaje",rf.getMessage("info.savesolicitudes"));
+            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
             //Enviar los emails de confirmacion de la solicitud
 
             /**
@@ -710,8 +710,8 @@ public class SolicitudDocenteController implements Serializable, IController {
                     + "\n_________________________________________________________________";
             for (Solicitud s : solicitudGuardadasList) {
                 texto += "\n|" + s.getIdsolicitud()
-                        + " | " + DateUtil.dateFormatToString(s.getFechahorapartida(), "dd/MM/yyyy hh:mm")
-                        + " | " + DateUtil.dateFormatToString(s.getFechahoraregreso(), "dd/MM/yyyy hh:mm")
+                        + " | " + DateUtil.dateFormatToString(s.getFechahorapartida(), "dd/MM/yyyy hh:mm a")
+                        + " | " + DateUtil.dateFormatToString(s.getFechahoraregreso(), "dd/MM/yyyy hh:mm a")
                         + "\n_________________________________________________________________";
 
             }
@@ -742,11 +742,10 @@ public class SolicitudDocenteController implements Serializable, IController {
             } else {
                 JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
                 //enviar al docente
-          //  managerEmail.sendOutlook(responsable.getEmail(), "Solicitudes de Transporte", mensaje, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-          
-     
+                //  managerEmail.sendOutlook(responsable.getEmail(), "Solicitudes de Transporte", mensaje, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+
                 managerEmail.sendOutlook(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-               
+
                 //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
                 Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
                 List<Usuario> usuarioList = usuarioRepository.filters(filter);
@@ -1398,5 +1397,26 @@ public class SolicitudDocenteController implements Serializable, IController {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     } // </editor-fold>
+
+     // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
+    public String showDate(Date date){
+          String h = "";
+        try {
+            h = DateUtil.dateFormatToString(date, "dd/MM/yyyy");
+        } catch (Exception e) {
+            JsfUtil.errorMessage("showDate() " + e.getLocalizedMessage());
+        }
+        return h;
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String showHour(Date date)">
+    public String showHour(Date date) {
+        String h = "";
+        try {
+            h = DateUtil.hourFromDateToString(date);
+        } catch (Exception e) {
+            JsfUtil.errorMessage("showHour() " + e.getLocalizedMessage());
+        }
+        return h;
+    }// </editor-fold>
 
 }

@@ -111,13 +111,7 @@ ErrorInfoServices errorServices;
     public void setTotalVehiculosEnReparacion(Integer totalVehiculosEnReparacion) {
         this.totalVehiculosEnReparacion = totalVehiculosEnReparacion;
     }
-
-    /**
-     * Creates a new instance of DashboardController
-     */
-    public DashboardIndexController() {
-    }
-
+    
     public Integer getTotales() {
         return totales;
     }
@@ -150,6 +144,14 @@ ErrorInfoServices errorServices;
         this.totalRechazado = totalRechazado;
     }
 
+
+    /**
+     * Creates a new instance of DashboardController
+     */
+    public DashboardIndexController() {
+    }
+
+    
     // <editor-fold defaultstate="collapsed" desc="init">
     @PostConstruct
     public void init() {

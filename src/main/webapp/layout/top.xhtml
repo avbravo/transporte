@@ -22,7 +22,7 @@
                 <b:navbarLinks>
                     <b:navLink outcome="/pages/index" value="#{msg['menubar.home']}" iconAwesome="home" />
                 </b:navbarLinks>
-                <b:dropMenu value="#{msg['menubar.solicitud']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, DOCENTE, ADMINISTRATIVO')}">
+                <b:dropMenu value="#{msg['menubar.solicitud']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, DOCENTE, ADMINISTRATIVO, SECRETARIA')}">
 
 
                     <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{p:ifGranted('ADMINISTRADOR')}" outcome="/pages/solicitudmanualdocente/list" iconAwesome= "fa-calendar-o" />

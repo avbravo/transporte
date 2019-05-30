@@ -18,23 +18,23 @@
                 border: 1px solid;
                 border-color: #428BCA;
             } 
-
+        
         </style>
-
+      
         <jmoordbjsf:cssschedule/>  
         <jmoordbjsf:jsschedule/>
 
         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('DOCENTE')}" onkeypress="if (event.keyCode == 13) {
-                    return false;
+                return false;
                 }">
 
             <b:growl  id="msgs"/>
 
-            <b:panel title="#{msg['titlelist.solicituddocente']}" id="content"   look="primary" > 
-                <b:commandButton value="Crear solicitud" action="new" look="primary"/>
-            </b:panel>
+          <b:panel title="#{msg['titlelist.solicituddocente']}" id="content"   look="primary" > 
+              <b:commandButton value="Crear solicitud" action="new" look="primary"/>
+  </b:panel>
 
-
+         
             <b:panel id="dataTable" look="primary" title="#{msg['titlelist.solicituddocente']}">
                 <jmoordbjsf:paginator
                     controller="#{solicitudDocenteController}"                        
@@ -65,18 +65,29 @@
 
 
                             <p:outputLabel value="#{msg['field.fechapartida']}" />
-                            <p:outputLabel value="#{solicitudDocenteController.showDate(item.fechahorapartida)}"  />
+                            <p:calendar  disabled="true"  size="8"                                  
+                                         style="background-color: grey;"
+                                         pattern="dd/MM/yyyy" value="#{item.fechahorapartida}"  />
 
                             <p:outputLabel value="#{msg['field.horapartida']}" />
+                            <p:calendar  disabled="true"    
+                                         size="8" 
+                                         pattern="HH:mm:ss a" value="#{item.fechahorapartida}"  />
                             <p:outputLabel value="#{solicitudDocenteController.showHour(item.fechahorapartida)}"  />
 
-
                             <p:outputLabel value="#{msg['field.fecharegreso']}" />
-                            <p:outputLabel value="#{solicitudDocenteController.showDate(item.fechahoraregreso)}"  />
+                            <p:calendar  disabled="true"    
+                                         size="8" 
+                                         pattern="dd/MM/yyyy" value="#{item.fechahoraregreso}"  />
+
 
                             <p:outputLabel value="#{msg['field.horaregreso']}" />
+                            <p:calendar  disabled="true"   
+                                         size="8" 
+                                         pattern="HH:mm:ss a" value="#{item.fechahoraregreso}"  />
+                            <p:outputLabel value="#{msg['field.horaregreso']}" />
                             <p:outputLabel value="#{solicitudDocenteController.showHour(item.fechahoraregreso)}"  />
-
+                          
 
                             <p:outputLabel value="#{msg['field.objetivo']}"  />
                             <p:outputLabel value="#{item.objetivo}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
@@ -159,27 +170,27 @@
 
                     <p:outputLabel  value="#{msg['field.numerogrupos']}" />
                     <p:chips id="numerogrupo" disabled="true" value="#{solicitudDocenteController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
-                    <p:outputLabel value="#{msg['field.idtipogira']}"/>
-                    <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
-                                             completeMethod="#{solicitudDocenteController.tipogiraServices.complete}" 
-                                             labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"  
-                                             listener="#{solicitudDocenteController.handleSelect}"
-                                             value="#{solicitudDocenteController.solicitud.tipogira}"
-                                             itemLabel=" #{p.idtipogira}"
-                                             field="idtipogira"
-                                             dropdown="true"
-                                             fromstart="true"
-                                             minQueryLength="0"
-                                             disabled="true"
-                                             update=""/>
+ <p:outputLabel value="#{msg['field.idtipogira']}"/>
+                        <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
+                                                 completeMethod="#{solicitudDocenteController.tipogiraServices.complete}" 
+                                                 labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"  
+                                                 listener="#{solicitudDocenteController.handleSelect}"
+                                                 value="#{solicitudDocenteController.solicitud.tipogira}"
+                                                 itemLabel=" #{p.idtipogira}"
+                                                 field="idtipogira"
+                                                 dropdown="true"
+                                                 fromstart="true"
+                                                 minQueryLength="0"
+                                                 disabled="true"
+                                                 update=""/>
 
-                    <p:outputLabel  value="#{msg['field.objetivo']}" />
-                    <b:inputTextarea disabled="true" rows="2" span="8"  value="#{solicitudDocenteController.solicitud.objetivo}" id="objetivo"   />
+                        <p:outputLabel  value="#{msg['field.objetivo']}" />
+                        <b:inputTextarea disabled="true" rows="2" span="8"  value="#{solicitudDocenteController.solicitud.objetivo}" id="objetivo"   />
 
 
 
-                    <p:outputLabel  value="#{msg['field.lugares']}" />
-                    <p:chips disabled="true" value="#{solicitudDocenteController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
+                        <p:outputLabel  value="#{msg['field.lugares']}" />
+                        <p:chips disabled="true" value="#{solicitudDocenteController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
 
 
                 </b:panelGrid>
