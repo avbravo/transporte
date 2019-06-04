@@ -18,14 +18,34 @@
                 border-color: #428BCA;
             }
         </style>
-        <b:form id="form" rendered="#{loginController.loggedIn}" onkeypress="if (event.keyCode == 13) {
-                    return false;
-                }">
+        <script type="text/javascript">
+            function socketListener(message, channel, event) {
+                document.getElementById("websocketid").innerHTML = message + "<br/>";
+                document.getElementById("websocketid_top").innerHTML = message;
+              
+            }
+        </script>  
+
+
+        <b:form id="form" rendered="#{loginController.loggedIn}"  >
             <h1>#{msg['application.title']}</h1>
 
             <hr/>
 <!--            <p>#{msg['label.sistematransporte']}</p>
             <p>#{msg['label.solicitudes']}</p>-->
+
+
+            <h:commandButton value="Clock" action="#{pushSocket.clockAction()}">
+                <f:ajax />
+            </h:commandButton>
+
+
+            <f:websocket channel="clock" onmessage="socketListener" />        
+
+            <hr/>
+            <div id="websocketid"></div>
+           
+
 
             <b:panel collapsible="false" >
                 <f:facet name="heading">
@@ -89,11 +109,11 @@
                                     />
                         </div>
                     </b:column>
-                    </b:row>
+                </b:row>
                 <b:row>
                     <b:column span="6">
-<p:chart id="totalportienda" widgetVar="chartTotal"
-                                      type="pie" model="#{dashboardIndexController.pieModelSolicitud}"  />
+                        <p:chart id="totalportienda" widgetVar="chartTotal"
+                                 type="pie" model="#{dashboardIndexController.pieModelSolicitud}"  />
                     </b:column>
                 </b:row>
             </b:panel>
@@ -151,8 +171,8 @@
                         </div>
                     </b:column>
                     <b:column span="4">
-                        
-                             
+
+
                     </b:column>
                 </b:row>
             </b:panel>

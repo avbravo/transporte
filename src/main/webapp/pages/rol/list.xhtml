@@ -23,7 +23,7 @@
         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
-
+ 
             <b:growl id="msgs"/>
             <b:panel title="#{msg['titlelist.rol']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
@@ -64,6 +64,8 @@
                 </b:row>
             </b:panel>
             <b:panel id="dataTable" look="primary">
+                
+            
                 <jmoordbjsf:paginator
                     controller="#{rolController}"                        
                     rowPage="#{rolController.rowPage}"                   

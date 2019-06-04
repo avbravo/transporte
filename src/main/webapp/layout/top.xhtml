@@ -15,7 +15,9 @@
     <b:navBar brand="#{msg['application.shorttitle']}"
               brandHref="" inverse="true"
               fixed="top">
+       
         <b:container>
+           
             <b:navbarLinks>
                 <b:navLink />
                 <b:navLink />
@@ -108,6 +110,9 @@
 
 
                 </b:dropMenu>
+    
+              
+
                 <b:dropMenu value="#{app['button.logout']}" >
 
                     <b:navLink value="#{msg['menu.cambiarpassword']}"  outcome="/pages/password/change" iconAwesome="fa-expeditedssl"  />
@@ -116,9 +121,10 @@
 
                     </h:form>
                 </b:dropMenu>
+                <div id="websocketid_top" style="background-color:white;width:1px;height:1px"></div>
             </b:navbarLinks>
 
-
+       
 
         </b:container>
     </b:navBar>

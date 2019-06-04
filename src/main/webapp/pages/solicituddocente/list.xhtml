@@ -20,13 +20,19 @@
             } 
 
         </style>
-
+  <script type="text/javascript">
+        function socketListener(message, channel, event) {
+            document.getElementById("clockId").innerHTML += message + "<br/>";
+        }
+    </script>    
         <jmoordbjsf:cssschedule/>  
         <jmoordbjsf:jsschedule/>
 
         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('DOCENTE')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
+
+          
 
             <b:growl  id="msgs"/>
 

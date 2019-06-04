@@ -18,11 +18,12 @@
             }
         </style>
         <f:facet name="first">
-            <f:view locale="#{jmoordbLanguajes.locale !=null?jmoordbLanguajes.locale:'es'}">/f:view>
+            <f:view locale="#{jmoordbLanguajes.locale !=null?jmoordbLanguajes.locale:'es'}"></f:view>
             <f:loadBundle basename="com.properties.messages" var="msg" />
             <f:loadBundle basename="com.jmoordbutils.properties.application" var="app" />
 
         </f:facet>
+       
     </h:head>
     <h:body style="padding-top: 60px; background-color: lightslategray">
 
@@ -30,31 +31,35 @@
             <h:form styleClass="form-signin" prependId="false" id="form">
                 <p:messages id="growl" closable="true"  />
                 <h2 class="form-signin-heading"><p:outputLabel value="#{msg['application.title']}" style="color: white"/></h2>
+
+
+
                 
+
                 <jmoordbjsf:login
-                   
+
                     id="username"
                     fieldusername="#{loginController.username}"
                     labelusername="#{app['login.username']}"
                     fieldpassword="#{loginController.password}"
                     dologin="#{loginController.doLogin()}"
-                    
+
                     showone="true"
                     idone="rol"
-                  
+
                     requiredMessageone="#{msg['field.idrol']}"                    
                     selectItemsLabelone="#{item.idrol}"
                     selectItemsValueone="#{loginController.rolServices.rolList}"
                     valueone="#{loginController.rol}"
                     />
-                
-                
-                
+
+
+
 
 
 
                 <p:outputLabel value="#{msg['application.version']}" style="color: white"/>
-               
+
 
             </h:form>
         </b:container>
