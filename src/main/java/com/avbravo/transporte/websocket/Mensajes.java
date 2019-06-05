@@ -12,6 +12,9 @@ package com.avbravo.transporte.websocket;
 public class Mensajes {
     private String time;
     private String data;
+    private String user;
+    private Boolean read=false;
+    private Integer contador;
 
     public String getTime() {
         return time;

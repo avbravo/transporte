@@ -5,11 +5,11 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-
+ 
       xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
     <h:head>
         <f:facet name="first">
-            <f:view locale="#{jmoordbLanguajes.locale !=null?jmoordbLanguajes.locale:'es'}"></f:view>
+             <f:view locale="#{jmoordbLanguajes.locale !=null?jmoordbLanguajes.locale:'es'}"></f:view>
             <f:loadBundle basename="com.properties.messages" var="msg" />
             <f:loadBundle basename="com.jmoordbutils.properties.application" var="app" />
 
@@ -20,7 +20,7 @@
         <meta name="KEYWORDS" content="jsf, bootstrap, framework, java, enterprise, server, faces, jquery, usability, next-gen, web, html5, easy, modern, well-designed, website, state-of-the-art" />
         <meta name="robots" content="index, follow" />
 
-
+     
         <jmoordbjsf:metatemplate/>
         <jmoordbjsf:csstemplate/>
         <style>.tooltip-inner {
@@ -28,11 +28,11 @@
                 /* If max-width does not work, try using width instead */
                 width: 350px; 
             }</style>
-
-        <script type="text/javascript">
+       
+     <script type="text/javascript">
             function socketListener(message, channel, event) {
-
-                document.getElementById("websocketid_topText").innerHTML = message;
+                       document.getElementById("websocketid_top").innerHTML = message;
+         document.getElementById("websocketid_topText").innerHTML = message;
             }
         </script>  
     </h:head>
@@ -40,11 +40,11 @@
 
         <jmoordbjsf:jstemplate/>
         <h:form>
-            <f:websocket channel="clock" onmessage="socketListener" />        
+               <f:websocket channel="clock" onmessage="socketListener" />        
         </h:form>
-
+     
         <ui:insert name="nbtop">
-
+           
             <ui:include src="/layout/top.xhtml"/>
         </ui:insert>
 
