@@ -61,6 +61,7 @@ public class PushSocket implements Serializable {
         System.out.println("---> agregando");
         value = time;
         push.send(time);
+        
         } catch (Exception e) {
             JsfUtil.errorDialog("socket()", e.getLocalizedMessage());
         }
