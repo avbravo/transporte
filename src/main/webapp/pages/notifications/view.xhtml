@@ -25,24 +25,24 @@
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <b:panel title="#{msg['titleview.facultad']}"  look="primary">
-                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{facultadController.writable}"> 
-                        <p:outputLabel  value="#{msg['field.idfacultad']}" />
-                        <p:outputLabel  value="#{facultadController.facultad.idfacultad}" id="idfacultad"   />
-                        <p:outputLabel  value="#{msg['field.facultad']}" />
-                        <jmoordbjsf:inputText value="#{facultadController.facultad.descripcion}" id="facultad"  label="#{msg['field.facultad']}" />
+                <b:panel title="#{msg['titleview.jmoordbNotifications']}"  look="primary">
+                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{jmoordbNotificationsController.writable}"> 
+                        <p:outputLabel  value="#{msg['field.idjmoordbNotifications']}" />
+                        <p:outputLabel  value="#{jmoordbNotificationsController.jmoordbNotifications.idjmoordbNotifications}" id="idjmoordbNotifications"   />
+                        <p:outputLabel  value="#{msg['field.jmoordbNotifications']}" />
+                        <jmoordbjsf:inputText value="#{jmoordbNotificationsController.jmoordbNotifications.descripcion}" id="jmoordbNotifications"  label="#{msg['field.jmoordbNotifications']}" />
 
 
                         <p:outputLabel  value="#{msg['field.activo']}" />
-                        <jmoordbjsf:yesno value="#{facultadController.facultad.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{jmoordbNotificationsController.jmoordbNotifications.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
                       <jmoordbjsf:toolbarview 
                         renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
                         renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
                         renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
-                        controller="#{facultadController}"
-                        url  = "/pages/facultad/list.xhtml"                        
+                        controller="#{jmoordbNotificationsController}"
+                        url  = "/pages/jmoordbNotifications/list.xhtml"                        
                         />
                     
                 </b:panel>

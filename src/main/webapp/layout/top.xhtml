@@ -145,7 +145,7 @@
                                         <p:remoteCommand 
                                             name="myFormRC" 
                                             update=":topForm:topLabel1,  :topForm:growl_top"
-                                            actionListener="#{pushSocket.myAction2()}" 
+                                            actionListener="#{pushSocket.actionWebSocket()}" 
                                             process="@all">
                                         </p:remoteCommand>
                                         
@@ -156,7 +156,7 @@
                                 </ul>
                             </li>
                             <li class="footer">
-                                <p:commandLink value="Ver" action="/pages/rol/list.xhtml"/> 
+                                <p:commandLink value="Ver" action="/pages/notifications/list.xhtml"/> 
                                </li>
                         </ul>
                           </h:form>

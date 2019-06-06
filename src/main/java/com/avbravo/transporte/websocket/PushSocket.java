@@ -1,7 +1,12 @@
 package com.avbravo.transporte.websocket;
 
 
+import com.avbravo.jmoordb.configuration.JmoordbContext;
+import com.avbravo.jmoordb.pojos.JmoordbNotifications;
+import com.avbravo.jmoordb.profiles.repository.JmoordbNotificationsRepository;
+import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JsfUtil;
+import com.avbravo.transporteejb.entity.Usuario;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -9,7 +14,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
-import javax.faces.event.ActionEvent;
 import javax.faces.push.Push;
 import javax.faces.push.PushContext;
 import javax.inject.Inject;
@@ -19,6 +23,8 @@ import javax.inject.Named;
 @ApplicationScoped
 public class PushSocket implements Serializable {
 
+    @Inject
+    JmoordbNotificationsRepository jmoordbNotificationsRepository;
     private static final Logger LOG = Logger.getLogger(PushSocket.class.getName());
     List<Mensajes> mensajesList = new ArrayList<>();
     @Inject
@@ -63,6 +69,16 @@ public class PushSocket implements Serializable {
         value = time;
         push.send(time);
         
+        //Guardarlo en la base de datos
+         JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
+    Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+    jmoordbNotifications.setUsername(jmoordb_user.getUsername());
+    jmoordbNotifications.setMessage(value);
+    jmoordbNotifications.setViewed("no");
+    jmoordbNotifications.setDate(DateUtil.fechaActual());
+    jmoordbNotifications.setType("prueba");
+    jmoordbNotificationsRepository.save(jmoordbNotifications);
+        
         } catch (Exception e) {
             JsfUtil.errorDialog("socket()", e.getLocalizedMessage());
         }
@@ -74,9 +90,16 @@ public class PushSocket implements Serializable {
 
     
   
-    public String myAction2(){
-        JsfUtil.warningMessage("Tiene una notificacion");
-       // JsfUtil.errorDialog("myAction", "invocado desde el javascript");
+    public String actionWebSocket(){
+        try {
+                JsfUtil.warningMessage("Tiene una notificacion");
+    JsfUtil.errorDialog("myAction", "invocado desde el javascript");
+   
+        } catch (Exception e) {
+            JsfUtil.errorDialog("actionWebSocket()", e.getLocalizedMessage());
+        }
+    
+    
 return "";
     }
 }

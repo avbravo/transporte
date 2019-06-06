@@ -26,9 +26,9 @@
 
                 <jmoordbjsf:messages id="msg"/>
 
-                <jmoordbjsf:toolbarnew label="#{msg['field.descripcion']}"
-                                       title="#{msg['titleview.jmoordbNotifications']}"
-                                       value="#{jmoordbNotificationsController.jmoordbNotifications.descripcion}"
+                <jmoordbjsf:toolbarnew label="#{app['field.username']}"
+                                       title="#{app['titleview.jmoordbNotifications']}"
+                                       value="#{jmoordbNotificationsController.jmoordbNotifications.username}"
                                        disabled="#{jmoordbNotificationsController.writable}"
                                        rendererList="#{p:ifGranted('ADMINISTRADOR')}"
                                        controller="#{jmoordbNotificationsController}"                                       
