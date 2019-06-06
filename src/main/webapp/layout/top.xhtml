@@ -121,27 +121,28 @@
                     </h:form>
                 </b:dropMenu>
 
+              
+                    <li class="dropdown notifications-menu">
+                          <h:form id="topForm">
+                        <!-- Menu toggle button -->
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-bell-o"></i>
+                            <span class="label label-warning">
+                                <label id="websocketid_topText" >0</label>                                                     
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="header"> you have <label id="websocketid_topText2" >0</label> notifications</li>
+                            <li>
+                                <!-- Inner Menu: contains the notifications -->
+                                <ul class="menu">
+                                    <li><!-- start notification -->
+                                        <a href="#">
+                                            <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                                        </a>
 
-                <li class="dropdown notifications-menu">
-                    <!-- Menu toggle button -->
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-bell-o"></i>
-                        <span class="label label-warning">
-                            <label id="websocketid_topText" >0</label>                                                     
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li class="header"> you have <label id="websocketid_topText2" >0</label> notifications</li>
-                        <li>
-                            <!-- Inner Menu: contains the notifications -->
-                            <ul class="menu">
-                                <li><!-- start notification -->
-                                    <a href="#">
-                                        <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                                    </a>
 
 
-                                    <h:form id="topForm">
 
                                         <p:outputLabel id="topLabel1" 
                                                        value="Value: #{pushSocket.value}"/>
@@ -152,17 +153,20 @@
                                             actionListener="#{pushSocket.myAction2()}" 
                                             process="@all">
                                         </p:remoteCommand>
-                                        <p:commandLink value="Go" action="/pages/rol/list.xhtml"/>
-                                  
-                                        <p:growl id="growl_top" globalOnly="true" life="5000"  showDetail="true"  />
-                                    </h:form>
-                                </li><!-- end notification -->
-                            </ul>
-                        </li>
-                        <li class="footer"><a href="#">View all</a></li>
-                    </ul>
-                </li>
+                                        
 
+                                        <p:growl id="growl_top" globalOnly="true" life="5000"  showDetail="true"  />
+
+                                    </li><!-- end notification -->
+                                </ul>
+                            </li>
+                            <li class="footer">
+                                <p:commandLink value="Ver" action="/pages/rol/list.xhtml"/> 
+                               </li>
+                        </ul>
+                          </h:form>
+                    </li>
+              
 
             </b:navbarLinks>
 
