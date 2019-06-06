@@ -75,7 +75,6 @@ public class PushSocket implements Serializable {
     
   
     public String myAction2(){
-        System.out.println("-------------------------> llego al action");
         JsfUtil.warningMessage("Tiene una notificacion");
        // JsfUtil.errorDialog("myAction", "invocado desde el javascript");
 return "";
