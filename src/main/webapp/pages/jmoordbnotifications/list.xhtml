@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
+    <ui:define name="content">
+        <!--<h:outputStylesheet library="bsf" name="css/thumbnails.css"/>-->
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            } 
+        </style>
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, DOCENTE, ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+
+            <b:growl  id="msgs"/>
+
+            <b:panel title="#{app['titlelist.jmoordbNotifications']}" id="content"   look="primary" > 
+                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
+                <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
+
+
+                    <p:outputLabel value="#{msg['field.jmoordbnotifications']}"/>
+                    <jmoordbjsf:autocomplete converter="#{jmoordbNotificationsConverter}"
+                                             completeMethod="#{jmoordbNotificationsController.jmoordbNotificationsServices.complete}"
+                                             labeltip1="#{msg['field.idjmoordbNotifications']} #{p.idjmoordbNotifications}"
+                                             labeltip2="#{msg['field.username']} #{p.username}"   
+                                             listener="#{jmoordbNotificationsController.handleAutocompleteOfListXhtml}"
+                                             value="#{jmoordbNotificationsController.jmoordbNotificationsSearch}"
+                                             itemLabel=" #{p.username}"
+                                             field="username"
+                                             update=" :form:dataTable"/>
+
+
+
+
+                </b:panelGrid>
+                <b:row>
+                    <b:column medium-screen="4">
+                        <jmoordbjsf:search label="#{app['field.idjmoordbnotifications']}"
+                                           value="#{jmoordbNotificationsController.jmoordbNotificationsSearch.idjmoordbNotifications}"
+                                          renderedList="#{p:ifGranted('ADMINISTRADOR')}" 
+                                           search="#{jmoordbNotificationsController.searchBy('idjmoordbNotifications',jmoordbNotificationsController.jmoordbNotificationsSearch.idjmoordbnotifications)}"
+                                           />
+                        
+                       
+                    </b:column>
+                    <b:column medium-screen="8">
+                        <jmoordbjsf:search label="#{app['field.username']}"
+                                           value="#{jmoordbNotificationsController.jmoordbNotificationsSearch.username}"
+                                           renderedList="#{p:ifGranted('ADMINISTRADOR')}"   
+                                           search="#{jmoordbNotificationsController.searchBy('username',jmoordbNotificationsController.jmoordbNotificationsSearch.username)}"
+                                           />
+                    </b:column>
+                </b:row>
+            </b:panel>
+            <b:panel id="dataTable" look="primary">
+                
+                 <jmoordbjsf:paginator
+                    controller="#{jmoordbNotificationsController}"                        
+                    rowPage="#{jmoordbNotificationsController.rowPage}"                   
+                    page="#{jmoordbNotificationsController.page}"
+                    pages="#{jmoordbNotificationsController.pages}"
+                    skip="ajax:jmoordbNotificationsController.skip()" 
+                    url = "/pages/jmoordbNotifications/new.xhtml"
+                    />
+               
+                <b:dataTable value="#{jmoordbNotificationsController.jmoordbNotificationsDataModel}"
+                             var="item"
+                             id="dataTable2"
+                             paginated="false"
+                             onpage="console.log('page');">
+
+
+                    <b:dataTableColumn value="#{item.idjmoordbNotifications}" label="#{msg['field.idjmoordbNotifications']}"/>
+                    
+                    <b:dataTableColumn value="#{item.message}" label="#{app['field.message']}"/>
+                    <b:dataTableColumn value="#{item.type}" label="#{app['field.type']}"/>
+                    <b:dataTableColumn value="#{item.username}" label="#{app['field.username']}"/>
+                    <b:dataTableColumn value="#{item.date}" label="#{app['field.date']}"/>
+
+                    <b:dataTableColumn value="#{item.viewed}" label="#{app['field.viewed']}" />
+
+                    <b:dataTableColumn label="">
+                        
+                        <jmoordbjsf:column
+                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{jmoordbNotificationsController}"
+                            url="/pages/jmoordbNotifications/view.xhtml"
+                            item="#{item}"
+                            />
+
+                     
+                    </b:dataTableColumn>
+
+                </b:dataTable>
+            </b:panel>
+
+        </b:form>
+
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR, DOCENTE, ADMINISTRATIVO')}"/>
+        
+    </ui:define>
+</ui:composition>
