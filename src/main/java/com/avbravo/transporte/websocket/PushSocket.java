@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
+import javax.faces.event.ActionEvent;
 import javax.faces.push.Push;
 import javax.faces.push.PushContext;
 import javax.inject.Inject;
@@ -71,4 +72,12 @@ public class PushSocket implements Serializable {
 
     }
 
+    
+  
+    public String myAction2(){
+        System.out.println("-------------------------> llego al action");
+        JsfUtil.warningMessage("Tiene una notificacion");
+       // JsfUtil.errorDialog("myAction", "invocado desde el javascript");
+return "";
+    }
 }

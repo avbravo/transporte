@@ -118,10 +118,9 @@
                     <b:navLink value="#{msg['menu.cambiarpassword']}"  outcome="/pages/password/change" iconAwesome="fa-expeditedssl"  />
                     <h:form id="navbartopform">
                         <p:commandLink class="btnn btnn-primary login-btn" value="#{app['button.logout']}" action="#{loginController.doLogout()}"/>
-
                     </h:form>
                 </b:dropMenu>
-             
+
 
                 <li class="dropdown notifications-menu">
                     <!-- Menu toggle button -->
@@ -132,7 +131,7 @@
                         </span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="header">You have <label id="websocketid_topText2" >0</label> notifications</li>
+                        <li class="header"> you have <label id="websocketid_topText2" >0</label> notifications</li>
                         <li>
                             <!-- Inner Menu: contains the notifications -->
                             <ul class="menu">
@@ -140,16 +139,31 @@
                                     <a href="#">
                                         <i class="fa fa-users text-aqua"></i> 5 new members joined today
                                     </a>
-                                    
-                                    
+
+
+                                    <h:form id="topForm">
+
+                                        <p:outputLabel id="topLabel1" 
+                                                       value="Value: #{pushSocket.value}"/>
+
+                                        <p:remoteCommand 
+                                            name="myFormRC" 
+                                            update=":topForm:topLabel1,  :topForm:growl_top"
+                                            actionListener="#{pushSocket.myAction2()}" 
+                                            process="@all">
+                                        </p:remoteCommand>
+                                        <p:commandLink value="Go" action="/pages/rol/list.xhtml"/>
+                                  
+                                        <p:growl id="growl_top" globalOnly="true" life="5000"  showDetail="true"  />
+                                    </h:form>
                                 </li><!-- end notification -->
                             </ul>
                         </li>
                         <li class="footer"><a href="#">View all</a></li>
                     </ul>
                 </li>
-                
-  
+
+
             </b:navbarLinks>
 
 
