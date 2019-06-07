@@ -28,7 +28,11 @@
 
             <b:panel title="#{app['titlelist.jmoordbNotifications']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-               
+         <b:commandButton value="#{app['button.markall']}" 
+             action="#{jmoordbNotificationsController.markAsViewedAll()}"
+                                          iconAwesome="fa-check-square-o" 
+                                         update=":form:dataTable, :form:msgs"/>
+                       
             </b:panel>
             <b:panel id="dataTable"  look="primary">
                 
@@ -50,24 +54,20 @@
                              onpage="console.log('page');">
 
 
-                    <b:dataTableColumn value="#{item.idjoordbnotifications}" label="#{app['field.idjmoordbnotifications']}"/>
+                    <b:dataTableColumn value="#{item.idjmoordbnotifications}" label="#{app['field.idjmoordbnotifications']}"/>
                     
                     <b:dataTableColumn value="#{item.message}" label="#{app['field.message']}"/>
                     <b:dataTableColumn value="#{item.type}" label="#{app['field.type']}"/>
-                    <b:dataTableColumn value="#{item.username}" label="#{app['field.username']}"/>
-                    <b:dataTableColumn value="#{item.date}" label="#{app['field.date']}"/>
+                  
+                    <b:dataTableColumn value="#{jmoordbNotificationsController.showDate(item.date)}" label="#{app['field.date']}"/>
 
                     <b:dataTableColumn value="#{item.viewed}" label="#{app['field.viewed']}" />
 
                     <b:dataTableColumn label="">
-                        
-                        <jmoordbjsf:column
-                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
-                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
-                            controller="#{jmoordbNotificationsController}"
-                            url="/pages/jmoordbNotifications/view.xhtml"
-                            item="#{item}"
-                            />
+                        <b:commandButton action="#{jmoordbNotificationsController.markAsViewed(item)}"
+                                          iconAwesome="fa-check-square-o" 
+                                         update=":form:dataTable, :form:msgs"/>
+                       
 
                      
                     </b:dataTableColumn>

@@ -17,12 +17,15 @@ import com.avbravo.jmoordb.pojos.JmoordbNotifications;
 import com.avbravo.jmoordb.profiles.datamodel.JmoordbNotificationsDataModel;
 import com.avbravo.jmoordb.profiles.repository.JmoordbNotificationsRepository;
 import com.avbravo.jmoordb.services.JmoordbNotificationsServices;
+import com.avbravo.jmoordbutils.DateUtil;
 
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.transporteejb.entity.Usuario;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -50,7 +53,7 @@ public class JmoordbNotificationsController implements Serializable, IController
 
     private Boolean writable = false;
     //DataModel
-    private JmoordbNotificationsDataModel jmoordbNotificationsDataModel; 
+    private JmoordbNotificationsDataModel jmoordbNotificationsDataModel;
 
     Integer page = 1;
     Integer rowPage = 25;
@@ -100,7 +103,7 @@ public class JmoordbNotificationsController implements Serializable, IController
     @PostConstruct
     public void init() {
         try {
-            autoincrementablebRepository.setDatabase("commondb");
+//            autoincrementablebRepository.setDatabase("commondb");
             /*
             configurar el ambiente del contjmoordbNotificationsler
              */
@@ -120,7 +123,7 @@ public class JmoordbNotificationsController implements Serializable, IController
                     .withPathReportDetail("/resources/reportes/jmoordbNotifications/details.jasper")
                     .withPathReportAll("/resources/reportes/jmoordbNotifications/all.jasper")
                     .withparameters(parameters)
-                     .withResetInSave(true)
+                    .withResetInSave(true)
                     .build();
 
             start();
@@ -145,51 +148,13 @@ public class JmoordbNotificationsController implements Serializable, IController
             this.page = page;
             jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
             Document doc;
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
-            switch ((String) JmoordbContext.get("searchjmoordbNotifications")) {
-                case "_init":
-                case "_autocomplete":
-                    jmoordbNotificationsList = jmoordbNotificationsRepository.findPagination(page, rowPage);
-                    break;
+            jmoordbNotificationsSearch.setUsername(jmoordb_user.getUsername());
+            jmoordbNotificationsList = jmoordbNotificationsRepository.findRegexInTextPagination("username", jmoordbNotificationsSearch.getUsername(), true, page, rowPage, new Document("idjmoordbnotifications", -1));
 
-                case "idjmoordbNotifications":
-                    if (JmoordbContext.get("_fieldsearchjmoordbNotifications") != null) {
-                        jmoordbNotificationsSearch.setIdjoordbnotifications((Integer) JmoordbContext.get("_fieldsearchjmoordbNotifications"));
-                        doc = new Document("idjmoordbnotifications", jmoordbNotificationsSearch.getIdjoordbnotifications());
-                        jmoordbNotificationsList = jmoordbNotificationsRepository.findPagination(doc, page, rowPage, new Document("idjmoordbnotifications", -1));
-                    } else {
-                        jmoordbNotificationsList = jmoordbNotificationsRepository.findPagination(page, rowPage);
-                    }
-
-                    break;
-
-                case "username":
-                    if (JmoordbContext.get("_fieldsearchjmoordbNotifications") != null) {
-                        jmoordbNotificationsSearch.setUsername(JmoordbContext.get("_fieldsearchjmoordbNotifications").toString());
-                        jmoordbNotificationsList = jmoordbNotificationsRepository.findRegexInTextPagination("descripcion", jmoordbNotificationsSearch.getUsername(), true, page, rowPage, new Document("descripcion", -1));
-
-                    } else {
-                        jmoordbNotificationsList = jmoordbNotificationsRepository.findPagination(page, rowPage);
-                    }
-
-                    break;
-                case "viewed":
-                    if (JmoordbContext.get("_fieldsearchjmoordbNotifications") != null) {
-                        jmoordbNotificationsSearch.setViewed(JmoordbContext.get("_fieldsearchjmoordbNotifications").toString());
-                        doc = new Document("viewed", jmoordbNotificationsSearch.getViewed());
-                        jmoordbNotificationsList = jmoordbNotificationsRepository.findPagination(doc, page, rowPage, new Document("idjmoordbnotifications", -1));
-                    } else {
-                        jmoordbNotificationsList = jmoordbNotificationsRepository.findPagination(page, rowPage);
-                    }
-                    break;
-
-                default:
-                    jmoordbNotificationsList = jmoordbNotificationsRepository.findPagination(page, rowPage);
-                    break;
-            }
 
             jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
-
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
 
@@ -197,17 +162,73 @@ public class JmoordbNotificationsController implements Serializable, IController
 
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="beforeSave()">
-    public Boolean beforeSave() {
+    // <editor-fold defaultstate="collapsed" desc="marcarComoVistos(JmoordbNotifications item)">
+    public String markAsViewed(JmoordbNotifications item){
         try {
-            jmoordbNotifications.setIdjoordbnotifications(autoincrementableServices.getContador("jmoordbNotifications"));
-            return true;
+             jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
+               //Marca como vistas las notificaciones
+            Integer count = 0;
+            for (JmoordbNotifications jn : jmoordbNotificationsList) {
+                if (jn.getIdjmoordbnotifications().equals(item.getIdjmoordbnotifications())) {
+                    jmoordbNotificationsList.get(count).setViewed("si");
+                    jn.setViewed("si");
+                    jmoordbNotificationsRepository.update(jn);
+                }
+                count++;
+            }
+            jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
+             JsfUtil.successMessage("Marcados como vistos");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+                 errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-        return false;
-    }
-    // </editor-fold>
+        return "";
+    }// </editor-fold>
     
     
+    // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
+    public String showDate(Date date) {
+        String h = "";
+        try {
+            // h = DateUtil.dateFormatToString(date, "dd/MM/yyyy") ;
+            h = DateUtil.dateFormatToString(date, "dd/MM/yyyy") + " " + showHour(date);
+        } catch (Exception e) {
+            JsfUtil.errorMessage("showDate() " + e.getLocalizedMessage());
+        }
+        return h;
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String showHour(Date date)">
+
+    public String showHour(Date date) {
+        String h = "";
+        try {
+            h = DateUtil.hourFromDateToString(date);
+        } catch (Exception e) {
+            JsfUtil.errorMessage("showHour() " + e.getLocalizedMessage());
+        }
+        return h;
+    }// </editor-fold>
+    
+    
+    // <editor-fold defaultstate="collapsed" desc="markAsViewedAll()">
+    public String markAsViewedAll(){
+        try {
+             jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
+               //Marca como vistas las notificaciones
+            Integer count = 0;
+            for (JmoordbNotifications jn : jmoordbNotificationsList) {
+                if (jn.getViewed().equals("no")) {
+                    jmoordbNotificationsList.get(count).setViewed("si");
+                    jn.setViewed("si");
+                    jmoordbNotificationsRepository.update(jn);
+                }
+                count++;
+            }
+            jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
+             JsfUtil.successMessage("Marcados como vistos");
+        } catch (Exception e) {
+                 errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+
 }
