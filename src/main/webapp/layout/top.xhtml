@@ -125,9 +125,9 @@
                 <b:navLink />
 
                 <b:dropMenu id="dropMenuTop" class="badge badge-pill badge-danger" value="#{pushSocket.value}" iconAwesome="fa-bell-o" iconAlign="right">
-                    <b:navLink value="Yo have: #{pushSocket.value} Notificactions" href="#"></b:navLink>
+                    <b:navLink value="#{app['label.youhave']} #{pushSocket.value} #{app['label.youhave']}" href="#"></b:navLink>
 
-                    <b:navLink value="#{msg['menu.ver']}"  outcome="/pages/notifications/list" iconAwesome="fa-bell-o"  />
+                    <b:navLink value="#{app['menu.viewnotification']}"  outcome="/pages/notifications/list" iconAwesome="fa-bell-o"  />
                     <p:growl id="growl_top" globalOnly="true" life="5000"  showDetail="true"  />
                     <h:form id="topForm">
                         <p:remoteCommand 
