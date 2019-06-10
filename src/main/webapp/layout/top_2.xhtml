@@ -129,17 +129,53 @@
 
                     <b:navLink value="#{msg['menu.ver']}"  outcome="/pages/notifications/list" iconAwesome="fa-bell-o"  />
                     <p:growl id="growl_top" globalOnly="true" life="5000"  showDetail="true"  />
-                    <h:form id="topForm">
-                        <p:remoteCommand 
-                            name="myFormRC" 
-                            update=":growl_top :dropMenuTop"
-                            actionListener="#{pushSocket.actionWebSocket()}" 
-                            process="@all">
-                        </p:remoteCommand>
-                    </h:form>
+                      <p:remoteCommand 
+                                            name="myFormRC" 
+                                            update=":topForm:topLabel1,  :growl_top :dropMenuTop"
+                                            actionListener="#{pushSocket.actionWebSocket()}" 
+                                            process="@all">
+                                        </p:remoteCommand>
                 </b:dropMenu>
 
 
+                <li class="dropdown notifications-menu">
+                    <h:form id="topForm">
+                        <!-- Menu toggle button -->
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-bell-o"></i>
+                            <span class="label label-warning">
+                                <label id="websocketidTopText" >0</label>                                                     
+                            </span>
+                        </a>
+                        <span class="label label-warning">
+                            <label id="websocketidTopText1" >0</label>                                                     
+                        </span>
+                        <ul class="dropdown-menu">
+                            <li class="header"> you have <label id="websocketidTopText2" >0</label> notifications</li>
+                            <li>
+                                <!-- Inner Menu: contains the notifications -->
+                                <ul class="menu">
+                                    <li><!-- start notification -->
+
+
+                                        <p:outputLabel id="topLabel1" 
+                                                       value="Value: #{pushSocket.value}"/>
+
+                                      
+
+
+
+
+                                    </li><!-- end notification -->
+                                </ul>
+                            </li>
+                            <li class="footer">
+                                <b:navLink value="#{msg['menu.ver']}"  outcome="/pages/notifications/list" iconAwesome="fa-bell-o"  />
+                                <p:commandLink value="Ver" action="/pages/notifications/list.xhtml"/> 
+                            </li>
+                        </ul>
+                    </h:form>
+                </li>
 
 
             </b:navbarLinks>
