@@ -131,7 +131,7 @@
                     <p:growl id="growl_top" globalOnly="true" life="5000"  showDetail="true"  />
                     <h:form id="topForm">
                         <p:remoteCommand 
-                            name="myFormRC" 
+                            name="remoteCommandTop" 
                             update=":growl_top :dropMenuTop"
                             actionListener="#{pushSocket.actionWebSocket()}" 
                             process="@all">

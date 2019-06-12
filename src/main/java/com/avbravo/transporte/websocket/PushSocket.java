@@ -31,7 +31,7 @@ public class PushSocket implements Serializable {
     JmoordbNotificationsRepository jmoordbNotificationsRepository;
     
     @Inject
-    @Push(channel = "clock")
+    @Push(channel = "notification")
     private PushContext push;
     private String value = "";
     
@@ -51,7 +51,7 @@ public class PushSocket implements Serializable {
             String time = now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE) + ":" + now.get(Calendar.SECOND);
             
             value = time;
-            push.send(time);
+           push.send(time);
 
             //Guardarlo en la base de datos
             JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
@@ -73,7 +73,7 @@ public class PushSocket implements Serializable {
     
     public String actionWebSocket() {
         try {
-            JsfUtil.warningMessage("Tiene una notificacion");
+            JsfUtil.warningMessage("you have a notification");
        //     JsfUtil.errorDialog("myAction", "invocado desde el javascript");
             
         } catch (Exception e) {

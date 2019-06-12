@@ -30,8 +30,16 @@
             }</style>
 
         <script type="text/javascript">
-            function webSocketListener(message, channel, event) {
+            function socketListener(message, channel, event) {
+
+//                document.getElementById("websocketidTopText").innerHTML = message;
+//                document.getElementById("websocketidTopText2").innerHTML = message;
+
                 remoteCommandTop();
+                waitForLoad();
+                
+             
+                
             }
         </script>  
 
@@ -41,7 +49,7 @@
 
         <jmoordbjsf:jstemplate/>
         <h:form>
-            <f:websocket channel="notification" onmessage="webSocketListener" />        
+            <f:websocket channel="clock" onmessage="socketListener" />        
         </h:form>
 
         <ui:insert name="nbtop">
