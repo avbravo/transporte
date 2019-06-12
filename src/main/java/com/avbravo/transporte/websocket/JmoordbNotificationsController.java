@@ -55,6 +55,8 @@ public class JmoordbNotificationsController implements Serializable, IController
     //DataModel
     private JmoordbNotificationsDataModel jmoordbNotificationsDataModel;
 
+    
+    Integer count=0;
     Integer page = 1;
     Integer rowPage = 25;
     List<Integer> pages = new ArrayList<>();
@@ -92,7 +94,13 @@ public class JmoordbNotificationsController implements Serializable, IController
 
         return jmoordbNotificationsRepository.listOfPage(rowPage);
     }
-
+public Integer getCount(){
+     Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+        Document doc = new Document("username",jmoordb_user.getUsername()).append("viewed","no");
+        count= jmoordbNotificationsRepository.count(doc);
+        return count;
+        
+}
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
     public JmoordbNotificationsController() {

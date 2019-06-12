@@ -124,7 +124,7 @@
                 <b:navLink />
                 <b:navLink />
 
-                <b:dropMenu id="dropMenuTop" class="badge badge-pill badge-danger" value="#{pushSocket.value}" iconAwesome="fa-bell-o" iconAlign="right">
+                <b:dropMenu id="dropMenuTop" class="badge badge-pill badge-danger" value="#{jmoordbNotificationsController.count}" iconAwesome="fa-bell-o" iconAlign="right">
                     <b:navLink value="#{app['label.youhave']} #{pushSocket.value} #{app['label.youhave']}" href="#"></b:navLink>
 
                     <b:navLink value="#{app['menu.viewnotification']}"  outcome="/pages/notifications/list" iconAwesome="fa-bell-o"  />
