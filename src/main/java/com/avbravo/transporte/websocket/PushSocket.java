@@ -8,16 +8,15 @@ import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.transporteejb.entity.Usuario;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.logging.Level;
+import static java.util.Locale.filter;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.faces.push.Push;
 import javax.faces.push.PushContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.bson.Document;
 
 @Named
 @ApplicationScoped
@@ -75,9 +74,14 @@ public class PushSocket implements Serializable {
         try {
             JsfUtil.warningMessage("you have a notification");
        //     JsfUtil.errorDialog("myAction", "invocado desde el javascript");
+        Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+        Document doc = new Document("username",jmoordb_user.getUsername()).append("viewed","no");
+        value= jmoordbNotificationsRepository.count(doc).toString();
+        
             
         } catch (Exception e) {
             JsfUtil.errorDialog("actionWebSocket()", e.getLocalizedMessage());
+           value="0";
         }
         
         return "";
