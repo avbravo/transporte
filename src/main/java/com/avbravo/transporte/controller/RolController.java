@@ -13,17 +13,23 @@ import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordbutils.printer.Printer;
 
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
+import com.avbravo.jmoordb.pojos.JmoordbNotifications;
+import com.avbravo.jmoordb.profiles.repository.JmoordbNotificationsRepository;
+import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.RolDataModel;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.repository.RolRepository;
 import com.avbravo.transporteejb.services.RolServices;
+import com.avbravo.transporteejb.services.UsuarioServices;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.faces.push.Push;
+import javax.faces.push.PushContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -66,16 +72,25 @@ public class RolController implements Serializable, IController {
     @Inject
     RolRepository rolRepository;
     //Services
-     @Inject
+    @Inject
     AutoincrementableServices autoincrementableServices;
     @Inject
-    ErrorInfoServices errorServices;   
+    ErrorInfoServices errorServices;
     @Inject
     RolServices rolServices;
     @Inject
     JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
+
+    //Notification
+    @Inject
+    UsuarioServices usuarioServices;
+    @Inject
+    JmoordbNotificationsRepository jmoordbNotificationsRepository;
+    @Inject
+    @Push(channel = "notification")
+    private PushContext push;
 
     //List of Relations
     //Repository of Relations
@@ -120,24 +135,41 @@ public class RolController implements Serializable, IController {
                     .build();
 
             start();
-            
-       
-          
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
+    public Boolean afterSave(Boolean saved) {
+        try {
+
+            for (Usuario u : usuarioServices.getUsuarioList()) {
+                //Guardarlo en la base de datos
+                JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
+//                Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+                jmoordbNotifications.setIdjmoordbnotifications(autoincrementableServices.getContador("jmoordbnNotifications"));
+                jmoordbNotifications.setUsername(u.getUsername());
+                jmoordbNotifications.setMessage("se creo un nuevo rol");
+                jmoordbNotifications.setViewed("no");
+                jmoordbNotifications.setDate(DateUtil.fechaActual());
+                jmoordbNotifications.setType("rolnuevo");
+                jmoordbNotificationsRepository.save(jmoordbNotifications);
+            }
+            push.send("Se creo un nuevo rol");
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }
 // <editor-fold defaultstate="collapsed" desc="handleSelect">
+
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
-    
-   
-    
 
 // <editor-fold defaultstate="collapsed" desc="move(Integer page)">
     @Override
@@ -149,24 +181,23 @@ public class RolController implements Serializable, IController {
 
             switch ((String) JmoordbContext.get("searchrol")) {
                 case "_init":
-                     rolList = rolRepository.findPagination(page, rowPage);
+                    rolList = rolRepository.findPagination(page, rowPage);
                     break;
                 case "_autocomplete":
-                   break;
+                    break;
 
-                   
                 case "idrol":
                     if (JmoordbContext.get("_fieldsearchrol") != null) {
                         rolSearch.setIdrol(JmoordbContext.get("_fieldsearchrol").toString());
-                        doc = new Document("idrol",rolSearch.getIdrol());
+                        doc = new Document("idrol", rolSearch.getIdrol());
                         rolList = rolRepository.findPagination(doc, page, rowPage, new Document("idrol", -1));
                     } else {
                         rolList = rolRepository.findPagination(page, rowPage);
                     }
 
                     break;
-                    
-                     case "rol":
+
+                case "rol":
                     if (JmoordbContext.get("_fieldsearchrol") != null) {
                         rolSearch.setRol(JmoordbContext.get("_fieldsearchrol").toString());
                         rolList = rolRepository.findRegexInTextPagination("rol", rolSearch.getRol(), true, page, rowPage, new Document("rol", -1));

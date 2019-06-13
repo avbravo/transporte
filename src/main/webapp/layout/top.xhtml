@@ -125,7 +125,7 @@
                 <b:navLink />
 
                 <b:dropMenu id="dropMenuTop" class="badge badge-pill badge-danger" value="#{jmoordbNotificationsController.count}" iconAwesome="fa-bell-o" iconAlign="right">
-                    <b:navLink value="#{app['label.youhave']} #{jmoordbNotificationsController.count} #{app['label.youhave']}" href="#"></b:navLink>
+                    <b:navLink value="#{jmoordbNotificationsController.count} #{app['label.notifications']}" href="#"></b:navLink>
 
                     <b:navLink value="#{app['menu.viewnotification']}"  outcome="/pages/notifications/list" iconAwesome="fa-bell-o"  />
                     <p:growl id="growl_top" globalOnly="true" life="5000"  showDetail="true"  />

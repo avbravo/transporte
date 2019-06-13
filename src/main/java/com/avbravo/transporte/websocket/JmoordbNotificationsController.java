@@ -253,11 +253,9 @@ public class JmoordbNotificationsController implements Serializable, IController
     // <editor-fold defaultstate="collapsed" desc="actionWebSocket()">
     public String actionWebSocket() {
         try {
-           Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             Integer notification_count = (Integer) JmoordbContext.get("notification_count");
-  System.out.println(" for: "+jmoordb_user.getUsername()+"notification_count "+ notification_count + " countNotViewed() "+countNotViewed());
-            if (!notification_count.equals(countNotViewed())) {
-                JsfUtil.warningMessage("you have a notification "+countNotViewed() + " for: "+jmoordb_user.getUsername());
+              if (!notification_count.equals(countNotViewed())) {
+                JsfUtil.warningMessage("you have a notification " );
                 JmoordbContext.put("notification_count",countNotViewed());
             }
 

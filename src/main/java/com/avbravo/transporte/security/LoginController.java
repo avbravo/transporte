@@ -101,10 +101,10 @@ public class LoginController implements Serializable, SecurityInterface {
     String usernameRecover = "";
     String myemail = "@gmail.com";
     String mytoken = "";
-    /*
-    
-     */
-
+    //Repository
+    //Notificaciones
+    @Inject
+    JmoordbNotificationsRepository jmoordbNotificationsRepository;
     @Inject
     UsuarioRepository usuarioRepository;
     Usuario usuario = new Usuario();
@@ -121,12 +121,9 @@ public class LoginController implements Serializable, SecurityInterface {
     UsuarioServices usuarioServices;
     @Inject
     ConfiguracionServices configuracionServices;
-    //Notificaciones
-     @Inject
-    JmoordbNotificationsRepository jmoordbNotificationsRepository;
+
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="getter/setter">
-
     public Configuracion getConfiguracion() {
         return configuracion;
     }
@@ -143,9 +140,6 @@ public class LoginController implements Serializable, SecurityInterface {
         this.rolServices = rolServices;
     }
 
-    
-    
-    
     public Rol getRol() {
         return rol;
     }
@@ -360,8 +354,7 @@ public class LoginController implements Serializable, SecurityInterface {
 
             JmoordbContext.put("jmoordb_user", usuario);
             JmoordbContext.put("jmoordb_rol", rol);
-            
-            
+
 //---Injectarlo en el Session
             switch (continueAuthentication()) {
                 case SEND_CONTINUE:
@@ -380,11 +373,12 @@ public class LoginController implements Serializable, SecurityInterface {
                     accessInfoRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.welcome")));
                     loggedIn = true;
                     JsfUtil.successMessage(rf.getAppMessage("login.welcome") + " " + usuario.getNombre());
-                    //Notificaciones que tiene
-                     Document doc = new Document("username",username).append("viewed","no");
-       Integer count= jmoordbNotificationsRepository.count(doc);
-       JmoordbContext.put("notification_count",count);
                     
+                    //Notificaciones que tiene
+                    Document doc = new Document("username", username).append("viewed", "no");
+                    Integer count = jmoordbNotificationsRepository.count(doc);
+                    JmoordbContext.put("notification_count", count);
+
                     validadorRoles.validarRoles(rol.getIdrol());
                     switch (rol.getIdrol()) {
                         case "DOCENTE":

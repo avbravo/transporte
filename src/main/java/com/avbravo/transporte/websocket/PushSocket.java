@@ -50,7 +50,7 @@ public class PushSocket implements Serializable {
             String time = now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE) + ":" + now.get(Calendar.SECOND);
             
             value = time;
-           push.send(time);
+         
 
             //Guardarlo en la base de datos
             JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
@@ -62,28 +62,12 @@ public class PushSocket implements Serializable {
             jmoordbNotifications.setDate(DateUtil.fechaActual());
             jmoordbNotifications.setType("prueba");
             jmoordbNotificationsRepository.save(jmoordbNotifications);
-            
+              push.send(time);
         } catch (Exception e) {
             JsfUtil.errorDialog("socket()", e.getLocalizedMessage());
         }
 
-        //push.send("updateNotifications");
     }
     
-//    public String actionWebSocket() {
-//        try {
-//            JsfUtil.warningMessage("you have a notification");
-//       //     JsfUtil.errorDialog("myAction", "invocado desde el javascript");
-//        Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-//        Document doc = new Document("username",jmoordb_user.getUsername()).append("viewed","no");
-//        value= jmoordbNotificationsRepository.count(doc).toString();
-//        
-//            
-//        } catch (Exception e) {
-//            JsfUtil.errorDialog("actionWebSocket()", e.getLocalizedMessage());
-//           value="0";
-//        }
-//        
-//        return "";
-//    }
+
 }

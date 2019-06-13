@@ -20,7 +20,9 @@ import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.repository.Repository;
 import com.avbravo.jmoordb.pojos.JmoordbEmailMaster;
+import com.avbravo.jmoordb.pojos.JmoordbNotifications;
 import com.avbravo.jmoordb.profiles.repository.JmoordbEmailMasterRepository;
+import com.avbravo.jmoordb.profiles.repository.JmoordbNotificationsRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JsfUtil;
@@ -65,6 +67,8 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.push.Push;
+import javax.faces.push.PushContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -193,6 +197,13 @@ public class SolicitudDocenteController implements Serializable, IController {
     JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
+
+    //Notification
+    @Inject
+    JmoordbNotificationsRepository jmoordbNotificationsRepository;
+    @Inject
+    @Push(channel = "notification")
+    private PushContext push;
 
     //List of Relations
     //Repository of Relations
@@ -677,7 +688,17 @@ public class SolicitudDocenteController implements Serializable, IController {
             }//no son dias consecutivos
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
-            //Enviar los emails de confirmacion de la solicitud
+
+            //  Guardar las notificaciones
+            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
+            List<Usuario> usuarioList = usuarioRepository.filters(filter);
+            if (usuarioList == null || usuarioList.isEmpty()) {
+            } else {
+                usuarioList.forEach((u) -> {
+                    saveNotification(u.getUsername());
+                });
+                push.send("Nueva solicitud docente ");
+            }
 
             /**
              * Enviar un email al docente y al mismo administrador
@@ -747,15 +768,12 @@ public class SolicitudDocenteController implements Serializable, IController {
                 managerEmail.sendOutlook(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
 
                 //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
-                Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-                List<Usuario> usuarioList = usuarioRepository.filters(filter);
                 if (usuarioList == null || usuarioList.isEmpty()) {
 
                 } else {
-                    for (Usuario u : usuarioList) {
+                    usuarioList.forEach((u) -> {
                         managerEmail.sendOutlook(u.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-
-                    }
+                    });
 
                 }
                 //managerEmail.sendOutlook(responsable.getEmail(), "Solicitudes de Transporte", mensaje, "aristides.villarreal@utp.ac.pa", "Controljav180den");
@@ -1055,60 +1073,6 @@ public class SolicitudDocenteController implements Serializable, IController {
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="enviarEmails()">
-    public String enviarEmails() {
-        try {
-            Boolean enviados = false;
-
-            final String username = "avbravo@gmail.com";
-            final String password = "javnet180denver$";
-
-            Properties props = new Properties();
-            props.put("mail.transport.protocol", "smtp");
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.starttls.enable", "false");
-            props.put("mail.smtp.host", "smtpout.secureserver.net");
-            props.put("mail.smtp.port", stmpPort);
-            Session session = Session.getInstance(props,
-                    new javax.mail.Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(username, password);
-                }
-            });
-            Integer c = 0;
-            List<Usuario> list = usuarioRepository.findBy(new Document("activo", "si"));
-            if (!list.isEmpty()) {
-                for (Usuario u : list) {
-                    if (u.getEmail().contains("@") == true && JsfUtil.emailValidate(u.getEmail())) {
-                        Message message = new MimeMessage(session);
-                        message.setFrom(new InternetAddress("avbravo@gmail.com"));
-
-                        c++;
-
-                        message.setRecipients(Message.RecipientType.TO,
-                                InternetAddress.parse(u.getEmail()));
-
-                        message.setSubject("Solicitud de Viaje Docente");
-                        String texto = "";
-                        texto = " <h1> Solicitud #:" + solicitud.getIdsolicitud() + "  </h1>";
-                        texto = " <h1> Solicitadi por: " + solicitud.getUsuario().get(0).getNombre() + "  </h1>";
-                        texto += " <b>";
-                        texto += "<br> Fecha de partidad " + solicitud.getFechahorapartida() + " lugar de salida: " + solicitud.getLugarpartida()
-                                + "   <FONT COLOR=\"red\">Pendiente de aprobaciòn </FONT>  ";
-                        texto += "</b>";
-                        message.setContent(texto, "text/html");
-
-                        Transport.send(message);
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }    // </editor-fold>
-
     // <editor-fold defaultstate="collapsed" desc="verificarEditable(Solicitud item)">
     /**
      * verifica si es editable
@@ -1398,9 +1362,9 @@ public class SolicitudDocenteController implements Serializable, IController {
         }
     } // </editor-fold>
 
-     // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
-    public String showDate(Date date){
-          String h = "";
+    // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
+    public String showDate(Date date) {
+        String h = "";
         try {
             h = DateUtil.dateFormatToString(date, "dd/MM/yyyy");
         } catch (Exception e) {
@@ -1409,6 +1373,7 @@ public class SolicitudDocenteController implements Serializable, IController {
         return h;
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String showHour(Date date)">
+
     public String showHour(Date date) {
         String h = "";
         try {
@@ -1419,4 +1384,23 @@ public class SolicitudDocenteController implements Serializable, IController {
         return h;
     }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
+    private Boolean saveNotification(String username) {
+        try {
+            JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
+
+            jmoordbNotifications.setIdjmoordbnotifications(autoincrementableServices.getContador("jmoordbnNotifications"));
+            jmoordbNotifications.setUsername(username);
+            jmoordbNotifications.setMessage("Nueva solicitud de: "+responsable.getNombre());
+            jmoordbNotifications.setViewed("no");
+            jmoordbNotifications.setDate(DateUtil.fechaActual());
+            jmoordbNotifications.setType("solicituddocente");
+            jmoordbNotificationsRepository.save(jmoordbNotifications);
+            return true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+
+        }
+        return false;
+    }// </editor-fold>
 }
