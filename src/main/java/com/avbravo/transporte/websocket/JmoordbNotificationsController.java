@@ -35,6 +35,7 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
 
@@ -55,8 +56,7 @@ public class JmoordbNotificationsController implements Serializable, IController
     //DataModel
     private JmoordbNotificationsDataModel jmoordbNotificationsDataModel;
 
-    
-    Integer count=0;
+    String count = "";
     Integer page = 1;
     Integer rowPage = 25;
     List<Integer> pages = new ArrayList<>();
@@ -94,13 +94,13 @@ public class JmoordbNotificationsController implements Serializable, IController
 
         return jmoordbNotificationsRepository.listOfPage(rowPage);
     }
-public Integer getCount(){
-     Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-        Document doc = new Document("username",jmoordb_user.getUsername()).append("viewed","no");
-        count= jmoordbNotificationsRepository.count(doc);
-        return count;
+
+    public String getCount() {
         
-}
+        return countNotViewed().toString();
+
+    }
+
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
     public JmoordbNotificationsController() {
@@ -161,7 +161,6 @@ public Integer getCount(){
             jmoordbNotificationsSearch.setUsername(jmoordb_user.getUsername());
             jmoordbNotificationsList = jmoordbNotificationsRepository.findRegexInTextPagination("username", jmoordbNotificationsSearch.getUsername(), true, page, rowPage, new Document("idjmoordbnotifications", -1));
 
-
             jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -170,29 +169,6 @@ public Integer getCount(){
 
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="marcarComoVistos(JmoordbNotifications item)">
-    public String markAsViewed(JmoordbNotifications item){
-        try {
-             jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
-               //Marca como vistas las notificaciones
-            Integer count = 0;
-            for (JmoordbNotifications jn : jmoordbNotificationsList) {
-                if (jn.getIdjmoordbnotifications().equals(item.getIdjmoordbnotifications())) {
-                    jmoordbNotificationsList.get(count).setViewed("si");
-                    jn.setViewed("si");
-                    jmoordbNotificationsRepository.update(jn);
-                }
-                count++;
-            }
-            jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
-             JsfUtil.successMessage("Marcados como vistos");
-        } catch (Exception e) {
-                 errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-    
-    
     // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
     public String showDate(Date date) {
         String h = "";
@@ -215,28 +191,94 @@ public Integer getCount(){
         }
         return h;
     }// </editor-fold>
-    
-    
-    // <editor-fold defaultstate="collapsed" desc="markAsViewedAll()">
-    public String markAsViewedAll(){
+
+    // <editor-fold defaultstate="collapsed" desc="String markAsViewed(JmoordbNotifications item)">
+    public String markAsViewed(JmoordbNotifications item) {
         try {
-             jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
-               //Marca como vistas las notificaciones
+            jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
+            //Marca como vistas las notificaciones
             Integer count = 0;
+            //update the current notification
             for (JmoordbNotifications jn : jmoordbNotificationsList) {
-                if (jn.getViewed().equals("no")) {
+                if (jn.getIdjmoordbnotifications().equals(item.getIdjmoordbnotifications())) {
                     jmoordbNotificationsList.get(count).setViewed("si");
                     jn.setViewed("si");
                     jmoordbNotificationsRepository.update(jn);
                 }
                 count++;
             }
+            //update the notification_count
+            JmoordbContext.put("notification_count", countNotViewed());
+            PrimeFaces.current().ajax().update("dropMenuTop");
             jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
-             JsfUtil.successMessage("Marcados como vistos");
+            JsfUtil.successMessage("Marcados como vistos");
         } catch (Exception e) {
-                 errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="markAsViewedAll()">
+
+    public String markAsViewedAll() {
+        try {
+            jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
+            //Marca como vistas las notificaciones
+
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            Document doc = new Document("username", jmoordb_user.getUsername()).append("viewed", "no");
+            List<JmoordbNotifications> list = jmoordbNotificationsRepository.findBy(doc);
+            list.forEach((jn) -> {
+                jn.setViewed("si");
+                jmoordbNotificationsRepository.update(jn);
+            });
+            JmoordbContext.put("notification_count", 0);
+            Integer row = 0;
+            //Update the datatable page with no in viewed
+            for (JmoordbNotifications jn : jmoordbNotificationsList) {
+                if (jn.getViewed().equals("no")) {
+                    jmoordbNotificationsList.get(row).setViewed("si");
+                }
+                row++;
+            }
+            jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
+            JsfUtil.successMessage("Marcados como vistos");
+
+            PrimeFaces.current().ajax().update("dropMenuTop");
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="actionWebSocket()">
+    public String actionWebSocket() {
+        try {
+           Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            Integer notification_count = (Integer) JmoordbContext.get("notification_count");
+  System.out.println(" for: "+jmoordb_user.getUsername()+"notification_count "+ notification_count + " countNotViewed() "+countNotViewed());
+            if (!notification_count.equals(countNotViewed())) {
+                JsfUtil.warningMessage("you have a notification "+countNotViewed() + " for: "+jmoordb_user.getUsername());
+                JmoordbContext.put("notification_count",countNotViewed());
+            }
+
+        } catch (Exception e) {
+            JsfUtil.errorDialog("actionWebSocket()", e.getLocalizedMessage());
+
+        }
+
+        return "";
+    }// </editor-fold>
+
+// <editor-fold defaultstate="collapsed" desc="Integer countNotViewed()">
+    private Integer countNotViewed() {
+        try {
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            Document doc = new Document("username", jmoordb_user.getUsername()).append("viewed", "no");
+            Integer total = jmoordbNotificationsRepository.count(doc);
+            return total;
+        } catch (Exception e) {
+            JsfUtil.errorDialog("countNotViewed())", e.getLocalizedMessage());
+        }
+        return 0;
+    }// </editor-fold>
 }

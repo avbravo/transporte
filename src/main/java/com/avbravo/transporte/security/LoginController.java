@@ -15,6 +15,7 @@ import com.avbravo.jmoordb.mongodb.history.services.ConfiguracionServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
 import com.avbravo.jmoordb.mongodb.history.entity.Configuracion;
+import com.avbravo.jmoordb.profiles.repository.JmoordbNotificationsRepository;
 import com.avbravo.jmoordb.services.AccessInfoServices;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.jmoordbsecurity.SecurityInterface;
@@ -45,6 +46,7 @@ import javax.security.enterprise.authentication.mechanism.http.AuthenticationPar
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.bson.Document;
 
 @Named
 @SessionScoped
@@ -119,6 +121,9 @@ public class LoginController implements Serializable, SecurityInterface {
     UsuarioServices usuarioServices;
     @Inject
     ConfiguracionServices configuracionServices;
+    //Notificaciones
+     @Inject
+    JmoordbNotificationsRepository jmoordbNotificationsRepository;
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="getter/setter">
 
@@ -305,13 +310,6 @@ public class LoginController implements Serializable, SecurityInterface {
     public String doLogin() {
         try {
 
-//            ManagerEmail managerEmail = new ManagerEmail();
-//            
-//                 managerEmail.sendOutlook("avbravo@gmail.com", "Solicitudes de Transporte", "Prueba", "aristides.villarreal@utp.ac.pa", "Controljav180den");
-//            managerEmail.getOutlook("aristides.villarreal@utp.ac.pa", "Controljav180den");
-
-//   String version=    getClass().getPackage().getImplementationVersion();
-//            System.out.println("---> numero "+version);
             tokenwassend = false;
             userwasLoged = false;
             loggedIn = true;
@@ -382,6 +380,11 @@ public class LoginController implements Serializable, SecurityInterface {
                     accessInfoRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.welcome")));
                     loggedIn = true;
                     JsfUtil.successMessage(rf.getAppMessage("login.welcome") + " " + usuario.getNombre());
+                    //Notificaciones que tiene
+                     Document doc = new Document("username",username).append("viewed","no");
+       Integer count= jmoordbNotificationsRepository.count(doc);
+       JmoordbContext.put("notification_count",count);
+                    
                     validadorRoles.validarRoles(rol.getIdrol());
                     switch (rol.getIdrol()) {
                         case "DOCENTE":

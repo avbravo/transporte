@@ -70,20 +70,20 @@ public class PushSocket implements Serializable {
         //push.send("updateNotifications");
     }
     
-    public String actionWebSocket() {
-        try {
-            JsfUtil.warningMessage("you have a notification");
-       //     JsfUtil.errorDialog("myAction", "invocado desde el javascript");
-        Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-        Document doc = new Document("username",jmoordb_user.getUsername()).append("viewed","no");
-        value= jmoordbNotificationsRepository.count(doc).toString();
-        
-            
-        } catch (Exception e) {
-            JsfUtil.errorDialog("actionWebSocket()", e.getLocalizedMessage());
-           value="0";
-        }
-        
-        return "";
-    }
+//    public String actionWebSocket() {
+//        try {
+//            JsfUtil.warningMessage("you have a notification");
+//       //     JsfUtil.errorDialog("myAction", "invocado desde el javascript");
+//        Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+//        Document doc = new Document("username",jmoordb_user.getUsername()).append("viewed","no");
+//        value= jmoordbNotificationsRepository.count(doc).toString();
+//        
+//            
+//        } catch (Exception e) {
+//            JsfUtil.errorDialog("actionWebSocket()", e.getLocalizedMessage());
+//           value="0";
+//        }
+//        
+//        return "";
+//    }
 }
