@@ -89,6 +89,9 @@
             <artifactId>jmoordbjsf</artifactId>
             <version>0.11</version>
         </dependency>-->
+        <!--
+                parche para bootfaces
+-->
         <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbbootfacespatch</artifactId>

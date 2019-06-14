@@ -348,6 +348,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
 
+            
+         
             List<String> rangoAgenda = new ArrayList<>();
             Integer c = 0;
 
@@ -688,7 +690,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }//no son dias consecutivos
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
-
+inicializar();
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
             List<Usuario> usuarioList = usuarioRepository.filters(filter);
@@ -1181,15 +1183,6 @@ public class SolicitudDocenteController implements Serializable, IController {
             Date idsecond = solicitud.getFecha();
             Integer id = solicitud.getIdsolicitud();
 
-//            List<Solicitud> list = solicitudRepository.findBy(new Document("usuario.username", jmoordb_user.getUsername()).append("fecha", solicitud.getFecha()));
-//            if (!list.isEmpty()) {
-//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yasolicitoviajeenestafecha"));
-//            }
-//            if (DateUtil.fechaMenor(solicitud.getFecha(), DateUtil.getFechaActual())) {
-//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechasolicitudmenorqueactual"));
-//                writable = false;
-//
-//            }
             solicitud = new Solicitud();
             solicitudSelected = new Solicitud();
             solicitud.setIdsolicitud(id);
