@@ -13,8 +13,9 @@
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--<version.payara.micro>5.182</version.payara.micro>-->
-  <version.payara>5.191</version.payara>
-        <!--<version.payara.micro>5.183</version.payara.micro>-->
+  <!--<version.payara>5.191</version.payara>-->
+  <version.payara>5.192</version.payara>
+      <!--<version.payara.micro>5.183</version.payara.micro>-->
     </properties>
     
     <dependencies>
