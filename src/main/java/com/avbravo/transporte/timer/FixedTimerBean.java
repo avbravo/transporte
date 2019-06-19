@@ -10,23 +10,25 @@ import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Schedule;
-import javax.ejb.Startup;
 import javax.inject.Singleton;
+import org.omnifaces.cdi.Eager;
 
 /**
  *
  * @author avbravo
  */
-@Startup
+@Eager
 @Singleton
 public class FixedTimerBean {
     @EJB
     private WorkerBean workerBean;
  
     @Lock(LockType.READ)
-    @Schedule(second = "*/5", minute = "*", hour = "*", persistent = false)
+    @Schedule(second = "*/5", minute = "3", hour = "*", persistent = false)
     public void atSchedule() throws InterruptedException {
-        System.out.println("se disparo a "+ new Date());
+        System.out.println("------------------------------------------");
+        System.out.println("----se disparo a "+ new Date());
+        System.out.println("------------------------------------------");
         workerBean.doTimerWork();
     }
 }

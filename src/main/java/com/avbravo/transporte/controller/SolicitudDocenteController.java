@@ -1388,6 +1388,7 @@ inicializar();
             jmoordbNotifications.setViewed("no");
             jmoordbNotifications.setDate(DateUtil.fechaActual());
             jmoordbNotifications.setType("solicituddocente");
+              jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
             jmoordbNotificationsRepository.save(jmoordbNotifications);
             return true;
         } catch (Exception e) {
