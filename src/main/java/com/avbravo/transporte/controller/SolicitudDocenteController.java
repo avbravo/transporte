@@ -62,7 +62,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.component.UIComponent;
@@ -72,12 +74,6 @@ import javax.faces.push.PushContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.mail.Message;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
@@ -348,8 +344,6 @@ public class SolicitudDocenteController implements Serializable, IController {
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
 
-            
-         
             List<String> rangoAgenda = new ArrayList<>();
             Integer c = 0;
 
@@ -690,7 +684,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }//no son dias consecutivos
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
-inicializar();
+            inicializar();
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
             List<Usuario> usuarioList = usuarioRepository.filters(filter);
@@ -1384,11 +1378,11 @@ inicializar();
 
             jmoordbNotifications.setIdjmoordbnotifications(autoincrementableServices.getContador("jmoordbnNotifications"));
             jmoordbNotifications.setUsername(username);
-            jmoordbNotifications.setMessage("Nueva solicitud de: "+responsable.getNombre());
+            jmoordbNotifications.setMessage("Nueva solicitud de: " + responsable.getNombre());
             jmoordbNotifications.setViewed("no");
             jmoordbNotifications.setDate(DateUtil.fechaActual());
             jmoordbNotifications.setType("solicituddocente");
-              jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
+            jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
             jmoordbNotificationsRepository.save(jmoordbNotifications);
             return true;
         } catch (Exception e) {
@@ -1396,5 +1390,20 @@ inicializar();
 
         }
         return false;
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
+    public Future<String> calculateAsync() throws InterruptedException {
+        CompletableFuture<String> completableFuture
+                = new CompletableFuture<>();
+
+        Executors.newCachedThreadPool().submit(() -> {
+         //   Thread.sleep(500);
+         
+            completableFuture.complete("Hello");
+            return null;
+        });
+
+        return completableFuture;
     }// </editor-fold>
 }
