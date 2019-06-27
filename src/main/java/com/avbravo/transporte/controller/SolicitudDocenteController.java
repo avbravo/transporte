@@ -272,7 +272,8 @@ public class SolicitudDocenteController implements Serializable, IController {
                 action = JmoordbContext.get("solicitud").toString();
             }
 
-            if (action == null || action.equals("gonew")) {
+            System.out.println("{{{{----> action }}}"+ action);
+            if (action == null || action.equals("gonew") || action.equals("new")) {
                 inicializar();
 
             }
@@ -1406,4 +1407,6 @@ public class SolicitudDocenteController implements Serializable, IController {
 
         return completableFuture;
     }// </editor-fold>
+    
+    
 }
