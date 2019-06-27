@@ -45,7 +45,7 @@
 
 
 
-                    <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('DOCENTE')}"> 
+                    <b:panelGrid id="panel" colSpans="3,9" size="sm" rendered="#{p:ifGranted('DOCENTE')}"> 
 
 
 
@@ -148,7 +148,8 @@
 
 
 
-
+                        <p:spacer/>
+                        <p:spacer/>
 
 
 
@@ -324,20 +325,22 @@
                     <b:row>
 
                         
-                        <jmoordbjsf:ajaxstatus/>
+<!--                        <jmoordbjsf:ajaxstatus/>-->
 
                        
 
                         <b:column span="4">
-                            <jmoordbjsf:toolbarnewsavereturn
+                            <jmoordbjsf:toolbarnewsavereturn id="ref"
                                 renderedNew="#{p:ifGranted('DOCENTE')}"
                                 renderedSave="#{p:ifGranted('DOCENTE')}"
                                 renderedList="#{p:ifGranted('DOCENTE')}"
                                 controller="#{solicitudDocenteController}" 
+                                componentToBlock="panel"
                                 url  = "/pages/solicituddocente/list.xhtml"
                                 />
                         </b:column>
-
+<p:blockUI block="panel" trigger="ref" />
+ 
                     </b:row>
                 </b:panel>
             </h:panelGroup>
