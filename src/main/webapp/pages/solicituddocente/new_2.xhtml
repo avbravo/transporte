@@ -50,7 +50,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.solicitadopor']}" />
-                   
+                        <b:column>
                             <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
                                                      completeMethod="#{solicitudDocenteController.usuarioServices.complete}"
                                                      labeltip1="#{msg['field.username']} #{p.username}"
@@ -107,7 +107,7 @@
                                 update=":form:panel"
                                 />
 
-                  
+                        </b:column>
 
                         <p:outputLabel value="#{msg['field.responsable']}"/>
                         <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
