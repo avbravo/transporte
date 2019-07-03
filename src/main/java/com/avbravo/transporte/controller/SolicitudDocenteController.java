@@ -56,12 +56,15 @@ import static com.mongodb.client.model.Filters.or;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -98,7 +101,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
-
+    ManagerEmail managerEmail = new ManagerEmail();
     private Boolean writable = false;
     private Boolean leyoSugerencias = false;
     Boolean diasconsecutivos = false;
@@ -733,7 +736,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                         + "\n_________________________________________________________________";
 
             }
-          
+
             String mensajeAdmin = "Hay solicitudes realizadas de :" + solicita.getNombre()
                     + "\nemail:" + solicita.getEmail()
                     + "\n" + header
@@ -752,8 +755,6 @@ public class SolicitudDocenteController implements Serializable, IController {
                     + texto
                     + "\n Muchas gracias.";
 
-            ManagerEmail managerEmail = new ManagerEmail();
-
             List<JmoordbEmailMaster> jmoordbEmailMasterList = jmoordbEmailMasterRepository.findBy(new Document("activo", "si"));
             if (jmoordbEmailMasterList == null || jmoordbEmailMasterList.isEmpty()) {
 
@@ -762,18 +763,36 @@ public class SolicitudDocenteController implements Serializable, IController {
                 //enviar al docente
                 //  managerEmail.sendOutlook(responsable.getEmail(), "Solicitudes de Transporte", mensaje, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
 
-                managerEmail.sendOutlook(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                //managerEmail.sendOutlook(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
 
                 //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
                 if (usuarioList == null || usuarioList.isEmpty()) {
 
                 } else {
+
+//                    usuarioList.forEach((u) -> {
+//                        managerEmail.sendOutlook(u.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+//                    });
+                    String[] to = new String[usuarioList.size()]; // list of recipient email addresses
+                    String[] cc = new String[usuarioList.size()];
+                    String[] bcc = new String[usuarioList.size()];
+                    Integer index = 0;
                     usuarioList.forEach((u) -> {
-                        managerEmail.sendOutlook(u.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                        to[index] = u.getEmail();
+                        if (index > 5 && index < 10) {
+                            cc[index] = u.getEmail();
+                        } else {
+                            if (index >= 10) {
+                                bcc[index] = u.getEmail();
+                            }
+                        }
                     });
 
+//                  Future<String> completableFutureCC = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                  Future<String> completableFutureCC = sendEmailCccBccAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
                 }
-                //managerEmail.sendOutlook(responsable.getEmail(), "Solicitudes de Transporte", mensaje, "aristides.villarreal@utp.ac.pa", "Controljav180den");
+               
             }
 
             facultadList = new ArrayList<>();
@@ -1393,19 +1412,46 @@ public class SolicitudDocenteController implements Serializable, IController {
         return false;
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
-    public Future<String> calculateAsync() throws InterruptedException {
+    // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
+    public Future<String> sendEmailAsync(String emailreceptor, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
+
         CompletableFuture<String> completableFuture
                 = new CompletableFuture<>();
 
-        Executors.newCachedThreadPool().submit(() -> {
-            //   Thread.sleep(500);
+        Executors.newCachedThreadPool().submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                System.out.println("-->DOCENTE(voy a enviar correo a:---->) "+emailreceptor);
+                managerEmail.sendOutlook(emailemisor, titulo, mensaje, emailemisor, passwordemisor);
 
-            completableFuture.complete("Hello");
-            return null;
+                completableFuture.complete("enviado");
+
+                return null;
+            }
         });
 
         return completableFuture;
     }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
 
+    public Future<String> sendEmailCccBccAsync(String[] to, String[] cc, String[] bcc, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
+
+        CompletableFuture<String> completableFuture
+                = new CompletableFuture<>();
+
+        Executors.newCachedThreadPool().submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+
+              System.out.println("-->DOCENTE(voy a enviar correo a:---->) "+to.toString());
+
+                managerEmail.sendOutlook(to, cc, bcc, titulo, mensaje, emailemisor, passwordemisor);
+                completableFuture.complete("enviado");
+
+                return null;
+            }
+        });
+
+        return completableFuture;
+    }// </editor-fold>
 }
