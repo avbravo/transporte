@@ -272,7 +272,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 action = JmoordbContext.get("solicitud").toString();
             }
 
-            System.out.println("{{{{----> action }}}"+ action);
+            System.out.println("{{{{----> action }}}" + action);
             if (action == null || action.equals("gonew") || action.equals("new")) {
                 inicializar();
 
@@ -733,7 +733,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                         + "\n_________________________________________________________________";
 
             }
-
+          
             String mensajeAdmin = "Hay solicitudes realizadas de :" + solicita.getNombre()
                     + "\nemail:" + solicita.getEmail()
                     + "\n" + header
@@ -1399,14 +1399,13 @@ public class SolicitudDocenteController implements Serializable, IController {
                 = new CompletableFuture<>();
 
         Executors.newCachedThreadPool().submit(() -> {
-         //   Thread.sleep(500);
-         
+            //   Thread.sleep(500);
+
             completableFuture.complete("Hello");
             return null;
         });
 
         return completableFuture;
     }// </editor-fold>
-    
-    
+
 }
