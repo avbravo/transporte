@@ -101,6 +101,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
+    Integer index = 0;
     ManagerEmail managerEmail = new ManagerEmail();
     private Boolean writable = false;
     private Boolean leyoSugerencias = false;
@@ -737,10 +738,29 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             }
 
+            String table = "\n<table style=\"width:100%\">"
+                    + "\n<tr>"
+                    + "\n<th>Firstname</th>"
+                    + "\n<th>Lastname</th> "
+                    + "\n<th>Age</th>"
+                    + "\n</tr>"
+                    + "\n<tr>"
+                    + "\n<td>Jill</td>"
+                    + "\n<td>Smith</td> "
+                    + "\n <td>50</td>"
+                    + "\n </tr>"
+                    + "\n<tr>"
+                    + "\n <td>Eve</td>"
+                    + "\n<td>Jackson</td> "
+                    + "\n <td>94</td>"
+                    + "\n </tr>"
+                    + "\n</table>";
+
             String mensajeAdmin = "Hay solicitudes realizadas de :" + solicita.getNombre()
                     + "\nemail:" + solicita.getEmail()
                     + "\n" + header
                     + "\n" + texto
+                    + "\n" + table
                     + "\n Por favor ingrese al sistema de transporte para verificarlas.";
             String mensaje = "Su solicitud ha";
             if (solicitudGuardadasList.size() > 1) {
@@ -774,25 +794,48 @@ public class SolicitudDocenteController implements Serializable, IController {
 //                    usuarioList.forEach((u) -> {
 //                        managerEmail.sendOutlook(u.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
 //                    });
-                    String[] to = new String[usuarioList.size()]; // list of recipient email addresses
-                    String[] cc = new String[usuarioList.size()];
-                    String[] bcc = new String[usuarioList.size()];
-                    Integer index = 0;
-                    usuarioList.forEach((u) -> {
-                        to[index] = u.getEmail();
-                        if (index > 5 && index < 10) {
-                            cc[index] = u.getEmail();
+
+                    Integer size = usuarioList.size();
+                    String[] to; // list of recipient email addresses
+                    String[] cc;
+                    String[] bcc;
+
+                    if (size <= 5) {
+                        to = new String[usuarioList.size()];
+                        cc = new String[0];
+                        bcc = new String[0];
+                    } else {
+                        if (size > 5 && size <= 10) {
+                            to = new String[4];
+                            cc = new String[4];
+                            bcc = new String[0];
                         } else {
-                            if (index >= 10) {
+                            to = new String[4];
+                            cc = new String[4];
+                            bcc = new String[size - 8];
+                        }
+                    }
+                    index = 0;
+                    usuarioList.forEach((u) -> {
+                        System.out.println("analizando " + u.getEmail());
+
+                        if (index <= 5) {
+                            to[index] = u.getEmail();
+                        } else {
+                            if (index > 5 && index <= 10) {
+                                cc[index] = u.getEmail();
+                            } else {
+
                                 bcc[index] = u.getEmail();
+
                             }
                         }
+                        index++;
                     });
 
-//                  Future<String> completableFutureCC = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-                  Future<String> completableFutureCC = sendEmailCccBccAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                    Future<String> completableFutureCC = sendEmailCccBccAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
                 }
-               
+
             }
 
             facultadList = new ArrayList<>();
@@ -1419,10 +1462,11 @@ public class SolicitudDocenteController implements Serializable, IController {
                 = new CompletableFuture<>();
 
         Executors.newCachedThreadPool().submit(new Callable<Object>() {
+
             @Override
             public Object call() throws Exception {
-                System.out.println("-->DOCENTE(voy a enviar correo a:---->) "+emailreceptor);
-                managerEmail.sendOutlook(emailemisor, titulo, mensaje, emailemisor, passwordemisor);
+              
+                managerEmail.sendOutlook(emailreceptor, titulo, mensaje, emailemisor, passwordemisor);
 
                 completableFuture.complete("enviado");
 
@@ -1443,9 +1487,9 @@ public class SolicitudDocenteController implements Serializable, IController {
             @Override
             public Object call() throws Exception {
 
-              System.out.println("-->DOCENTE(voy a enviar correo a:---->) "+to.toString());
+                
 
-                managerEmail.sendOutlook(to, cc, bcc, titulo, mensaje, emailemisor, passwordemisor);
+                managerEmail.sendOutlook(to, cc, bcc, titulo, mensaje, emailemisor, passwordemisor,true);
                 completableFuture.complete("enviado");
 
                 return null;
@@ -1453,5 +1497,15 @@ public class SolicitudDocenteController implements Serializable, IController {
         });
 
         return completableFuture;
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="calendarChangeListener(SelectEvent event)">
+    public void calendarChangeListener(SelectEvent event) {
+        try {
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+
     }// </editor-fold>
 }

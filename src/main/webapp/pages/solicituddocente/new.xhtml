@@ -271,7 +271,9 @@
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
 
                         <jmoordbjsf:calendar 
-                            pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" />
+                            pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
+                            listener="#{solicitudDocenteController.calendarChangeListener}"
+                            />
 
 
 
@@ -279,7 +281,8 @@
 
                         <jmoordbjsf:calendar pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
 
-                                             label="#{msg['field.fechahoraregreso']}" />
+                                             label="#{msg['field.fechahoraregreso']}"
+                                             listener="#{solicitudDocenteController.calendarChangeListener}"/>
 
 
 

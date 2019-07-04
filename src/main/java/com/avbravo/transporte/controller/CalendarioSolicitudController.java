@@ -554,7 +554,7 @@ public class CalendarioSolicitudController implements Serializable, IControllerO
         prepare("new", solicitud);
     }// </editor-fold>
 
-// <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
+// <editor-fold defaultstate="collapsed" desc="prepare(String action, Solicitud item)">
     public String prepare(String action, Solicitud item) {
         String url = "";
         try {
