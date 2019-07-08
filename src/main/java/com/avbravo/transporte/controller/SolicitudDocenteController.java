@@ -276,7 +276,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 action = JmoordbContext.get("solicitud").toString();
             }
 
-            System.out.println("{{{{----> action }}}" + action);
+      
             if (action == null || action.equals("gonew") || action.equals("new")) {
                 inicializar();
 
@@ -625,7 +625,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 } else {
                     // mas de un mes recorrer todos los meses en ese intervalo
                     if (meses > 0 && meses <= 12) {
-                        //     // System.out.println("==> meses " + meses);
+                  
                         for (int i = 0; i <= meses; i++) {
                             //Verificar si es el mismo año
                             if (anioPartida.equals(anioRegreso)) {
@@ -764,12 +764,12 @@ public class SolicitudDocenteController implements Serializable, IController {
             } else {
                 JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
                 //enviar al docente
-                //  managerEmail.sendOutlook(responsable.getEmail(), "Solicitudes de Transporte", mensaje, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+            
 
-                Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-             //   Future<String> completableFuture = managerEmail.sendAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+              Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+          //    Future<String> completableFuture = managerEmail.sendAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
                 
-
+//String msg =completableFuture.get();
                 //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
                 if (usuarioList == null || usuarioList.isEmpty()) {
 
@@ -801,7 +801,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                     }
                     index = 0;
                     usuarioList.forEach((u) -> {
-                        System.out.println("analizando " + u.getEmail());
+                    
 
                         if (index <= 5) {
                             to[index] = u.getEmail();
@@ -818,7 +818,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                     });
 
                     Future<String> completableFutureCC = sendEmailCccBccAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-                 //   Future<String> completableFutureCC = managerEmail.sendAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+//                  Future<String> completableFutureCC = managerEmail.sendAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
                 }
 
             }
