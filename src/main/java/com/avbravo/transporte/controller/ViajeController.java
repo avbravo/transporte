@@ -6,10 +6,10 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
+import com.avbravo.jmoordb.interfaces.IController;
 import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
-import com.avbravo.jmoordb.interfaces.IControllerOld;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
@@ -17,6 +17,8 @@ import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.transporte.security.LoginController;
  
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import static com.avbravo.jmoordbutils.JsfUtil.nameOfClass;
+import static com.avbravo.jmoordbutils.JsfUtil.nameOfMethod;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
 import com.avbravo.transporteejb.entity.Viaje;
 
@@ -63,7 +65,7 @@ import org.primefaces.model.ScheduleModel;
  */
 @Named
 @ViewScoped
-public class ViajeController implements Serializable, IControllerOld {
+public class ViajeController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -321,7 +323,7 @@ public class ViajeController implements Serializable, IControllerOld {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="preRenderView()">
-    @Override
+   
     public String preRenderView(String action) {
         //acciones al llamar el formulario despues del init    
         return "";
@@ -461,7 +463,7 @@ public class ViajeController implements Serializable, IControllerOld {
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="showAll">
-    @Override
+  
     public String showAll() {
         try {
             viajeList = new ArrayList<>();
@@ -477,7 +479,7 @@ public class ViajeController implements Serializable, IControllerOld {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="isNew">
 
-    @Override
+
     public String isNew() {
         try {
             writable = true;
@@ -607,7 +609,7 @@ public class ViajeController implements Serializable, IControllerOld {
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="delete(Object item, Boolean deleteonviewpage)">
-    @Override
+
     public String delete(Object item, Boolean deleteonviewpage) {
         String path = "";
         try {
@@ -647,7 +649,7 @@ public class ViajeController implements Serializable, IControllerOld {
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="deleteAll">
-    @Override
+  
     public String deleteAll() {
         if (viajeRepository.deleteAll() != 0) {
             JsfUtil.successMessage(rf.getAppMessage("info.delete"));
@@ -726,7 +728,7 @@ public class ViajeController implements Serializable, IControllerOld {
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
-    public void handleAutocompleteOfListXhtml(SelectEvent event) {
+    public String handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
             viajeList.removeAll(viajeList);
             viajeList.add(viajeSelected);
@@ -738,6 +740,7 @@ public class ViajeController implements Serializable, IControllerOld {
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
+        return "";
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="last">
@@ -793,7 +796,7 @@ public class ViajeController implements Serializable, IControllerOld {
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="skip(Integer page)">
 
-    @Override
+
     public String skip(Integer page) {
         try {
             this.page = page;
@@ -961,7 +964,7 @@ public class ViajeController implements Serializable, IControllerOld {
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
-    @Override
+
     public String searchBy(String string) {
         try {
 
