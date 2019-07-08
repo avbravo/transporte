@@ -281,7 +281,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 inicializar();
 
             }
-
+            System.out.println("----> action: "+action);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }

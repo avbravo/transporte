@@ -21,7 +21,7 @@
             } 
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.viaje.list}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
@@ -146,19 +146,16 @@
 
             </b:panel>
             <b:panel id="dataTable" look="primary">
-                <jmoordbjsf:paginator 
-                    rowPage="#{viajeController.rowPage}"
-                    clear="#{viajeController.clear()}"
-                    first="#{viajeController.first()}"
-                    back="#{viajeController.back()}"
-                    next="#{viajeController.next()}"
-                    last="#{viajeController.last()}"
+                
+                   <jmoordbjsf:paginator
+                    controller="#{viajeController}"                        
+                    rowPage="#{viajeController.rowPage}"                   
                     page="#{viajeController.page}"
                     pages="#{viajeController.pages}"
-                    skip="ajax:viajeController.skip(viajeController.page)" 
-                    new="#{viajeController.prepare('gonew',viajeController.viaje)}"
-                    printAll="#{viajeController.printAll()}"
+                    skip="ajax:viajeController.skip()" 
+                    url = "/pages/viaje/new.xhtml"
                     />
+                
                 <b:dataTable value="#{viajeController.viajeDataModel}"
                              var="item"
                              id="dataTable2"
@@ -242,6 +239,6 @@
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.viaje.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}" />
     </ui:define>
 </ui:composition>
