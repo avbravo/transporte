@@ -40,25 +40,26 @@ import com.avbravo.transporteejb.entity.Tiposolicitud;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
+import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.SugerenciaRepository;
 import com.avbravo.transporteejb.repository.TipovehiculoRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
+import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TipogiraServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
+import com.avbravo.transporteejb.services.ViajeServices;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.or;
 
 import java.util.ArrayList;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -169,6 +170,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     @Inject
     TipovehiculoRepository tipovehiculoRepository;
     @Inject
+    VehiculoRepository vehiculoRepository;
+    @Inject
     UsuarioRepository usuarioRepository;
     //Services
     @Inject
@@ -191,6 +194,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     TipovehiculoServices tipovehiculoServices;
     @Inject
     UnidadRepository unidadRepository;
+    @Inject
+    ViajeServices viajeServices;
     @Inject
     UsuarioServices usuarioServices;
     @Inject
@@ -276,12 +281,11 @@ public class SolicitudDocenteController implements Serializable, IController {
                 action = JmoordbContext.get("solicitud").toString();
             }
 
-      
             if (action == null || action.equals("gonew") || action.equals("new")) {
                 inicializar();
 
             }
-            System.out.println("----> action: "+action);
+            System.out.println("----> action: " + action);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -539,6 +543,11 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (!localValid()) {
                 return "";
             }
+            
+            if(!hayVehiculosDisponibles()){
+                JsfUtil.warningDialog("No hay", "No hay vehiculos disponibles");
+                rt
+            }
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
             //si cambia el email o celular del responsable actualizar ese usuario
@@ -625,7 +634,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 } else {
                     // mas de un mes recorrer todos los meses en ese intervalo
                     if (meses > 0 && meses <= 12) {
-                  
+
                         for (int i = 0; i <= meses; i++) {
                             //Verificar si es el mismo año
                             if (anioPartida.equals(anioRegreso)) {
@@ -738,8 +747,6 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             }
 
-          
-
             String mensajeAdmin = "Hay solicitudes realizadas de :" + solicita.getNombre()
                     + "\nemail:" + solicita.getEmail()
                     + "\n" + header
@@ -764,11 +771,10 @@ public class SolicitudDocenteController implements Serializable, IController {
             } else {
                 JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
                 //enviar al docente
-            
 
-              Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-          //    Future<String> completableFuture = managerEmail.sendAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-                
+                Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                //    Future<String> completableFuture = managerEmail.sendAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+
 //String msg =completableFuture.get();
                 //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
                 if (usuarioList == null || usuarioList.isEmpty()) {
@@ -778,7 +784,6 @@ public class SolicitudDocenteController implements Serializable, IController {
 //                    usuarioList.forEach((u) -> {
 //                        managerEmail.sendOutlook(u.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
 //                    });
-
                     Integer size = usuarioList.size();
                     String[] to; // list of recipient email addresses
                     String[] cc;
@@ -801,7 +806,6 @@ public class SolicitudDocenteController implements Serializable, IController {
                     }
                     index = 0;
                     usuarioList.forEach((u) -> {
-                    
 
                         if (index <= 5) {
                             to[index] = u.getEmail();
@@ -1450,7 +1454,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             @Override
             public Object call() throws Exception {
-              
+
                 managerEmail.sendOutlook(emailreceptor, titulo, mensaje, emailemisor, passwordemisor);
 
                 completableFuture.complete("enviado");
@@ -1463,6 +1467,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     }// </editor-fold>
 //    // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
 //
+
     public Future<String> sendEmailCccBccAsync(String[] to, String[] cc, String[] bcc, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
 
         CompletableFuture<String> completableFuture
@@ -1472,9 +1477,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             @Override
             public Object call() throws Exception {
 
-                
-
-                managerEmail.sendOutlook(to, cc, bcc, titulo, mensaje, emailemisor, passwordemisor,false);
+                managerEmail.sendOutlook(to, cc, bcc, titulo, mensaje, emailemisor, passwordemisor, false);
                 completableFuture.complete("enviado");
 
                 return null;
@@ -1493,4 +1496,64 @@ public class SolicitudDocenteController implements Serializable, IController {
         }
 
     }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="completeVehiculo(String query)">
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
+    public Boolean  hayVehiculosDisponibles() {
+        Boolean haydisponibles=false;
+        List<Vehiculo> suggestions = new ArrayList<>();
+              List<Vehiculo> vehiculoList = new ArrayList<>();
+        try {
+            Document doc = new Document("ativo", "si").append("tipovehiculo.idtipovehiculo", "BUS");
+            vehiculoList = vehiculoRepository.findBy(doc);
+            for(Vehiculo v:vehiculoList){
+                 suggestions = vehiculoList.stream()
+                            .filter(x -> isVehiculoActivoDisponible(x)).collect(Collectors.toList());
+            }
+
+          
+           
+                if (suggestions == null || suggestions.isEmpty()) {
+
+                   haydisponibles=false;
+                    //   return validos;
+                }else{
+                    haydisponibles=true;
+                }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return haydisponibles;
+    }
+
+   
+
+    // <editor-fold defaultstate="collapsed" desc="isVehiculoActivoDisponible(Vehiculo vehiculo)">
+    public Boolean isVehiculoActivoDisponible(Vehiculo vehiculo) {
+        Boolean valid = false;
+        try {
+
+            if (vehiculo.getActivo().equals("no") && vehiculo.getEnreparacion().equals("si")) {
+
+            } else {
+                if (viajeServices.vehiculoDisponible(vehiculo, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
+                    valid = true;
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
+    
+    
 }
