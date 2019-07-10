@@ -94,13 +94,14 @@
                                                      labeltip2="#{msg['field.marca']} #{p.marca}"
                                                      labeltip3="#{msg['field.modelo']} #{p.modelo}"
                                                      labeltip4="#{msg['field.placa']} #{p.placa}" 
+                                                     labeltip5="#{msg['field.tipovehiculo']} #{p.tipovehiculo.idtipovehiculo}" 
                                                      listener="#{viajeController.handleSelect}"
                                                      dropdown="true"
 
                                                      minQueryLength="0"
                                                      id="vehiculo"
                                                      value="#{viajeController.viaje.vehiculo}"
-                                                     itemLabel="#{p.marca} #{p.modelo} #{p.placa}"
+                                                     itemLabel="#{p.marca} #{p.modelo} #{p.placa} "
                                                      field="marca"
                                                      />
                             <p:spacer width="25"/>

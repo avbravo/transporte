@@ -543,10 +543,11 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (!localValid()) {
                 return "";
             }
-            
-            if(!hayVehiculosDisponibles()){
-                JsfUtil.warningDialog("No hay", "No hay vehiculos disponibles");
-                rt
+            //verifica si hay buses disponibles
+            if (!hayBusDisponibles()) {
+
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
+                return "";
             }
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
@@ -1490,6 +1491,16 @@ public class SolicitudDocenteController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="calendarChangeListener(SelectEvent event)">
     public void calendarChangeListener(SelectEvent event) {
         try {
+//verifica si hay buses disponibles
+           
+            if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
+
+            } else {
+                if (!hayBusDisponibles()) {
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
+
+                }
+            }
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1504,35 +1515,32 @@ public class SolicitudDocenteController implements Serializable, IController {
      * @param query
      * @return
      */
-    public Boolean  hayVehiculosDisponibles() {
-        Boolean haydisponibles=false;
+    public Boolean hayBusDisponibles() {
+        Boolean haydisponibles = false;
         List<Vehiculo> suggestions = new ArrayList<>();
-              List<Vehiculo> vehiculoList = new ArrayList<>();
+        List<Vehiculo> vehiculoList = new ArrayList<>();
         try {
-            Document doc = new Document("ativo", "si").append("tipovehiculo.idtipovehiculo", "BUS");
+            Document doc = new Document("activo", "si").append("tipovehiculo.idtipovehiculo", "BUS");
             vehiculoList = vehiculoRepository.findBy(doc);
-            for(Vehiculo v:vehiculoList){
-                 suggestions = vehiculoList.stream()
-                            .filter(x -> isVehiculoActivoDisponible(x)).collect(Collectors.toList());
-            }
-
           
-           
-                if (suggestions == null || suggestions.isEmpty()) {
+            for (Vehiculo v : vehiculoList) {
+                suggestions = vehiculoList.stream()
+                        .filter(x -> isVehiculoActivoDisponible(x)).collect(Collectors.toList());
+            }
+          
+            if (suggestions == null || suggestions.isEmpty()) {
 
-                   haydisponibles=false;
-                    //   return validos;
-                }else{
-                    haydisponibles=true;
-                }
+                haydisponibles = false;
+                //   return validos;
+            } else {
+                haydisponibles = true;
+            }
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return haydisponibles;
     }
-
-   
 
     // <editor-fold defaultstate="collapsed" desc="isVehiculoActivoDisponible(Vehiculo vehiculo)">
     public Boolean isVehiculoActivoDisponible(Vehiculo vehiculo) {
@@ -1554,6 +1562,4 @@ public class SolicitudDocenteController implements Serializable, IController {
     }
 
     // </editor-fold>
-    
-    
 }

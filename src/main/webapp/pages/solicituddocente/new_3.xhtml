@@ -20,7 +20,17 @@
                 border-color: #428BCA;
             }
         </style>
-      
+        <script type="text/javascript">
+            function start() {
+                this.progressInterval = setInterval(function () {
+                    PF('pb').setValue(PF('pb').getValue() + 10);
+                }, 2000);
+            }
+            function cancel() {
+                clearInterval(this.progressInterval);
+                PF('pb').setValue(0);
+            }
+        </script>
 
         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('DOCENTE')}" onkeypress="if (event.keyCode == 13) {
                     return false;
@@ -361,8 +371,8 @@
                                                              url  = "/pages/solicituddocente/list.xhtml"
                                                              />
                         </b:column>
-                   
-                
+                        <!--                        <jmoordbjsf:ajaxstatus/>-->
+                        <p:blockUI block="panel" trigger="ref" />
 
                     </b:row>
                 </b:panel>
