@@ -281,15 +281,17 @@ public class SolicitudDocenteController implements Serializable, IController {
                 action = JmoordbContext.get("solicitud").toString();
             }
 
-            if (action == null || action.equals("gonew") || action.equals("new")) {
+            if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
                 inicializar();
 
             }
-            System.out.println("----> action: " + action);
+          
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
+    
+    
 
 // <editor-fold defaultstate="collapsed" desc="handleSelect">
     public void handleSelect(SelectEvent event) {
@@ -1540,7 +1542,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return haydisponibles;
-    }
+    }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="isVehiculoActivoDisponible(Vehiculo vehiculo)">
     public Boolean isVehiculoActivoDisponible(Vehiculo vehiculo) {
@@ -1562,4 +1564,13 @@ public class SolicitudDocenteController implements Serializable, IController {
     }
 
     // </editor-fold>
+    
+    
+    
+    // <editor-fold defaultstate="collapsed" desc="itemUnselect">
+    public String goNew() {
+        System.out.println("----------------> llego");
+            return "/faces/pages/solicituddocente/new.xhtml?faces-redirect=true";
+    }// </editor-fold>
+
 }
