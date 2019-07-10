@@ -1566,11 +1566,6 @@ public class SolicitudDocenteController implements Serializable, IController {
     // </editor-fold>
     
     
-    
-    // <editor-fold defaultstate="collapsed" desc="itemUnselect">
-    public String goNew() {
-        System.out.println("----------------> llego");
-            return "/faces/pages/solicituddocente/new.xhtml?faces-redirect=true";
-    }// </editor-fold>
+  
 
 }
