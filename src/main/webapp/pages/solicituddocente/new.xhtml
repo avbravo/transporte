@@ -335,7 +335,7 @@
                     </b:row>
                     <b:row>
                         <b:column span="2">
-                            <h:outputText value="#{msg['field.leyoSugerencias']}" />
+                            <h:outputText value="#{msg['field.aceptoSugerencias']}" />
                         </b:column>
                         <b:column span="4">
                             <p:inputSwitch onLabel="#{msg['field.yes']}"
@@ -366,6 +366,14 @@
 
                     </b:row>
                 </b:panel>
+                
+                 <div class="ui-g-12 ui-md-6">
+                     <p:staticMessage severity="info" summary="" detail="#{solicitudDocenteController.msgInfo}" />
+    </div>
+    <div class="ui-g-12 ui-md-6">
+        <p:staticMessage severity="warn" summary="" detail="#{solicitudDocenteController.msgWarning}" />
+    </div>
+   
             </h:panelGroup>
         </b:form>
         <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('DOCENTE')}"/>
