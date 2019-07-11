@@ -39,29 +39,29 @@
                     <p:ajax  event="eventSelect"  listener="#{solicitudDocenteController.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
 
                 </p:schedule>
-              
-                    <b:panel id="colores" autoUpdate="true" >
-                        <b:row >
 
-                            <b:column span="3">
-                                <p:outputLabel value="#{msg['label.solicitado']} #{solicitudDocenteController.totalSolicitado}" style="color:orange"/>
-                            </b:column>
-                            <b:column span="3">
-                                <p:outputLabel value="#{msg['label.aprobado']} #{solicitudDocenteController.totalAprobado}" style="color:green"/>
-                            </b:column>
-                            <b:column span="3">
-                                <p:outputLabel value="#{msg['label.rechazadocancelado']} #{solicitudDocenteController.totalRechazadoCancelado}" style="color:red"/>
-                            </b:column>
-                            <b:column span="3">
-                                <p:outputLabel value="#{msg['label.viaje']} #{solicitudDocenteController.totalViajes}" style="color:blue"/>
+                <b:panel id="colores" autoUpdate="true" >
+                    <b:row >
 
-                            </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.solicitado']} #{solicitudDocenteController.totalSolicitado}" style="color:orange"/>
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.aprobado']} #{solicitudDocenteController.totalAprobado}" style="color:green"/>
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.rechazadocancelado']} #{solicitudDocenteController.totalRechazadoCancelado}" style="color:red"/>
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.viaje']} #{solicitudDocenteController.totalViajes}" style="color:blue"/>
 
-                        </b:row>
+                        </b:column>
+
+                    </b:row>
 
 
 
-   
+
                 </b:panel>
             </b:panel>
 
@@ -79,7 +79,8 @@
                     <p:outputLabel  value="#{msg['field.idsolicitud']}" />
                     <p:outputLabel  value="#{solicitudDocenteController.solicitud.idsolicitud}" id="idsolicitud"   />
 
-
+                    <p:outputLabel value="#{msg['field.idestatus']}" />
+                    <p:outputLabel value="#{solicitudDocenteController.solicitud.estatus.idestatus}" />
 
                     <p:outputLabel  value="#{msg['field.fechapartida']}" />
                     <p:fieldset >
@@ -99,6 +100,9 @@
                     <p:outputLabel  value="#{msg['field.lugarpartida']}" />
 
                     <p:outputLabel value="#{solicitudDocenteController.solicitud.lugarpartida}" id="lugarpartida"   />
+                    <p:outputLabel  value="#{msg['field.lugarllegada']}" />
+
+                    <p:outputLabel value="#{solicitudDocenteController.solicitud.lugarllegada}" id="lugarllegada"   />
 
 
                     <p:outputLabel  value="#{msg['field.fecharegreso']}" />
@@ -122,8 +126,7 @@
                     <p:outputLabel  value="#{solicitudDocenteController.solicitud.numerodevehiculos}" />
                     <p:outputLabel  value="#{msg['field.pasajeros']}" />
                     <p:outputLabel  value="#{solicitudDocenteController.solicitud.pasajeros}" />
-                    <p:outputLabel value="#{msg['field.idestatus']}" />
-                    <p:outputLabel value="#{solicitudDocenteController.solicitud.estatus.idestatus}" />
+
 
                     <p:outputLabel  value="#{msg['field.numerogrupos']}" />
                     <p:chips id="numerogrupo" disabled="true" value="#{solicitudDocenteController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
