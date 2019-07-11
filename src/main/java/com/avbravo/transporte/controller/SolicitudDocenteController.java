@@ -102,11 +102,10 @@ public class SolicitudDocenteController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
-    
-    String msgInfo="";
-    String msgWarning="";
-   
-  
+
+    String msgInfo = "";
+    String msgWarning = "";
+
     Integer index = 0;
     Integer pasajerosDisponibles = 0;
     ManagerEmail managerEmail = new ManagerEmail();
@@ -372,7 +371,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
             if (c > 1 && diasconsecutivos) {
                 JsfUtil.warningDialog("Advertencia", "Cuando selecciona Dia/ Dias Consecutivo no puede seleccionar otro valor");
-                msgWarning="Cuando selecciona Dia/ Dias Consecutivo no puede seleccionar otro valor";
+                msgWarning = "Cuando selecciona Dia/ Dias Consecutivo no puede seleccionar otro valor";
                 return false;
             }
             solicitud.setRangoagenda(rangoAgenda);
@@ -402,18 +401,18 @@ public class SolicitudDocenteController implements Serializable, IController {
             Integer periodo = Integer.parseInt(solicitud.getPeriodoacademico());
             if (DateUtil.anioActual() > periodo) {
                 JsfUtil.warningDialog("Advertencia", "Año actual es mayor que el periodo academico");
-                msgWarning ="Año actual es mayor que el periodo academico";
+                msgWarning = "Año actual es mayor que el periodo academico";
                 return false;
             }
             Integer diferencia = periodo - DateUtil.anioActual();
             if (diferencia > 1) {
                 JsfUtil.warningDialog("Advertencia", "El periodo academico debe revisarlo");
-                msgWarning="El periodo academico debe revisarlo";
+                msgWarning = "El periodo academico debe revisarlo";
                 return false;
             }
             if (!leyoSugerencias) {
                 JsfUtil.warningDialog("Advertencia", "Por favor lea las sugerencias");
-                msgWarning ="Por favor lea las sugerencias";
+                msgWarning = "Por favor lea las sugerencias";
                 return false;
             }
 
@@ -551,26 +550,25 @@ public class SolicitudDocenteController implements Serializable, IController {
     public String save() {
         try {
             solicitudGuardadasList = new ArrayList<>();
-             msgWarning="";
-             msgInfo="";
-             
+            msgWarning = "";
+            msgInfo = "";
+
             if (!localValid()) {
                 return "";
             }
-           
+
             //verifica si hay buses disponibles
             if (!hayBusDisponibles()) {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
-                
+
                 return "";
             }
 
-            if(!isValidCantidadPasajeros()){
-             
+            if (!isValidCantidadPasajeros()) {
+
                 return "";
             }
-            
 
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
@@ -722,8 +720,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             }//no son dias consecutivos
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
-            msgInfo=rf.getMessage("info.savesolicitudes");
-            msgWarning="";
+            msgInfo = rf.getMessage("info.savesolicitudes");
+            msgWarning = "";
             inicializar();
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
@@ -1251,8 +1249,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="Boolean inicializar()">
     private String inicializar() {
         try {
-            msgInfo="";
-            msgWarning="";
+            msgInfo = "";
+            msgWarning = "";
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             Date idsecond = solicitud.getFecha();
             Integer id = solicitud.getIdsolicitud();
@@ -1519,14 +1517,21 @@ public class SolicitudDocenteController implements Serializable, IController {
     public void calendarChangeListener(SelectEvent event) {
         try {
 //verifica si hay buses disponibles
-
+msgWarning="";
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
                 if (!hayBusDisponibles()) {
                     JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
-
+                    msgWarning = rf.getMessage("warning.nohaybusesdisponiblesenesasfechas");
+                    return;
                 }
+
+                if (!solicitudServices.solicitudDisponible(solicitud, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yatienesolicitudenesasfechas"));
+                    msgWarning = rf.getMessage("warning.yatienesolicitudenesasfechas");
+                }
+
             }
 
         } catch (Exception e) {
@@ -1600,47 +1605,47 @@ public class SolicitudDocenteController implements Serializable, IController {
             // Si la cantidad de buses solicitados es mayor que los disponibles
             if (solicitud.getNumerodevehiculos() > vehiculoDisponiblesList.size()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayesacantidadbusesdisponibles"));
-                msgWarning=rf.getMessage("warning.nohayesacantidadbusesdisponibles");
+                msgWarning = rf.getMessage("warning.nohayesacantidadbusesdisponibles");
                 return false;
             }
             /**
              * Verifica los pasajeros disponibles en los buses Indica si existe
              * espacio en estos buses y la cantidad disponible
              */
-pasajerosDisponibles=0;
+            pasajerosDisponibles = 0;
             List<Vehiculo> vehiculoAsignadosList = new ArrayList<>();
             Integer pasajerosPendientes = solicitud.getPasajeros();
             for (Vehiculo v : vehiculoDisponiblesList) {
-                pasajerosDisponibles+= v.getPasajeros();
+                pasajerosDisponibles += v.getPasajeros();
                 if (pasajerosPendientes > 0) {
                     vehiculoAsignadosList.add(v);
                     pasajerosPendientes -= v.getPasajeros();
                 }
             }
-            
+
 // verifica si la cantidad de pasajeros solicitados es mayor que los disponibles
-msgInfo="Disponibles Asientos: "+pasajerosDisponibles + " Buses: "+vehiculoDisponiblesList.size();
+            msgInfo = "Disponibles Asientos: " + pasajerosDisponibles + " Buses: " + vehiculoDisponiblesList.size();
             if (solicitud.getPasajeros() > pasajerosDisponibles) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros"));
-                msgWarning= rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros");
+                msgWarning = rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros");
                 return false;
             }
-            
+
             if (vehiculoAsignadosList == null || vehiculoAsignadosList.isEmpty()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeasignarbusesparapasajeros"));
-                msgWarning =rf.getMessage("warning.nosepuedeasignarbusesparapasajeros");
+                msgWarning = rf.getMessage("warning.nosepuedeasignarbusesparapasajeros");
                 return false;
             }
 
             if (vehiculoAsignadosList.size() != solicitud.getNumerodevehiculos()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerobusesrecomendados") + " " + vehiculoAsignadosList.size());
-                msgWarning =rf.getMessage("warning.numerobusesrecomendados") + " " + vehiculoAsignadosList.size();
+                msgWarning = rf.getMessage("warning.numerobusesrecomendados") + " " + vehiculoAsignadosList.size();
                 return false;
             }
 
             return true;
         } catch (Exception e) {
-               errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
     }
