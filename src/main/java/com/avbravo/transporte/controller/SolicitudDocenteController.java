@@ -103,6 +103,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
     Integer index = 0;
+    Integer pasajerosDisponibles = 0;
     ManagerEmail managerEmail = new ManagerEmail();
     private Boolean writable = false;
     private Boolean leyoSugerencias = false;
@@ -148,6 +149,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     List<Tiposolicitud> tiposolicitudList = new ArrayList<>();
     List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
     List<Tipovehiculo> suggestionsTipovehiculo = new ArrayList<>();
+    List<Vehiculo> vehiculoDisponiblesList = new ArrayList<>();
     //
     private String[] diasSelected;
     private List<String> diasList;
@@ -285,13 +287,11 @@ public class SolicitudDocenteController implements Serializable, IController {
                 inicializar();
 
             }
-          
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
-    
-    
 
 // <editor-fold defaultstate="collapsed" desc="handleSelect">
     public void handleSelect(SelectEvent event) {
@@ -551,6 +551,12 @@ public class SolicitudDocenteController implements Serializable, IController {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
                 return "";
             }
+
+            if(!isValidCantidadPasajeros()){
+                return "";
+            }
+            
+
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
             //si cambia el email o celular del responsable actualizar ese usuario
@@ -1494,7 +1500,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     public void calendarChangeListener(SelectEvent event) {
         try {
 //verifica si hay buses disponibles
-           
+
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
@@ -1522,19 +1528,24 @@ public class SolicitudDocenteController implements Serializable, IController {
         List<Vehiculo> suggestions = new ArrayList<>();
         List<Vehiculo> vehiculoList = new ArrayList<>();
         try {
+            vehiculoDisponiblesList = new ArrayList<>();
+            pasajerosDisponibles = 0;
             Document doc = new Document("activo", "si").append("tipovehiculo.idtipovehiculo", "BUS");
             vehiculoList = vehiculoRepository.findBy(doc);
-          
+            if (vehiculoList == null || vehiculoList.isEmpty()) {
+                return false;
+            }
             for (Vehiculo v : vehiculoList) {
                 suggestions = vehiculoList.stream()
                         .filter(x -> isVehiculoActivoDisponible(x)).collect(Collectors.toList());
             }
-          
+
             if (suggestions == null || suggestions.isEmpty()) {
 
                 haydisponibles = false;
                 //   return validos;
             } else {
+                vehiculoDisponiblesList = suggestions;
                 haydisponibles = true;
             }
 
@@ -1553,6 +1564,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             } else {
                 if (viajeServices.vehiculoDisponible(vehiculo, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
+                    pasajerosDisponibles += vehiculo.getPasajeros();
                     valid = true;
                 }
             }
@@ -1564,8 +1576,47 @@ public class SolicitudDocenteController implements Serializable, IController {
     }
 
     // </editor-fold>
-    
-    
-  
+    // <editor-fold defaultstate="collapsed" desc="isValidCantidadPasajeros()">
+    private Boolean isValidCantidadPasajeros() {
+        try {
+            // Si la cantidad de buses solicitados es mayor que los disponibles
+            if (solicitud.getNumerodevehiculos() > vehiculoDisponiblesList.size()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayesacantidadbusesdisponibles"));
+                return false;
+            }
+// verifica si la cantidad de pasajeros solicitados es mayor que los disponibles
+            if (solicitud.getPasajeros() > pasajerosDisponibles) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros"));
+                return false;
+            }
+            /**
+             * Verifica los pasajeros disponibles en los buses Indica si existe
+             * espacio en estos buses y la cantidad disponible
+             */
 
+            List<Vehiculo> vehiculoAsignadosList = new ArrayList<>();
+            Integer pasajerosPendientes = solicitud.getPasajeros();
+            for (Vehiculo v : vehiculoDisponiblesList) {
+                if (pasajerosPendientes > 0) {
+                    vehiculoAsignadosList.add(v);
+                    pasajerosPendientes -= v.getPasajeros();
+                }
+            }
+            if (vehiculoAsignadosList == null || vehiculoAsignadosList.isEmpty()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeasignarbusesparapasajeros"));
+                return false;
+            }
+
+            if (vehiculoAsignadosList.size() != solicitud.getNumerodevehiculos()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerobusesrecomendados") + " " + vehiculoAsignadosList.size());
+                return false;
+            }
+
+            return true;
+        } catch (Exception e) {
+               errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }
+    // </editor-fold>
 }
