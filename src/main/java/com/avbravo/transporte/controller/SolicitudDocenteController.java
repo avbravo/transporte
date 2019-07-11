@@ -300,7 +300,7 @@ public class SolicitudDocenteController implements Serializable, IController {
         }
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="init">
+    // <editor-fold defaultstate="collapsed" desc="Boolean view()">
    public Boolean view() {
        try {
            solicita = solicitud.getUsuario().get(0);
