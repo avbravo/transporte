@@ -202,7 +202,7 @@
                         <p:chips value="#{solicitudDocenteController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
 
                         <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
-                        <b:touchSpin  col-md="3" value="#{solicitudDocenteController.solicitud.numerodevehiculos}" min="1" max="20" step="1" />
+                        <b:touchSpin disabled="true" col-md="3" value="#{solicitudDocenteController.solicitud.numerodevehiculos}" min="1" max="20" step="1" />
 
 
                         <p:outputLabel  value="#{msg['field.pasajeros']}" />
@@ -239,6 +239,7 @@
                         <p:outputLabel  value="#{msg['field.rangoagenda']}" />
                         <p:selectCheckboxMenu id="multiple" value="#{solicitudDocenteController.diasSelected}" label="#{msg['field.rangoagenda']}" multiple="true"
                                               required="true" 
+                                              disabled="true"
                                               requiredMessage="#{msg['field.rangoagenda']} #{app['info.required']}"
                                               panelStyle="width:250px">
                             <f:selectItems value="#{solicitudDocenteController.diasList}" />
@@ -291,7 +292,7 @@
                                 renderedDelete="#{p:ifGranted('DOCENTE')}"
                                 renderedEdit="#{p:ifGranted('DOCENTE')}"
                                 renderedList="#{p:ifGranted('DOCENTE')}"                    
-                                controller="#{rolController}"
+                                controller="#{solicitudDocenteController}"
 
                                 url  = "/pages/solicituddocente/list.xhtml"
                                 />

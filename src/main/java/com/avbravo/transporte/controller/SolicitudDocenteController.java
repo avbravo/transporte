@@ -105,7 +105,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
     String msgInfo = "";
     String msgWarning = "";
-    String msgDisponibles="";
+    String msgDisponibles = "";
 
     Integer index = 0;
     Integer pasajerosDisponibles = 0;
@@ -138,9 +138,12 @@ public class SolicitudDocenteController implements Serializable, IController {
     Solicitud solicitud = new Solicitud();
     Solicitud solicitudSelected;
     Solicitud solicitudSearch = new Solicitud();
+    Solicitud solicitudOld = new Solicitud();
     Usuario solicita = new Usuario();
+    Usuario solicitaOld = new Usuario();
     Usuario responsable = new Usuario();
     Usuario responsableOld = new Usuario();
+
     Solicitud solicitudCopiar = new Solicitud();
 
     //List
@@ -292,42 +295,44 @@ public class SolicitudDocenteController implements Serializable, IController {
                 inicializar();
 
             }
-            if(action.equals("view")){
+            if (action.equals("view")) {
                 view();
             }
-    
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Boolean view()">
-   public Boolean view() {
-       try {
-           solicita = solicitud.getUsuario().get(0);
-           responsable = solicitud.getUsuario().get(1);
-           facultadList = solicitud.getFacultad();
-           carreraList = solicitud.getCarrera();
-          // diasList= solicitud.getRangoagenda();
-           diasSelected = new String[solicitud.getRangoagenda().size()];
-          Integer contador=0;
-          for(String s:solicitud.getRangoagenda()){
-              diasSelected[contador++]=s;
-              
-          }
-          
-          hayBusDisponibles();
-          
-            
-         
-       } catch (Exception e) {
-               errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-       }
-     
+    public Boolean view() {
+        try {
+            solicitudOld = solicitud;
+            solicita = solicitud.getUsuario().get(0);
+            solicitaOld= solicitud.getUsuario().get(0);
+            responsable = solicitud.getUsuario().get(1);
+            responsableOld =solicitud.getUsuario().get(1);
+            facultadList = solicitud.getFacultad();
+            carreraList = solicitud.getCarrera();
+            // diasList= solicitud.getRangoagenda();
+            diasSelected = new String[solicitud.getRangoagenda().size()];
+            Integer contador = 0;
+            for (String s : solicitud.getRangoagenda()) {
+                diasSelected[contador++] = s;
+
+            }
+
+            hayBusDisponibles();
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+
         return true;
 
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelect">
+
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
@@ -1547,7 +1552,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     public void calendarChangeListener(SelectEvent event) {
         try {
 //verifica si hay buses disponibles
-msgWarning="";
+            msgWarning = "";
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
@@ -1579,7 +1584,7 @@ msgWarning="";
      */
     public Boolean hayBusDisponibles() {
         Boolean haydisponibles = false;
-        
+
         List<Vehiculo> suggestions = new ArrayList<>();
         List<Vehiculo> vehiculoList = new ArrayList<>();
         try {
@@ -1606,8 +1611,8 @@ msgWarning="";
                 });
                 haydisponibles = true;
             }
-   msgDisponibles = rf.getMessage("info.asientosdisponibles") + " "+ pasajerosDisponibles + " " + rf.getMessage("info.buses") + " "+ vehiculoDisponiblesList.size();
-   
+            msgDisponibles = rf.getMessage("info.asientosdisponibles") + " " + pasajerosDisponibles + " " + rf.getMessage("info.buses") + " " + vehiculoDisponiblesList.size();
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1659,8 +1664,7 @@ msgWarning="";
             }
 
 // verifica si la cantidad de pasajeros solicitados es mayor que los disponibles
-
-            msgDisponibles = rf.getMessage("info.asientosdisponibles") + " "+ pasajerosDisponibles + rf.getMessage("info.buses") + " "+ vehiculoDisponiblesList.size();
+            msgDisponibles = rf.getMessage("info.asientosdisponibles") + " " + pasajerosDisponibles + rf.getMessage("info.buses") + " " + vehiculoDisponiblesList.size();
             if (solicitud.getPasajeros() > pasajerosDisponibles) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros"));
                 msgWarning = rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros");
@@ -1686,12 +1690,12 @@ msgWarning="";
         return false;
     }
     // </editor-fold>
-    
-    
+
     // <editor-fold defaultstate="collapsed" desc="String edit()">
     @Override
     public String edit() {
         try {
+            System.out.println("---> llego a edit");
             solicitudGuardadasList = new ArrayList<>();
             msgWarning = "";
             msgInfo = "";
@@ -1702,13 +1706,27 @@ msgWarning="";
 
             //verifica si hay buses disponibles
             if (!hayBusDisponibles()) {
-
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
-
                 return "";
             }
 
             if (!isValidCantidadPasajeros()) {
+                return "";
+            }
+
+            Boolean mayorDisponible = false;
+            Integer maximo = 0;
+            for (Vehiculo v : vehiculoDisponiblesList) {
+                if (v.getPasajeros() > maximo) {
+                    maximo = v.getPasajeros();
+                }
+            }
+            if (solicitud.getPasajeros() > maximo) {
+                mayorDisponible = true;
+            }
+            if (mayorDisponible) {
+
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.mayordisponiblesporbus"));
 
                 return "";
             }
@@ -1732,140 +1750,12 @@ msgWarning="";
              * Si es dias consecutivos es un solo intervalo para la reservacion
              * se creara una solicitud para cada vehiculos solicitado
              */
-            if (diasconsecutivos) {
-                for (Integer index = 0; index < solicitud.getNumerodevehiculos(); index++) {
-                    if (insert()) {
-                        solicitudesGuardadas++;
-                    }
-                    //Asigna la solicitud padre para las demas solicitudes
-                    solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
-                }//for
-            } else {
+            solicitudRepository.update(solicitud);
 
-                /*
-                No son dias consecutivo
-                Se deben descomponer las fechas
-                verificar si son dias validos
-                Descomponener la fecha de inicio
-                 */
-                Date fechahorapartidad = solicitud.getFechahorapartida();
-                Date fechahoraregreso = solicitud.getFechahoraregreso();
-
-                Integer diaPartida = DateUtil.diaDeUnaFecha(solicitud.getFechahorapartida());
-                Integer mesPartida = DateUtil.mesDeUnaFechaStartEneroWith0(solicitud.getFechahorapartida());
-                String nombreMesPartida = DateUtil.nombreMes(mesPartida);
-                Integer anioPartida = DateUtil.anioDeUnaFecha(solicitud.getFechahorapartida());
-                Integer horapartida = DateUtil.horaDeUnaFecha(solicitud.getFechahorapartida());
-                Integer minutopartida = DateUtil.minutosDeUnaFecha(solicitud.getFechahorapartida());
-                //descomponer la fecha de regreso
-                Integer diaRegreso = DateUtil.diaDeUnaFecha(solicitud.getFechahoraregreso());
-                Integer mesRegreso = DateUtil.mesDeUnaFechaStartEneroWith0(solicitud.getFechahoraregreso());
-                String nombreMesRegreso = DateUtil.nombreMes(mesRegreso);
-                Integer anioRegreso = DateUtil.anioDeUnaFecha(solicitud.getFechahoraregreso());
-                Integer horaregreso = DateUtil.horaDeUnaFecha(solicitud.getFechahoraregreso());
-                Integer minutoregreso = DateUtil.minutosDeUnaFecha(solicitud.getFechahoraregreso());
-
-                varAnio = anioPartida;
-                //Determinar cuantos meses hay
-                Integer meses = 0;
-                if (mesPartida > mesRegreso) {
-                    meses = (mesRegreso + 12) - mesPartida;
-                } else {
-                    if (anioPartida < anioRegreso) {
-                        meses = (mesRegreso + 12) - mesPartida;
-                    } else {
-                        meses = mesRegreso - mesPartida;
-                    }
-
-                }
-                //mismo mes
-                if (meses == 0) {
-// Encontrar las fechas en el rango
-                    List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
-                    fechasValidasList = validarRangoFechas(anioPartida, nombreMesPartida);
-                    //recorre todos los vehiculos 
-                    for (int i = 0; i < solicitud.getNumerodevehiculos(); i++) {
-                        if (fechasValidasList.isEmpty()) {
-                            //no hay fechas para guardar
-                            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos"));
-                            return "";
-                        } else {
-                            //ESTOS SON LOS QUE SE GUARDARIAN
-                            solicitudesGuardadas = procesar(fechasValidasList, horapartida, minutopartida, horaregreso, minutoregreso);
-
-                        }//isEmpty
-                    } //getNumerodevehiculos
-
-                } else {
-                    // mas de un mes recorrer todos los meses en ese intervalo
-                    if (meses > 0 && meses <= 12) {
-
-                        for (int i = 0; i <= meses; i++) {
-                            //Verificar si es el mismo año
-                            if (anioPartida.equals(anioRegreso)) {
-                                Integer m = mesPartida + i;
-                                String nameOfMohth = DateUtil.nombreMes(m);
-                                List<FechaDiaUtils> list = validarRangoFechas(anioPartida, nameOfMohth);
-                                List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
-                                if (list == null || list.isEmpty()) {
-                                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes;" + nameOfMohth);
-                                    //return "";
-                                } else {
-                                    list.forEach((f) -> {
-                                        fechasValidasList.add(f);
-                                    });
-                                }
-                                if (fechasValidasList == null || fechasValidasList.isEmpty()) {
-
-                                } else {
-                                    solicitudesGuardadas = procesar(fechasValidasList, horapartida, minutopartida, horaregreso, minutoregreso);
-                                }
-
-                            } else {
-                                //cambio el año   
-                                Integer m = mesPartida + i;
-                                if (m == 12) {
-                                    varAnio = varAnio + 1;
-                                }
-                                if (m >= 12) {
-                                    m = m - 12;
-
-                                }
-
-                                String nameOfMohth = DateUtil.nombreMes(m);
-
-                                List<FechaDiaUtils> list = validarRangoFechas(varAnio, nameOfMohth);
-                                List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
-                                if (list == null || list.isEmpty()) {
-                                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes: " + nameOfMohth);
-                                    //return "";
-                                } else {
-                                    list.forEach((f) -> {
-                                        fechasValidasList.add(f);
-                                    });
-                                }
-                                if (fechasValidasList == null || fechasValidasList.isEmpty()) {
-
-                                } else {
-                                    solicitudesGuardadas = procesar(fechasValidasList, horapartida, minutopartida, horaregreso, minutoregreso);
-                                }
-
-                            }
-
-                        }
-
-                    } else {
-                        JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.verifiqueestasolicitandomas12meses"));
-                        return "";
-                    }
-                }
-
-            }//no son dias consecutivos
-
-            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
+            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
             msgInfo = rf.getMessage("info.savesolicitudes");
             msgWarning = "";
-            inicializar();
+           // inicializar();
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
             List<Usuario> usuarioList = usuarioRepository.filters(filter);
@@ -1880,7 +1770,7 @@ msgWarning="";
             /**
              * Enviar un email al docente y al mismo administrador
              */
-            Solicitud s0 = solicitudGuardadasList.get(0);
+            Solicitud s0 = solicitud;
 
             String varFacultadName = "";
             String varCarreraName = "";
@@ -1994,9 +1884,6 @@ msgWarning="";
 
             }
 
-            facultadList = new ArrayList<>();
-            carreraList = new ArrayList<>();
-            reset();
 
             return "";
         } catch (Exception e) {
