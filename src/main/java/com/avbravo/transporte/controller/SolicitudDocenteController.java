@@ -465,6 +465,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             Integer idsolicitud = autoincrementableServices.getContador("solicitud");
             solicitud.setIdsolicitud(idsolicitud);
+            //Se establece en 1 el numero de vehiculos solicitados a ser guardados
+            solicitud.setNumerodevehiculos(1);
             Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
             if (optional.isPresent()) {
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
@@ -603,7 +605,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitudGuardadasList = new ArrayList<>();
             msgWarning = "";
             msgInfo = "";
-
+Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
             if (!localValid()) {
                 return "";
             }
@@ -643,7 +645,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (diasconsecutivos) {
                 Integer pasajerosPendientes = solicitud.getPasajeros();
                 Integer pasajeros = 0;
-                for (Integer index = 0; index < solicitud.getNumerodevehiculos(); index++) {
+                for (Integer index = 0; index < numeroVehiculosSolicitados; index++) {
                        if (pasajerosPendientes > vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros()) {
                         pasajeros = vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros();
                         pasajerosPendientes = pasajerosPendientes - vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros();
@@ -702,7 +704,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                     fechasValidasList = validarRangoFechas(anioPartida, nombreMesPartida);
                     //recorre todos los vehiculos 
-                    for (int i = 0; i < solicitud.getNumerodevehiculos(); i++) {
+                    for (int i = 0; i < numeroVehiculosSolicitados; i++) {
                         if (fechasValidasList.isEmpty()) {
                             //no hay fechas para guardar
                             JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos"));
@@ -1773,7 +1775,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 }
             }
             Integer solicitudesGuardadas = 0;
-            solicitud.setSolicitudpadre(0);
+           
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
 
@@ -1784,7 +1786,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitudRepository.update(solicitud);
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
-            msgInfo = rf.getMessage("info.savesolicitudes");
+            msgInfo = rf.getMessage("info.editsolicitudes");
             msgWarning = "";
             // inicializar();
             //  Guardar las notificaciones
