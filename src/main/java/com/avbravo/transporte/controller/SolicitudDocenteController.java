@@ -61,6 +61,7 @@ import java.util.ArrayList;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -309,9 +310,9 @@ public class SolicitudDocenteController implements Serializable, IController {
         try {
             solicitudOld = solicitud;
             solicita = solicitud.getUsuario().get(0);
-            solicitaOld= solicitud.getUsuario().get(0);
+            solicitaOld = solicitud.getUsuario().get(0);
             responsable = solicitud.getUsuario().get(1);
-            responsableOld =solicitud.getUsuario().get(1);
+            responsableOld = solicitud.getUsuario().get(1);
             facultadList = solicitud.getFacultad();
             carreraList = solicitud.getCarrera();
             // diasList= solicitud.getRangoagenda();
@@ -475,6 +476,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
             solicitud.setTipovehiculo(tipovehiculoList);
             solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
+            System.out.println("Voy a guardar la solicitud con " + solicitud.getPasajeros() + " pasajeros");
             if (solicitudRepository.save(solicitud)) {
                 Solicitud sol = new Solicitud();
                 sol = (Solicitud) JsfUtil.copyBeans(sol, solicitud);
@@ -552,6 +554,9 @@ public class SolicitudDocenteController implements Serializable, IController {
 
     private Integer procesar(List<FechaDiaUtils> fechasValidasList, Integer horapartida, Integer minutopartida, Integer horaregreso, Integer minutoregreso) {
         Integer solicitudesGuardadas = 0;
+
+        Integer pasajerosPendientes = solicitud.getPasajeros();
+        Integer pasajeros = 0;
         try {
             for (FechaDiaUtils f : fechasValidasList) {
                 //si es un dia valido
@@ -565,6 +570,17 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                     solicitud.setFechahorapartida(newDatePartida);
                     solicitud.setFechahoraregreso(newDateRegreso);
+                    /*
+                    Distribuye la cantidad de pasajeros en los viajes en base a los asientos disponibles
+                     */
+                    if (pasajerosPendientes > vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros()) {
+                        pasajeros = vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros();
+                        pasajerosPendientes = pasajerosPendientes - vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros();
+                    } else {
+                        pasajeros = pasajerosPendientes;
+                    }
+                
+                    solicitud.setPasajeros(pasajeros);
                     if (insert()) {
                         solicitudesGuardadas++;
                     }
@@ -625,7 +641,17 @@ public class SolicitudDocenteController implements Serializable, IController {
              * se creara una solicitud para cada vehiculos solicitado
              */
             if (diasconsecutivos) {
+                Integer pasajerosPendientes = solicitud.getPasajeros();
+                Integer pasajeros = 0;
                 for (Integer index = 0; index < solicitud.getNumerodevehiculos(); index++) {
+                       if (pasajerosPendientes > vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros()) {
+                        pasajeros = vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros();
+                        pasajerosPendientes = pasajerosPendientes - vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros();
+                    } else {
+                        pasajeros = pasajerosPendientes;
+                    }
+                
+                    solicitud.setPasajeros(pasajeros);
                     if (insert()) {
                         solicitudesGuardadas++;
                     }
@@ -1606,6 +1632,10 @@ public class SolicitudDocenteController implements Serializable, IController {
                 //   return validos;
             } else {
                 vehiculoDisponiblesList = suggestions;
+
+                vehiculoDisponiblesList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
+                        .reversed());
+
                 vehiculoDisponiblesList.forEach((v) -> {
                     pasajerosDisponibles += v.getPasajeros();
                 });
@@ -1657,6 +1687,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             Integer pasajerosPendientes = solicitud.getPasajeros();
             for (Vehiculo v : vehiculoDisponiblesList) {
                 pasajerosDisponibles += v.getPasajeros();
+                System.out.println("Marca: " + v.getMarca() + "--->Placa: " + v.getPlaca() + " " + v.getPasajeros());
                 if (pasajerosPendientes > 0) {
                     vehiculoAsignadosList.add(v);
                     pasajerosPendientes -= v.getPasajeros();
@@ -1755,7 +1786,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
             msgInfo = rf.getMessage("info.savesolicitudes");
             msgWarning = "";
-           // inicializar();
+            // inicializar();
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
             List<Usuario> usuarioList = usuarioRepository.filters(filter);
@@ -1804,7 +1835,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             }
 
-            String mensajeAdmin = "Hay solicitudes realizadas de :" + solicita.getNombre()
+            String mensajeAdmin = "Hay solicitudes actualizadas  de :" + solicita.getNombre()
                     + "\nemail:" + solicita.getEmail()
                     + "\n" + header
                     + "\n" + texto
@@ -1829,7 +1860,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
                 //enviar al docente
 
-                Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte: Actualizacion}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
                 //    Future<String> completableFuture = managerEmail.sendAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
 
 //String msg =completableFuture.get();
@@ -1878,12 +1909,11 @@ public class SolicitudDocenteController implements Serializable, IController {
                         index++;
                     });
 
-                    Future<String> completableFutureCC = sendEmailCccBccAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                    Future<String> completableFutureCC = sendEmailCccBccAsync(to, cc, bcc, "{Sistema de Transporte: Actualizacion}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
 //                  Future<String> completableFutureCC = managerEmail.sendAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
                 }
 
             }
-
 
             return "";
         } catch (Exception e) {
