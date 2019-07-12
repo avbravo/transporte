@@ -105,6 +105,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
     String msgInfo = "";
     String msgWarning = "";
+    String msgDisponibles="";
 
     Integer index = 0;
     Integer pasajerosDisponibles = 0;
@@ -314,6 +315,8 @@ public class SolicitudDocenteController implements Serializable, IController {
               diasSelected[contador++]=s;
               
           }
+          
+          hayBusDisponibles();
           
             
          
@@ -1576,6 +1579,7 @@ msgWarning="";
      */
     public Boolean hayBusDisponibles() {
         Boolean haydisponibles = false;
+        
         List<Vehiculo> suggestions = new ArrayList<>();
         List<Vehiculo> vehiculoList = new ArrayList<>();
         try {
@@ -1597,9 +1601,13 @@ msgWarning="";
                 //   return validos;
             } else {
                 vehiculoDisponiblesList = suggestions;
+                vehiculoDisponiblesList.forEach((v) -> {
+                    pasajerosDisponibles += v.getPasajeros();
+                });
                 haydisponibles = true;
             }
-
+   msgDisponibles = rf.getMessage("info.asientosdisponibles") + " "+ pasajerosDisponibles + " " + rf.getMessage("info.buses") + " "+ vehiculoDisponiblesList.size();
+   
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1651,7 +1659,8 @@ msgWarning="";
             }
 
 // verifica si la cantidad de pasajeros solicitados es mayor que los disponibles
-            msgInfo = "Disponibles Asientos: " + pasajerosDisponibles + " Buses: " + vehiculoDisponiblesList.size();
+
+            msgDisponibles = rf.getMessage("info.asientosdisponibles") + " "+ pasajerosDisponibles + rf.getMessage("info.buses") + " "+ vehiculoDisponiblesList.size();
             if (solicitud.getPasajeros() > pasajerosDisponibles) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros"));
                 msgWarning = rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros");
