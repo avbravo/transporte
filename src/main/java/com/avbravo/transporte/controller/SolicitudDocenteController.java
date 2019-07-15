@@ -33,6 +33,7 @@ import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.jmoordbutils.email.ManagerEmail;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.datamodel.SugerenciaDataModel;
+import com.avbravo.transporteejb.entity.Estatus;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Sugerencia;
@@ -140,6 +141,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     Solicitud solicitudSelected;
     Solicitud solicitudSearch = new Solicitud();
     Solicitud solicitudOld = new Solicitud();
+    Estatus estatusSearch = new Estatus();
     Usuario solicita = new Usuario();
     Usuario solicitaOld = new Usuario();
     Usuario responsable = new Usuario();
@@ -369,6 +371,13 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                     break;
 
+                case "estatus":
+                    Estatus estatus  = new Estatus();
+                       estatus=(Estatus) JmoordbContext.get("_fieldsearchsolicitud");
+                    doc = new Document("estatus.idestatus", estatus.getIdestatus());
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
+                    break;
                 default:
                     doc = new Document("usuario.username", jmoordb_user.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
@@ -1943,4 +1952,20 @@ public class SolicitudDocenteController implements Serializable, IController {
         return false;
     }
     // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="handleSelect">
+
+    public String handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
+          JmoordbContext.put("searchsolicitud","estatus");
+          JmoordbContext.put("_fieldsearchsolicitud",estatusSearch);
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+    
+    
+
 }
