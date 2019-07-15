@@ -116,21 +116,14 @@
 
 
 
-                <b:dropMenu value="#{app['button.logout']}" >
-
-                    <b:navLink value="#{msg['menu.cambiarpassword']}"  outcome="/pages/password/change" iconAwesome="fa-expeditedssl"  />
-                    <h:form id="navbartopform">
-                        <p:commandLink class="btnn btnn-primary login-btn" value="#{app['button.logout']}" action="#{loginController.doLogout()}"/>
-                    </h:form>
-                </b:dropMenu>
 
                 <b:navLink />
                 <b:navLink />
 
                 <b:dropMenu id="dropMenuTop" class="badge badge-pill badge-danger" value="#{jmoordbNotificationsController.count}" iconAwesome="fa-bell-o" iconAlign="right">
-                    <b:navLink value="#{jmoordbNotificationsController.count} #{app['label.notifications']}" href="#"></b:navLink>
+                   
 
-                    <b:navLink value="#{app['menu.viewnotification']}"  outcome="/pages/notifications/list" iconAwesome="fa-bell-o"  />
+                    <b:navLink value="#{jmoordbNotificationsController.count} #{app['menu.viewnotification']}"  outcome="/pages/notifications/list" iconAwesome="fa-bell-o"  />
                     <p:growl id="growl_top" globalOnly="true" life="5000"  showDetail="true"  />
                     <h:form id="topForm">
                         <p:remoteCommand 
@@ -144,6 +137,13 @@
 
 
 
+                <b:dropMenu value="#{app['button.logout']}" >
+
+                    <b:navLink value="#{msg['menu.cambiarpassword']}"  outcome="/pages/password/change" iconAwesome="fa-expeditedssl"  />
+                    <h:form id="navbartopform">
+                        <p:commandLink class="btnn btnn-primary login-btn" value="#{app['button.logout']}" action="#{loginController.doLogout()}"/>
+                    </h:form>
+                </b:dropMenu>
 
             </b:navbarLinks>
 

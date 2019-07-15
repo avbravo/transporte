@@ -1967,5 +1967,46 @@ public class SolicitudDocenteController implements Serializable, IController {
     }// </editor-fold>
     
     
+       // <editor-fold defaultstate="collapsed" desc="enviarMensajesDirectos()">
+    public void enviarMensajesDirectos(){
+        try {
+             //  Guardar las notificaciones
+            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
+            List<Usuario> usuarioList = usuarioRepository.filters(filter);
+            if (usuarioList == null || usuarioList.isEmpty()) {
+            } else {
+                usuarioList.forEach((u) -> {
+                    saveNotification(u.getUsername());
+                });
+                push.send("Nueva solicitud docente ");
+            }
+JsfUtil.infoDialog("Informacion", "Se envio la notifacion a los administradores");
+        } catch (Exception e) {
+                  errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+    }
+    // </editor-fold>
 
+    
+     // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
+    private Boolean saveNotification(String username, String mensaje) {
+        try {
+            JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
+
+            jmoordbNotifications.setIdjmoordbnotifications(autoincrementableServices.getContador("jmoordbnNotifications"));
+            jmoordbNotifications.setUsername(username);
+          Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            jmoordbNotifications.setMessage("De: " + jmoordb_user.getNombre() + " email "+jmoordb_user.getEmail() +" Mensaje: "+mensaje);
+            jmoordbNotifications.setViewed("no");
+            jmoordbNotifications.setDate(DateUtil.fechaActual());
+            jmoordbNotifications.setType("solicituddocente");
+            jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
+            jmoordbNotificationsRepository.save(jmoordbNotifications);
+            return true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+
+        }
+        return false;
+    }// </editor-fold>
 }
