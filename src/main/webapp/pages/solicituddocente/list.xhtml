@@ -20,11 +20,11 @@
             } 
 
         </style>
-  <script type="text/javascript">
-        function socketListener(message, channel, event) {
-            document.getElementById("clockId").innerHTML += message + "<br/>";
-        }
-    </script>    
+        <script type="text/javascript">
+            function socketListener(message, channel, event) {
+                document.getElementById("clockId").innerHTML += message + "<br/>";
+            }
+        </script>    
         <jmoordbjsf:cssschedule/>  
         <jmoordbjsf:jsschedule/>
 
@@ -32,12 +32,12 @@
                     return false;
                 }">
 
-          
+
 
             <b:growl  id="msgs"/>
 
             <b:panel title="#{msg['titlelist.solicituddocente']}" id="content"   look="primary" > 
-           
+
             </b:panel>
 
 
@@ -53,31 +53,40 @@
 
 
 
-                <p:dataGrid var="item" value="#{solicitudDocenteController.solicitudDataModel}" columns="3" layout="grid"
-                            paginator="false" id="cars" 
-                            >
-
+                <p:dataTable var="item" value="#{solicitudDocenteController.solicitudDataModel}">
                     <f:facet name="header">
                         "#{msg['titlelist.solicituddocente']}"
                     </f:facet>
+                    <p:column style="width:16px">
+                        <p:rowToggler />
+                    </p:column>
+                    <p:column headerText="#{msg['field.idsolicitud']}">
+                        <h:outputText value="#{item.idsolicitud}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
+                    </p:column>
+                    <p:column headerText="#{msg['field.fechapartida']}">
+                        <h:outputText value="#{solicitudDocenteController.showDate(item.fechahorapartida)}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
+                    </p:column>
 
-                    <p:panel header="#{item.idsolicitud}" style="text-align:center">
-                        <h:panelGrid columns="2" style="width:100%">
+                    <p:column headerText="#{msg['field.horapartida']}">
 
-                            <p:outputLabel  value="#{msg['field.numeroreferencia']}">
-                                <i class="pi pi-paperclip"></i>
-                            </p:outputLabel>
-                            <p:outputLabel value="#{item.solicitudpadre}" style="color: #009900;"/>
+                        <p:outputLabel value="#{solicitudDocenteController.showHour(item.fechahorapartida)}"   style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
+                    </p:column>
+                    <p:column headerText="#{msg['field.estatus']}">
+                        <p:outputLabel  value="#{item.estatus.idestatus}"   style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}"/>
 
+                    </p:column>
+                    <p:column >
+                        <jmoordbjsf:commandbuttonviewdatatable
+                            renderedEdit="#{p:ifGranted('DOCENTE')}"
+                            controller="#{solicitudDocenteController}"
+                            url="/pages/solicituddocente/view.xhtml"
+                            item="#{item}"
+                            />
 
+                    </p:column>
+                    <p:rowExpansion>
 
-
-                            <p:outputLabel value="#{msg['field.fechapartida']}" />
-                            <p:outputLabel value="#{solicitudDocenteController.showDate(item.fechahorapartida)}"  />
-
-                            <p:outputLabel value="#{msg['field.horapartida']}" />
-                            <p:outputLabel value="#{solicitudDocenteController.showHour(item.fechahorapartida)}"  />
-
+                        <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('DOCENTE')}"> 
 
                             <p:outputLabel value="#{msg['field.fecharegreso']}" />
                             <p:outputLabel value="#{solicitudDocenteController.showDate(item.fechahoraregreso)}"  />
@@ -90,23 +99,48 @@
                             <p:outputLabel value="#{item.objetivo}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
                             <p:outputLabel value="#{msg['field.lugares']}"/>
                             <p:outputLabel value="#{item.lugares}"  style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
-                             <p:outputLabel  value="#{msg['field.pasajeros']}" />
-                      <p:outputLabel  value="#{item.pasajeros}"   />
-                      
+
+
+
+
+                            <p:outputLabel  value="#{msg['field.facultad']}" />
+                            <p:repeat value="#{item.facultad}" var="car">
+                                <p:outputLabel value="#{car.descripcion}"/>
+                            </p:repeat>
+                         
+                            <p:outputLabel  value="#{msg['field.carrera']}" />
+                        <p:repeat value="#{item.carrera}" var="car">
+                                <p:outputLabel value="#{car.descripcion}"/>
+                            </p:repeat>
+                            <p:outputLabel  value="#{msg['field.numerogrupos']}" />
+                            <p:outputLabel  value="#{item.numerogrupo}" />
+
+
+
+                            <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
+
+                            <p:outputLabel  value="#{item.numerodevehiculos}"  />
+
+                            <p:outputLabel  value="#{msg['field.pasajeros']}" >
+                                <i class="pi pi-users"></i>
+                            </p:outputLabel>
+                            <p:outputLabel value="#{item.pasajeros}"   />
+
+                            <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+                            <p:outputLabel value="#{solicitudDocenteController.solicitud.lugarpartida}"  />
+                            <p:outputLabel  value="#{msg['field.lugarllegada']}" >
+                                <i class="pi pi-home"></i>
+                            </p:outputLabel>
+
+                            <p:outputLabel value="#{item.lugarllegada}" />
+
                             <p:outputLabel value="#{msg['field.estatus']}" />
                             <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
 
+                        </b:panelGrid>
+                    </p:rowExpansion>
+                </p:dataTable>
 
-                            <jmoordbjsf:column_view
-                                renderedEdit="#{p:ifGranted('DOCENTE')}"
-                                controller="#{solicitudDocenteController}"
-                                url="/pages/solicituddocente/view.xhtml"
-                                item="#{item}"
-                                />
-                        </h:panelGrid>
-                    </p:panel>
-
-                </p:dataGrid>
             </b:panel>
 
 

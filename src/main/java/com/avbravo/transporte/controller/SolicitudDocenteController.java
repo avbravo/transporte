@@ -581,7 +581,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                     } else {
                         pasajeros = pasajerosPendientes;
                     }
-                
+
                     solicitud.setPasajeros(pasajeros);
                     if (insert()) {
                         solicitudesGuardadas++;
@@ -605,7 +605,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitudGuardadasList = new ArrayList<>();
             msgWarning = "";
             msgInfo = "";
-Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
+            Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
             if (!localValid()) {
                 return "";
             }
@@ -646,13 +646,13 @@ Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
                 Integer pasajerosPendientes = solicitud.getPasajeros();
                 Integer pasajeros = 0;
                 for (Integer index = 0; index < numeroVehiculosSolicitados; index++) {
-                       if (pasajerosPendientes > vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros()) {
+                    if (pasajerosPendientes > vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros()) {
                         pasajeros = vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros();
                         pasajerosPendientes = pasajerosPendientes - vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros();
                     } else {
                         pasajeros = pasajerosPendientes;
                     }
-                
+
                     solicitud.setPasajeros(pasajeros);
                     if (insert()) {
                         solicitudesGuardadas++;
@@ -1775,7 +1775,7 @@ Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
                 }
             }
             Integer solicitudesGuardadas = 0;
-           
+
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
 
@@ -1924,5 +1924,23 @@ Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
         return "";
     }
 
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Boolean beforePrepareView()">
+    @Override
+    public Boolean beforePrepareView() {
+        try {
+            Solicitud item = (Solicitud) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("item");
+            if (item.getEstatus().getIdestatus().equals("SOLICITADO")) {
+                return true;
+            } else {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.soloseeditanlossolicitados"));
+                return false;
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }
     // </editor-fold>
 }
