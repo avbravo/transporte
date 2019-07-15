@@ -53,29 +53,33 @@
 
 
 
-                <p:dataTable var="item" value="#{solicitudDocenteController.solicitudDataModel}">
+                <p:dataTable var="item" value="#{solicitudDocenteController.solicitudDataModel}"
+                             reflow="true">
                     <f:facet name="header">
                         "#{msg['titlelist.solicituddocente']}"
                     </f:facet>
                     <p:column style="width:16px">
                         <p:rowToggler />
                     </p:column>
-                    <p:column headerText="#{msg['field.idsolicitud']}">
+                    <p:column headerText="#{msg['field.idsolicitud']}" style="width:75px">
                         <h:outputText value="#{item.idsolicitud}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
+                        
                     </p:column>
-                    <p:column headerText="#{msg['field.fechapartida']}">
-                        <h:outputText value="#{solicitudDocenteController.showDate(item.fechahorapartida)}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
+                   
+                    <p:column headerText="#{msg['field.fechapartida']}" style="width:150px">
+                        <h:outputText value="#{solicitudDocenteController.showDate(item.fechahorapartida)} #{solicitudDocenteController.showHour(item.fechahorapartida)}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
+                    </p:column>
+                    <p:column headerText="#{msg['field.lugarllegada']}"  >
+                           <p:outputLabel value="#{item.lugarllegada}"   style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
                     </p:column>
 
-                    <p:column headerText="#{msg['field.horapartida']}">
-
-                        <p:outputLabel value="#{solicitudDocenteController.showHour(item.fechahorapartida)}"   style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
-                    </p:column>
-                    <p:column headerText="#{msg['field.estatus']}">
+                 
+                            <p:outputLabel value="#{item.lugarllegada}" />
+                    <p:column headerText="#{msg['field.estatus']}" style="width:100px">
                         <p:outputLabel  value="#{item.estatus.idestatus}"   style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}"/>
 
                     </p:column>
-                    <p:column >
+                    <p:column style="width:50px" >
                         <jmoordbjsf:commandbuttonviewdatatable
                             renderedEdit="#{p:ifGranted('DOCENTE')}"
                             controller="#{solicitudDocenteController}"
@@ -84,6 +88,11 @@
                             />
 
                     </p:column>
+                  
+                   
+                  
+
+             
                     <p:rowExpansion>
 
                         <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('DOCENTE')}"> 
@@ -131,8 +140,10 @@
                             <p:outputLabel  value="#{msg['field.lugarllegada']}" >
                                 <i class="pi pi-home"></i>
                             </p:outputLabel>
-
                             <p:outputLabel value="#{item.lugarllegada}" />
+                             <p:outputLabel  value="#{msg['field.objetivo']}" />
+                       <p:outputLabel  value="#{item.objetivo}" id="objetivo"   />
+
 
                             <p:outputLabel value="#{msg['field.estatus']}" />
                             <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
