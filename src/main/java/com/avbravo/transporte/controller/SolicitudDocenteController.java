@@ -303,7 +303,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (action.equals("view")) {
                 view();
             }
-
+            System.out.println("|===============> action: "+action);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
