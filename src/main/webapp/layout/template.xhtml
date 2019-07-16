@@ -48,9 +48,22 @@
 
             <ui:include src="/layout/top.xhtml"/>
         </ui:insert>
-       
-        <b:container >
-            <ui:insert name="content"/>
+
+
+        <b:container fluid="true">
+            <b:row>
+                <b:column medium-screen="2" hidden="tiny-screen,small-screen" style-class="site-navigation">
+                    <ui:include src="left.xhtml" />
+                </b:column>
+                <b:column medium-screen="9">
+                    <ui:insert name="content"/>
+                </b:column>
+                <b:column medium-screen="1"  hidden="tiny-screen,small-screen">
+                    <div style="position:fixed;top:118px" class="internal-navigation">
+                        <ui:insert name="content-navigator"/>
+                    </div>
+                </b:column>
+            </b:row>
         </b:container>
 
         <ui:insert name="nbtop">
