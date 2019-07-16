@@ -2110,12 +2110,14 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             if (diasconsecutivos) {
                 //
-                for (Vehiculo v : vehiculoList) {
-                    Integer numeroBuses =0;
+                 Integer numeroBuses =0;
                     Integer numeroPasajeros=0;
+                for (Vehiculo v : vehiculoList) {
+                   
                     if (isVehiculoActivoDisponible(v, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
                        numeroBuses++;
                        numeroPasajeros+=v.getPasajeros();
+                    }
                     }
                      DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
                         disponiblesBeans.setFechahorainicio(new Date());
@@ -2123,7 +2125,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                         disponiblesBeans.setNumeroBuses(numeroBuses);
                         disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
                         disponiblesBeansList.add(disponiblesBeans);
-                }
+                
             } else {
 
                 /*
