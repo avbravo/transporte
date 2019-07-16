@@ -226,6 +226,15 @@
                                              update=":form:msg, :form:info, :form:warning, :form:busespasajeros"
 
                                              label="#{msg['field.fechahoraregreso']}" />
+                        
+                           <p:outputLabel  value="#{msg['field.rangoagenda']}" />
+                        <p:selectCheckboxMenu id="multiple" value="#{solicitudDocenteController.diasSelected}" label="#{msg['field.rangoagenda']}" multiple="true"
+                                              required="true" 
+                                              disabled="true"
+                                              requiredMessage="#{msg['field.rangoagenda']} #{app['info.required']}"
+                                              panelStyle="width:250px">
+                            <f:selectItems value="#{solicitudDocenteController.diasList}" />
+                        </p:selectCheckboxMenu>
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <jmoordbjsf:inputText span="8" value="#{solicitudDocenteController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
@@ -236,14 +245,7 @@
 
 
 
-                        <p:outputLabel  value="#{msg['field.rangoagenda']}" />
-                        <p:selectCheckboxMenu id="multiple" value="#{solicitudDocenteController.diasSelected}" label="#{msg['field.rangoagenda']}" multiple="true"
-                                              required="true" 
-                                              disabled="true"
-                                              requiredMessage="#{msg['field.rangoagenda']} #{app['info.required']}"
-                                              panelStyle="width:250px">
-                            <f:selectItems value="#{solicitudDocenteController.diasList}" />
-                        </p:selectCheckboxMenu>
+                     
 
                         <p:outputLabel  value="#{msg['field.lugarllegada']}" />
                         <jmoordbjsf:inputText span="8" value="#{solicitudDocenteController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
@@ -261,7 +263,7 @@
 
                     <b:row>
 
-                        <b:column span="8">
+                        <b:column span="10">
                             <p:dataList value="#{solicitudDocenteController.sugerenciaDataModel}" var="item" type="ordered">
                                 <f:facet name="header">
                                     <p:outputLabel value="#{msg['field.sugerencia']}"/>

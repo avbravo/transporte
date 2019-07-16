@@ -11,7 +11,7 @@
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 > 
     <ui:define name="content">
-         
+
 
         <style>
             .thumbnail { max-width: 75%; }
@@ -277,7 +277,14 @@
                                              update=":form:msg, :form:info, :form:warning, :form:busespasajeros"
                                              />
 
-
+                        <p:outputLabel  value="#{msg['field.dias']}" />
+                        <p:selectCheckboxMenu id="multiple" value="#{solicitudDocenteController.diasSelected}" label="#{msg['field.dias']}" multiple="true"
+                                              required="true" 
+                                              requiredMessage="#{msg['field.dias']} #{app['info.required']}"
+                                              panelStyle="width:250px">
+                            <f:selectItems value="#{solicitudDocenteController.diasList}" />
+                            <p:ajax event="change" update=":form:datatableDisponibles" listener="#{solicitudDocenteController.changeDias()}" />
+                        </p:selectCheckboxMenu>
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <jmoordbjsf:pinputText size="60" value="#{solicitudDocenteController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
@@ -288,13 +295,7 @@
 
 
 
-                        <p:outputLabel  value="#{msg['field.dias']}" />
-                        <p:selectCheckboxMenu id="multiple" value="#{solicitudDocenteController.diasSelected}" label="#{msg['field.dias']}" multiple="true"
-                                              required="true" 
-                                              requiredMessage="#{msg['field.dias']} #{app['info.required']}"
-                                              panelStyle="width:250px">
-                            <f:selectItems value="#{solicitudDocenteController.diasList}" />
-                        </p:selectCheckboxMenu>
+
 
 
 
@@ -320,10 +321,33 @@
 
 
                     </b:panelGrid>
+                    <b:row>
+                        <b:column span="10">
+                            <p:dataTable value="#{solicitudDocenteController.disponiblesBeansList}" 
+                                         id="datatableDisponibles"
+                                         var="item"  reflow="true">
+                                <p:column headerText="#{msg['field.fechainicio']}" style="width:150px">
+                                    <h:outputText value="#{solicitudDocenteController.showDate(item.fechahorainicio)} #{solicitudDocenteController.showHour(item.fechahorainicio)}"  />
+                                </p:column>
+                                <p:column headerText="#{msg['field.fechafin']}" style="width:150px">
+                                    <h:outputText value="#{solicitudDocenteController.showDate(item.fechahorafin)} #{solicitudDocenteController.showHour(item.fechahorafin)}"  />
+                                </p:column>
+                                <p:column headerText="#{msg['field.buses']}" style="width:75px">
+                                    <p:outputLabel value="#{item.numeroBuses}"/>
+                                </p:column>
+                                <p:column headerText="#{msg['field.pasajeros']}" style="width:75px">
+                                    <p:outputLabel value="#{item.numeroPasajeros}"/>
+                                </p:column>
+                            </p:dataTable>                                
+
+
+                        </b:column>
+
+                    </b:row>
 
                     <b:row>
 
-                        <b:column span="8">
+                        <b:column span="12">
                             <p:dataList value="#{solicitudDocenteController.sugerenciaDataModel}" var="item" type="ordered">
                                 <f:facet name="header">
                                     <p:outputLabel value="#{msg['field.sugerencia']}"/>
@@ -335,13 +359,16 @@
 
                     </b:row>
                     <b:row>
-                        <b:column span="2">
+                        <b:column span="3">
                             <h:outputText value="#{msg['field.aceptoSugerencias']}" />
                         </b:column>
-                        <b:column span="4">
+                        <b:column span="2">
                             <p:inputSwitch onLabel="#{msg['field.yes']}"
                                            offLabel="#{msg['field.no']}"
                                            value="#{solicitudDocenteController.leyoSugerencias}" />
+                        </b:column>
+                        <b:column span="7">
+
                         </b:column>
                     </b:row>
 

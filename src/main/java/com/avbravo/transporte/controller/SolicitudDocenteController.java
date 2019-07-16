@@ -138,7 +138,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     private String stmpPort = "25";
     List<Integer> pages = new ArrayList<>();
     List<Sugerencia> sugerenciaList = new ArrayList<>();
-    List<DisponiblesBeans> disponiblesBeans = new ArrayList<>();
+    List<DisponiblesBeans> disponiblesBeansList = new ArrayList<>();
 
     //Entity
     Solicitud solicitud = new Solicitud();
@@ -2018,8 +2018,33 @@ public class SolicitudDocenteController implements Serializable, IController {
         return false;
     }// </editor-fold>
     
+     // <editor-fold defaultstate="collapsed" desc="String goList()">
+    /**
+     * se invoca desde los menus
+     * @return 
+     */
    public String goList(){
         JmoordbContext.put("solicitud", "golist");
        return "/pages/solicituddocente/list.xhtml";
-   }
+   }// </editor-fold>
+   
+   // <editor-fold defaultstate="collapsed" desc="String changeDias()">
+   /**
+    * cuando el usario selecciona el dia 
+    * @return 
+    */
+   public String changeDias(){
+       try {
+           disponiblesBeansList = new ArrayList<>();
+           DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
+           disponiblesBeans.setFechahorainicio(new Date());
+           disponiblesBeans.setFechahorafin(new Date());
+           disponiblesBeans.setNumeroBuses(1);
+           disponiblesBeans.setNumeroPasajeros(25);
+           disponiblesBeansList.add(disponiblesBeans);
+       } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+       }
+       return "";
+   }// </editor-fold>
 }
