@@ -51,7 +51,7 @@
                                              update=" :form:dataTable"/>
                     
                     <p:outputLabel value="#{msg['field.mensaje']}"/>
-                    <p:inputTextarea rows="2" value=""/>
+                    <p:inputTextarea rows="2" value="#{solicitudDocenteController.messages}"/>
                     <p:commandButton value="#{msg['button.send']}" action="#{solicitudDocenteController.enviarMensajesDirectos()}"
                                      update=":form:msgs"
                                      />

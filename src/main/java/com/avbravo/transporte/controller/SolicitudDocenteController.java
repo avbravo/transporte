@@ -108,6 +108,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     String msgInfo = "";
     String msgWarning = "";
     String msgDisponibles = "";
+    String messages="";
 
     Integer index = 0;
     Integer pasajerosDisponibles = 0;
@@ -372,8 +373,8 @@ public class SolicitudDocenteController implements Serializable, IController {
                     break;
 
                 case "estatus":
-                    Estatus estatus  = new Estatus();
-                       estatus=(Estatus) JmoordbContext.get("_fieldsearchsolicitud");
+                    Estatus estatus = new Estatus();
+                    estatus = (Estatus) JmoordbContext.get("_fieldsearchsolicitud");
                     doc = new Document("estatus.idestatus", estatus.getIdestatus());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
@@ -1952,56 +1953,60 @@ public class SolicitudDocenteController implements Serializable, IController {
         return false;
     }
     // </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="handleSelect">
 
+    // <editor-fold defaultstate="collapsed" desc="handleSelect">
     public String handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-          JmoordbContext.put("searchsolicitud","estatus");
-          JmoordbContext.put("_fieldsearchsolicitud",estatusSearch);
+            JmoordbContext.put("searchsolicitud", "estatus");
+            JmoordbContext.put("_fieldsearchsolicitud", estatusSearch);
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
-    
-    
-       // <editor-fold defaultstate="collapsed" desc="enviarMensajesDirectos()">
-    public void enviarMensajesDirectos(){
+
+    // <editor-fold defaultstate="collapsed" desc="enviarMensajesDirectos()">
+    public String enviarMensajesDirectos() {
         try {
-             //  Guardar las notificaciones
+            if(messages.equals("")){
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaymensajeparaenviar"));
+                return "";
+  
+            }
+            //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
             List<Usuario> usuarioList = usuarioRepository.filters(filter);
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername());
+                    saveNotification(u.getUsername(),messages);
                 });
-                push.send("Nueva solicitud docente ");
+                push.send("Mensaje de docente ");
             }
-JsfUtil.infoDialog("Informacion", "Se envio la notifacion a los administradores");
+            JsfUtil.infoDialog("Informacion", "Se envio la notifacion a los administradores");
         } catch (Exception e) {
-                  errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
+        return "";
     }
     // </editor-fold>
 
-    
-     // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
+    // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
     private Boolean saveNotification(String username, String mensaje) {
         try {
             JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
 
             jmoordbNotifications.setIdjmoordbnotifications(autoincrementableServices.getContador("jmoordbnNotifications"));
             jmoordbNotifications.setUsername(username);
-          Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            jmoordbNotifications.setMessage("De: " + jmoordb_user.getNombre() + " email "+jmoordb_user.getEmail() +" Mensaje: "+mensaje);
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            jmoordbNotifications.setMessage("De: " + jmoordb_user.getNombre() + " email " + jmoordb_user.getEmail() + " Mensaje: " + mensaje);
             jmoordbNotifications.setViewed("no");
             jmoordbNotifications.setDate(DateUtil.fechaActual());
-            jmoordbNotifications.setType("solicituddocente");
+            jmoordbNotifications.setType("mensajedocente");
             jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
             jmoordbNotificationsRepository.save(jmoordbNotifications);
+           
             return true;
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
