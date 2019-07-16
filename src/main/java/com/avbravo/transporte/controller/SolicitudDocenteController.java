@@ -99,7 +99,9 @@ import org.primefaces.model.ScheduleModel;
 @Named
 @ViewScoped
 @Getter
+
 @Setter
+
 public class SolicitudDocenteController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
@@ -130,7 +132,6 @@ public class SolicitudDocenteController implements Serializable, IController {
 
     private ScheduleModel eventModel;
     private ScheduleEvent event = new DefaultScheduleEvent();
-
     Integer page = 1;
     Integer rowPage = 25;
     private String stmpPort = "25";
