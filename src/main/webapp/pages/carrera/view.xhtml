@@ -27,7 +27,7 @@
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <b:panel title="#{app['title.data']}"  look="primary">
+                <b:panel collapsible="false" title="#{app['title.data']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{carreraController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idcarrera']}" />
                         <p:outputLabel  value="#{carreraController.carrera.idcarrera}" id="idcarrera"   />

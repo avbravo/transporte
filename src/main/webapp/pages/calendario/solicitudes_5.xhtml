@@ -28,7 +28,7 @@
 
                 <jmoordbjsf:messages id="msg"/>
 
-                <b:panel title="#{msg['titleview.calendariosolicitud']}" look="primary">
+                <b:panel collapsible="false" title="#{msg['titleview.calendariosolicitud']}" look="primary">
 
 
                     <p:outputLabel value="#{msg['field.idestatus']}"/>
@@ -74,7 +74,7 @@ labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"        listener="
 
 
 
-                <b:panel id="dataTable" look="primary">
+                <b:panel collapsible="false" id="dataTable" look="primary">
                     <p:commandButton value="#{app['button.new']}" 
                                      type="button" 
                                      

@@ -25,7 +25,7 @@
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <b:panel title="#{msg['titleview.jmoordbNotifications']}"  look="primary">
+                <b:panel collapsible="false" title="#{msg['titleview.jmoordbNotifications']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{jmoordbNotificationsController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idjmoordbNotifications']}" />
                         <p:outputLabel  value="#{jmoordbNotificationsController.jmoordbNotifications.idjmoordbNotifications}" id="idjmoordbNotifications"   />

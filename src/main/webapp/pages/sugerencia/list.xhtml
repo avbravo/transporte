@@ -26,7 +26,7 @@
 
             <b:growl  id="msgs"/>
 
-            <b:panel title="#{msg['titlelist.sugerencia']}" id="content"   look="primary" > 
+            <b:panel collapsible="false" title="#{msg['titlelist.sugerencia']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
 
@@ -58,7 +58,7 @@
                     </b:column>
                 </b:row>
             </b:panel>
-            <b:panel id="dataTable" look="primary">
+            <b:panel collapsible="false" id="dataTable" look="primary">
                 <jmoordbjsf:paginator
                     controller="#{sugerenciaController}"                        
                     rowPage="#{sugerenciaController.rowPage}"                   

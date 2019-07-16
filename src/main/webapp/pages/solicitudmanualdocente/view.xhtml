@@ -26,7 +26,7 @@
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <b:panel title="#{msg['titleview.solicitudmanualdocente']}"  look="primary">
+                <b:panel collapsible="false" title="#{msg['titleview.solicitudmanualdocente']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{solicitudManualDocenteController.writable}"> 
                         <p:outputLabel  value="#{msg['field.fecha']}" />
                         <jmoordbjsf:labelDate  value="#{solicitudManualDocenteController.solicitud.fecha}" id="fecha"   />

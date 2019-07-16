@@ -30,7 +30,7 @@
 
             <b:growl  id="msgs"/>
 
-            <b:panel title="#{msg['titlelist.solicituddocente']}" id="content"   look="primary" > 
+            <b:panel collapsible="false" title="#{msg['titlelist.solicituddocente']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <p:schedule id="schedule"  
                             rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
@@ -40,7 +40,7 @@
 
                 </p:schedule>
 
-                <b:panel id="colores" autoUpdate="true" >
+                <b:panel collapsible="false" id="colores" autoUpdate="true" >
                     <b:row >
 
                         <b:column span="3">

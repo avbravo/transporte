@@ -27,7 +27,7 @@
                                   name="remoteid" 
                                   actionListener="#{conductorController.findByCedula()}"/>
                 <jmoordbjsf:messages id="msg"/> 
-                <b:panel title="#{msg['titleview.changecedula']}" look="primary"> 
+                <b:panel collapsible="false" title="#{msg['titleview.changecedula']}" look="primary"> 
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{p:ifGranted('ADMINISTRADOR')}"> 
                         <p:outputLabel  value="#{msg['field.cedula']}" />
                         <b:inputText       

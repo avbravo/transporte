@@ -25,7 +25,7 @@
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <b:panel title="#{msg['titleview.sugerencia']}"  look="primary">
+                <b:panel collapsible="false" title="#{msg['titleview.sugerencia']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{sugerenciaController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idsugerencia']}" />
                         <p:outputLabel  value="#{sugerenciaController.sugerencia.idsugerencia}" id="idsugerencia"   />

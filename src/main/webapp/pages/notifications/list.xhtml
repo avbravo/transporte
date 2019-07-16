@@ -26,7 +26,7 @@
 
             <b:growl  id="msgs"/>
 
-            <b:panel title="#{app['titlelist.jmoordbNotifications']}" id="content"   look="primary" > 
+            <b:panel collapsible="false" title="#{app['titlelist.jmoordbNotifications']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
          <b:commandButton value="#{app['button.markall']}" 
              action="#{jmoordbNotificationsController.markAsViewedAll()}"
@@ -34,7 +34,7 @@
                                          update=":form:dataTable, :form:msgs"/>
                        
             </b:panel>
-            <b:panel id="dataTable"  look="primary">
+            <b:panel collapsible="false" id="dataTable"  look="primary">
                 
                  <jmoordbjsf:paginator 
                     controller="#{jmoordbNotificationsController}"     

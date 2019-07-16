@@ -30,7 +30,7 @@
 
                 <jmoordbjsf:messages id="msg"/>
 
-                <b:panel title="#{msg['titleview.calendariosolicitud']}" look="primary">
+                <b:panel collapsible="false" title="#{msg['titleview.calendariosolicitud']}" look="primary">
 
 
                     <b:row/>
@@ -50,7 +50,7 @@
                     <!--</b:panelGrid>-->                    
 
                 </b:panel>
-                  <b:panel >
+                  <b:panel collapsible="false" >
                       <b:row>
                          
                           <b:column span="2">
@@ -85,7 +85,7 @@
 
 
 
-                <b:panel id="dataTable" look="primary">
+                <b:panel collapsible="false" id="dataTable" look="primary">
                     <p:commandButton value="#{app['button.new']}" 
                                      update="viajesDetails"
 

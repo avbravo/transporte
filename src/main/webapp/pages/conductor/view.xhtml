@@ -25,7 +25,7 @@
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-                <b:panel title="#{msg['titleview.conductor']}"  look="primary">
+                <b:panel collapsible="false" title="#{msg['titleview.conductor']}"  look="primary">
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{conductorController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idconductor']}" />
                         <p:outputLabel  value="#{conductorController.conductor.idconductor}" id="idconductor"   />

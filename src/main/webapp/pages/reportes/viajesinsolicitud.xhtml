@@ -27,7 +27,7 @@
 
             <b:growl  id="msgs"/>
 
-            <b:panel title="#{msg['titlelist.viajesinsolicitud']}" id="content"   look="primary" > 
+            <b:panel collapsible="false" title="#{msg['titlelist.viajesinsolicitud']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
 
 
@@ -54,7 +54,7 @@
 
 
             </b:panel>
-            <b:panel id="dataTable" look="primary">
+            <b:panel collapsible="false" id="dataTable" look="primary">
                 <jmoordbjsf:paginatorReport 
                     rowPage="#{viajeReporteController.rowPage}"
                     first="#{viajeReporteController.first()}"

@@ -25,13 +25,13 @@
         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('DOCENTE')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
-            <h:panelGroup id="content" layout="block"> 
+            <h:panelGroup id="content" layout="block" > 
 
                 <jmoordbjsf:messages id="msg"/>
 
 
 
-                <b:panel title="#{msg['title.solicituddocente']}" look="primary" rendered="#{p:ifGranted('DOCENTE')}">
+                <b:panel collapsible="false" title="#{msg['title.solicituddocente']}" look="primary" rendered="#{p:ifGranted('DOCENTE')}" >
 
 
 

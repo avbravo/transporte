@@ -27,7 +27,7 @@
 
             <b:growl  id="msgs"/>
 
-            <b:panel title="#{msg['titlelist.viaje']}" id="content"   look="primary" > 
+            <b:panel collapsible="false" title="#{msg['titlelist.viaje']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
 
 
@@ -145,7 +145,7 @@
 
 
             </b:panel>
-            <b:panel id="dataTable" look="primary">
+            <b:panel collapsible="false" id="dataTable" look="primary">
                 
                    <jmoordbjsf:paginator
                     controller="#{viajeController}"                        
