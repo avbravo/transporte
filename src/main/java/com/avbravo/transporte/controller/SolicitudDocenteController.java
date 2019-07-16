@@ -31,6 +31,7 @@ import com.avbravo.jmoordbutils.printer.Printer;
 
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.jmoordbutils.email.ManagerEmail;
+import com.avbravo.transporte.beans.DisponiblesBeans;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.datamodel.SugerenciaDataModel;
 import com.avbravo.transporteejb.entity.Estatus;
@@ -137,6 +138,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     private String stmpPort = "25";
     List<Integer> pages = new ArrayList<>();
     List<Sugerencia> sugerenciaList = new ArrayList<>();
+    List<DisponiblesBeans> disponiblesBeans = new ArrayList<>();
 
     //Entity
     Solicitud solicitud = new Solicitud();
@@ -303,7 +305,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (action.equals("view")) {
                 view();
             }
-            System.out.println("|===============> action: "+action);
+           
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -2015,4 +2017,9 @@ public class SolicitudDocenteController implements Serializable, IController {
         }
         return false;
     }// </editor-fold>
+    
+   public String goList(){
+        JmoordbContext.put("solicitud", "golist");
+       return "/pages/solicituddocente/list.xhtml";
+   }
 }
