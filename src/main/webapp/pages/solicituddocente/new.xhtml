@@ -263,7 +263,7 @@
                         <jmoordbjsf:calendar 
                             pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
                             listener="#{solicitudDocenteController.calendarChangeListener}"
-                            update=":form:msg :form:info, :form:warning,  :form:datatableDisponibles"
+                            update=":form:msg   :form:datatableDisponibles"
                             />
 
 
@@ -274,7 +274,7 @@
 
                                              label="#{msg['field.fechahoraregreso']}"
                                              listener="#{solicitudDocenteController.calendarChangeListener}"
-                                             update=":form:msg, :form:info, :form:warning,  :form:datatableDisponibles"
+                                             update=":form:msg,   :form:datatableDisponibles"
                                              />
 
                         <p:outputLabel  value="#{msg['field.dias']}" />
@@ -381,12 +381,7 @@
                     </b:row>
                 </b:panel>
 
-                <div class="ui-g-12 ui-md-6">
-                    <p:staticMessage severity="info" id="info" summary="" detail="#{solicitudDocenteController.msgInfo}" />
-                </div>
-                <div class="ui-g-12 ui-md-6">
-                    <p:staticMessage severity="warn" id="warning" summary="" detail="#{solicitudDocenteController.msgWarning}" />
-                </div>
+               
                 
 
             </h:panelGroup>

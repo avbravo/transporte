@@ -103,12 +103,13 @@ import org.primefaces.model.ScheduleModel;
 
 @Setter
 
-public class SolicitudDocenteController implements Serializable, IController {
+public class SolicitudDocenteController1 implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
 
-  
+    String msgInfo = "";
+    String msgWarning = "";
     String messages = "";
 
     Integer index = 0;
@@ -244,7 +245,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 //    
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public SolicitudDocenteController() {
+    public SolicitudDocenteController1() {
     }
 
     // </editor-fold>
@@ -327,15 +328,10 @@ public class SolicitudDocenteController implements Serializable, IController {
                 diasSelected[contador++] = s;
 
             }
-            disponiblesBeansList = new ArrayList<>();
-            // hayBusDisponiblesConFechas();
 
-            changeDaysViewAvailable();
-            if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
+            hayBusDisponiblesConFechas();
             
-                return false;
-            }
+//            sss
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -448,18 +444,19 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (DateUtil.anioActual() > periodo) {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.anioactualmayorperiodo"));
+                msgWarning = rf.getMessage("warning.anioactualmayorperiodo");
                 return false;
             }
             Integer diferencia = periodo - DateUtil.anioActual();
             if (diferencia > 1) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.periodoacademico"));
-             
+                msgWarning = rf.getMessage("warning.periodoacademico");
                 return false;
             }
             if (!leyoSugerencias) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.leersugerencias"));
 
-             
+                msgWarning = rf.getMessage("warning.leersugerencias");
                 return false;
             }
 
@@ -614,7 +611,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     public String save() {
         try {
             solicitudGuardadasList = new ArrayList<>();
-
+            msgWarning = "";
+            msgInfo = "";
             Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
             if (!localValid()) {
                 return "";
@@ -793,7 +791,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             }//no son dias consecutivos
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
-          
+            msgInfo = rf.getMessage("info.savesolicitudes");
+            msgWarning = "";
             inicializar();
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
@@ -1321,7 +1320,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="Boolean inicializar()">
     private String inicializar() {
         try {
-          
+            msgInfo = "";
+            msgWarning = "";
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             Date idsecond = solicitud.getFecha();
             Integer id = solicitud.getIdsolicitud();
@@ -1588,7 +1588,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     public void calendarChangeListener(SelectEvent event) {
         try {
 //verifica si hay buses disponibles
-      
+            msgWarning = "";
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
@@ -1601,14 +1601,14 @@ public class SolicitudDocenteController implements Serializable, IController {
                 } else {
                     if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
                         JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
-                      
+                        msgWarning = rf.getMessage("warning.nohaybusesdisponiblesenesasfechas");
                         return;
                     }
                 }
 
                 if (!solicitudServices.solicitudDisponible(solicitud, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
                     JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yatienesolicitudenesasfechas"));
-                   
+                    msgWarning = rf.getMessage("warning.yatienesolicitudenesasfechas");
                 }
 
             }
@@ -1659,6 +1659,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 });
                 haydisponibles = true;
             }
+            
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1741,7 +1742,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             // Si la cantidad de buses solicitados es mayor que los disponibles
             if (solicitud.getNumerodevehiculos() > vehiculoDisponiblesList.size()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayesacantidadbusesdisponibles"));
-
+                msgWarning = rf.getMessage("warning.nohayesacantidadbusesdisponibles");
                 return false;
             }
             /**
@@ -1761,21 +1762,22 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
 // verifica si la cantidad de pasajeros solicitados es mayor que los disponibles
+            
             if (solicitud.getPasajeros() > pasajerosDisponibles) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros"));
-
+                msgWarning = rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros");
                 return false;
             }
 
             if (vehiculoAsignadosList == null || vehiculoAsignadosList.isEmpty()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeasignarbusesparapasajeros"));
-             
+                msgWarning = rf.getMessage("warning.nosepuedeasignarbusesparapasajeros");
                 return false;
             }
 
             if (vehiculoAsignadosList.size() != solicitud.getNumerodevehiculos()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerobusesrecomendados") + " " + vehiculoAsignadosList.size());
-
+                msgWarning = rf.getMessage("warning.numerobusesrecomendados") + " " + vehiculoAsignadosList.size();
                 return false;
             }
 
@@ -1791,9 +1793,10 @@ public class SolicitudDocenteController implements Serializable, IController {
     @Override
     public String edit() {
         try {
-   leyoSugerencias= true;
+            System.out.println("---> llego a edit");
             solicitudGuardadasList = new ArrayList<>();
-   
+            msgWarning = "";
+            msgInfo = "";
 
             if (!localValid()) {
                 return "";
@@ -1848,7 +1851,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitudRepository.update(solicitud);
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
-
+            msgInfo = rf.getMessage("info.editsolicitudes");
+            msgWarning = "";
             // inicializar();
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
@@ -2300,6 +2304,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                 JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.diasconsecutivosinvalidos"));
 
+                msgWarning = rf.getMessage("warning.diasconsecutivosinvalidos");
                 return false;
             }
             valid = true;
@@ -2308,14 +2313,14 @@ public class SolicitudDocenteController implements Serializable, IController {
         }
         return valid;
     }// </editor-fold>
-
+    
 // <editor-fold defaultstate="collapsed" desc="Boolean beforePrepareGoNew()">
     @Override
-    public Boolean beforePrepareNew() {
+    public Boolean beforePrepareNew(){
         try {
-            disponiblesBeansList = new ArrayList<>();
+         disponiblesBeansList = new ArrayList<>();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+                   errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return true;
     }

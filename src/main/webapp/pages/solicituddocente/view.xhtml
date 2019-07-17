@@ -213,9 +213,8 @@
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
                         <jmoordbjsf:calendar 
                             pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}"
-
                             listener="#{solicitudDocenteController.calendarChangeListener}"
-                            update=":form:msg, :form:info, :form:warning, :form:busespasajeros"
+                            update=":form:msg"
                             />
 
 
@@ -223,7 +222,7 @@
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
                         <jmoordbjsf:calendar pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
                                              listener="#{solicitudDocenteController.calendarChangeListener}"
-                                             update=":form:msg, :form:info, :form:warning, :form:busespasajeros"
+                                             update=":form:msg "
 
                                              label="#{msg['field.fechahoraregreso']}" />
                         
@@ -234,22 +233,15 @@
                                               requiredMessage="#{msg['field.rangoagenda']} #{app['info.required']}"
                                               panelStyle="width:250px">
                             <f:selectItems value="#{solicitudDocenteController.diasList}" />
+                             <p:ajax event="change" update=":form:datatableDisponibles" listener="#{solicitudDocenteController.changeDaysViewAvailable()}" />
                         </p:selectCheckboxMenu>
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <jmoordbjsf:inputText span="8" value="#{solicitudDocenteController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
 
-
-
-
-
-
-
-                     
-
+    
                         <p:outputLabel  value="#{msg['field.lugarllegada']}" />
                         <jmoordbjsf:inputText span="8" value="#{solicitudDocenteController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
-
 
 
                         <p:outputLabel  value="#{msg['field.recursossolicitados']}" />
@@ -261,6 +253,29 @@
 
                     </b:panelGrid>
 
+                    <b:row>
+                        <b:column span="10">
+                            <p:dataTable value="#{solicitudDocenteController.disponiblesBeansList}" 
+                                         id="datatableDisponibles"
+                                         var="item"  reflow="true">
+                                <p:column headerText="#{msg['field.fechainicio']}" style="width:150px">
+                                    <h:outputText value="#{solicitudDocenteController.showDate(item.fechahorainicio)} #{solicitudDocenteController.showHour(item.fechahorainicio)}"  />
+                                </p:column>
+                                <p:column headerText="#{msg['field.fechafin']}" style="width:150px">
+                                    <h:outputText value="#{solicitudDocenteController.showDate(item.fechahorafin)} #{solicitudDocenteController.showHour(item.fechahorafin)}"  />
+                                </p:column>
+                                <p:column headerText="#{msg['field.buses']}" style="width:75px">
+                                    <p:outputLabel value="#{item.numeroBuses}"/>
+                                </p:column>
+                                <p:column headerText="#{msg['field.pasajeros']}" style="width:75px">
+                                    <p:outputLabel value="#{item.numeroPasajeros}"/>
+                                </p:column>
+                            </p:dataTable>                                
+
+
+                        </b:column>
+
+                    </b:row>
                     <b:row>
 
                         <b:column span="10">
@@ -274,17 +289,7 @@
                         </b:column>
 
                     </b:row>
-                    <b:row>
-                        <b:column span="2">
-                            <h:outputText value="#{msg['field.aceptoSugerencias']}" />
-                        </b:column>
-                        <b:column span="4">
-                            <p:inputSwitch onLabel="#{msg['field.yes']}"
-                                           offLabel="#{msg['field.no']}"
-                                           value="#{solicitudDocenteController.leyoSugerencias}" />
-                        </b:column>
-                    </b:row>
-
+                  
 
                     <b:row>
 
@@ -305,15 +310,8 @@
                     </b:row>
                 </b:panel>
 
-                <div class="ui-g-12 ui-md-6">
-                    <p:staticMessage severity="info" id="info" summary="" detail="#{solicitudDocenteController.msgInfo}" />
-                </div>
-                <div class="ui-g-12 ui-md-6">
-                    <p:staticMessage severity="warn" id="warning" summary="" detail="#{solicitudDocenteController.msgWarning}" />
-                </div>
-                   <div class="ui-g-12 ui-md-6">
-                    <p:staticMessage severity="fatal" id="busespasajeros" summary="" detail="#{solicitudDocenteController.msgDisponibles}" />
-                </div>
+             
+                 
             </h:panelGroup>
         </b:form>
         <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('DOCENTE')}"/>
