@@ -263,7 +263,7 @@
                         <jmoordbjsf:calendar 
                             pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
                             listener="#{solicitudDocenteController.calendarChangeListener}"
-                            update=":form:msg :form:info, :form:warning, :form:busespasajeros"
+                            update=":form:msg :form:info, :form:warning,  :form:datatableDisponibles"
                             />
 
 
@@ -274,7 +274,7 @@
 
                                              label="#{msg['field.fechahoraregreso']}"
                                              listener="#{solicitudDocenteController.calendarChangeListener}"
-                                             update=":form:msg, :form:info, :form:warning, :form:busespasajeros"
+                                             update=":form:msg, :form:info, :form:warning,  :form:datatableDisponibles"
                                              />
 
                         <p:outputLabel  value="#{msg['field.dias']}" />
@@ -283,20 +283,11 @@
                                               requiredMessage="#{msg['field.dias']} #{app['info.required']}"
                                               panelStyle="width:250px">
                             <f:selectItems value="#{solicitudDocenteController.diasList}" />
-                            <p:ajax event="change" update=":form:datatableDisponibles" listener="#{solicitudDocenteController.changeDias()}" />
+                            <p:ajax event="change" update=":form:datatableDisponibles" listener="#{solicitudDocenteController.changeDaysViewAvailable()}" />
                         </p:selectCheckboxMenu>
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <jmoordbjsf:pinputText size="60" value="#{solicitudDocenteController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
-
-
-
-
-
-
-
-
-
 
 
 
@@ -374,12 +365,7 @@
 
                     <b:row>
 
-
-
-
-
-
-                        <b:column span="4">
+                        <b:column span="6">
                             <jmoordbjsf:toolbarnewsavereturn id="ref"
                                                              renderedNew="#{p:ifGranted('DOCENTE')}"
                                                              renderedSave="#{p:ifGranted('DOCENTE')}"
@@ -401,9 +387,7 @@
                 <div class="ui-g-12 ui-md-6">
                     <p:staticMessage severity="warn" id="warning" summary="" detail="#{solicitudDocenteController.msgWarning}" />
                 </div>
-                <div class="ui-g-12 ui-md-6">
-                    <p:staticMessage severity="fatal" id="busespasajeros" summary="" detail="#{solicitudDocenteController.msgDisponibles}" />
-                </div>
+                
 
             </h:panelGroup>
         </b:form>

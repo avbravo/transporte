@@ -110,7 +110,6 @@ public class SolicitudDocenteController implements Serializable, IController {
 
     String msgInfo = "";
     String msgWarning = "";
-    String msgDisponibles = "";
     String messages = "";
 
     Integer index = 0;
@@ -165,6 +164,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
     List<Tipovehiculo> suggestionsTipovehiculo = new ArrayList<>();
     List<Vehiculo> vehiculoDisponiblesList = new ArrayList<>();
+    List<String> rangoAgenda = new ArrayList<>();
     //
     private String[] diasSelected;
     private List<String> diasList;
@@ -408,21 +408,12 @@ public class SolicitudDocenteController implements Serializable, IController {
             usuarioList.add(responsable);
             solicitud.setUsuario(usuarioList);
 
-            List<String> rangoAgenda = new ArrayList<>();
-            Integer c = 0;
+            rangoAgenda = new ArrayList<>();
 
-            for (String d : diasSelected) {
-                if (d.equals("Dia/ Dias Consecutivo")) {
-                    diasconsecutivos = true;
-                }
-                c++;
-                rangoAgenda.add(d);
-            }
-            if (c > 1 && diasconsecutivos) {
-                JsfUtil.warningDialog("Advertencia", "Cuando selecciona Dia/ Dias Consecutivo no puede seleccionar otro valor");
-                msgWarning = "Cuando selecciona Dia/ Dias Consecutivo no puede seleccionar otro valor";
+            if (!isValidDiasConsecutivos()) {
                 return false;
             }
+
             solicitud.setRangoagenda(rangoAgenda);
 
             solicitud.setFacultad(facultadList);
@@ -449,19 +440,21 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             Integer periodo = Integer.parseInt(solicitud.getPeriodoacademico());
             if (DateUtil.anioActual() > periodo) {
-                JsfUtil.warningDialog("Advertencia", "Año actual es mayor que el periodo academico");
-                msgWarning = "Año actual es mayor que el periodo academico";
+
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.anioactualmayorperiodo"));
+                msgWarning = rf.getMessage("warning.anioactualmayorperiodo");
                 return false;
             }
             Integer diferencia = periodo - DateUtil.anioActual();
             if (diferencia > 1) {
-                JsfUtil.warningDialog("Advertencia", "El periodo academico debe revisarlo");
-                msgWarning = "El periodo academico debe revisarlo";
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.periodoacademico"));
+                msgWarning = rf.getMessage("warning.periodoacademico");
                 return false;
             }
             if (!leyoSugerencias) {
-                JsfUtil.warningDialog("Advertencia", "Por favor lea las sugerencias");
-                msgWarning = "Por favor lea las sugerencias";
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.leersugerencias"));
+
+                msgWarning = rf.getMessage("warning.leersugerencias");
                 return false;
             }
 
@@ -1597,10 +1590,18 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!hayBusDisponiblesConFechas()) {
-                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
-                    msgWarning = rf.getMessage("warning.nohaybusesdisponiblesenesasfechas");
+                if (!solicitudServices.isValidDates(solicitud)) {
                     return;
+                }
+                changeDaysViewAvailable();
+                if (diasSelected == null || diasSelected.length == 0) {
+                    JsfUtil.warningDialog("texto", "Aun no ha seleccionado el rango");
+                } else {
+                    if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
+                        JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
+                        msgWarning = rf.getMessage("warning.nohaybusesdisponiblesenesasfechas");
+                        return;
+                    }
                 }
 
                 if (!solicitudServices.solicitudDisponible(solicitud, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
@@ -1631,7 +1632,7 @@ public class SolicitudDocenteController implements Serializable, IController {
         try {
             vehiculoDisponiblesList = new ArrayList<>();
             pasajerosDisponibles = 0;
-            Document doc = new Document("activo", "si").append("tipovehiculo.idtipovehiculo", "BUS");
+            Document doc = new Document("activo", "si").append("tipovehiculo.idtipovehiculo", "BUS").append("enreparacion", "no");
             vehiculoList = vehiculoRepository.findBy(doc);
             if (vehiculoList == null || vehiculoList.isEmpty()) {
                 return false;
@@ -1656,7 +1657,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 });
                 haydisponibles = true;
             }
-            msgDisponibles = rf.getMessage("info.asientosdisponibles") + " " + pasajerosDisponibles + " " + rf.getMessage("info.buses") + " " + vehiculoDisponiblesList.size();
+            
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1679,7 +1680,7 @@ public class SolicitudDocenteController implements Serializable, IController {
         try {
 
             pasajerosDisponibles = 0;
-            Document doc = new Document("activo", "si").append("tipovehiculo.idtipovehiculo", "BUS");
+            Document doc = new Document("activo", "si").append("tipovehiculo.idtipovehiculo", "BUS").append("enreparacion", "no");
             vehiculoList = vehiculoRepository.findBy(doc);
             if (vehiculoList == null || vehiculoList.isEmpty()) {
                 return vehiculoList;
@@ -1759,7 +1760,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
 // verifica si la cantidad de pasajeros solicitados es mayor que los disponibles
-            msgDisponibles = rf.getMessage("info.asientosdisponibles") + " " + pasajerosDisponibles + rf.getMessage("info.buses") + " " + vehiculoDisponiblesList.size();
+            
             if (solicitud.getPasajeros() > pasajerosDisponibles) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros"));
                 msgWarning = rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros");
@@ -2084,7 +2085,7 @@ public class SolicitudDocenteController implements Serializable, IController {
      *
      * @return
      */
-    public String changeDias() {
+    public String changeDaysViewAvailable() {
         try {
             disponiblesBeansList = new ArrayList<>();
 
@@ -2093,39 +2094,29 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (vehiculoList == null || vehiculoList.isEmpty()) {
                 return "";
             }
-            Integer c = 0;
-            diasconsecutivos = false;
-            for (String d : diasSelected) {
-                if (d.equals("Dia/ Dias Consecutivo")) {
-                    diasconsecutivos = true;
-                }
-                c++;
-
-            }
-            if (c > 1 && diasconsecutivos) {
-                JsfUtil.warningDialog("Advertencia", "Cuando selecciona Dia/ Dias Consecutivo no puede seleccionar otro valor");
-                msgWarning = "Cuando selecciona Dia/ Dias Consecutivo no puede seleccionar otro valor";
+            rangoAgenda = new ArrayList<>();
+            if (!isValidDiasConsecutivos()) {
                 return "";
             }
 
             if (diasconsecutivos) {
                 //
-                 Integer numeroBuses =0;
-                    Integer numeroPasajeros=0;
+                Integer numeroBuses = 0;
+                Integer numeroPasajeros = 0;
                 for (Vehiculo v : vehiculoList) {
-                   
+
                     if (isVehiculoActivoDisponible(v, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
-                       numeroBuses++;
-                       numeroPasajeros+=v.getPasajeros();
+                        numeroBuses++;
+                        numeroPasajeros += v.getPasajeros();
                     }
-                    }
-                     DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
-                        disponiblesBeans.setFechahorainicio(new Date());
-                        disponiblesBeans.setFechahorafin(new Date());
-                        disponiblesBeans.setNumeroBuses(numeroBuses);
-                        disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
-                        disponiblesBeansList.add(disponiblesBeans);
-                
+                }
+                DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
+                disponiblesBeans.setFechahorainicio(new Date());
+                disponiblesBeans.setFechahorafin(new Date());
+                disponiblesBeans.setNumeroBuses(numeroBuses);
+                disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
+                disponiblesBeansList.add(disponiblesBeans);
+
             } else {
 
                 /*
@@ -2287,4 +2278,49 @@ public class SolicitudDocenteController implements Serializable, IController {
         }
         return "";
     }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean isValidDiasConsecutivos()">
+    /**
+     * Valida los dias consecutivos
+     *
+     * @return
+     */
+    private Boolean isValidDiasConsecutivos() {
+        Boolean valid = false;
+        try {
+            Integer c = 0;
+            diasconsecutivos = false;
+            for (String d : diasSelected) {
+                if (d.equals("Dia/ Dias Consecutivo")) {
+                    diasconsecutivos = true;
+                    rangoAgenda.add(d);
+                }
+                c++;
+
+            }
+            if (c > 1 && diasconsecutivos) {
+
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.diasconsecutivosinvalidos"));
+
+                msgWarning = rf.getMessage("warning.diasconsecutivosinvalidos");
+                return false;
+            }
+            valid = true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    }// </editor-fold>
+    
+// <editor-fold defaultstate="collapsed" desc="Boolean beforePrepareGoNew()">
+    @Override
+    public Boolean beforePrepareNew(){
+        try {
+         disponiblesBeansList = new ArrayList<>();
+        } catch (Exception e) {
+                   errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return true;
+    }
+    // </editor-fold>
 }
