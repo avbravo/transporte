@@ -678,7 +678,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 verificar si son dias validos
                 Descomponener la fecha de inicio
                  */
-                Date fechahorapartidad = solicitud.getFechahorapartida();
+                Date fechahorapartida = solicitud.getFechahorapartida();
                 Date fechahoraregreso = solicitud.getFechahoraregreso();
 
                 Integer diaPartida = DateUtil.diaDeUnaFecha(solicitud.getFechahorapartida());
