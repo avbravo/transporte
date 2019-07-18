@@ -30,6 +30,7 @@ import com.avbravo.jmoordbutils.dates.FechaDiaUtils;
 import com.avbravo.jmoordbutils.printer.Printer;
 
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import com.avbravo.jmoordbutils.dates.DecomposedDate;
 import com.avbravo.jmoordbutils.email.ManagerEmail;
 import com.avbravo.transporte.beans.DisponiblesBeans;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
@@ -108,7 +109,6 @@ public class SolicitudDocenteController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
 
-  
     String messages = "";
 
     Integer index = 0;
@@ -333,7 +333,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             changeDaysViewAvailable();
             if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
-            
+
                 return false;
             }
 
@@ -453,13 +453,12 @@ public class SolicitudDocenteController implements Serializable, IController {
             Integer diferencia = periodo - DateUtil.anioActual();
             if (diferencia > 1) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.periodoacademico"));
-             
+
                 return false;
             }
             if (!leyoSugerencias) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.leersugerencias"));
 
-             
                 return false;
             }
 
@@ -678,41 +677,20 @@ public class SolicitudDocenteController implements Serializable, IController {
                 verificar si son dias validos
                 Descomponener la fecha de inicio
                  */
-                Date fechahorapartida = solicitud.getFechahorapartida();
-                Date fechahoraregreso = solicitud.getFechahoraregreso();
+                DecomposedDate fechaPartidaDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahorapartida());
 
-                Integer diaPartida = DateUtil.diaDeUnaFecha(solicitud.getFechahorapartida());
-                Integer mesPartida = DateUtil.mesDeUnaFechaStartEneroWith0(solicitud.getFechahorapartida());
-                String nombreMesPartida = DateUtil.nombreMes(mesPartida);
-                Integer anioPartida = DateUtil.anioDeUnaFecha(solicitud.getFechahorapartida());
-                Integer horapartida = DateUtil.horaDeUnaFecha(solicitud.getFechahorapartida());
-                Integer minutopartida = DateUtil.minutosDeUnaFecha(solicitud.getFechahorapartida());
                 //descomponer la fecha de regreso
-                Integer diaRegreso = DateUtil.diaDeUnaFecha(solicitud.getFechahoraregreso());
-                Integer mesRegreso = DateUtil.mesDeUnaFechaStartEneroWith0(solicitud.getFechahoraregreso());
-                String nombreMesRegreso = DateUtil.nombreMes(mesRegreso);
-                Integer anioRegreso = DateUtil.anioDeUnaFecha(solicitud.getFechahoraregreso());
-                Integer horaregreso = DateUtil.horaDeUnaFecha(solicitud.getFechahoraregreso());
-                Integer minutoregreso = DateUtil.minutosDeUnaFecha(solicitud.getFechahoraregreso());
+                DecomposedDate fechaRegresoDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahoraregreso());
 
-                varAnio = anioPartida;
+                varAnio = fechaPartidaDescompuesta.getYear();
                 //Determinar cuantos meses hay
-                Integer meses = 0;
-                if (mesPartida > mesRegreso) {
-                    meses = (mesRegreso + 12) - mesPartida;
-                } else {
-                    if (anioPartida < anioRegreso) {
-                        meses = (mesRegreso + 12) - mesPartida;
-                    } else {
-                        meses = mesRegreso - mesPartida;
-                    }
+                Integer meses = DateUtil.numberOfMonthBetweenDecomposedDate(fechaPartidaDescompuesta, fechaRegresoDescompuesta);
 
-                }
                 //mismo mes
                 if (meses == 0) {
 // Encontrar las fechas en el rango
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
-                    fechasValidasList = validarRangoFechas(anioPartida, nombreMesPartida);
+                    fechasValidasList = validarRangoFechas(fechaPartidaDescompuesta.getYear(), fechaPartidaDescompuesta.getNameOfMonth());
                     //recorre todos los vehiculos 
                     for (int i = 0; i < numeroVehiculosSolicitados; i++) {
                         if (fechasValidasList.isEmpty()) {
@@ -721,7 +699,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                             return "";
                         } else {
                             //ESTOS SON LOS QUE SE GUARDARIAN
-                            solicitudesGuardadas = procesar(fechasValidasList, horapartida, minutopartida, horaregreso, minutoregreso);
+                            solicitudesGuardadas = procesar(fechasValidasList, fechaPartidaDescompuesta.getHour(), fechaPartidaDescompuesta.getMinute(), fechaRegresoDescompuesta.getHour(), fechaRegresoDescompuesta.getMinute());
 
                         }//isEmpty
                     } //getNumerodevehiculos
@@ -732,14 +710,14 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                         for (int i = 0; i <= meses; i++) {
                             //Verificar si es el mismo año
-                            if (anioPartida.equals(anioRegreso)) {
-                                Integer m = mesPartida + i;
+                            if (fechaPartidaDescompuesta.getYear().equals(fechaRegresoDescompuesta.getYear())) {
+                                Integer m = fechaPartidaDescompuesta.getMonth() + i;
                                 String nameOfMohth = DateUtil.nombreMes(m);
-                                List<FechaDiaUtils> list = validarRangoFechas(anioPartida, nameOfMohth);
+                                List<FechaDiaUtils> list = validarRangoFechas(fechaPartidaDescompuesta.getYear(), nameOfMohth);
                                 List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                                 if (list == null || list.isEmpty()) {
                                     JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes;" + nameOfMohth);
-                                    //return "";
+
                                 } else {
                                     list.forEach((f) -> {
                                         fechasValidasList.add(f);
@@ -748,12 +726,12 @@ public class SolicitudDocenteController implements Serializable, IController {
                                 if (fechasValidasList == null || fechasValidasList.isEmpty()) {
 
                                 } else {
-                                    solicitudesGuardadas = procesar(fechasValidasList, horapartida, minutopartida, horaregreso, minutoregreso);
+                                    solicitudesGuardadas = procesar(fechasValidasList, fechaPartidaDescompuesta.getHour(), fechaPartidaDescompuesta.getMinute(), fechaRegresoDescompuesta.getHour(), fechaRegresoDescompuesta.getMinute());
                                 }
 
                             } else {
                                 //cambio el año   
-                                Integer m = mesPartida + i;
+                                Integer m = fechaPartidaDescompuesta.getMonth() + i;
                                 if (m == 12) {
                                     varAnio = varAnio + 1;
                                 }
@@ -777,7 +755,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                                 if (fechasValidasList == null || fechasValidasList.isEmpty()) {
 
                                 } else {
-                                    solicitudesGuardadas = procesar(fechasValidasList, horapartida, minutopartida, horaregreso, minutoregreso);
+                                    solicitudesGuardadas = procesar(fechasValidasList, fechaPartidaDescompuesta.getHour(), fechaPartidaDescompuesta.getMinute(), fechaRegresoDescompuesta.getHour(), fechaRegresoDescompuesta.getMinute());
                                 }
 
                             }
@@ -793,7 +771,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }//no son dias consecutivos
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
-          
+
             inicializar();
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
@@ -806,122 +784,12 @@ public class SolicitudDocenteController implements Serializable, IController {
                 push.send("Nueva solicitud docente ");
             }
 
+  
+       
             /**
              * Enviar un email al docente y al mismo administrador
              */
-            Solicitud s0 = solicitudGuardadasList.get(0);
-
-            String varFacultadName = "";
-            String varCarreraName = "";
-            String varRango = "";
-            varFacultadName = s0.getFacultad().stream().map((f) -> "" + f.getDescripcion()).reduce(varFacultadName, String::concat);
-            for (Carrera c : s0.getCarrera()) {
-                varCarreraName = "" + c.getDescripcion();
-            }
-            for (String r : s0.getRangoagenda()) {
-                varRango = "" + r;
-            }
-            String header = "\n Detalle de la solicitud:"
-                    + "\nObjetivo : " + s0.getObjetivo()
-                    + "\nObservaciones: " + s0.getObservaciones()
-                    + "\nLugares: " + s0.getLugares()
-                    + "\nLugar de partida: " + s0.getLugarpartida()
-                    + "\nLugar de llegada: " + s0.getLugarllegada()
-                    + "\nFacultad: " + varFacultadName
-                    + "\nCarrera: " + varCarreraName
-                    + "\nRango: " + varRango
-                    + "\nEstatus: " + s0.getEstatus().getIdestatus() + "";
-
-            String texto = "\n____________________SOLICITUDES________________________________"
-                    + "\n|#              |      Partida      |                Regreso |"
-                    + "\n_________________________________________________________________";
-            for (Solicitud s : solicitudGuardadasList) {
-                texto += "\n|" + s.getIdsolicitud()
-                        + " | " + DateUtil.dateFormatToString(s.getFechahorapartida(), "dd/MM/yyyy hh:mm a")
-                        + " | " + DateUtil.dateFormatToString(s.getFechahoraregreso(), "dd/MM/yyyy hh:mm a")
-                        + "\n_________________________________________________________________";
-
-            }
-
-            String mensajeAdmin = "Hay solicitudes realizadas de :" + solicita.getNombre()
-                    + "\nemail:" + solicita.getEmail()
-                    + "\n" + header
-                    + "\n" + texto
-                    + "\n Por favor ingrese al sistema de transporte para verificarlas.";
-            String mensaje = "Su solicitud ha";
-            if (solicitudGuardadasList.size() > 1) {
-                mensaje = "Sus solicitudes se han ";
-            }
-            mensaje += "  registrado en el sistema de Transporte"
-                    + "\n este pendiente de la aprobaciòn o rechazo de la misma"
-                    + "\n se le enviara un correo informandole al respecto"
-                    + "\n o puede ingresar al sistema y consultar su estatus."
-                    + "\n"
-                    + "\n " + header
-                    + texto
-                    + "\n Muchas gracias.";
-
-            List<JmoordbEmailMaster> jmoordbEmailMasterList = jmoordbEmailMasterRepository.findBy(new Document("activo", "si"));
-            if (jmoordbEmailMasterList == null || jmoordbEmailMasterList.isEmpty()) {
-
-            } else {
-                JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
-                //enviar al docente
-
-                Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-                //    Future<String> completableFuture = managerEmail.sendAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-
-//String msg =completableFuture.get();
-                //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
-                if (usuarioList == null || usuarioList.isEmpty()) {
-
-                } else {
-
-//                    usuarioList.forEach((u) -> {
-//                        managerEmail.sendOutlook(u.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-//                    });
-                    Integer size = usuarioList.size();
-                    String[] to; // list of recipient email addresses
-                    String[] cc;
-                    String[] bcc;
-
-                    if (size <= 5) {
-                        to = new String[usuarioList.size()];
-                        cc = new String[0];
-                        bcc = new String[0];
-                    } else {
-                        if (size > 5 && size <= 10) {
-                            to = new String[4];
-                            cc = new String[4];
-                            bcc = new String[0];
-                        } else {
-                            to = new String[4];
-                            cc = new String[4];
-                            bcc = new String[size - 8];
-                        }
-                    }
-                    index = 0;
-                    usuarioList.forEach((u) -> {
-
-                        if (index <= 5) {
-                            to[index] = u.getEmail();
-                        } else {
-                            if (index > 5 && index <= 10) {
-                                cc[index] = u.getEmail();
-                            } else {
-
-                                bcc[index] = u.getEmail();
-
-                            }
-                        }
-                        index++;
-                    });
-
-                    Future<String> completableFutureCC = sendEmailCccBccAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-//                  Future<String> completableFutureCC = managerEmail.sendAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-                }
-
-            }
+                      sendEmail();
 
             facultadList = new ArrayList<>();
             carreraList = new ArrayList<>();
@@ -1321,7 +1189,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="Boolean inicializar()">
     private String inicializar() {
         try {
-          
+
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             Date idsecond = solicitud.getFecha();
             Integer id = solicitud.getIdsolicitud();
@@ -1588,7 +1456,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     public void calendarChangeListener(SelectEvent event) {
         try {
 //verifica si hay buses disponibles
-      
+
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
@@ -1601,14 +1469,14 @@ public class SolicitudDocenteController implements Serializable, IController {
                 } else {
                     if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
                         JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
-                      
+
                         return;
                     }
                 }
 
                 if (!solicitudServices.solicitudDisponible(solicitud, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
                     JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yatienesolicitudenesasfechas"));
-                   
+
                 }
 
             }
@@ -1769,7 +1637,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             if (vehiculoAsignadosList == null || vehiculoAsignadosList.isEmpty()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeasignarbusesparapasajeros"));
-             
+
                 return false;
             }
 
@@ -1791,9 +1659,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     @Override
     public String edit() {
         try {
-   leyoSugerencias= true;
+            leyoSugerencias = true;
             solicitudGuardadasList = new ArrayList<>();
-   
 
             if (!localValid()) {
                 return "";
@@ -2123,152 +1990,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 verificar si son dias validos
                 Descomponener la fecha de inicio
                  */
-                Date fechahorapartidad = solicitud.getFechahorapartida();
-                Date fechahoraregreso = solicitud.getFechahoraregreso();
-
-                Integer diaPartida = DateUtil.diaDeUnaFecha(solicitud.getFechahorapartida());
-                Integer mesPartida = DateUtil.mesDeUnaFechaStartEneroWith0(solicitud.getFechahorapartida());
-                String nombreMesPartida = DateUtil.nombreMes(mesPartida);
-                Integer anioPartida = DateUtil.anioDeUnaFecha(solicitud.getFechahorapartida());
-                Integer horapartida = DateUtil.horaDeUnaFecha(solicitud.getFechahorapartida());
-                Integer minutopartida = DateUtil.minutosDeUnaFecha(solicitud.getFechahorapartida());
-                //descomponer la fecha de regreso
-                Integer diaRegreso = DateUtil.diaDeUnaFecha(solicitud.getFechahoraregreso());
-                Integer mesRegreso = DateUtil.mesDeUnaFechaStartEneroWith0(solicitud.getFechahoraregreso());
-                String nombreMesRegreso = DateUtil.nombreMes(mesRegreso);
-                Integer anioRegreso = DateUtil.anioDeUnaFecha(solicitud.getFechahoraregreso());
-                Integer horaregreso = DateUtil.horaDeUnaFecha(solicitud.getFechahoraregreso());
-                Integer minutoregreso = DateUtil.minutosDeUnaFecha(solicitud.getFechahoraregreso());
-
-                varAnio = anioPartida;
-                //Determinar cuantos meses hay
-                Integer meses = 0;
-                if (mesPartida > mesRegreso) {
-                    meses = (mesRegreso + 12) - mesPartida;
-                } else {
-                    if (anioPartida < anioRegreso) {
-                        meses = (mesRegreso + 12) - mesPartida;
-                    } else {
-                        meses = mesRegreso - mesPartida;
-                    }
-
-                }
-                //mismo mes
-                if (meses == 0) {
-// Encontrar las fechas en el rango
-                    List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
-                    fechasValidasList = validarRangoFechas(anioPartida, nombreMesPartida);
-                    //recorre todos los vehiculos 
-
-                    for (FechaDiaUtils f : fechasValidasList) {
-                        //si es un dia valido
-                        if (isValidDayName(f.getName())) {
-                            /**
-                             * crear la nueva fechahora de partida crear la
-                             * nueva fechahora de regreso
-                             */
-                            Date newDatePartida = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horapartida, minutopartida);
-                            Date newDateRegreso = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horaregreso, minutoregreso);
-                        }
-                    }
-
-//                    for (int i = 0; i < numeroVehiculosSolicitados; i++) {
-//                        if (fechasValidasList.isEmpty()) {
-//                            //no hay fechas para guardar
-//                            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos"));
-//                            return "";
-//                        } else {
-//                            //ESTOS SON LOS QUE SE GUARDARIAN
-//                             procesar(fechasValidasList, horapartida, minutopartida, horaregreso, minutoregreso);
-//
-//                        }//isEmpty
-//                    } //getNumerodevehiculos
-                } else {
-                    // mas de un mes recorrer todos los meses en ese intervalo
-                    if (meses > 0 && meses <= 12) {
-
-                        for (int i = 0; i <= meses; i++) {
-                            //Verificar si es el mismo año
-                            if (anioPartida.equals(anioRegreso)) {
-                                Integer m = mesPartida + i;
-                                String nameOfMohth = DateUtil.nombreMes(m);
-                                List<FechaDiaUtils> list = validarRangoFechas(anioPartida, nameOfMohth);
-                                List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
-                                if (list == null || list.isEmpty()) {
-                                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes;" + nameOfMohth);
-                                    //return "";
-                                } else {
-                                    list.forEach((f) -> {
-                                        fechasValidasList.add(f);
-                                    });
-                                }
-                                if (fechasValidasList == null || fechasValidasList.isEmpty()) {
-
-                                } else {
-                                    for (FechaDiaUtils f : fechasValidasList) {
-                                        //si es un dia valido
-                                        if (isValidDayName(f.getName())) {
-                                            /**
-                                             * crear la nueva fechahora de
-                                             * partida crear la nueva fechahora
-                                             * de regreso
-                                             */
-                                            Date newDatePartida = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horapartida, minutopartida);
-                                            Date newDateRegreso = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horaregreso, minutoregreso);
-                                        }
-                                    }
-                                }
-
-                            } else {
-                                //cambio el año   
-                                Integer m = mesPartida + i;
-                                if (m == 12) {
-                                    varAnio = varAnio + 1;
-                                }
-                                if (m >= 12) {
-                                    m = m - 12;
-
-                                }
-
-                                String nameOfMohth = DateUtil.nombreMes(m);
-
-                                List<FechaDiaUtils> list = validarRangoFechas(varAnio, nameOfMohth);
-                                List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
-                                if (list == null || list.isEmpty()) {
-                                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes: " + nameOfMohth);
-                                    //return "";
-                                } else {
-                                    list.forEach((f) -> {
-                                        fechasValidasList.add(f);
-                                    });
-                                }
-                                if (fechasValidasList == null || fechasValidasList.isEmpty()) {
-
-                                } else {
-                                    for (FechaDiaUtils f : fechasValidasList) {
-                                        //si es un dia valido
-                                        if (isValidDayName(f.getName())) {
-                                            /**
-                                             * crear la nueva fechahora de
-                                             * partida crear la nueva fechahora
-                                             * de regreso
-                                             */
-                                            Date newDatePartida = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horapartida, minutopartida);
-                                            Date newDateRegreso = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horaregreso, minutoregreso);
-                                        }
-                                    }
-                                }
-
-                            }
-
-                        }
-
-                    } else {
-                        JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.verifiqueestasolicitandomas12meses"));
-                        return "";
-                    }
-                }
-
+          
             }
 
         } catch (Exception e) {
@@ -2320,4 +2042,131 @@ public class SolicitudDocenteController implements Serializable, IController {
         return true;
     }
     // </editor-fold>
+    
+// <editor-fold defaultstate="collapsed" desc="sendEmail()">
+    private String sendEmail(){
+        try {
+             /**
+             * Enviar un email al docente y al mismo administrador
+             */
+            Solicitud s0 = solicitudGuardadasList.get(0);
+
+            String varFacultadName = "";
+            String varCarreraName = "";
+            String varRango = "";
+            varFacultadName = s0.getFacultad().stream().map((f) -> "" + f.getDescripcion()).reduce(varFacultadName, String::concat);
+            for (Carrera c : s0.getCarrera()) {
+                varCarreraName = "" + c.getDescripcion();
+            }
+            for (String r : s0.getRangoagenda()) {
+                varRango = "" + r;
+            }
+            String header = "\n Detalle de la solicitud:"
+                    + "\nObjetivo : " + s0.getObjetivo()
+                    + "\nObservaciones: " + s0.getObservaciones()
+                    + "\nLugares: " + s0.getLugares()
+                    + "\nLugar de partida: " + s0.getLugarpartida()
+                    + "\nLugar de llegada: " + s0.getLugarllegada()
+                    + "\nFacultad: " + varFacultadName
+                    + "\nCarrera: " + varCarreraName
+                    + "\nRango: " + varRango
+                    + "\nEstatus: " + s0.getEstatus().getIdestatus() + "";
+
+            String texto = "\n____________________SOLICITUDES________________________________"
+                    + "\n|#              |      Partida      |                Regreso |"
+                    + "\n_________________________________________________________________";
+            for (Solicitud s : solicitudGuardadasList) {
+                texto += "\n|" + s.getIdsolicitud()
+                        + " | " + DateUtil.dateFormatToString(s.getFechahorapartida(), "dd/MM/yyyy hh:mm a")
+                        + " | " + DateUtil.dateFormatToString(s.getFechahoraregreso(), "dd/MM/yyyy hh:mm a")
+                        + "\n_________________________________________________________________";
+
+            }
+
+            String mensajeAdmin = "Hay solicitudes realizadas de :" + solicita.getNombre()
+                    + "\nemail:" + solicita.getEmail()
+                    + "\n" + header
+                    + "\n" + texto
+                    + "\n Por favor ingrese al sistema de transporte para verificarlas.";
+            String mensaje = "Su solicitud ha";
+            if (solicitudGuardadasList.size() > 1) {
+                mensaje = "Sus solicitudes se han ";
+            }
+            mensaje += "  registrado en el sistema de Transporte"
+                    + "\n este pendiente de la aprobaciòn o rechazo de la misma"
+                    + "\n se le enviara un correo informandole al respecto"
+                    + "\n o puede ingresar al sistema y consultar su estatus."
+                    + "\n"
+                    + "\n " + header
+                    + texto
+                    + "\n Muchas gracias.";
+
+            List<JmoordbEmailMaster> jmoordbEmailMasterList = jmoordbEmailMasterRepository.findBy(new Document("activo", "si"));
+            if (jmoordbEmailMasterList == null || jmoordbEmailMasterList.isEmpty()) {
+
+            } else {
+                JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
+                //enviar al docente
+
+                Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                //    Future<String> completableFuture = managerEmail.sendAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+
+//String msg =completableFuture.get();
+                //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
+                if (usuarioList == null || usuarioList.isEmpty()) {
+
+                } else {
+
+//                    usuarioList.forEach((u) -> {
+//                        managerEmail.sendOutlook(u.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+//                    });
+//Divide para las copias y bcc,cc
+                    Integer size = usuarioList.size();
+                    String[] to; // list of recipient email addresses
+                    String[] cc;
+                    String[] bcc;
+
+                    if (size <= 5) {
+                        to = new String[usuarioList.size()];
+                        cc = new String[0];
+                        bcc = new String[0];
+                    } else {
+                        if (size > 5 && size <= 10) {
+                            to = new String[4];
+                            cc = new String[4];
+                            bcc = new String[0];
+                        } else {
+                            to = new String[4];
+                            cc = new String[4];
+                            bcc = new String[size - 8];
+                        }
+                    }
+                    index = 0;
+                    usuarioList.forEach((u) -> {
+
+                        if (index <= 5) {
+                            to[index] = u.getEmail();
+                        } else {
+                            if (index > 5 && index <= 10) {
+                                cc[index] = u.getEmail();
+                            } else {
+
+                                bcc[index] = u.getEmail();
+
+                            }
+                        }
+                        index++;
+                    });
+
+                    Future<String> completableFutureCC = sendEmailCccBccAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+//                  Future<String> completableFutureCC = managerEmail.sendAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                }
+
+            }
+        } catch (Exception e) {
+        }
+        return "";
+    }
+    // </editor-fold>
+            
 }
