@@ -1794,7 +1794,7 @@ public class SolicitudDocenteController implements Serializable, IController {
         try {
             disponiblesBeansList = new ArrayList<>();
             vehiculoDisponiblesList = new ArrayList<>();
-             varFechaHoraPartida = solicitud.getFechahorapartida();
+            varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
             List<Vehiculo> vehiculoList = new ArrayList<>();
             vehiculoList = busesActivo();
@@ -1805,6 +1805,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (!isValidDiasConsecutivos()) {
                 return "";
             }
+            solicitud.setRangoagenda(rangoAgenda);
             Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
             if (diasconsecutivos) {
                 //
@@ -1821,8 +1822,8 @@ public class SolicitudDocenteController implements Serializable, IController {
                     }
                 }
                 DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
-                disponiblesBeans.setFechahorainicio(new Date());
-                disponiblesBeans.setFechahorafin(new Date());
+                disponiblesBeans.setFechahorainicio(solicitud.getFechahorapartida());
+                disponiblesBeans.setFechahorafin(solicitud.getFechahoraregreso());
                 disponiblesBeans.setNumeroBuses(numeroBuses);
                 disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
                 disponiblesBeansList.add(disponiblesBeans);
@@ -1884,8 +1885,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             for (String d : diasSelected) {
                 if (d.equals("Dia/ Dias Consecutivo")) {
                     diasconsecutivos = true;
-                    rangoAgenda.add(d);
                 }
+                rangoAgenda.add(d);
                 c++;
 
             }
@@ -2048,6 +2049,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 // Encontrar las fechas en el rango
             Integer numeroBuses = 0;
             Integer numeroPasajeros = 0;
+
             List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
             fechasValidasList = validarRangoFechas(fechaPartidaDescompuesta.getYear(), fechaPartidaDescompuesta.getNameOfMonth());
             //recorre todos los vehiculos 
@@ -2176,8 +2178,8 @@ public class SolicitudDocenteController implements Serializable, IController {
                             }
                         }
                         DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
-                        disponiblesBeans.setFechahorainicio(new Date());
-                        disponiblesBeans.setFechahorafin(new Date());
+                        disponiblesBeans.setFechahorainicio(newDatePartida);
+                        disponiblesBeans.setFechahorafin(newDateRegreso);
                         disponiblesBeans.setNumeroBuses(numeroBuses);
                         disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
                         disponiblesBeansList.add(disponiblesBeans);
