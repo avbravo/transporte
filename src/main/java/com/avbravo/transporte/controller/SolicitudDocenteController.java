@@ -808,9 +808,14 @@ public class SolicitudDocenteController implements Serializable, IController {
             switch (estatus) {
                 case "RECHAZADO":
                     color = "red";
+                case "CANCELADO":
+                    color = "pink";
                     break;
                 case "APROBADO":
                     color = "green";
+                    break;
+                case "SOLICITADO":
+                    color="brown";
                     break;
                 default:
                     color = "black";
@@ -1572,7 +1577,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             Integer pasajerosPendientes = solicitud.getPasajeros();
             for (Vehiculo v : vehiculoDisponiblesList) {
                 pasajerosDisponibles += v.getPasajeros();
-                System.out.println("Marca: " + v.getMarca() + "--->Placa: " + v.getPlaca() + " " + v.getPasajeros());
+
                 if (pasajerosPendientes > 0) {
                     vehiculoAsignadosList.add(v);
                     pasajerosPendientes -= v.getPasajeros();
