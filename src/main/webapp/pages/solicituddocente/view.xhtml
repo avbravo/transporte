@@ -294,25 +294,29 @@
                     <b:row>
 
 
-                        <b:column span="4">
+                        <b:column span="12">
                             <jmoordbjsf:toolbarview 
                                 renderedDelete="#{p:ifGranted('DOCENTE')}"
                                 renderedEdit="#{p:ifGranted('DOCENTE')}"
                                 renderedList="#{p:ifGranted('DOCENTE')}"                    
+                                renderedPrint="false"                    
                                 controller="#{solicitudDocenteController}"
 
                                 url  = "/pages/solicituddocente/list.xhtml"
                                 />
 
-
+ 
                         </b:column>
 
                     </b:row>
+                    
+                   
                 </b:panel>
 
-             
                  
             </h:panelGroup>
+            
+            
         </b:form>
         <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('DOCENTE')}"/>
 

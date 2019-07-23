@@ -83,10 +83,10 @@
         </dependency>
       
      
-      <dependency>
+     <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbjsf</artifactId>
-            <version>0.15</version>
+            <version>0.17</version>
         </dependency>
         <!--
                 parche para bootfaces

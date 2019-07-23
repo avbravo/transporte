@@ -567,7 +567,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
     private Integer procesar(List<FechaDiaUtils> fechasValidasList, Integer horapartida, Integer minutopartida, Integer horaregreso, Integer minutoregreso) {
         Integer solicitudesGuardadas = 0;
-  //      Integer pasajerosPendientes = solicitud.getPasajeros();
+        //      Integer pasajerosPendientes = solicitud.getPasajeros();
         Integer pasajerosPendientes = numeroPasajerosIniciales;
 
         Integer pasajeros = 0;
@@ -626,7 +626,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     public String save() {
         try {
             solicitudGuardadasList = new ArrayList<>();
-
+            numeroPasajerosIniciales = solicitud.getPasajeros();
+            numeroVehiculosIniciales = solicitud.getNumerodevehiculos();
             Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
             if (!localValid()) {
                 return "";
@@ -656,8 +657,6 @@ public class SolicitudDocenteController implements Serializable, IController {
                 }
             }
 
-            numeroPasajerosIniciales = solicitud.getPasajeros();
-            numeroVehiculosIniciales = solicitud.getNumerodevehiculos();
             Integer solicitudesGuardadas = 0;
             solicitud.setSolicitudpadre(0);
             varFechaHoraPartida = solicitud.getFechahorapartida();
@@ -787,7 +786,6 @@ public class SolicitudDocenteController implements Serializable, IController {
             }//no son dias consecutivos
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
-           
 
             inicializar();
             //  Guardar las notificaciones
@@ -842,17 +840,16 @@ public class SolicitudDocenteController implements Serializable, IController {
         }
         return color;
     } // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
+    // <editor-fold defaultstate="collapsed" desc="columnColorDisponibles(DisponiblesBeans disponiblesBeans) ">
+
     public String columnColorDisponibles(DisponiblesBeans disponiblesBeans) {
-        String  color = "black";
+        String color = "black";
         try {
-            System.out.println("===========================================");
-             System.out.println("Vehiculos ( "+solicitud.getNumerodevehiculos()  + " ) pasajeros: "+solicitud.getPasajeros());
-             System.out.println("DISPONIBLES ( "+disponiblesBeans.getNumeroBuses()  + " ) pasajeros: "+disponiblesBeans.getNumeroPasajeros());
-            if(disponiblesBeans.getNumeroBuses() < solicitud.getNumerodevehiculos() || disponiblesBeans.getNumeroPasajeros() < solicitud.getPasajeros()){
-                  color = "red";
+
+            if (disponiblesBeans.getNumeroBuses() < solicitud.getNumerodevehiculos() || disponiblesBeans.getNumeroPasajeros() < solicitud.getPasajeros()) {
+                color = "red";
             }
-          
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1601,6 +1598,29 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                 return false;
             }
+            Boolean hayDisponiblesvehiculos=true;
+            Boolean hayDisponiblesPasajeros=true;
+            String mensaje="";
+            for(DisponiblesBeans db:disponiblesBeansList){
+                if(db.getNumeroBuses() < numeroVehiculosIniciales){
+                    hayDisponiblesvehiculos=false;
+                    mensaje+=" Vehiculos";
+                }
+                if(db.getNumeroPasajeros() < numeroPasajerosIniciales){
+                    hayDisponiblesPasajeros=false;
+                           mensaje+=" Pasajeros";
+                }
+            }
+            
+            
+            ///Revisar de aqui hacia abajo
+            
+              if(!hayDisponiblesvehiculos || hayDisponiblesPasajeros){
+                En algunas fechas no hay suficientes vehiculos
+                        invocar un dialogo de confirmacion desde aqui
+                                
+            }
+            
             /**
              * Verifica los pasajeros disponibles en los buses Indica si existe
              * espacio en estos buses y la cantidad disponible
@@ -1616,6 +1636,8 @@ public class SolicitudDocenteController implements Serializable, IController {
                     pasajerosPendientes -= v.getPasajeros();
                 }
             }
+            
+          
 
 // verifica si la cantidad de pasajeros solicitados es mayor que los disponibles
             if (solicitud.getPasajeros() > pasajerosDisponibles) {
@@ -1869,6 +1891,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 disponiblesBeans.setNumeroBuses(numeroBuses);
                 disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
                 disponiblesBeans.setVehiculo(vehiculoDisponiblesList);
+
                 disponiblesBeansList.add(disponiblesBeans);
 
             } else {
