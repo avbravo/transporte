@@ -787,6 +787,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }//no son dias consecutivos
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
+           
 
             inicializar();
             //  Guardar las notificaciones
@@ -836,6 +837,22 @@ public class SolicitudDocenteController implements Serializable, IController {
                 default:
                     color = "black";
             }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return color;
+    } // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
+    public String columnColorDisponibles(DisponiblesBeans disponiblesBeans) {
+        String  color = "black";
+        try {
+            System.out.println("===========================================");
+             System.out.println("Vehiculos ( "+solicitud.getNumerodevehiculos()  + " ) pasajeros: "+solicitud.getPasajeros());
+             System.out.println("DISPONIBLES ( "+disponiblesBeans.getNumeroBuses()  + " ) pasajeros: "+disponiblesBeans.getNumeroPasajeros());
+            if(disponiblesBeans.getNumeroBuses() < solicitud.getNumerodevehiculos() || disponiblesBeans.getNumeroPasajeros() < solicitud.getPasajeros()){
+                  color = "red";
+            }
+          
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
