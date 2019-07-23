@@ -5,28 +5,42 @@
  */
 package com.avbravo.transporte.beans;
 
+import com.avbravo.transporteejb.entity.Vehiculo;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
  * @author avbravo
+ * Almacena la lista de vehiculos disponibles se usa para mostrarlos en las solicitudes
  */
 public class DisponiblesBeans {
     private Date fechahorainicio;
     private Date fechahorafin;
     private Integer numeroBuses;
     private Integer numeroPasajeros;
+    private List<Vehiculo> vehiculo;
 
     public DisponiblesBeans() {
     }
 
-    public DisponiblesBeans(Date fechahorainicio, Date fechahorafin, Integer numeroBuses, Integer numeroPasajeros) {
+    public DisponiblesBeans(Date fechahorainicio, Date fechahorafin, Integer numeroBuses, Integer numeroPasajeros, List<Vehiculo> vehiculo) {
         this.fechahorainicio = fechahorainicio;
         this.fechahorafin = fechahorafin;
         this.numeroBuses = numeroBuses;
         this.numeroPasajeros = numeroPasajeros;
+        this.vehiculo = vehiculo;
     }
 
+    public List<Vehiculo> getVehiculo() {
+        return vehiculo;
+    }
+
+    public void setVehiculo(List<Vehiculo> vehiculo) {
+        this.vehiculo = vehiculo;
+    }
+
+   
     public Date getFechahorainicio() {
         return fechahorainicio;
     }

@@ -110,7 +110,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     private static final long serialVersionUID = 1L;
 
     String messages = "";
-
+    Integer numeroPasajerosIniciales = 0;
+    Integer numeroVehiculosIniciales = 0;
     Integer index = 0;
     Integer pasajerosDisponibles = 0;
     ManagerEmail managerEmail = new ManagerEmail();
@@ -566,9 +567,11 @@ public class SolicitudDocenteController implements Serializable, IController {
 
     private Integer procesar(List<FechaDiaUtils> fechasValidasList, Integer horapartida, Integer minutopartida, Integer horaregreso, Integer minutoregreso) {
         Integer solicitudesGuardadas = 0;
+  //      Integer pasajerosPendientes = solicitud.getPasajeros();
+        Integer pasajerosPendientes = numeroPasajerosIniciales;
 
-        Integer pasajerosPendientes = solicitud.getPasajeros();
         Integer pasajeros = 0;
+        Integer numeroSolicitudPadre = 0;
         try {
             for (FechaDiaUtils f : fechasValidasList) {
                 //si es un dia valido
@@ -595,8 +598,18 @@ public class SolicitudDocenteController implements Serializable, IController {
                     solicitud.setPasajeros(pasajeros);
                     if (insert()) {
                         solicitudesGuardadas++;
+                        if (solicitudesGuardadas == 1) {
+                            numeroSolicitudPadre = solicitud.getIdsolicitud();
+                        }
                     }
-                    solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
+                    //Verifica si se cumplieron la asignacion de vehiculos en viajes, reinicia los contadores
+                    if ((solicitudesGuardadas % numeroVehiculosIniciales) == 0) {
+                        pasajerosPendientes = numeroPasajerosIniciales;
+                        pasajeros = 0;
+                    }
+                    //asigna el numero de solicitud
+                    solicitud.setSolicitudpadre(numeroSolicitudPadre);
+                    //solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
 
                 }
 
@@ -642,6 +655,9 @@ public class SolicitudDocenteController implements Serializable, IController {
                     //  loginController.setUsuario(responsable);
                 }
             }
+
+            numeroPasajerosIniciales = solicitud.getPasajeros();
+            numeroVehiculosIniciales = solicitud.getNumerodevehiculos();
             Integer solicitudesGuardadas = 0;
             solicitud.setSolicitudpadre(0);
             varFechaHoraPartida = solicitud.getFechahorapartida();
@@ -815,7 +831,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                     color = "green";
                     break;
                 case "SOLICITADO":
-                    color="brown";
+                    color = "brown";
                     break;
                 default:
                     color = "black";
@@ -1826,15 +1842,18 @@ public class SolicitudDocenteController implements Serializable, IController {
                         numeroPasajeros += v.getPasajeros();
                     }
                 }
+//ordena la lista de vehiculos
+                vehiculoDisponiblesList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
+                        .reversed());
+//Almacena los vehiculos disponibles
                 DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
                 disponiblesBeans.setFechahorainicio(solicitud.getFechahorapartida());
                 disponiblesBeans.setFechahorafin(solicitud.getFechahoraregreso());
                 disponiblesBeans.setNumeroBuses(numeroBuses);
                 disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
+                disponiblesBeans.setVehiculo(vehiculoDisponiblesList);
                 disponiblesBeansList.add(disponiblesBeans);
-//ordena la lista de vehiculos
-                vehiculoDisponiblesList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
-                        .reversed());
+
             } else {
 
 
