@@ -1859,7 +1859,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     public String changeDaysViewAvailable() {
         try {
             disponiblesBeansList = new ArrayList<>();
-            vehiculoDisponiblesList = new ArrayList<>();
+         List<Vehiculo>  vehiculoFreeList = new ArrayList<>();
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
             List<Vehiculo> vehiculoList = new ArrayList<>();
@@ -1881,14 +1881,14 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                     if (isVehiculoActivoDisponible(v, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
                         //agrega a la lista los vehiculos disponibles
-                        vehiculoDisponiblesList.add(v);
+                        vehiculoFreeList.add(v);
                         pasajerosDisponibles = 0;
                         numeroBuses++;
                         numeroPasajeros += v.getPasajeros();
                     }
                 }
 //ordena la lista de vehiculos
-                vehiculoDisponiblesList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
+                vehiculoFreeList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
                         .reversed());
 //Almacena los vehiculos disponibles
                 DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
@@ -1896,8 +1896,8 @@ public class SolicitudDocenteController implements Serializable, IController {
                 disponiblesBeans.setFechahorafin(solicitud.getFechahoraregreso());
                 disponiblesBeans.setNumeroBuses(numeroBuses);
                 disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
-                disponiblesBeans.setVehiculo(vehiculoDisponiblesList);
-disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoDisponiblesList,solicitud.getPasajeros()));
+                disponiblesBeans.setVehiculo(vehiculoFreeList);
+disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList,solicitud.getPasajeros()));
                 disponiblesBeansList.add(disponiblesBeans);
 
             } else {
@@ -2225,12 +2225,14 @@ disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoDisponiblesL
      */
     private Boolean insertIntoDisponiblesList(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<FechaDiaUtils> fechasValidasList, List<Vehiculo> vehiculoList) {
         try {
+       
             Integer numeroBuses = 0;
             Integer numeroPasajeros = 0;
             if (fechasValidasList == null || fechasValidasList.isEmpty()) {
                 JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayfechasvalidas"));
             } else {
                 for (FechaDiaUtils f : fechasValidasList) {
+                       List<Vehiculo>  vehiculoFreeList = new ArrayList<>();
                     numeroBuses = 0;
                     numeroPasajeros = 0;
                     //si es un dia valido
@@ -2241,22 +2243,22 @@ disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoDisponiblesL
 
                             if (isVehiculoActivoDisponible(v, newDatePartida, newDateRegreso)) {
                                 //agrega a la lista los vehiculos disponibles
-                                vehiculoDisponiblesList.add(v);
+                                vehiculoFreeList.add(v);
                                 pasajerosDisponibles = 0;
                                 numeroBuses++;
                                 numeroPasajeros += v.getPasajeros();
                             }
 
                         }
-                        vehiculoDisponiblesList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
+                        vehiculoFreeList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
                                 .reversed());
                         DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
                         disponiblesBeans.setFechahorainicio(newDatePartida);
                         disponiblesBeans.setFechahorafin(newDateRegreso);
                         disponiblesBeans.setNumeroBuses(numeroBuses);
                         disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
-                        disponiblesBeans.setVehiculo(vehiculoDisponiblesList);
-                        disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoDisponiblesList,solicitud.getPasajeros()));
+                        disponiblesBeans.setVehiculo(vehiculoFreeList);
+                        disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList,solicitud.getPasajeros()));
                         disponiblesBeansList.add(disponiblesBeans);
                     }
                 }

@@ -6,6 +6,7 @@
 package com.avbravo.transporte.beans;
 
 import com.avbravo.transporteejb.entity.Vehiculo;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,19 +22,31 @@ public class DisponiblesBeans {
     private Integer numeroPasajeros;
     private List<Vehiculo> vehiculo;
     private Integer busesRecomendados=0;
+    private List<Integer> pasajerosPorViaje = new ArrayList<>();
   
     
 
     public DisponiblesBeans() {
     }
 
-    public DisponiblesBeans(Date fechahorainicio, Date fechahorafin, Integer numeroBuses, Integer numeroPasajeros, List<Vehiculo> vehiculo) {
+    public DisponiblesBeans(Date fechahorainicio, Date fechahorafin, Integer numeroBuses, Integer numeroPasajeros, List<Vehiculo> vehiculo, List<Integer> pasajerosPorViaje) {
         this.fechahorainicio = fechahorainicio;
         this.fechahorafin = fechahorafin;
         this.numeroBuses = numeroBuses;
         this.numeroPasajeros = numeroPasajeros;
         this.vehiculo = vehiculo;
+        this.pasajerosPorViaje = pasajerosPorViaje;
     }
+
+    public List<Integer> getPasajerosPorViaje() {
+        return pasajerosPorViaje;
+    }
+
+    public void setPasajerosPorViaje(List<Integer> pasajerosPorViaje) {
+        this.pasajerosPorViaje = pasajerosPorViaje;
+    }
+
+   
 
     public Integer getBusesRecomendados() {
         return busesRecomendados;

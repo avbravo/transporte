@@ -10,7 +10,7 @@
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions" 
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"> 
     <ui:define name="content">
-         
+
 
         <style>
             .thumbnail { max-width: 100%; }
@@ -200,7 +200,7 @@
 
                         <p:outputLabel  value="#{msg['field.lugares']}" />
                         <p:chips value="#{solicitudDocenteController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
-   <b:touchSpin disabled="true" col-md="3"  min="1"  max="20"  step="1" value="#{solicitudDocenteController.solicitud.numerodevehiculos}" id="numerodevehiculos"  
+                        <b:touchSpin disabled="true" col-md="3"  min="1"  max="20"  step="1" value="#{solicitudDocenteController.solicitud.numerodevehiculos}" id="numerodevehiculos"  
                                      onchange="ajax:solicitudDocenteController.changeDaysViewAvailable()"
                                      update=":form:datatableDisponibles"
                                      process="@form"
@@ -236,21 +236,21 @@
                                              update=":form:msg "
 
                                              label="#{msg['field.fechahoraregreso']}" />
-                        
-                           <p:outputLabel  value="#{msg['field.rangoagenda']}" />
+
+                        <p:outputLabel  value="#{msg['field.rangoagenda']}" />
                         <p:selectCheckboxMenu id="multiple" value="#{solicitudDocenteController.diasSelected}" label="#{msg['field.rangoagenda']}" multiple="true"
                                               required="true" 
                                               disabled="true"
                                               requiredMessage="#{msg['field.rangoagenda']} #{app['info.required']}"
                                               panelStyle="width:250px">
                             <f:selectItems value="#{solicitudDocenteController.diasList}" />
-                             <p:ajax event="change" update=":form:datatableDisponibles" listener="#{solicitudDocenteController.changeDaysViewAvailable()}" />
+                            <p:ajax event="change" update=":form:datatableDisponibles" listener="#{solicitudDocenteController.changeDaysViewAvailable()}" />
                         </p:selectCheckboxMenu>
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <jmoordbjsf:inputText span="8" value="#{solicitudDocenteController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
 
-    
+
                         <p:outputLabel  value="#{msg['field.lugarllegada']}" />
                         <jmoordbjsf:inputText span="8" value="#{solicitudDocenteController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
 
@@ -266,10 +266,11 @@
 
                     <b:row>
                         <b:column span="10">
-                         <p:dataTable value="#{solicitudDocenteController.disponiblesBeansList}" 
+                            <p:dataTable value="#{solicitudDocenteController.disponiblesBeansList}" 
                                          id="datatableDisponibles"
 
                                          var="item"  >
+                                
                                 <p:column headerText="#{msg['field.fecha']}" style="width:100px">
                                     <h:outputText value="#{solicitudDocenteController.showDate(item.fechahorainicio)}" style="color: #{solicitudDocenteController.columnColorDisponibles(item)}"  />
                                 </p:column>
@@ -288,6 +289,7 @@
                                 <p:column headerText="#{msg['field.busesRecomendados']}" style="width:75px">
                                     <p:outputLabel value="#{item.busesRecomendados}" style="color: #{solicitudDocenteController.columnColorDisponibles(item)}"  />
                                 </p:column>
+
 
                             </p:dataTable>                                       
 
@@ -308,7 +310,7 @@
                         </b:column>
 
                     </b:row>
-                  
+
 
                     <b:row>
 
@@ -324,18 +326,18 @@
                                 url  = "/pages/solicituddocente/list.xhtml"
                                 />
 
- 
+
                         </b:column>
 
                     </b:row>
-                    
-                   
+
+
                 </b:panel>
 
-                 
+
             </h:panelGroup>
-            
-            
+
+
         </b:form>
         <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('DOCENTE')}"/>
 
