@@ -1616,9 +1616,9 @@ public class SolicitudDocenteController implements Serializable, IController {
             ///Revisar de aqui hacia abajo
             
               if(!hayDisponiblesvehiculos || hayDisponiblesPasajeros){
-                En algunas fechas no hay suficientes vehiculos
-                        invocar un dialogo de confirmacion desde aqui
-                                
+//                En algunas fechas no hay suficientes vehiculos
+//                        invocar un dialogo de confirmacion desde aqui
+//                                
             }
             
             /**
@@ -1640,13 +1640,23 @@ public class SolicitudDocenteController implements Serializable, IController {
           
 
 // verifica si la cantidad de pasajeros solicitados es mayor que los disponibles
-            if (solicitud.getPasajeros() > pasajerosDisponibles) {
+//            if (solicitud.getPasajeros() > pasajerosDisponibles) {
+//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros"));
+//
+//                return false;
+//            }
+            if (!hayDisponiblesPasajeros) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros"));
 
                 return false;
             }
 
-            if (vehiculoAsignadosList == null || vehiculoAsignadosList.isEmpty()) {
+//            if (vehiculoAsignadosList == null || vehiculoAsignadosList.isEmpty()) {
+//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeasignarbusesparapasajeros"));
+//
+//                return false;
+//            }
+            if (!hayDisponiblesvehiculos) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeasignarbusesparapasajeros"));
 
                 return false;

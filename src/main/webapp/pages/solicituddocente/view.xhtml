@@ -202,12 +202,20 @@
                         <p:chips value="#{solicitudDocenteController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
 
                         <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
-                        <b:touchSpin disabled="true" col-md="3" value="#{solicitudDocenteController.solicitud.numerodevehiculos}" min="1" max="20" step="1" />
+                        <b:touchSpin disabled="true" col-md="3" value="#{solicitudDocenteController.solicitud.numerodevehiculos}" min="1" max="20" step="1" >
+                             <p:ajax event="change" update=":form:datatableDisponibles" listener="#{solicitudDocenteController.changeDaysViewAvailable()}"
+                                    process="@form"/>
+                        </b:touchSpin>
+
 
 
                         <p:outputLabel  value="#{msg['field.pasajeros']}" />
                         <b:touchSpin  col-md="3"  min="1"  step="1" value="#{solicitudDocenteController.solicitud.pasajeros}" id="pasajeros"  label="#{msg['field.pasajeros']}"
-                                      max="250"/>
+                                      max="250">
+                             <p:ajax event="change" update=":form:datatableDisponibles" listener="#{solicitudDocenteController.changeDaysViewAvailable()}"
+                                    process="@form"/>
+                        </b:touchSpin>
+
 
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />

@@ -250,7 +250,7 @@
 
                         <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
 
-                        <b:touchSpin  col-md="3" value="#{solicitudDocenteController.solicitud.numerodevehiculos}" min="1" max="20" step="1" >
+                        <b:touchSpin disabled="true"  col-md="3" value="#{solicitudDocenteController.solicitud.numerodevehiculos}" min="1" max="20" step="1" >
                               <p:ajax event="change" update=":form:datatableDisponibles" listener="#{solicitudDocenteController.changeDaysViewAvailable()}"
                                     process="@form"/>
                         </b:touchSpin>
