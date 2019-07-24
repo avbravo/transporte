@@ -20,6 +20,7 @@ public class DisponiblesBeans {
     private Integer numeroBuses;
     private Integer numeroPasajeros;
     private List<Vehiculo> vehiculo;
+    private Integer busesRecomendados=0;
   
     
 
@@ -34,9 +35,15 @@ public class DisponiblesBeans {
         this.vehiculo = vehiculo;
     }
 
-   
+    public Integer getBusesRecomendados() {
+        return busesRecomendados;
+    }
 
-   
+    public void setBusesRecomendados(Integer busesRecomendados) {
+        this.busesRecomendados = busesRecomendados;
+    }
+
+  
     
     
     

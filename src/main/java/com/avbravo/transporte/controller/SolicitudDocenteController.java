@@ -1598,29 +1598,27 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                 return false;
             }
-            Boolean hayDisponiblesvehiculos=true;
-            Boolean hayDisponiblesPasajeros=true;
-            String mensaje="";
-            for(DisponiblesBeans db:disponiblesBeansList){
-                if(db.getNumeroBuses() < numeroVehiculosIniciales){
-                    hayDisponiblesvehiculos=false;
-                    mensaje+=" Vehiculos";
+            Boolean hayDisponiblesvehiculos = true;
+            Boolean hayDisponiblesPasajeros = true;
+            String mensaje = "";
+            for (DisponiblesBeans db : disponiblesBeansList) {
+                if (db.getNumeroBuses() < numeroVehiculosIniciales) {
+                    hayDisponiblesvehiculos = false;
+                    mensaje += " Vehiculos";
                 }
-                if(db.getNumeroPasajeros() < numeroPasajerosIniciales){
-                    hayDisponiblesPasajeros=false;
-                           mensaje+=" Pasajeros";
+                if (db.getNumeroPasajeros() < numeroPasajerosIniciales) {
+                    hayDisponiblesPasajeros = false;
+                    mensaje += " Pasajeros";
                 }
             }
-            
-            
+
             ///Revisar de aqui hacia abajo
-            
-              if(!hayDisponiblesvehiculos || hayDisponiblesPasajeros){
+            if (!hayDisponiblesvehiculos || hayDisponiblesPasajeros) {
 //                En algunas fechas no hay suficientes vehiculos
 //                        invocar un dialogo de confirmacion desde aqui
 //                                
             }
-            
+
             /**
              * Verifica los pasajeros disponibles en los buses Indica si existe
              * espacio en estos buses y la cantidad disponible
@@ -1636,8 +1634,6 @@ public class SolicitudDocenteController implements Serializable, IController {
                     pasajerosPendientes -= v.getPasajeros();
                 }
             }
-            
-          
 
 // verifica si la cantidad de pasajeros solicitados es mayor que los disponibles
 //            if (solicitud.getPasajeros() > pasajerosDisponibles) {
@@ -1901,7 +1897,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 disponiblesBeans.setNumeroBuses(numeroBuses);
                 disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
                 disponiblesBeans.setVehiculo(vehiculoDisponiblesList);
-
+disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoDisponiblesList,solicitud.getPasajeros()));
                 disponiblesBeansList.add(disponiblesBeans);
 
             } else {
@@ -2250,17 +2246,20 @@ public class SolicitudDocenteController implements Serializable, IController {
                                 numeroBuses++;
                                 numeroPasajeros += v.getPasajeros();
                             }
+
                         }
+                        vehiculoDisponiblesList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
+                                .reversed());
                         DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
                         disponiblesBeans.setFechahorainicio(newDatePartida);
                         disponiblesBeans.setFechahorafin(newDateRegreso);
                         disponiblesBeans.setNumeroBuses(numeroBuses);
                         disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
+                        disponiblesBeans.setVehiculo(vehiculoDisponiblesList);
+                        disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoDisponiblesList,solicitud.getPasajeros()));
                         disponiblesBeansList.add(disponiblesBeans);
                     }
                 }
-                vehiculoDisponiblesList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
-                        .reversed());
 
             }
             return true;
@@ -2270,5 +2269,32 @@ public class SolicitudDocenteController implements Serializable, IController {
         return false;
     }
     // </editor-fold>
-
+    
+   
+      // <editor-fold defaultstate="collapsed" desc="vehiculosRecomendados(List<Vehiculo> vehiculoDisponiblesList)">
+    /**
+     * Devuelve la cantidad de vehiculos recomendados en base a los disponibles
+     * @param vehiculoDisponiblesList
+     * @return 
+     */
+    private Integer vehiculosRecomendados(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros){
+        Integer totalVehiculos=0;
+        try {        
+             Integer pasajerosPendientes = pasajeros;    
+            
+             for (Vehiculo v : vehiculoDisponiblesList) {
+                 System.out.println("==============================================");
+                  System.out.println("==Pasajeros pedientes "+pasajerosPendientes);
+                 System.out.println("---> Vehiculo: "+v.getPlaca() +" "+v.getMarca()+ " capacidad "+v.getPasajeros());
+                if (pasajerosPendientes > 0) {
+                    totalVehiculos++;
+                    pasajerosPendientes -= v.getPasajeros();
+                }
+            }
+        } catch (Exception e) {
+              errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return totalVehiculos;
+    }
+    // </editor-fold>
 }
