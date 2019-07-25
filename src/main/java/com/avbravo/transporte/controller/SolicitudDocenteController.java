@@ -489,7 +489,6 @@ public class SolicitudDocenteController implements Serializable, IController {
             tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
             solicitud.setTipovehiculo(tipovehiculoList);
             solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
-            System.out.println("Voy a guardar la solicitud con " + solicitud.getPasajeros() + " pasajeros");
             if (solicitudRepository.save(solicitud)) {
                 Solicitud sol = new Solicitud();
                 sol = (Solicitud) JsfUtil.copyBeans(sol, solicitud);
@@ -1921,7 +1920,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
                 disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
                 disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, solicitud.getPasajeros()));
-                
+
                 disponiblesBeansList.add(disponiblesBeans);
 
             } else {
@@ -2383,7 +2382,7 @@ public class SolicitudDocenteController implements Serializable, IController {
         try {
             Integer mayorCapacidad = vehiculoDisponiblesList.get(0).getPasajeros();
             Integer pasajerosPendientes = pasajeros;
-            System.out.println("..............................................");
+
             if (pasajeros <= mayorCapacidad) {
                 //Si es igual o menor que la capacidad del bus con mayor capacidad
                 pasajerosRecomendadosList.add(pasajeros);
@@ -2405,7 +2404,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 // revisa los pendientes
 
                 if (pasajerosPendientes <= mayorCapacidad) {
-                   pasajerosRecomendadosList.add(pasajerosPendientes);
+                    pasajerosRecomendadosList.add(pasajerosPendientes);
                 } else {
                     Integer residuo = pasajerosPendientes % mayorCapacidad;
                     Integer divisor = pasajerosPendientes / mayorCapacidad;
@@ -2413,20 +2412,18 @@ public class SolicitudDocenteController implements Serializable, IController {
                     if (residuo > 0) {
                         divisor++;
                     }
-                    System.out.println("divisor " + divisor + " residuo " + residuo);
+
                     for (Integer i = 1; i <= divisor; i++) {
                         if (i < divisor) {
                             pasajerosRecomendadosList.add(mayorCapacidad);
-                            System.out.println("(" + i + ") " + "pasajeros" + mayorCapacidad);
                         } else {
                             pasajerosRecomendadosList.add(residuo);
-                            System.out.println("(" + i + ")  pasajeros" + residuo);
                         }
                     }
 
                 }
             }
-     } catch (Exception e) {
+        } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return pasajerosRecomendadosList;
