@@ -2426,15 +2426,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                 }
             }
-//quede aqui devilverlo 
-//        agregarlo a disponibles
-//                mostrarlo en el datatable
-//                        usarlo para generar las solicitudes
-//                                contar cuantos buses tienen esa capacidad
-//                                        si todos la tienen no hay problemas
-//                                                si hay menos habra muchas solicitudes sin atender
-//                                                        copiar esto en el powerpoint
-        } catch (Exception e) {
+     } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return pasajerosRecomendadosList;
