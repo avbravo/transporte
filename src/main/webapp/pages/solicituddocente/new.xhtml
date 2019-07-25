@@ -350,8 +350,8 @@
                                         <p:column headerText="#{msg['field.buses']}" />
                                         <p:column headerText="#{msg['field.pasajeros']}" />
                                         <p:column headerText="#{msg['field.buses']}" />
-                                        <p:column headerText="Pasajeros" />
-                                        <p:column headerText="Buses" />
+                                        <p:column headerText="" />
+                                    
 
 
                                     </p:row>
@@ -376,7 +376,7 @@
                                 </p:column>
                                 
                                 
-                                <p:column headerText="#{msg['field.pasajerosPendientes']}" style="width:75px">
+                                <p:column headerText="" style="width:75px">
                                     <p:outputLabel value="" rendered="#{solicitudDocenteController.columnTieneBusesDisponibles(item)}" >
 
                                         <i class="pi pi-check"></i>
@@ -387,23 +387,9 @@
 
                                     </p:outputLabel>
 
-                                    <p:panelGrid columns="2" styleClass="form-group ui-panelgrid-blank" layout="grid">
-
-                                       
-                                        <p:repeat value="#{item.pasajerosPorViaje}" var="pas">
-                                            <p:outputLabel value="#{pas}"/>
-                                        </p:repeat>
-
-                                    </p:panelGrid>
+                                  
                                 </p:column>
-                                <p:column headerText="#{msg['field.busesRecomendados']}" style="width:75px">
-                                    <p:panelGrid columns="2" styleClass="form-group ui-panelgrid-blank" layout="grid">
-
-                                        <p:repeat value="#{item.vehiculo}" var="car">
-                                            <p:outputLabel value="#{car.placa} : #{car.pasajeros} "/>
-                                        </p:repeat>
-                                    </p:panelGrid>
-                                </p:column>
+                              
 
                             </p:dataTable>                                
 
