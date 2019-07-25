@@ -633,6 +633,95 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
             //verifica si hay buses disponibles
+            if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
+                return "";
+            }
+
+            if (!isValidCantidadPasajeros()) {
+
+                return "";
+            }
+
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+
+            //si cambia el email o celular del responsable actualizar ese usuario
+            if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
+                usuarioRepository.update(responsable);
+                //actuliza el que esta en el login
+                if (responsable.getUsername().equals(jmoordb_user.getUsername())) {
+                    //  loginController.setUsuario(responsable);
+                }
+            }
+
+            Integer solicitudesGuardadas = 0;
+            Integer idSolicitudPadre=0;
+            solicitud.setSolicitudpadre(0);
+            varFechaHoraPartida = solicitud.getFechahorapartida();
+            varFechaHoraRegreso = solicitud.getFechahoraregreso();
+            //Guarda la solicitud
+            for (DisponiblesBeans db : disponiblesBeansList) {
+                for (int i = 0; i < db.getBusesRecomendados(); i++) {
+                    solicitud.setPasajeros(db.getPasajerosPorViaje().get(i));
+                    solicitud.setFechahorapartida(db.getFechahorainicio());
+                    solicitud.setFechahoraregreso(db.getFechahorafin());
+                    solicitud.setNumerodevehiculos(1);
+                    if (insert()) {
+                        solicitudesGuardadas++;
+                        if(solicitudesGuardadas.equals(1)){
+                           idSolicitudPadre = solicitud.getIdsolicitud();
+                        }else{
+                           solicitud.setSolicitudpadre(idSolicitudPadre); 
+                        }
+                           
+                    }
+                }
+            }
+     
+
+            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
+
+            inicializar();
+            //  Guardar las notificaciones
+            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
+            List<Usuario> usuarioList = usuarioRepository.filters(filter);
+            if (usuarioList == null || usuarioList.isEmpty()) {
+            } else {
+                usuarioList.forEach((u) -> {
+                    saveNotification(u.getUsername());
+                });
+                push.send("Nueva solicitud docente ");
+            }
+
+            /**
+             * Enviar un email al docente y al mismo administrador
+             */
+            sendEmail(" creada(s) ");
+
+            facultadList = new ArrayList<>();
+            carreraList = new ArrayList<>();
+            reset();
+
+            return "";
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String saveOld()">
+    public String saveOld() {
+        try {
+            solicitudGuardadasList = new ArrayList<>();
+            numeroPasajerosIniciales = solicitud.getPasajeros();
+            numeroVehiculosIniciales = solicitud.getNumerodevehiculos();
+            Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
+            if (!localValid()) {
+                return "";
+            }
+
+            //verifica si hay buses disponibles
             if (vehiculoDisponiblesList == null || vehiculoDisponiblesList.isEmpty()) {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
@@ -1611,76 +1700,20 @@ public class SolicitudDocenteController implements Serializable, IController {
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="isValidCantidadPasajeros()">
     private Boolean isValidCantidadPasajeros() {
+
         try {
-            // Si la cantidad de buses solicitados es mayor que los disponibles
-            if (solicitud.getNumerodevehiculos() > vehiculoDisponiblesList.size()) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayesacantidadbusesdisponibles"));
 
-                return false;
-            }
             Boolean hayDisponiblesvehiculos = true;
-            Boolean hayDisponiblesPasajeros = true;
-            String mensaje = "";
+
             for (DisponiblesBeans db : disponiblesBeansList) {
-                if (db.getNumeroBuses() < numeroVehiculosIniciales) {
+                if (db.getBusesRecomendados() < db.getNumeroBuses()) {
                     hayDisponiblesvehiculos = false;
-                    mensaje += " Vehiculos";
                 }
-                if (db.getNumeroPasajeros() < numeroPasajerosIniciales) {
-                    hayDisponiblesPasajeros = false;
-                    mensaje += " Pasajeros";
-                }
+
             }
 
-            ///Revisar de aqui hacia abajo
-            if (!hayDisponiblesvehiculos || hayDisponiblesPasajeros) {
-//                En algunas fechas no hay suficientes vehiculos
-//                        invocar un dialogo de confirmacion desde aqui
-//                                
-            }
-
-            /**
-             * Verifica los pasajeros disponibles en los buses Indica si existe
-             * espacio en estos buses y la cantidad disponible
-             */
-            pasajerosDisponibles = 0;
-            List<Vehiculo> vehiculoAsignadosList = new ArrayList<>();
-            Integer pasajerosPendientes = solicitud.getPasajeros();
-            for (Vehiculo v : vehiculoDisponiblesList) {
-                pasajerosDisponibles += v.getPasajeros();
-
-                if (pasajerosPendientes > 0) {
-                    vehiculoAsignadosList.add(v);
-                    pasajerosPendientes -= v.getPasajeros();
-                }
-            }
-
-// verifica si la cantidad de pasajeros solicitados es mayor que los disponibles
-//            if (solicitud.getPasajeros() > pasajerosDisponibles) {
-//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros"));
-//
-//                return false;
-//            }
-            if (!hayDisponiblesPasajeros) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayasientosdisponiblesparaesacantidadpasajeros"));
-
-                return false;
-            }
-
-//            if (vehiculoAsignadosList == null || vehiculoAsignadosList.isEmpty()) {
-//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeasignarbusesparapasajeros"));
-//
-//                return false;
-//            }
             if (!hayDisponiblesvehiculos) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeasignarbusesparapasajeros"));
-
-                return false;
-            }
-
-            if (vehiculoAsignadosList.size() != solicitud.getNumerodevehiculos()) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerobusesrecomendados") + " " + vehiculoAsignadosList.size());
-
                 return false;
             }
 
