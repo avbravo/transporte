@@ -138,6 +138,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     List<Integer> pages = new ArrayList<>();
     List<Sugerencia> sugerenciaList = new ArrayList<>();
     List<DisponiblesBeans> disponiblesBeansList = new ArrayList<>();
+ 
 
     //Entity
     Solicitud solicitud = new Solicitud();
@@ -638,10 +639,13 @@ public class SolicitudDocenteController implements Serializable, IController {
                 return "";
             }
 
-            if (!isValidCantidadPasajeros()) {
-
-                return "";
-            }
+            /**
+            Habilitarlo si no deseamos guardar los que estan en rojo
+            */
+//            if (!isValidCantidadPasajeros()) {
+//
+//                return "";
+//            }
 
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
@@ -655,7 +659,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
             Integer solicitudesGuardadas = 0;
-            Integer idSolicitudPadre=0;
+            Integer idSolicitudPadre = 0;
             solicitud.setSolicitudpadre(0);
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
@@ -668,210 +672,15 @@ public class SolicitudDocenteController implements Serializable, IController {
                     solicitud.setNumerodevehiculos(1);
                     if (insert()) {
                         solicitudesGuardadas++;
-                        if(solicitudesGuardadas.equals(1)){
-                           idSolicitudPadre = solicitud.getIdsolicitud();
-                        }else{
-                           solicitud.setSolicitudpadre(idSolicitudPadre); 
-                        }
-                           
-                    }
-                }
-            }
-     
-
-            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
-
-            inicializar();
-            //  Guardar las notificaciones
-            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-            List<Usuario> usuarioList = usuarioRepository.filters(filter);
-            if (usuarioList == null || usuarioList.isEmpty()) {
-            } else {
-                usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername());
-                });
-                push.send("Nueva solicitud docente ");
-            }
-
-            /**
-             * Enviar un email al docente y al mismo administrador
-             */
-            sendEmail(" creada(s) ");
-
-            facultadList = new ArrayList<>();
-            carreraList = new ArrayList<>();
-            reset();
-
-            return "";
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }
-
-    // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="String saveOld()">
-    public String saveOld() {
-        try {
-            solicitudGuardadasList = new ArrayList<>();
-            numeroPasajerosIniciales = solicitud.getPasajeros();
-            numeroVehiculosIniciales = solicitud.getNumerodevehiculos();
-            Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
-            if (!localValid()) {
-                return "";
-            }
-
-            //verifica si hay buses disponibles
-            if (vehiculoDisponiblesList == null || vehiculoDisponiblesList.isEmpty()) {
-
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
-
-                return "";
-            }
-
-            if (!isValidCantidadPasajeros()) {
-
-                return "";
-            }
-
-            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-
-            //si cambia el email o celular del responsable actualizar ese usuario
-            if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
-                usuarioRepository.update(responsable);
-                //actuliza el que esta en el login
-                if (responsable.getUsername().equals(jmoordb_user.getUsername())) {
-                    //  loginController.setUsuario(responsable);
-                }
-            }
-
-            Integer solicitudesGuardadas = 0;
-            solicitud.setSolicitudpadre(0);
-            varFechaHoraPartida = solicitud.getFechahorapartida();
-            varFechaHoraRegreso = solicitud.getFechahoraregreso();
-
-            /**
-             * Si es dias consecutivos es un solo intervalo para la reservacion
-             * se creara una solicitud para cada vehiculos solicitado
-             */
-            if (diasconsecutivos) {
-                Integer pasajerosPendientes = solicitud.getPasajeros();
-                Integer pasajeros = 0;
-                for (Integer index = 0; index < numeroVehiculosSolicitados; index++) {
-                    if (pasajerosPendientes > vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros()) {
-                        pasajeros = vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros();
-                        pasajerosPendientes = pasajerosPendientes - vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros();
-                    } else {
-                        pasajeros = pasajerosPendientes;
-                    }
-
-                    solicitud.setPasajeros(pasajeros);
-                    if (insert()) {
-                        solicitudesGuardadas++;
-                    }
-                    //Asigna la solicitud padre para las demas solicitudes
-                    solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
-                }//for
-            } else {
-
-                /*
-                No son dias consecutivo
-                Se deben descomponer las fechas
-                verificar si son dias validos
-                Descomponener la fecha de inicio
-                 */
-                DecomposedDate fechaPartidaDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahorapartida());
-
-                //descomponer la fecha de regreso
-                DecomposedDate fechaRegresoDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahoraregreso());
-
-                varAnio = fechaPartidaDescompuesta.getYear();
-                //Determinar cuantos meses hay
-                Integer meses = DateUtil.numberOfMonthBetweenDecomposedDate(fechaPartidaDescompuesta, fechaRegresoDescompuesta);
-
-                //mismo mes
-                if (meses == 0) {
-// Encontrar las fechas en el rango
-                    List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
-                    fechasValidasList = validarRangoFechas(fechaPartidaDescompuesta.getYear(), fechaPartidaDescompuesta.getNameOfMonth());
-                    //recorre todos los vehiculos 
-                    for (int i = 0; i < numeroVehiculosSolicitados; i++) {
-                        if (fechasValidasList.isEmpty()) {
-                            //no hay fechas para guardar
-                            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos"));
-                            return "";
+                        if (solicitudesGuardadas.equals(1)) {
+                            idSolicitudPadre = solicitud.getIdsolicitud();
                         } else {
-                            //ESTOS SON LOS QUE SE GUARDARIAN
-                            solicitudesGuardadas = procesar(fechasValidasList, fechaPartidaDescompuesta.getHour(), fechaPartidaDescompuesta.getMinute(), fechaRegresoDescompuesta.getHour(), fechaRegresoDescompuesta.getMinute());
-
-                        }//isEmpty
-                    } //getNumerodevehiculos
-
-                } else {
-                    // mas de un mes recorrer todos los meses en ese intervalo
-                    if (meses > 0 && meses <= 12) {
-
-                        for (int i = 0; i <= meses; i++) {
-                            //Verificar si es el mismo año
-                            if (fechaPartidaDescompuesta.getYear().equals(fechaRegresoDescompuesta.getYear())) {
-                                Integer m = fechaPartidaDescompuesta.getMonth() + i;
-                                String nameOfMohth = DateUtil.nombreMes(m);
-                                List<FechaDiaUtils> list = validarRangoFechas(fechaPartidaDescompuesta.getYear(), nameOfMohth);
-                                List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
-                                if (list == null || list.isEmpty()) {
-                                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes;" + nameOfMohth);
-
-                                } else {
-                                    list.forEach((f) -> {
-                                        fechasValidasList.add(f);
-                                    });
-                                }
-                                if (fechasValidasList == null || fechasValidasList.isEmpty()) {
-
-                                } else {
-                                    solicitudesGuardadas = procesar(fechasValidasList, fechaPartidaDescompuesta.getHour(), fechaPartidaDescompuesta.getMinute(), fechaRegresoDescompuesta.getHour(), fechaRegresoDescompuesta.getMinute());
-                                }
-
-                            } else {
-                                //cambio el año   
-                                Integer m = fechaPartidaDescompuesta.getMonth() + i;
-                                if (m == 12) {
-                                    varAnio = varAnio + 1;
-                                }
-                                if (m >= 12) {
-                                    m = m - 12;
-
-                                }
-
-                                String nameOfMohth = DateUtil.nombreMes(m);
-
-                                List<FechaDiaUtils> list = validarRangoFechas(varAnio, nameOfMohth);
-                                List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
-                                if (list == null || list.isEmpty()) {
-                                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes: " + nameOfMohth);
-                                    //return "";
-                                } else {
-                                    list.forEach((f) -> {
-                                        fechasValidasList.add(f);
-                                    });
-                                }
-                                if (fechasValidasList == null || fechasValidasList.isEmpty()) {
-
-                                } else {
-                                    solicitudesGuardadas = procesar(fechasValidasList, fechaPartidaDescompuesta.getHour(), fechaPartidaDescompuesta.getMinute(), fechaRegresoDescompuesta.getHour(), fechaRegresoDescompuesta.getMinute());
-                                }
-
-                            }
-
+                            solicitud.setSolicitudpadre(idSolicitudPadre);
                         }
 
-                    } else {
-                        JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.verifiqueestasolicitandomas12meses"));
-                        return "";
                     }
                 }
-
-            }//no son dias consecutivos
+            }
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
 
@@ -904,6 +713,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     }
 
     // </editor-fold>
+   
     // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
     public String columnColor(String estatus) {
         String color = "";
@@ -1390,6 +1200,10 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (rol.getIdrol().toUpperCase().equals("DOCENTE")) {
                 textsearch = "DOCENTE";
             }
+            //
+//            diasSelected = new String[0];           
+//            diasSelected[0] = "Dia/ Dias Consecutivo";
+
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
             solicitudSelected = solicitud;
             leyoSugerencias = false;
@@ -1607,7 +1421,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 }
                 changeDaysViewAvailable();
                 if (diasSelected == null || diasSelected.length == 0) {
-                    JsfUtil.warningDialog("texto", "Aun no ha seleccionado el rango");
+                    // JsfUtil.warningDialog("texto", "Aun no ha seleccionado el rango");
                 } else {
                     if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
                         JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
@@ -1911,7 +1725,9 @@ public class SolicitudDocenteController implements Serializable, IController {
      */
     public String changeDaysViewAvailable() {
         try {
+
             disponiblesBeansList = new ArrayList<>();
+    
             List<Vehiculo> vehiculoFreeList = new ArrayList<>();
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
@@ -1945,6 +1761,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                         .reversed());
 //Almacena los vehiculos disponibles
                 DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
+                disponiblesBeans.setIddisponible(1);
                 disponiblesBeans.setFechahorainicio(solicitud.getFechahorapartida());
                 disponiblesBeans.setFechahorafin(solicitud.getFechahoraregreso());
                 disponiblesBeans.setNumeroBuses(numeroBuses);
@@ -1990,6 +1807,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 }
 
             }// no son consecutivos
+         
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -2281,7 +2099,7 @@ public class SolicitudDocenteController implements Serializable, IController {
      */
     private Boolean insertIntoDisponiblesList(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<FechaDiaUtils> fechasValidasList, List<Vehiculo> vehiculoList) {
         try {
-
+            Integer contadorDispobibes = 0;
             Integer numeroBuses = 0;
             Integer numeroPasajeros = 0;
             if (fechasValidasList == null || fechasValidasList.isEmpty()) {
@@ -2309,6 +2127,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                         vehiculoFreeList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
                                 .reversed());
                         DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
+                        disponiblesBeans.setIddisponible(++contadorDispobibes);
                         disponiblesBeans.setFechahorainicio(newDatePartida);
                         disponiblesBeans.setFechahorafin(newDateRegreso);
                         disponiblesBeans.setNumeroBuses(numeroBuses);

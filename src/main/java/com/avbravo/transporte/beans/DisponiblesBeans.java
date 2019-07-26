@@ -16,6 +16,7 @@ import java.util.List;
  * Almacena la lista de vehiculos disponibles se usa para mostrarlos en las solicitudes
  */
 public class DisponiblesBeans {
+    private Integer iddisponible;
     private Date fechahorainicio;
     private Date fechahorafin;
     private Integer numeroBuses;
@@ -30,7 +31,8 @@ public class DisponiblesBeans {
     public DisponiblesBeans() {
     }
 
-    public DisponiblesBeans(Date fechahorainicio, Date fechahorafin, Integer numeroBuses, Integer numeroPasajeros, List<Vehiculo> vehiculo) {
+    public DisponiblesBeans(Integer iddisponible, Date fechahorainicio, Date fechahorafin, Integer numeroBuses, Integer numeroPasajeros, List<Vehiculo> vehiculo) {
+        this.iddisponible = iddisponible;
         this.fechahorainicio = fechahorainicio;
         this.fechahorafin = fechahorafin;
         this.numeroBuses = numeroBuses;
@@ -38,6 +40,22 @@ public class DisponiblesBeans {
         this.vehiculo = vehiculo;
     }
 
+    public Integer getIddisponible() {
+        return iddisponible;
+    }
+
+    public void setIddisponible(Integer iddisponible) {
+        this.iddisponible = iddisponible;
+    }
+
+   
+    
+    
+    
+
+  
+
+   
     
     
     public Integer getPasajerosPendientes() {
