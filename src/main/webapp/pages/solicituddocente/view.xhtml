@@ -213,7 +213,7 @@
                         <p:outputLabel  value="#{msg['field.pasajeros']}" >
                             <i class="pi pi-users"></i>
                         </p:outputLabel>
-                         <b:touchSpin  col-md="3"  min="1"  step="1" value="#{solicitudDocenteController.solicitud.pasajeros}" id="pasajeros" max="250" 
+                        <b:touchSpin  col-md="3"  min="1"  step="1" value="#{solicitudDocenteController.solicitud.pasajeros}" id="pasajeros" max="250" 
                                       onchange="ajax:solicitudDocenteController.changeDaysViewAvailable()"
                                       update=":form:datatableDisponibles"
                                       process="@this, pasajeros"

@@ -138,7 +138,6 @@ public class SolicitudDocenteController implements Serializable, IController {
     List<Integer> pages = new ArrayList<>();
     List<Sugerencia> sugerenciaList = new ArrayList<>();
     List<DisponiblesBeans> disponiblesBeansList = new ArrayList<>();
- 
 
     //Entity
     Solicitud solicitud = new Solicitud();
@@ -164,7 +163,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     List<Tiposolicitud> tiposolicitudList = new ArrayList<>();
     List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
     List<Tipovehiculo> suggestionsTipovehiculo = new ArrayList<>();
-    List<Vehiculo> vehiculoDisponiblesList = new ArrayList<>();
+
     List<String> rangoAgenda = new ArrayList<>();
     //
     private String[] diasSelected;
@@ -563,63 +562,6 @@ public class SolicitudDocenteController implements Serializable, IController {
         }
         return fechaDiaUtilsSaveList;
     }  // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="Integer procesar(List<FechaDiaUtils> fechasValidasList, Integer horapartida, Integer minutopartida, Integer horaregreso, Integer minutoregreso) ">
-
-    private Integer procesar(List<FechaDiaUtils> fechasValidasList, Integer horapartida, Integer minutopartida, Integer horaregreso, Integer minutoregreso) {
-        Integer solicitudesGuardadas = 0;
-        //      Integer pasajerosPendientes = solicitud.getPasajeros();
-        Integer pasajerosPendientes = numeroPasajerosIniciales;
-
-        Integer pasajeros = 0;
-        Integer numeroSolicitudPadre = 0;
-        try {
-            for (FechaDiaUtils f : fechasValidasList) {
-                //si es un dia valido
-                if (isValidDayName(f.getName())) {
-                    /**
-                     * crear la nueva fechahora de partida crear la nueva
-                     * fechahora de regreso
-                     */
-                    Date newDatePartida = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horapartida, minutopartida);
-                    Date newDateRegreso = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), horaregreso, minutoregreso);
-
-                    solicitud.setFechahorapartida(newDatePartida);
-                    solicitud.setFechahoraregreso(newDateRegreso);
-                    /*
-                    Distribuye la cantidad de pasajeros en los viajes en base a los asientos disponibles
-                     */
-                    if (pasajerosPendientes > vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros()) {
-                        pasajeros = vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros();
-                        pasajerosPendientes = pasajerosPendientes - vehiculoDisponiblesList.get(solicitudesGuardadas).getPasajeros();
-                    } else {
-                        pasajeros = pasajerosPendientes;
-                    }
-
-                    solicitud.setPasajeros(pasajeros);
-                    if (insert()) {
-                        solicitudesGuardadas++;
-                        if (solicitudesGuardadas == 1) {
-                            numeroSolicitudPadre = solicitud.getIdsolicitud();
-                        }
-                    }
-                    //Verifica si se cumplieron la asignacion de vehiculos en viajes, reinicia los contadores
-                    if ((solicitudesGuardadas % numeroVehiculosIniciales) == 0) {
-                        pasajerosPendientes = numeroPasajerosIniciales;
-                        pasajeros = 0;
-                    }
-                    //asigna el numero de solicitud
-                    solicitud.setSolicitudpadre(numeroSolicitudPadre);
-                    //solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
-
-                }
-
-            }
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return solicitudesGuardadas;
-    }
-    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="String save()">
     @Override
@@ -640,13 +582,12 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
             /**
-            Habilitarlo si no deseamos guardar los que estan en rojo
-            */
+             * Habilitarlo si no deseamos guardar los que estan en rojo
+             */
 //            if (!isValidCantidadPasajeros()) {
 //
 //                return "";
 //            }
-
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
             //si cambia el email o celular del responsable actualizar ese usuario
@@ -672,6 +613,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                     solicitud.setNumerodevehiculos(1);
                     if (insert()) {
                         solicitudesGuardadas++;
+
                         if (solicitudesGuardadas.equals(1)) {
                             idSolicitudPadre = solicitud.getIdsolicitud();
                         } else {
@@ -713,7 +655,6 @@ public class SolicitudDocenteController implements Serializable, IController {
     }
 
     // </editor-fold>
-   
     // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
     public String columnColor(String estatus) {
         String color = "";
@@ -1545,36 +1486,36 @@ public class SolicitudDocenteController implements Serializable, IController {
         try {
             leyoSugerencias = true;
             solicitudGuardadasList = new ArrayList<>();
-
+            solicitudGuardadasList.add(solicitud);
             if (!localValid()) {
                 return "";
             }
 
             //verifica si hay buses disponibles
-            if (vehiculoDisponiblesList == null || vehiculoDisponiblesList.isEmpty()) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
-                return "";
-            }
+//            if (!isValidCantidadPasajeros()) {
+//                return "";
+//            }
+            if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
 
-            if (!isValidCantidadPasajeros()) {
-                return "";
-            }
+            } else {
+                /**
+                 * Verifica que el numero de pasajeros no exceda la capacidad maxima del bus
+                 * con mayor capacidad , ya que cuando se edita no se permite agregar mas buses.
+                 */
 
-            Boolean mayorDisponible = false;
-            Integer maximo = 0;
-            for (Vehiculo v : vehiculoDisponiblesList) {
-                if (v.getPasajeros() > maximo) {
-                    maximo = v.getPasajeros();
+                for (DisponiblesBeans db : disponiblesBeansList) {
+                    if (db.getVehiculo() == null || db.getVehiculo().isEmpty()) {
+
+                    } else {
+                        if (solicitud.getPasajeros() > db.getVehiculo().get(0).getPasajeros()) {
+
+                            JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.pasajerosexcedencapicidadbusdisponible"));
+                            return "";
+                        }
+                    }
+
                 }
-            }
-            if (solicitud.getPasajeros() > maximo) {
-                mayorDisponible = true;
-            }
-            if (mayorDisponible) {
 
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.mayordisponiblesporbus"));
-
-                return "";
             }
 
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
@@ -1716,7 +1657,7 @@ public class SolicitudDocenteController implements Serializable, IController {
         return "/pages/solicituddocente/list.xhtml";
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="String changeDias()">
+    // <editor-fold defaultstate="collapsed" desc="String changeDaysViewAvailable()">
     /**
      * cuando el usario selecciona el dia verifica los vehiculos disponibles y
      * carga la lista de disponiblesBeansList y vehiculoDisponiblesList
@@ -1727,7 +1668,7 @@ public class SolicitudDocenteController implements Serializable, IController {
         try {
 
             disponiblesBeansList = new ArrayList<>();
-    
+
             List<Vehiculo> vehiculoFreeList = new ArrayList<>();
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
@@ -1807,7 +1748,6 @@ public class SolicitudDocenteController implements Serializable, IController {
                 }
 
             }// no son consecutivos
-         
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1878,6 +1818,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 varRango = "" + r;
             }
             String header = "\n Detalle de la solicitud:"
+                    + "\n# : " + s0.getIdsolicitud()
                     + "\nObjetivo : " + s0.getObjetivo()
                     + "\nObservaciones: " + s0.getObservaciones()
                     + "\nLugares: " + s0.getLugares()
