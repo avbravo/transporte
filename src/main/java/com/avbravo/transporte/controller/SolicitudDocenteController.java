@@ -110,8 +110,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     private static final long serialVersionUID = 1L;
 
     String messages = "";
-    Integer numeroPasajerosIniciales = 0;
-    Integer numeroVehiculosIniciales = 0;
+
+
     Integer index = 0;
     Integer pasajerosDisponibles = 0;
     ManagerEmail managerEmail = new ManagerEmail();
@@ -568,9 +568,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     public String save() {
         try {
             solicitudGuardadasList = new ArrayList<>();
-            numeroPasajerosIniciales = solicitud.getPasajeros();
-            numeroVehiculosIniciales = solicitud.getNumerodevehiculos();
-            Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
+
             if (!localValid()) {
                 return "";
             }
