@@ -13,9 +13,9 @@
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--<version.payara.micro>5.182</version.payara.micro>-->
-  <!--<version.payara>5.191</version.payara>-->
-  <version.payara>5.192</version.payara>
-      <!--<version.payara.micro>5.183</version.payara.micro>-->
+        <!--<version.payara>5.191</version.payara>-->
+        <version.payara>5.192</version.payara>
+        <!--<version.payara.micro>5.183</version.payara.micro>-->
     </properties>
     
     <dependencies>
@@ -53,11 +53,7 @@
             <version>1.3</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jmoordbjsf</artifactId>
-            <version>0.18.2</version>
-        </dependency>
+      
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -80,20 +76,20 @@
             <artifactId>jmoordbsecurity</artifactId>
             <version>0.2</version>
         </dependency>
-          <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>transporteejb</artifactId>
             <version>19.7.0</version>
         </dependency>
-      
-<!--  <dependency>
-	    <groupId>com.github.avbravo</groupId>
-	    <artifactId>jmoordbjsf</artifactId>
-	    <version>0.18.1</version>
-	</dependency>-->
+     
+        <dependency>
+            <groupId>com.github.avbravo</groupId>
+            <artifactId>jmoordbjsf</artifactId>
+            <version>0.19</version>
+        </dependency>
         <!--
-                parche para bootfaces
--->
+                        parche para bootfaces
+        -->
         <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbbootfacespatch</artifactId>

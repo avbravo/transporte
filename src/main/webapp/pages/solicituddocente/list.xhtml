@@ -102,18 +102,14 @@
                     <p:column style="width:55px" >
 
                         <jmoordbjsf:commandbuttondatatableprepareView
-                            rendered="#{item.estatus.idestatus eq 'SOLICITADO'}"
+                            rendered="#{(item.estatus.idestatus eq 'SOLICITADO') or ((item.estatus.idestatus eq 'APROBADO'))}"
                             controller="#{solicitudDocenteController}"
                             url="/pages/solicituddocente/view.xhtml"
                             item="#{item}"
                             />                
-                        <jmoordbjsf:commandbuttondatatablecancel
-                            rendered="#{item.estatus.idestatus eq 'APROBADO'}"
-                            controller="#{solicitudDocenteController}"
-                            url="/pages/solicituddocente/cancel.xhtml"
-                            item="#{item}"
-                            />
                     </p:column>
+                  
+                 
 
 
 

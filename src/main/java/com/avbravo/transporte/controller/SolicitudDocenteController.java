@@ -16,6 +16,7 @@ import com.avbravo.jmoordb.configuration.JmoordbContext;
 import com.avbravo.jmoordb.configuration.JmoordbControllerEnvironment;
 import com.avbravo.jmoordb.interfaces.IController;
 import com.avbravo.jmoordb.mongodb.history.repository.AutoincrementablebRepository;
+import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.repository.Repository;
@@ -44,6 +45,8 @@ import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
+import com.avbravo.transporteejb.entity.Viaje;
+import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.SugerenciaRepository;
 import com.avbravo.transporteejb.repository.TipovehiculoRepository;
@@ -59,6 +62,7 @@ import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.or;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -110,7 +114,6 @@ public class SolicitudDocenteController implements Serializable, IController {
     private static final long serialVersionUID = 1L;
 
     String messages = "";
-
 
     Integer index = 0;
     Integer pasajerosDisponibles = 0;
@@ -175,7 +178,11 @@ public class SolicitudDocenteController implements Serializable, IController {
 
     //Repository
     @Inject
+    RevisionHistoryRepository revisionHistoryRepository;
+    @Inject
     CarreraRepository carreraRepository;
+    @Inject
+    EstatusRepository estatusRepository;
     @Inject
     FacultadRepository facultadRepository;
     @Inject
@@ -190,6 +197,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     VehiculoRepository vehiculoRepository;
     @Inject
     UsuarioRepository usuarioRepository;
+    @Inject
+    RevisionHistoryServices revisionHistoryServices;
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;
@@ -366,7 +375,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 case "_init":
                 case "_autocomplete":
 
-                    doc = new Document("usuario.username", jmoordb_user.getUsername());
+                    doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
@@ -374,7 +383,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 case "idsolicitud":
                     if (JmoordbContext.get("_fieldsearchsolicitud") != null) {
                         solicitudSearch.setIdsolicitud((Integer) JmoordbContext.get("_fieldsearchsolicitud"));
-                        doc = new Document("idsolicitud", solicitudSearch.getIdsolicitud()).append("usuario.username", jmoordb_user.getUsername());
+                        doc = new Document("idsolicitud", solicitudSearch.getIdsolicitud()).append("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
                         solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
                     } else {
                         solicitudList = solicitudRepository.findPagination(page, rowPage);
@@ -385,12 +394,12 @@ public class SolicitudDocenteController implements Serializable, IController {
                 case "estatus":
                     Estatus estatus = new Estatus();
                     estatus = (Estatus) JmoordbContext.get("_fieldsearchsolicitud");
-                    doc = new Document("estatus.idestatus", estatus.getIdestatus());
+                    doc = new Document("estatus.idestatus", estatus.getIdestatus()).append("activo", "si");
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
                 default:
-                    doc = new Document("usuario.username", jmoordb_user.getUsername());
+                    doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si").append("usuario.username", jmoordb_user.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
@@ -1485,20 +1494,21 @@ public class SolicitudDocenteController implements Serializable, IController {
             leyoSugerencias = true;
             solicitudGuardadasList = new ArrayList<>();
             solicitudGuardadasList.add(solicitud);
+            if(solicitud.getEstatus().getIdestatus().equals("APROBAOD")){
+            JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeeditarsolicitudaprobada"));
+                            return "";
+            }
             if (!localValid()) {
                 return "";
             }
 
-            //verifica si hay buses disponibles
-//            if (!isValidCantidadPasajeros()) {
-//                return "";
-//            }
             if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
 
             } else {
                 /**
-                 * Verifica que el numero de pasajeros no exceda la capacidad maxima del bus
-                 * con mayor capacidad , ya que cuando se edita no se permite agregar mas buses.
+                 * Verifica que el numero de pasajeros no exceda la capacidad
+                 * maxima del bus con mayor capacidad , ya que cuando se edita
+                 * no se permite agregar mas buses.
                  */
 
                 for (DisponiblesBeans db : disponiblesBeansList) {
@@ -1539,7 +1549,6 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
 
-            // inicializar();
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
             List<Usuario> usuarioList = usuarioRepository.filters(filter);
@@ -1548,7 +1557,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 usuarioList.forEach((u) -> {
                     saveNotification(u.getUsername());
                 });
-                push.send("Nueva solicitud docente ");
+                push.send("Edicicion de solicitud docente ");
             }
 
             /**
@@ -1569,11 +1578,13 @@ public class SolicitudDocenteController implements Serializable, IController {
     public Boolean beforePrepareView() {
         try {
             Solicitud item = (Solicitud) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("item");
-            if (item.getEstatus().getIdestatus().equals("SOLICITADO")) {
-                return true;
-            } else {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.soloseeditanlossolicitados"));
-                return false;
+            switch (item.getEstatus().getIdestatus()) {
+                case "SOLICITADO":
+                case "APROBADO":
+                    return true;
+                default:
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.soloseeditanlossolicitados"));
+                    return false;
             }
 
         } catch (Exception e) {
@@ -2220,11 +2231,8 @@ public class SolicitudDocenteController implements Serializable, IController {
         return pasajerosRecomendadosList;
     }
     // </editor-fold>
-    
-    
-    
-      // <editor-fold defaultstate="collapsed" desc="String  cancel()">
 
+    // <editor-fold defaultstate="collapsed" desc="String  cancel()">
     public String cancel() {
         try {
             Solicitud item = (Solicitud) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("item");
@@ -2241,5 +2249,84 @@ public class SolicitudDocenteController implements Serializable, IController {
         return "";
     }
     // </editor-fold>
-    
+
+// <editor-fold defaultstate="collapsed" desc="String delete())">
+    /*
+    En lugar de eliminarla se pasa el estado a CANCELADO.
+     */
+    @Override
+    public String delete() {
+        try {
+            if (!beforeDelete()) {
+                return "";
+            }
+            Document doc = new Document("idestatus", "CANCELADO");
+            Estatus estatus = new Estatus();
+            estatus.setIdestatus("CANCELADO");
+            Optional<Estatus> optional = estatusRepository.findById(estatus);
+            if (!optional.isPresent()) {
+                JsfUtil.warningMessage(rf.getMessage("warning.noexisteestatuscancelado"));
+                return "";
+            }
+            estatus = optional.get();
+            solicitud.setEstatus(estatus);
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            solicitud = solicitudRepository.addUserInfoForEditMethod(solicitud, jmoordb_user.getUsername(), "update");
+            /**
+             * Verifica si el viaje se realizo si es asi no se puede eliminar
+             * si tiene viaje se van a limpiar esos viajes
+             */
+            Boolean isRealizado = false;
+            if (solicitud.getViaje() == null || solicitud.getViaje().isEmpty()) {
+
+            } else {
+                for (Viaje v : solicitud.getViaje()) {
+                    if (v.getRealizado().equals("si")) {
+                        isRealizado = true;
+                    }
+                }
+
+            }
+
+            if (isRealizado) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedecancelartieneviajesrealizados"));
+            }
+            List<Viaje> viajeList = new ArrayList<>();
+            solicitud.setViaje(viajeList);
+//guarda el historial
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(),
+                    jmoordb_user.getUsername(),
+                    "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+//Remuevo los viajes que tenga asignados
+            if (solicitudRepository.update(solicitud)) {
+                JsfUtil.infoDialog("Mensaje", rf.getMessage("info.cancelacionsolicitudes"));
+            } else {
+
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.cancelacionsolicitudesfallida"));
+            }
+
+            //  Guardar las notificaciones
+            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
+            List<Usuario> usuarioList = usuarioRepository.filters(filter);
+            if (usuarioList == null || usuarioList.isEmpty()) {
+            } else {
+                usuarioList.forEach((u) -> {
+                    saveNotification(u.getUsername());
+                });
+                push.send("Se cancelo una solicitud ");
+            }
+solicitudGuardadasList = new ArrayList<>();
+solicitudGuardadasList.add(solicitud);
+            /**
+             * Enviar un email al docente y al mismo administrador
+             */
+            sendEmail(" cancelada(s) ");
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+
+        return "";
+    }
+    // </editor-fold>
 }
