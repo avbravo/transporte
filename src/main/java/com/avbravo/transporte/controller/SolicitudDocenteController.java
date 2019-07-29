@@ -667,7 +667,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                     color = "green";
                     break;
                 case "SOLICITADO":
-                    color = "brown";
+                    color = "blue";
                     break;
                 default:
                     color = "black";
@@ -2220,4 +2220,26 @@ public class SolicitudDocenteController implements Serializable, IController {
         return pasajerosRecomendadosList;
     }
     // </editor-fold>
+    
+    
+    
+      // <editor-fold defaultstate="collapsed" desc="String  cancel()">
+
+    public String cancel() {
+        try {
+            Solicitud item = (Solicitud) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("item");
+            if (item.getEstatus().getIdestatus().equals("SOLICITADO")) {
+                return "";
+            } else {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.soloseeditanlossolicitados"));
+                return "";
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+    // </editor-fold>
+    
 }

@@ -1,0 +1,378 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions" 
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"> 
+    <ui:define name="content">
+
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            }
+        </style>
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('DOCENTE')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+            <h:panelGroup id="content" layout="block"> 
+
+                <jmoordbjsf:messages id="msg"/>
+
+
+
+                <b:panel collapsible="false" title="#{msg['title.solicituddocentecancel']}" look="primary" rendered="#{p:ifGranted('DOCENTE')}" >
+
+
+
+                    <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('DOCENTE')}"> 
+
+                        <p:outputLabel  value="#{msg['field.fecha']}" />
+                        <jmoordbjsf:labelDate  value="#{solicitudDocenteController.solicitud.fecha}" id="fecha"   />
+                        <p:outputLabel  value="#{msg['field.idsolicitud']}" />
+                        <p:outputLabel  value="#{solicitudDocenteController.solicitud.idsolicitud}" id="idsolicitud"   />
+
+
+                        <p:outputLabel  value="#{msg['field.solicitadopor']}" />
+                        <b:column>
+                            <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                                     completeMethod="#{solicitudDocenteController.usuarioServices.complete}"
+                                                     labeltip1="#{msg['field.username']} #{p.username}"
+                                                     labeltip2="#{msg['field.nombre']} #{p.nombre}"  
+                                                     listener="#{solicitudDocenteController.handleSelect}"
+                                                     value="#{solicitudDocenteController.solicita}"
+                                                     itemLabel=" #{p.nombre}"
+                                                     field="nombre"
+                                                     dropdown="true"
+                                                     minQueryLength="0"
+                                                     disabled="true"
+                                                     />
+
+
+                        </b:column>
+
+
+                        <p:outputLabel value="#{msg['field.responsable']}"/>
+                        <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                                 completeMethod="#{solicitudDocenteController.usuarioServices.complete}"
+                                                 labeltip1="#{msg['field.username']} #{p.username}"
+                                                 labeltip2="#{msg['field.nombre']} #{p.nombre}"   
+                                                 listener="#{solicitudDocenteController.handleSelect}"
+                                                 value="#{solicitudDocenteController.responsable}"
+                                                 itemLabel=" #{p.nombre}"
+                                                 field="nombre"
+                                                 dropdown="true"
+                                                 minQueryLength="0"
+                                                 update=":form:panel"
+                                                 />
+
+
+                        <p:outputLabel  value="#{msg['field.telefono']}" />
+                        <jmoordbjsf:inputText span="4"  value="#{solicitudDocenteController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
+
+                        <p:outputLabel  value="#{msg['field.email']}" />
+                        <jmoordbjsf:email span="8" value="#{solicitudDocenteController.responsable.email}" id="email"  label="#{msg['field.email']}" />
+
+
+                        <p:outputLabel  value="#{msg['field.semestre']}" />
+                        <jmoordbjsf:autocomplete converter="#{semestreConverter}"
+                                                 completeMethod="#{solicitudDocenteController.semestreServices.complete}"
+                                                 labeltip1="#{p.idsemestre}"
+                                                 labeltip2="#{p.descripcion}"    
+                                                 listener="#{solicitudDocenteController.handleSelect}"
+                                                 value="#{solicitudDocenteController.solicitud.semestre}"
+                                                 itemLabel="#{p.idsemestre}"
+                                                 dropdown="true"
+                                                 required="true"
+                                                 minQueryLength="0"
+                                                 field="descripcion"
+                                                 />
+
+                        <p:outputLabel  value="#{msg['field.periodoacademico']}" />
+                        <jmoordbjsf:inputText span="4" value="#{solicitudDocenteController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
+
+
+
+
+
+
+
+
+                        <p:outputLabel  value="#{msg['field.facultad']}" />
+                        <p:autoComplete dropdown="true"
+                                        multiple="true"
+                                        scrollHeight="250"
+
+                                        emptyMessage="#{app['info.nohayregistros']}"
+                                        value="#{solicitudDocenteController.facultadList}"
+                                        completeMethod="#{solicitudDocenteController.completeFiltradoFacultad}"
+                                        var="p"
+                                        required="false"
+
+
+                                        itemLabel="#{p.descripcion}"
+                                        itemValue="#{p}" forceSelection="true">
+                            <f:converter binding="#{facultadConverter}"/>
+                            <f:attribute name="field" value="descripcion"/>
+                            <f:attribute name="fielddropdown" value="false"/>
+                            <f:attribute name="fieldquerylenth" value="1"/>
+                            <p:ajax event="itemSelect" listener="#{solicitudDocenteController.handleSelect}"
+                                    update="carrera"     />
+                            <p:ajax event="itemUnselect" listener="#{solicitudDocenteController.itemUnselect}"
+                                    update="carrera"
+                                    />
+
+
+                        </p:autoComplete>
+
+
+
+                        <p:outputLabel  value="#{msg['field.carrera']}" />
+                        <p:autoComplete dropdown="true"
+                                        id="carrera"
+                                        multiple="true"
+                                        scrollHeight="250"
+                                        size="55"
+                                        emptyMessage="#{app['info.nohayregistros']}"
+                                        value="#{solicitudDocenteController.carreraList}"
+                                        completeMethod="#{solicitudDocenteController.completeFiltradoCarrera}"
+                                        var="p"
+                                        required="false"
+                                        itemLabel="#{p.descripcion}"
+                                        itemValue="#{p}" forceSelection="true">
+                            <f:converter binding="#{carreraConverter}"/>
+                            <f:attribute name="field" value="descripcion"/>
+                            <f:attribute name="fielddropdown" value="false"/>
+                            <f:attribute name="fieldquerylenth" value="1"/>
+                            <p:ajax event="itemSelect" listener="#{solicitudDocenteController.handleSelect}"
+                                    update=""
+                                    />
+                            <p:ajax event="itemUnselect" listener="#{solicitudDocenteController.itemUnselect}"
+                                    update=""
+                                    />
+                            <!--                            <f:facet name="itemtip">
+                                                            <h:panelGrid columns="1" cellpadding="5">
+                                                                <h:outputText value="#{msg['field.descripcion']} #{p.descripcion}" />
+                            
+                            
+                                                            </h:panelGrid>
+                                                        </f:facet>-->
+
+                        </p:autoComplete>
+
+
+
+
+
+
+                        <p:outputLabel  value="#{msg['field.numerogrupos']}" />
+                        <p:chips id="numerogrupo" value="#{solicitudDocenteController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
+
+
+                        <p:spacer/>
+                        <p:spacer/>
+
+                        <p:outputLabel value="#{msg['field.idtipogira']}"/>
+                        <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
+                                                 completeMethod="#{solicitudDocenteController.tipogiraServices.complete}" 
+                                                 labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"  
+                                                 listener="#{solicitudDocenteController.handleSelect}"
+                                                 value="#{solicitudDocenteController.solicitud.tipogira}"
+                                                 itemLabel=" #{p.idtipogira}"
+                                                 field="idtipogira"
+                                                 dropdown="true"
+                                                 fromstart="true"
+                                                 minQueryLength="0"
+                                                 update=""/>
+
+                        <p:outputLabel  value="#{msg['field.objetivo']}" />
+                        <b:inputTextarea rows="2" span="8"  value="#{solicitudDocenteController.solicitud.objetivo}" id="objetivo"   />
+
+
+
+                        <p:outputLabel  value="#{msg['field.lugares']}" />
+                        <p:chips value="#{solicitudDocenteController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
+                        
+                        <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
+                         <b:touchSpin disabled="true" col-md="3"  min="1"  max="20"  step="1" value="#{solicitudDocenteController.solicitud.numerodevehiculos}" id="numerodevehiculos"  
+                                     onchange="ajax:solicitudDocenteController.changeDaysViewAvailable()"
+                                     update=":form:datatableDisponibles"
+                                     process="@this,pasajeros"
+                                     >
+
+                        </b:touchSpin>
+
+                        <p:outputLabel  value="#{msg['field.pasajeros']}" >
+                            <i class="pi pi-users"></i>
+                        </p:outputLabel>
+                        <b:touchSpin  col-md="3"  min="1"  step="1" value="#{solicitudDocenteController.solicitud.pasajeros}" id="pasajeros" max="250" 
+                                      onchange="ajax:solicitudDocenteController.changeDaysViewAvailable()"
+                                      update=":form:datatableDisponibles"
+                                      process="@this, pasajeros"
+                                      >
+
+                        </b:touchSpin>
+
+
+
+                        <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
+                        <jmoordbjsf:calendar 
+                            pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}"
+                            listener="#{solicitudDocenteController.calendarChangeListener}"
+                            update=":form:msg"
+                            />
+
+
+
+                        <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
+                        <jmoordbjsf:calendar pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                                             listener="#{solicitudDocenteController.calendarChangeListener}"
+                                             update=":form:msg "
+
+                                             label="#{msg['field.fechahoraregreso']}" />
+
+                       <p:outputLabel  value="#{msg['field.dias']}" />
+                        <p:selectCheckboxMenu id="multiple" value="#{solicitudDocenteController.diasSelected}" label="#{msg['field.rangoagenda']}" multiple="true"
+                                              required="true" 
+                                              disabled="true"
+                                              requiredMessage="#{msg['field.rangoagenda']} #{app['info.required']}"
+                                              panelStyle="width:250px">
+                            <f:selectItems value="#{solicitudDocenteController.diasList}" />
+                          <p:ajax event="change" update=":form:datatableDisponibles"
+                                    listener="#{solicitudDocenteController.changeDaysViewAvailable()}"
+                                    process="@this,pasajeros"/>
+                        </p:selectCheckboxMenu>
+
+                        <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+                        <jmoordbjsf:inputText span="8" value="#{solicitudDocenteController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
+
+
+                        <p:outputLabel  value="#{msg['field.lugarllegada']}" />
+                        <jmoordbjsf:inputText span="8" value="#{solicitudDocenteController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
+
+
+                        <p:outputLabel  value="#{msg['field.recursossolicitados']}" />
+                        <p:chips value="#{solicitudDocenteController.solicitud.recursossolicitados}" id="recursossolicitados" title="#{msg['field.chips']}"   />
+
+                        <p:outputLabel  value="#{msg['field.observaciones']}" />
+                        <b:inputTextarea required="true" rows="2" span="8" value="#{solicitudDocenteController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
+
+
+                    </b:panelGrid>
+
+                    <b:row>
+                        <b:column span="12">
+                              <p:dataTable value="#{solicitudDocenteController.disponiblesBeansList}" 
+                                         id="datatableDisponibles"
+
+
+                                         var="item"  >
+                                <f:facet name="header">
+                                    <p:outputLabel  value="#{msg['tabletitle.vehiculos']}" />
+                                </f:facet>
+                                <p:columnGroup type="header">
+                                    <p:row>
+                                        <p:column rowspan="3" headerText="#{msg['field.fecha']}" />
+                                        <p:column colspan="4" headerText="#{msg['tabletitle.resultado']}" />
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="2" headerText="#{msg['tabletitle.disponibles']}" />
+                                        <p:column colspan="3" headerText="#{msg['tabletitle.recomendados']}" />
+
+                                    </p:row>
+                                    <p:row>
+                                        <p:column headerText="#{msg['field.buses']}" />
+                                        <p:column headerText="#{msg['field.pasajeros']}" />
+                                        <p:column headerText="#{msg['field.buses']}" />
+                                        <p:column headerText="" />
+
+
+
+                                    </p:row>
+                                </p:columnGroup>
+
+                                <p:column headerText="#{msg['field.fecha']}" style="width:75px">
+                                    <h:outputText value="#{solicitudDocenteController.showDate(item.fechahorainicio)}" style="color: #{solicitudDocenteController.columnColorDisponibles(item)}"  />
+                                </p:column>
+                                <p:column headerText="#{msg['field.buses']}" style="width:75px">
+                                    <p:outputLabel value="#{item.numeroBuses}" style="color: #{solicitudDocenteController.columnColorDisponibles(item)}" />
+                                </p:column>
+                                <p:column headerText="#{msg['field.pasajeros']}" style="width:75px">
+                                    <p:outputLabel value="#{item.numeroPasajeros}" style="color: #{solicitudDocenteController.columnColorDisponibles(item)}"  />
+                                </p:column>
+                                <p:column headerText="#{msg['field.busesRecomendados']}" style="width:75px">
+                                    <p:outputLabel value="#{item.busesRecomendados}" style="color: #{solicitudDocenteController.columnColorDisponibles(item)}"  />
+                                </p:column>
+
+                                <p:column headerText="" style="width:45px">
+                                    <p:outputLabel value="" rendered="#{solicitudDocenteController.columnTieneBusesDisponibles(item)}" >
+                                        <i class="pi pi-check"></i>
+                                    </p:outputLabel>
+                                    <p:outputLabel value="" rendered="#{!solicitudDocenteController.columnTieneBusesDisponibles(item)}" >
+                                        <i class="pi pi-exclamation-triangle"></i>
+                                    </p:outputLabel>                                  
+                                </p:column>
+
+
+                            </p:dataTable>                                  
+                              
+
+
+                        </b:column>
+
+                    </b:row>
+                    <b:row>
+
+                        <b:column span="12">
+                            <p:dataList value="#{solicitudDocenteController.sugerenciaDataModel}" var="item" type="ordered">
+                                <f:facet name="header">
+                                    <p:outputLabel value="#{msg['field.sugerencia']}"/>
+                                </f:facet>
+                                #{item.descripcion}
+                            </p:dataList>
+
+                        </b:column>
+
+                    </b:row>
+
+
+                    <b:row>
+
+
+                        <b:column span="12">
+                            <jmoordbjsf:toolbarview 
+                                renderedDelete="#{p:ifGranted('DOCENTE')}"
+                                renderedEdit="#{p:ifGranted('DOCENTE')}"
+                                renderedList="#{p:ifGranted('DOCENTE')}"                    
+                                renderedPrint="false"                    
+                                controller="#{solicitudDocenteController}"
+
+                                url  = "/pages/solicituddocente/list.xhtml"
+                                />
+
+
+                        </b:column>
+
+                    </b:row>
+
+
+                </b:panel>
+
+
+            </h:panelGroup>
+
+
+        </b:form>
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('DOCENTE')}"/>
+
+        <br/><br/><br/>
+    </ui:define>
+</ui:composition>

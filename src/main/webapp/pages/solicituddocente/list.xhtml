@@ -10,7 +10,7 @@
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
     <ui:define name="content">
-         
+
 
         <style>
             .thumbnail { max-width: 100%; }
@@ -49,7 +49,7 @@
                                              itemLabel=" #{p.idestatus}"
                                              field="idestatus"
                                              update=" :form:dataTable"/>
-                    
+
                     <p:outputLabel value="#{msg['field.mensaje']}"/>
                     <p:inputTextarea rows="2" value="#{solicitudDocenteController.messages}"/>
                     <p:commandButton value="#{msg['button.send']}" action="#{solicitudDocenteController.enviarMensajesDirectos()}"
@@ -98,16 +98,22 @@
                         <p:outputLabel  value="#{item.estatus.idestatus}"   style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}"/>
 
                     </p:column>
-                    <p:column style="width:50px" >
-                        <jmoordbjsf:commandbuttonviewdatatable
-                            renderedEdit="#{p:ifGranted('DOCENTE')}"
+
+                    <p:column style="width:55px" >
+
+                        <jmoordbjsf:commandbuttondatatableprepareView
+                            rendered="#{item.estatus.idestatus eq 'SOLICITADO'}"
                             controller="#{solicitudDocenteController}"
                             url="/pages/solicituddocente/view.xhtml"
                             item="#{item}"
+                            />                
+                        <jmoordbjsf:commandbuttondatatablecancel
+                            rendered="#{item.estatus.idestatus eq 'APROBADO'}"
+                            controller="#{solicitudDocenteController}"
+                            url="/pages/solicituddocente/cancel.xhtml"
+                            item="#{item}"
                             />
-
                     </p:column>
-
 
 
 
