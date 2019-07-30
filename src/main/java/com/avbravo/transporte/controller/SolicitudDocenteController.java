@@ -37,6 +37,7 @@ import com.avbravo.transporte.beans.DisponiblesBeans;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.datamodel.SugerenciaDataModel;
 import com.avbravo.transporteejb.entity.Estatus;
+import com.avbravo.transporteejb.entity.EstatusViaje;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Sugerencia;
@@ -47,6 +48,7 @@ import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.repository.EstatusRepository;
+import com.avbravo.transporteejb.repository.EstatusViajeRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.SugerenciaRepository;
 import com.avbravo.transporteejb.repository.TipovehiculoRepository;
@@ -62,7 +64,6 @@ import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.or;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -183,6 +184,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     CarreraRepository carreraRepository;
     @Inject
     EstatusRepository estatusRepository;
+    @Inject
+    EstatusViajeRepository estatusViajeRepository;
     @Inject
     FacultadRepository facultadRepository;
     @Inject
@@ -588,6 +591,17 @@ public class SolicitudDocenteController implements Serializable, IController {
                 return "";
             }
 
+            //Asignar el estatusViaje
+            EstatusViaje estatusViaje = new EstatusViaje();
+            estatusViaje.setIdestatusviaje("NO ASIGNADO");
+            Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
+            if (optional.isPresent()) {
+                estatusViaje = optional.get();
+            } else {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
+                return "";
+            }
+            solicitud.setEstatusViaje(estatusViaje);
             /**
              * Habilitarlo si no deseamos guardar los que estan en rojo
              */
@@ -595,7 +609,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 //
 //                return "";
 //            }
-            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user"); 
 
             //si cambia el email o celular del responsable actualizar ese usuario
             if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
@@ -633,10 +647,9 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
 
-           
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-           usuarioList = usuarioRepository.filters(filter);
+            usuarioList = usuarioRepository.filters(filter);
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
@@ -653,7 +666,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             facultadList = new ArrayList<>();
             carreraList = new ArrayList<>();
             reset();
- inicializar();
+            inicializar();
             return "";
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1494,9 +1507,9 @@ public class SolicitudDocenteController implements Serializable, IController {
             leyoSugerencias = true;
             solicitudGuardadasList = new ArrayList<>();
             solicitudGuardadasList.add(solicitud);
-            if(solicitud.getEstatus().getIdestatus().equals("APROBAOD")){
-            JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeeditarsolicitudaprobada"));
-                            return "";
+            if (solicitud.getEstatus().getIdestatus().equals("APROBAOD")) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeeditarsolicitudaprobada"));
+                return "";
             }
             if (!localValid()) {
                 return "";
@@ -1551,7 +1564,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-             usuarioList = usuarioRepository.filters(filter);
+            usuarioList = usuarioRepository.filters(filter);
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
@@ -2273,8 +2286,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             solicitud = solicitudRepository.addUserInfoForEditMethod(solicitud, jmoordb_user.getUsername(), "update");
             /**
-             * Verifica si el viaje se realizo si es asi no se puede eliminar
-             * si tiene viaje se van a limpiar esos viajes
+             * Verifica si el viaje se realizo si es asi no se puede eliminar si
+             * tiene viaje se van a limpiar esos viajes
              */
             Boolean isRealizado = false;
             if (solicitud.getViaje() == null || solicitud.getViaje().isEmpty()) {
@@ -2315,8 +2328,8 @@ public class SolicitudDocenteController implements Serializable, IController {
                 });
                 push.send("Se cancelo una solicitud ");
             }
-solicitudGuardadasList = new ArrayList<>();
-solicitudGuardadasList.add(solicitud);
+            solicitudGuardadasList = new ArrayList<>();
+            solicitudGuardadasList.add(solicitud);
             /**
              * Enviar un email al docente y al mismo administrador
              */
