@@ -633,10 +633,10 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
 
-            inicializar();
+           
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-            List<Usuario> usuarioList = usuarioRepository.filters(filter);
+           usuarioList = usuarioRepository.filters(filter);
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
@@ -653,7 +653,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             facultadList = new ArrayList<>();
             carreraList = new ArrayList<>();
             reset();
-
+ inicializar();
             return "";
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1551,7 +1551,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-            List<Usuario> usuarioList = usuarioRepository.filters(filter);
+             usuarioList = usuarioRepository.filters(filter);
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
