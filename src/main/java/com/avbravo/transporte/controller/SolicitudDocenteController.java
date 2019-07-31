@@ -609,7 +609,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 //
 //                return "";
 //            }
-            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user"); 
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
             //si cambia el email o celular del responsable actualizar ese usuario
             if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
@@ -1203,22 +1203,25 @@ public class SolicitudDocenteController implements Serializable, IController {
             eventModel = new DefaultScheduleModel();
             if (!list.isEmpty()) {
                 list.forEach((a) -> {
-                    String texto = "{ ";
-                    texto = a.getTipovehiculo().stream().map((t) -> t.getIdtipovehiculo() + " ").reduce(texto, String::concat);
-                    texto += " }";
+                    String nameOfCarrera = "";
+                    String nameOfViajes = "";
+                    String viajest = "";
+                    nameOfCarrera = a.getCarrera().stream().map((c) -> c.getDescripcion() + "").reduce(nameOfCarrera, String::concat);
+                    String tipoVehiculo = "{ ";
+                    tipoVehiculo = a.getTipovehiculo().stream().map((t) -> t.getIdtipovehiculo() + " ").reduce(tipoVehiculo, String::concat);
+                    tipoVehiculo += " }";
                     String tema = "schedule-blue";
                     switch (a.getEstatus().getIdestatus()) {
                         case "SOLICITADO":
                             totalSolicitado++;
                             tema = "schedule-orange";
-//                            tema="schedule-blue";
                             break;
                         case "APROBADO":
                             totalAprobado++;
-                            String viajest = "{";
+                            viajest = "{";
                             viajest = a.getViaje().stream().map((t) -> t.getIdviaje() + " ").reduce(viajest, String::concat);
                             viajest = "}";
-                            texto += viajest;
+
                             tema = "schedule-green";
                             break;
                         case "RECHAZADO":
@@ -1230,17 +1233,19 @@ public class SolicitudDocenteController implements Serializable, IController {
                             tema = "schedule-red";
                             break;
                     }
+                 String   texto =nameOfCarrera+ " "+viajest;
 //                    eventModel.addEvent(
-//                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
-//                    );
-                    eventModel.addEvent(
-                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : " + a.getEstatus().getIdestatus() + " Mision: " + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " "
+                            //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
+                            //                    );
+                            eventModel
+                    .addEvent(
+                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ")  " + a.getObjetivo() + " "
                                     + texto,
                                     a.getFechahorapartida(), a.getFechahoraregreso(), tema)
-                    //                    eventModel.addEvent(
-                    //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision: " + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus()
-                    //                                    + car,
+                    //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ") Mision: " + a.getObjetivo()+ " Responsable: " + a.getUsuario().get(1).getNombre() + " "
+                    //                                    + texto,
                     //                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
+                    //                  
                     );
                 });
             }
