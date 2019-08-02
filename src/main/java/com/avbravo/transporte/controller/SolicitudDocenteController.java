@@ -38,6 +38,7 @@ import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.datamodel.SugerenciaDataModel;
 import com.avbravo.transporteejb.entity.Estatus;
 import com.avbravo.transporteejb.entity.EstatusViaje;
+import com.avbravo.transporteejb.entity.Lugares;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Sugerencia;
@@ -56,6 +57,7 @@ import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
+import com.avbravo.transporteejb.services.LugaresServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TipogiraServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
@@ -133,6 +135,11 @@ public class SolicitudDocenteController implements Serializable, IController {
     private Integer totalSolicitado = 0;
     private Integer totalRechazadoCancelado = 0;
     private Integer totalViajes = 0;
+    /**
+     * se usan para obtener los lugares y asignarselo a los atributos lugres de partida y llegada de la solicitud
+     */
+    Lugares lugaresPartida = new Lugares();
+    Lugares lugaresLlegada = new Lugares();
 
     private ScheduleModel eventModel;
     private ScheduleEvent event = new DefaultScheduleEvent();
@@ -211,6 +218,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     ErrorInfoServices errorServices;
     @Inject
     EstatusServices estatusServices;
+    @Inject
+    LugaresServices lugaresServices;
     @Inject
     SemestreServices semestreServices;
     @Inject
