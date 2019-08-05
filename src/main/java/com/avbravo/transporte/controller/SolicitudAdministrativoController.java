@@ -6,65 +6,99 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
-import com.avbravo.jmoordbutils.DateUtil;
-import com.avbravo.jmoordbutils.JsfUtil;
-import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.commonejb.entity.Carrera;
 import com.avbravo.commonejb.entity.Facultad;
 import com.avbravo.commonejb.repository.CarreraRepository;
 import com.avbravo.commonejb.repository.FacultadRepository;
 import com.avbravo.commonejb.services.SemestreServices;
-import com.avbravo.jmoordb.interfaces.IControllerOld;
+import com.avbravo.jmoordb.configuration.JmoordbConfiguration;
+import com.avbravo.jmoordb.configuration.JmoordbContext;
+import com.avbravo.jmoordb.configuration.JmoordbControllerEnvironment;
+import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.mongodb.history.repository.AutoincrementablebRepository;
+import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
-import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
+import com.avbravo.jmoordb.mongodb.repository.Repository;
+import com.avbravo.jmoordb.pojos.JmoordbEmailMaster;
+import com.avbravo.jmoordb.pojos.JmoordbNotifications;
+import com.avbravo.jmoordb.profiles.repository.JmoordbEmailMasterRepository;
+import com.avbravo.jmoordb.profiles.repository.JmoordbNotificationsRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.transporte.security.LoginController;
- 
-import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
-import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
-import com.avbravo.transporteejb.entity.Solicitud;
-import com.avbravo.transporteejb.entity.Unidad;
-import com.avbravo.transporteejb.entity.Usuario;
+import com.avbravo.jmoordbutils.DateUtil;
+import com.avbravo.jmoordbutils.JsfUtil;
+import com.avbravo.jmoordbutils.dates.FechaDiaUtils;
+import com.avbravo.jmoordbutils.printer.Printer;
 
-import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import com.avbravo.jmoordbutils.dates.DecomposedDate;
+import com.avbravo.jmoordbutils.email.ManagerEmail;
+import com.avbravo.transporte.beans.DisponiblesBeans;
+import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
+import com.avbravo.transporteejb.datamodel.SugerenciaDataModel;
+import com.avbravo.transporteejb.entity.Estatus;
+import com.avbravo.transporteejb.entity.EstatusViaje;
+import com.avbravo.transporteejb.entity.Lugares;
+import com.avbravo.transporteejb.entity.Rol;
+import com.avbravo.transporteejb.entity.Solicitud;
+import com.avbravo.transporteejb.entity.Sugerencia;
 import com.avbravo.transporteejb.entity.Tiposolicitud;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
+import com.avbravo.transporteejb.entity.Unidad;
+import com.avbravo.transporteejb.entity.Usuario;
+import com.avbravo.transporteejb.entity.Vehiculo;
+import com.avbravo.transporteejb.entity.Viaje;
+import com.avbravo.transporteejb.repository.EstatusRepository;
+import com.avbravo.transporteejb.repository.EstatusViajeRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
-import com.avbravo.transporteejb.repository.TiposolicitudRepository;
+import com.avbravo.transporteejb.repository.SugerenciaRepository;
 import com.avbravo.transporteejb.repository.TipovehiculoRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
+import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
+import com.avbravo.transporteejb.services.LugaresServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
+import com.avbravo.transporteejb.services.TipogiraServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
+import com.avbravo.transporteejb.services.UsuarioServices;
+import com.avbravo.transporteejb.services.ViajeServices;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.or;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.push.Push;
+import javax.faces.push.PushContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.faces.context.FacesContext;
-import javax.mail.Message;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import lombok.Getter;
+import lombok.Setter;
 import org.bson.Document;
-import org.primefaces.PrimeFaces;
+import org.bson.conversions.Bson;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
+import org.primefaces.model.DefaultScheduleEvent;
+import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.ScheduleEvent;
+import org.primefaces.model.ScheduleModel;
 // </editor-fold>
 
 /**
@@ -73,33 +107,64 @@ import org.primefaces.event.UnselectEvent;
  */
 @Named
 @ViewScoped
-public class SolicitudAdministrativoController implements Serializable, IControllerOld {
-// <editor-fold defaultstate="collapsed" desc="fields">  
+@Getter
 
+@Setter
+
+public class SolicitudAdministrativoController implements Serializable, IController {
+
+// <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
 
-    //    private String stmpPort="80";
-    private String stmpPort = "25";
+    String messages = "";
 
-    private Date _old;
+    Integer index = 0;
+    Integer pasajerosDisponibles = 0;
+    ManagerEmail managerEmail = new ManagerEmail();
     private Boolean writable = false;
+    private Boolean leyoSugerencias = false;
+    Boolean diasconsecutivos = false;
     //DataModel
     private SolicitudDataModel solicitudDataModel;
+    private SugerenciaDataModel sugerenciaDataModel;
+    private Date varFechaHoraPartida;
+    private Date varFechaHoraRegreso;
+    private Integer varAnio;
 
+    private Integer totalAprobado = 0;
+    private Integer totalSolicitado = 0;
+    private Integer totalRechazadoCancelado = 0;
+    private Integer totalViajes = 0;
+    /**
+     * se usan para obtener los lugares y asignarselo a los atributos lugres de partida y llegada de la solicitud
+     */
+    Lugares lugaresPartida = new Lugares();
+    Lugares lugaresLlegada = new Lugares();
+
+    private ScheduleModel eventModel;
+    private ScheduleEvent event = new DefaultScheduleEvent();
     Integer page = 1;
     Integer rowPage = 25;
-
+    private String stmpPort = "25";
     List<Integer> pages = new ArrayList<>();
+    List<Sugerencia> sugerenciaList = new ArrayList<>();
+    List<DisponiblesBeans> disponiblesBeansList = new ArrayList<>();
 
     //Entity
-    Solicitud solicitud;
+    Solicitud solicitud = new Solicitud();
     Solicitud solicitudSelected;
+    Solicitud solicitudSearch = new Solicitud();
+    Solicitud solicitudOld = new Solicitud();
+    Estatus estatusSearch = new Estatus();
     Usuario solicita = new Usuario();
+    Usuario solicitaOld = new Usuario();
     Usuario responsable = new Usuario();
     Usuario responsableOld = new Usuario();
+
     Solicitud solicitudCopiar = new Solicitud();
 
     //List
+    List<Solicitud> solicitudGuardadasList = new ArrayList<>();
     List<Solicitud> solicitudList = new ArrayList<>();
     List<Solicitud> solicitudFiltered = new ArrayList<>();
     List<Unidad> unidadList = new ArrayList<>();
@@ -110,6 +175,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
     List<Tipovehiculo> suggestionsTipovehiculo = new ArrayList<>();
 
+    List<String> rangoAgenda = new ArrayList<>();
+    //
+    private String[] diasSelected;
+    private List<String> diasList;
     List<Facultad> suggestionsFacultad = new ArrayList<>();
     List<Carrera> suggestionsCarrera = new ArrayList<>();
     List<Unidad> suggestionsUnidad = new ArrayList<>();
@@ -117,52 +186,66 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
     //Repository
     @Inject
-    FacultadRepository facultadRepository;
+    RevisionHistoryRepository revisionHistoryRepository;
     @Inject
     CarreraRepository carreraRepository;
     @Inject
-    UnidadRepository unidadRepository;
+    EstatusRepository estatusRepository;
+    @Inject
+    EstatusViajeRepository estatusViajeRepository;
+    @Inject
+    FacultadRepository facultadRepository;
+    @Inject
+    JmoordbEmailMasterRepository jmoordbEmailMasterRepository;
     @Inject
     SolicitudRepository solicitudRepository;
     @Inject
-    TiposolicitudRepository tiposolicitudRepository;
+    SugerenciaRepository sugerenciaRepository;
     @Inject
     TipovehiculoRepository tipovehiculoRepository;
     @Inject
-    RevisionHistoryRepository revisionHistoryRepository;
+    VehiculoRepository vehiculoRepository;
     @Inject
     UsuarioRepository usuarioRepository;
-
+    @Inject
+    RevisionHistoryServices revisionHistoryServices;
     //Services
-    //Atributos para busquedas
     @Inject
     AutoincrementableServices autoincrementableServices;
-
+    @Inject
+    AutoincrementablebRepository autoincrementablebRepository;
     @Inject
     ErrorInfoServices errorServices;
     @Inject
-    LookupServices lookupServices;
-
+    EstatusServices estatusServices;
+  
     @Inject
-    RevisionHistoryServices revisionHistoryServices;
-   
+    SemestreServices semestreServices;
     @Inject
     SolicitudServices solicitudServices;
     @Inject
-    EstatusServices estatusServices;
-    @Inject
-    SemestreServices semestreServices;
-
+    TipogiraServices tipogiraServices;
     @Inject
     TiposolicitudServices tiposolicitudServices;
     @Inject
     TipovehiculoServices tipovehiculoServices;
     @Inject
+    UnidadRepository unidadRepository;
+    @Inject
+    ViajeServices viajeServices;
+    @Inject
+    UsuarioServices usuarioServices;
+    @Inject
     JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
+
+    //Notification
     @Inject
-    LoginController loginController;
+    JmoordbNotificationsRepository jmoordbNotificationsRepository;
+    @Inject
+    @Push(channel = "notification")
+    private PushContext push;
 
     //List of Relations
     //Repository of Relations
@@ -173,763 +256,524 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         return solicitudRepository.listOfPage(rowPage);
     }
 
-    public void setPages(List<Integer> pages) {
-        this.pages = pages;
-    }
-
-    public List<Tipovehiculo> getTipovehiculoList() {
-        return tipovehiculoList;
-    }
-
-    public void setTipovehiculoList(List<Tipovehiculo> tipovehiculoList) {
-        this.tipovehiculoList = tipovehiculoList;
-    }
-
-    public Solicitud getSolicitudCopiar() {
-        return solicitudCopiar;
-    }
-
-    public void setSolicitudCopiar(Solicitud solicitudCopiar) {
-        this.solicitudCopiar = solicitudCopiar;
-    }
-
-    public List<Tiposolicitud> getTiposolicitudList() {
-        return tiposolicitudList;
-    }
-
-    public void setTiposolicitudList(List<Tiposolicitud> tiposolicitudList) {
-        this.tiposolicitudList = tiposolicitudList;
-    }
-
-    public List<Usuario> getUsuarioList() {
-        return usuarioList;
-    }
-
-    public void setUsuarioList(List<Usuario> usuarioList) {
-        this.usuarioList = usuarioList;
-    }
-
-    public List<Facultad> getFacultadList() {
-        return facultadList;
-    }
-
-    public void setFacultadList(List<Facultad> facultadList) {
-        this.facultadList = facultadList;
-    }
-
-    public List<Carrera> getCarreraList() {
-        return carreraList;
-    }
-
-    public void setCarreraList(List<Carrera> carreraList) {
-        this.carreraList = carreraList;
-    }
-
-    public Usuario getSolicita() {
-        return solicita;
-    }
-
-    public void setSolicita(Usuario solicita) {
-        this.solicita = solicita;
-    }
-
-    public Usuario getResponsable() {
-        return responsable;
-    }
-
-    public void setResponsable(Usuario responsable) {
-        this.responsable = responsable;
-    }
-
-    public Date getOld() {
-        return _old;
-    }
-
-    public void setOld(Date _old) {
-        this._old = _old;
-    }
-
-    public List<Unidad> getUnidadList() {
-        return unidadList;
-    }
-
-    public TiposolicitudServices getTiposolicitudServices() {
-        return tiposolicitudServices;
-    }
-
-    public void setTiposolicitudServices(TiposolicitudServices tiposolicitudServices) {
-        this.tiposolicitudServices = tiposolicitudServices;
-    }
-
-    public void setUnidadList(List<Unidad> unidadList) {
-        this.unidadList = unidadList;
-    }
-
-    public LookupServices getLookupServices() {
-        return lookupServices;
-    }
-
-    public void setLookupServices(LookupServices lookupServices) {
-        this.lookupServices = lookupServices;
-    }
-
-    public Integer getPage() {
-        return page;
-    }
-
-    public void setPage(Integer page) {
-        this.page = page;
-    }
-
-    public Integer getRowPage() {
-        return rowPage;
-    }
-
-    public void setRowPage(Integer rowPage) {
-        this.rowPage = rowPage;
-    }
-
-    public SolicitudServices getSolicitudServices() {
-        return solicitudServices;
-    }
-
-    public void setSolicitudServices(SolicitudServices solicitudServices) {
-        this.solicitudServices = solicitudServices;
-    }
-
-    public List<Solicitud> getSolicitudList() {
-        return solicitudList;
-    }
-
-    public void setSolicitudList(List<Solicitud> solicitudList) {
-        this.solicitudList = solicitudList;
-    }
-
-    public List<Solicitud> getSolicitudFiltered() {
-        return solicitudFiltered;
-    }
-
-    public void setSolicitudFiltered(List<Solicitud> solicitudFiltered) {
-        this.solicitudFiltered = solicitudFiltered;
-    }
-
-    public Solicitud getSolicitud() {
-        return solicitud;
-    }
-
-    public void setSolicitud(Solicitud solicitud) {
-        this.solicitud = solicitud;
-    }
-
-    public Solicitud getSolicitudSelected() {
-        return solicitudSelected;
-    }
-
-    public void setSolicitudSelected(Solicitud solicitudSelected) {
-        this.solicitudSelected = solicitudSelected;
-    }
-
-    public SolicitudDataModel getSolicitudDataModel() {
-        return solicitudDataModel;
-    }
-
-    public void setSolicitudDataModel(SolicitudDataModel solicitudDataModel) {
-        this.solicitudDataModel = solicitudDataModel;
-    }
-
-    public Boolean getWritable() {
-        return writable;
-    }
-
-    public void setWritable(Boolean writable) {
-        this.writable = writable;
-    }
-
+//    public SugerenciaDataModel getSugerenciaDataModel() {
+//          sugerenciaList = sugerenciaRepository.findBy("activo", "si");
+//            sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
+//
+//        return sugerenciaDataModel;
+//    }
+//    
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
     public SolicitudAdministrativoController() {
     }
 
     // </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="preRenderView()">
-    @Override
-    public String preRenderView(String action) {
-        //acciones al llamar el formulario despues del init    
-        return "";
-    }
-// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="init">
-
     @PostConstruct
     public void init() {
         try {
-            String action = loginController.get("solicitud");
-            String id = loginController.get("idsolicitud");
-            String pageSession = loginController.get("pagesolicitud");
-            //Search
+            eventModel = new DefaultScheduleModel();
+            // eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", DateUtil.fechaHoraActual(), DateUtil.fechaHoraActual()));
 
-            if (loginController.get("searchsolicitud") == null || loginController.get("searchsolicitud").equals("")) {
-                loginController.put("searchsolicitud", "_init");
-            }
-            writable = false;
+            diasList = new ArrayList<String>();
+            diasList.add("Dia/ Dias Consecutivo");
+            diasList.add("Lunes");
+            diasList.add("Martes");
+            diasList.add("Miercoles");
+            diasList.add("Jueves");
+            diasList.add("Viernes");
+            diasList.add("Sabado");
+            diasList.add("Domingo");
 
-            solicitudList = new ArrayList<>();
-            solicitudFiltered = new ArrayList<>();
-            solicitud = new Solicitud();
-            solicitudDataModel = new SolicitudDataModel(solicitudList);
-
-            if (pageSession != null) {
-                page = Integer.parseInt(pageSession);
-            }
-            Integer c = solicitudRepository.sizeOfPage(rowPage);
-            page = page > c ? c : page;
-            if (action != null) {
-                switch (action) {
-                    case "gonew":
-                        solicitud = new Solicitud();
-                        solicitudSelected = solicitud;
-                        writable = false;
-                        break;
-                    case "view":
-                        if (id != null) {
-                            Optional<Solicitud> optional = solicitudRepository.find("idsolicitud", Integer.parseInt(id));
-                            if (optional.isPresent()) {
-                                solicitud = optional.get();
-                                unidadList = solicitud.getUnidad();
-
-                                facultadList = solicitud.getFacultad();
-                                carreraList = solicitud.getCarrera();
-                                usuarioList = solicitud.getUsuario();
-                                solicita = usuarioList.get(0);
-                                responsable = usuarioList.get(1);
-                                responsableOld = responsable;
-
-                                solicitudSelected = solicitud;
-                                _old = solicitud.getFecha();
-                                writable = true;
-
-                            }
-                        }
-                        break;
-                    case "golist":
-                        move(page);
-                        break;
-                }
-            } else {
-                move(page);
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="reset">
-
-    @Override
-    public void reset() {
-
-        PrimeFaces.current().resetInputs(":form:content");
-        prepare("new", solicitud);
-    }// </editor-fold>
-
-// <editor-fold defaultstate="collapsed" desc="prepare(String action, Object... item)">
-    public String prepare(String action, Solicitud item) {
-        String url = "";
-        try {
-            loginController.put("pagesolicitud", page.toString());
-            loginController.put("solicitud", action);
-
-            switch (action) {
-                case "new":
-                    solicitud = new Solicitud();
-                    solicitudSelected = new Solicitud();
-
-                    writable = false;
-                    break;
-
-                case "view":
-
-                    solicitudSelected = item;
-                    solicitud = solicitudSelected;
-                    unidadList = solicitud.getUnidad();
-                    loginController.put("idsolicitud", solicitud.getIdsolicitud().toString());
-
-                    url = "/pages/solicitudadministrativo/view.xhtml";
-                    break;
-
-                case "golist":
-                    url = "/pages/solicitudadministrativo/list.xhtml";
-                    break;
-
-                case "gonew":
-                    url = "/pages/solicitudadministrativo/new.xhtml";
-                    break;
-
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-
-        return url;
-    }// </editor-fold>
-
-// <editor-fold defaultstate="collapsed" desc="showAll">
-    @Override
-    public String showAll() {
-        try {
-            solicitudList = new ArrayList<>();
-            solicitudFiltered = new ArrayList<>();
-            solicitudList = solicitudRepository.findAll();
-            solicitudFiltered = solicitudList;
-            solicitudDataModel = new SolicitudDataModel(solicitudList);
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="isNew">
-
-    @Override
-    public String isNew() {
-        try {
-            writable = true;
-
-            Date idsecond = solicitud.getFecha();
-            Integer id = solicitud.getIdsolicitud();
-
-            List<Solicitud> list = solicitudRepository.findBy(new Document("usuario.username", loginController.getUsuario().getUsername()).append("fecha", solicitud.getFecha()));
-            if (!list.isEmpty()) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yasolicitoviajeenestafecha"));
-            }
-            if (DateUtil.fechaMenor(solicitud.getFecha(), DateUtil.getFechaActual())) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechasolicitudmenorqueactual"));
-                writable = false;
-
-            }
-            solicitud = new Solicitud();
-            solicitudSelected = new Solicitud();
-
-            solicitud.setIdsolicitud(id);
-            solicitud.setFecha(idsecond);
-            solicitud.setNumerodevehiculos(1);
-            solicitud.setPasajeros(25);
-            List<String> numeroGrupoList = new ArrayList<>();
-            solicitud.setNumerogrupo(numeroGrupoList);
-            solicitud.setNumerodevehiculos(1);
-
-            solicitud.setObjetivo("---");
-            solicitud.setLugarpartida("UTP-AZUERO");
-            solicitud.setFechaestatus(DateUtil.getFechaHoraActual());
-            solicita = loginController.getUsuario();
-            responsable = solicita;
-            responsableOld = responsable;
-            usuarioList = new ArrayList<>();
-            usuarioList.add(solicita);
-            usuarioList.add(responsable);
-            solicitud.setUsuario(usuarioList);
-
-            solicitud.setPeriodoacademico(DateUtil.getAnioActual().toString());
-            solicitud.setFechahorapartida(solicitud.getFecha());
-            solicitud.setFechahoraregreso(solicitud.getFecha());
-            unidadList = new ArrayList<>();
-            unidadList.add(loginController.getUsuario().getUnidad());
-            solicitud.setUnidad(unidadList);
-            Integer mes = DateUtil.mesDeUnaFecha(solicitud.getFecha());
-
-            String idsemestre = "V";
-            if (mes <= 3) {
-                //verano
-                idsemestre = "V";
-
-            } else {
-                if (mes <= 7) {
-                    //primer
-                    idsemestre = "I";
-                } else {
-                    //segundo
-                    idsemestre = "II";
-                }
-            }
-            solicitud.setSemestre(semestreServices.findById(idsemestre));
-            List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
-
-            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
-            solicitud.setTipovehiculo(tipovehiculoList);
-
-            solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
-
-            String textsearch = "ADMINISTRATIVO";
-            if (loginController.getRol().getIdrol().toUpperCase().equals("DOCENTE")) {
-                textsearch = "DOCENTE";
-            }
-            solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
-            solicitudSelected = solicitud;
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="save">
-
-    @Override
-    public String save() {
-        try {
-
-            if (!solicitudServices.isValid(solicitud)) {
-                return "";
-            }
-
-            solicitud.setActivo("si");
-            solicitud.setUnidad(unidadList);
-            solicitud.setFacultad(facultadList);
-            solicitud.setCarrera(carreraList);
-            usuarioList = new ArrayList<>();
-            usuarioList.add(solicita);
-            usuarioList.add(responsable);
-            solicitud.setUsuario(usuarioList);
-            solicitud.setTipovehiculo(tipovehiculoList);
-            solicitud.setSolicitudpadre(0);
-          
-            Integer solicitudesGuardadas = 0;
-            for (Integer index = 0; index < solicitud.getNumerodevehiculos(); index++) {
-
-                //Verificar si tiene un viaje en esas fechas
-//                Optional<Solicitud> optionalRango = solicitudServices.coincidenciaResponsableEnRango(solicitud);
-//                if (optionalRango.isPresent()) {
-//                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.solicitudnumero") + " " + optionalRango.get().getIdsolicitud().toString() + "  " + rf.getMessage("warning.solicitudfechahoraenrango"));
-//                    return "";
-//                }
-                Integer idsolicitud = autoincrementableServices.getContador("solicitud");
-                solicitud.setIdsolicitud(idsolicitud);
-                Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
-                if (optional.isPresent()) {
-                    JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                    return null;
-                }
-
-                //Lo datos del usuario
-                solicitud.setUserInfo(solicitudRepository.generateListUserinfo(loginController.getUsername(), "create"));
-                if (solicitudRepository.save(solicitud)) {
-                    //guarda el contenido anterior
-                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
-                            "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
-//enviarEmails();
-                    //si cambia el email o celular del responsable actualizar ese usuario
-
-                    if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
-                        usuarioRepository.update(responsable);
-                        if (responsable.getUsername().equals(loginController.getUsuario().getUsername())) {
-                            loginController.setUsuario(responsable);
-                        }
-                    }
-
-                } else {
-                    JsfUtil.successMessage("save() " + solicitudRepository.getException().toString());
-                }
-                //Asigna la solicitud padre para las demas solicitudes
-                if (index.equals(0)) {
-                    solicitud.setSolicitudpadre(solicitud.getIdsolicitud());
-                }
-
-            }
-            JsfUtil.successMessage(rf.getMessage("info.savesolicitudes") + " : " + solicitudesGuardadas.toString() + " " + rf.getMessage("info.solicitudesde") + solicitud.getNumerodevehiculos());
-            reset();
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="edit">
-
-    @Override
-    public String edit() {
-        try {
-            solicitud.setUnidad(unidadList);
-            solicitud.getUserInfo().add(solicitudRepository.generateUserinfo(loginController.getUsername(), "update"));
-            solicitud.setUnidad(unidadList);
-            solicitud.setFacultad(facultadList);
-            solicitud.setCarrera(carreraList);
-
-            if (!solicitudServices.isValid(solicitud)) {
-                return "";
-            }
-
-            //guarda el contenido actualizado
-            usuarioList = new ArrayList<>();
-            usuarioList.add(solicita);
-            usuarioList.add(responsable);
-            solicitud.setUsuario(usuarioList);
-
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
-                    "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
-
-            if (solicitud.getPasajeros() < 0) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
-                return "";
-            }
-
-            solicitudRepository.update(solicitud);
-
-            //si cambia el email o celular del responsable actualizar ese usuario
-            if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
-                usuarioRepository.update(responsable);
-                if (responsable.getUsername().equals(loginController.getUsuario().getUsername())) {
-                    loginController.setUsuario(responsable);
-                }
-            }
-            JsfUtil.successMessage(rf.getAppMessage("info.update"));
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="delete(Object item, Boolean deleteonviewpage)">
-
-    @Override
-    public String delete(Object item, Boolean deleteonviewpage) {
-        String path = "";
-        try {
-            solicitud = (Solicitud) item;
-            if (!solicitudServices.isDeleted(solicitud)) {
-                JsfUtil.warningDialog("Delete", rf.getAppMessage("waring.integridadreferencialnopermitida"));
-                return "";
-            }
-            solicitudSelected = solicitud;
-            if (solicitudRepository.delete("idsolicitud", solicitud.getIdsolicitud())) {
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(), "delete", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
-                JsfUtil.successMessage(rf.getAppMessage("info.delete"));
-
-                if (!deleteonviewpage) {
-                    solicitudList.remove(solicitud);
-                    solicitudFiltered = solicitudList;
-                    solicitudDataModel = new SolicitudDataModel(solicitudList);
-
-                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pagesolicitud", page.toString());
-
-                } else {
-                    solicitud = new Solicitud();
-                    solicitudSelected = new Solicitud();
-                    writable = false;
-
-                }
-
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        // path = deleteonviewpage ? "/pages/solicitud/list.xhtml" : "";
-        path = "";
-        return path;
-    }// </editor-fold>
-
-// <editor-fold defaultstate="collapsed" desc="deleteAll">
-    @Override
-    public String deleteAll() {
-        if (solicitudRepository.deleteAll() != 0) {
-            JsfUtil.successMessage(rf.getAppMessage("info.delete"));
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="print">
-
-    @Override
-    public String print() {
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("pagesolicitud", page.toString());
-            List<Solicitud> list = new ArrayList<>();
-            list.add(solicitud);
-            String ruta = "/resources/reportes/solicitud/details.jasper";
+            //autoincrementablebRepository.setDatabase("transporte");
+            /*
+            configurar el ambiente del contsolicitudler
+             */
             HashMap parameters = new HashMap();
-            // parameters.put("P_parametro", "valor");
-            printer.imprimir(list, ruta, parameters);
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            //    parameters.put("P_EMPRESA", jmoordb_user.getEmpresa().getDescripcion());
+
+            JmoordbControllerEnvironment jmc = new JmoordbControllerEnvironment.Builder()
+                    .withController(this)
+                    .withRepository(solicitudRepository)
+                    .withEntity(solicitud)
+                    .withService(solicitudServices)
+                    .withNameFieldOfPage("page")
+                    .withNameFieldOfRowPage("rowPage")
+                    .withTypeKey("primary")
+                    .withSearchLowerCase(false)
+                    .withPathReportDetail("/resources/reportes/solicitud/details.jasper")
+                    .withPathReportAll("/resources/reportes/solicitud/all.jasper")
+                    .withparameters(parameters)
+                    .withResetInSave(false)
+                    .build();
+
+            start();
+            sugerenciaList = sugerenciaRepository.findBy("activo", "si");
+            sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
+            cargarSchedule();
+            String action = "gonew";
+            if (JmoordbContext.get("solicitud") != null) {
+                action = JmoordbContext.get("solicitud").toString();
+            }
+
+            if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
+                inicializar();
+
+            }
+            if (action.equals("view")) {
+                view();
+            }
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-        return null;
     }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="printAll">
 
-    @Override
-    public String printAll() {
+    // <editor-fold defaultstate="collapsed" desc="Boolean view()">
+    public Boolean view() {
         try {
-            List<Solicitud> list = new ArrayList<>();
-            list = solicitudRepository.findAll(new Document("idsolicitud", 1));
+            solicitudOld = solicitud;
+            solicita = solicitud.getUsuario().get(0);
+            solicitaOld = solicitud.getUsuario().get(0);
+            responsable = solicitud.getUsuario().get(1);
+            responsableOld = solicitud.getUsuario().get(1);
+            facultadList = solicitud.getFacultad();
+            carreraList = solicitud.getCarrera();
+            // diasList= solicitud.getRangoagenda();
+            diasSelected = new String[solicitud.getRangoagenda().size()];
+            Integer contador = 0;
+            for (String s : solicitud.getRangoagenda()) {
+                diasSelected[contador++] = s;
 
-            String ruta = "/resources/reportes/solicitud/all.jasper";
-            HashMap parameters = new HashMap();
-            // parameters.put("P_parametro", "valor");
-            printer.imprimir(list, ruta, parameters);
+            }
+            disponiblesBeansList = new ArrayList<>();
+            // hayBusDisponiblesConFechas();
+
+            changeDaysViewAvailable();
+            if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
+
+                return false;
+            }
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-        return null;
+
+        return true;
+
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelect">
 
     public void handleSelect(SelectEvent event) {
         try {
-
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
-    public void handleAutocompleteOfListXhtml(SelectEvent event) {
-        try {
-            solicitudList.removeAll(solicitudList);
-            solicitudList.add(solicitudSelected);
-            solicitudFiltered = solicitudList;
-            solicitudDataModel = new SolicitudDataModel(solicitudList);
-
-            loginController.put("searchsolicitud", "idsolicitud");
-            lookupServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-    }// </editor-fold>
-
-// <editor-fold defaultstate="collapsed" desc="last">
-    @Override
-    public String last() {
-        try {
-            page = solicitudRepository.sizeOfPage(rowPage);
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="first">
-
-    @Override
-    public String first() {
-        try {
-            page = 1;
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="next">
-
-    @Override
-    public String next() {
-        try {
-            if (page < (solicitudRepository.sizeOfPage(rowPage))) {
-                page++;
-            }
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="back">
-
-    @Override
-    public String back() {
-        try {
-            if (page > 1) {
-                page--;
-            }
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="skip(Integer page)">
-
-    @Override
-    public String skip(Integer page) {
-        try {
-            this.page = page;
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="move">
-
+// <editor-fold defaultstate="collapsed" desc="move(Integer page)">
     @Override
     public void move(Integer page) {
-
         try {
-
+            this.page = page;
+            solicitudDataModel = new SolicitudDataModel(solicitudList);
             Document doc;
-            switch (loginController.get("searchsolicitud")) {
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            switch ((String) JmoordbContext.get("searchsolicitud")) {
                 case "_init":
-                    doc = new Document("usuario.username", loginController.getUsuario().getUsername());
-//                    solicitudList = solicitudRepository.findPagination(page, rowPage);
+                case "_autocomplete":
+
+                    doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
-                    break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
                     break;
 
                 case "idsolicitud":
-                    doc = new Document("idsolicitud", lookupServices.getIdsolicitud()).append("usuario.username", loginController.getUsuario().getUsername());
-                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+                    if (JmoordbContext.get("_fieldsearchsolicitud") != null) {
+                        solicitudSearch.setIdsolicitud((Integer) JmoordbContext.get("_fieldsearchsolicitud"));
+                        doc = new Document("idsolicitud", solicitudSearch.getIdsolicitud()).append("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
+                        solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+                    } else {
+                        solicitudList = solicitudRepository.findPagination(page, rowPage);
+                    }
+
                     break;
 
-                default:
-                    doc = new Document("usuario.username", loginController.getUsuario().getUsername());
-//                    solicitudList = solicitudRepository.findPagination(page, rowPage);
+                case "estatus":
+                    Estatus estatus = new Estatus();
+                    estatus = (Estatus) JmoordbContext.get("_fieldsearchsolicitud");
+                    doc = new Document("estatus.idestatus", estatus.getIdestatus()).append("activo", "si");
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
-//                    solicitudList = solicitudRepository.findPagination(page, rowPage);
+                    break;
+                default:
+                    doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si").append("usuario.username", jmoordb_user.getUsername());
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
                     break;
             }
-
-            solicitudFiltered = solicitudList;
 
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+
         }
+
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="clear">
-    @Override
-    public String clear() {
+    // <editor-fold defaultstate="collapsed" desc="Boolean localValid()">
+    public Boolean localValid() {
         try {
-            loginController.put("searchsolicitud", "_init");
-            page = 1;
-            move(page);
+            diasconsecutivos = false;
+            solicitud.setFecha(DateUtil.getFechaActual());
+            usuarioList = new ArrayList<>();
+            usuarioList.add(solicita);
+            usuarioList.add(responsable);
+            solicitud.setUsuario(usuarioList);
+
+            rangoAgenda = new ArrayList<>();
+
+            if (!isValidDiasConsecutivos()) {
+                return false;
+            }
+
+            solicitud.setRangoagenda(rangoAgenda);
+
+            solicitud.setFacultad(facultadList);
+            solicitud.setCarrera(carreraList);
+
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            unidadList = new ArrayList<>();
+            unidadList.add(jmoordb_user.getUnidad());
+            solicitud.setUnidad(unidadList);
+
+            solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
+            solicitud.setFechaestatus(DateUtil.fechaActual());
+            solicitud.setActivo("si");
+
+            String textsearch = "ADMINISTRATIVO";
+            Rol rol = (Rol) JmoordbContext.get("jmoordb_rol");
+            if (rol.getIdrol().toUpperCase().equals("DOCENTE")) {
+                textsearch = "DOCENTE";
+            }
+            solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
+            if (!solicitudServices.isValid(solicitud)) {
+                return false;
+            }
+
+            Integer periodo = Integer.parseInt(solicitud.getPeriodoacademico());
+            if (DateUtil.anioActual() > periodo) {
+
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.anioactualmayorperiodo"));
+                return false;
+            }
+            Integer diferencia = periodo - DateUtil.anioActual();
+            if (diferencia > 1) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.periodoacademico"));
+
+                return false;
+            }
+            if (!leyoSugerencias) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.leersugerencias"));
+
+                return false;
+            }
+
+            return true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean insert()">
+    public Boolean insert() {
+        try {
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            Integer idsolicitud = autoincrementableServices.getContador("solicitud");
+            solicitud.setIdsolicitud(idsolicitud);
+            //Se establece en 1 el numero de vehiculos solicitados a ser guardados
+            solicitud.setNumerodevehiculos(1);
+            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
+            if (optional.isPresent()) {
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
+                return null;
+            }
+            //Lo datos del usuario
+            List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+
+            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+            solicitud.setTipovehiculo(tipovehiculoList);
+            solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
+            if (solicitudRepository.save(solicitud)) {
+                Solicitud sol = new Solicitud();
+                sol = (Solicitud) JsfUtil.copyBeans(sol, solicitud);
+                solicitudGuardadasList.add(sol);
+
+                //guarda el contenido anterior
+                JmoordbConfiguration jmc = new JmoordbConfiguration();
+                Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
+                RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
+                repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                        "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+
+            } else {
+                JsfUtil.successMessage("insert() " + solicitudRepository.getException().toString());
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean isValidDayName(String name)">
+    private Boolean isValidDayName(String name) {
+        Boolean valid = false;
+        try {
+            for (String rango : solicitud.getRangoagenda()) {
+                //verificar que dia es
+                if (name.equals(rango.toUpperCase())) {
+                    valid = true;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="List<FechaDiaUtils> validarRangoFechas(Integer anioPartida, String nombreMesPartida)">
+    /**
+     * valida el rango de las fechas validas
+     *
+     * @param anioPartida
+     * @param nombreMesPartida
+     * @return
+     */
+    private List<FechaDiaUtils> validarRangoFechas(Integer anioPartida, String nombreMesPartida) {
+        List<FechaDiaUtils> fechaDiaUtilsSaveList = new ArrayList<>();
+        try {
+            List<FechaDiaUtils> fechaDiaUtilsInicialList = DateUtil.nameOfDayOfDateOfMonth(anioPartida, nombreMesPartida);
+
+//convertir la fecha de solicitud a LocalDate
+            LocalDate start = DateUtil.convertirJavaDateToLocalDate(varFechaHoraPartida);
+            LocalDate end = DateUtil.convertirJavaDateToLocalDate(varFechaHoraRegreso);
+
+            //Buscar si esta en el intervalo de dias entre las fechas
+            fechaDiaUtilsInicialList.forEach((fdu) -> {
+                LocalDate l = fdu.getDate();
+
+                if (l.isEqual(start) || l.isEqual(end) || (l.isAfter(start) && l.isBefore(end))) {
+                    fechaDiaUtilsSaveList.add(fdu);
+
+                }
+            });
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return fechaDiaUtilsSaveList;
+    }  // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="String save()">
+    @Override
+    public String save() {
+        try {
+            solicitudGuardadasList = new ArrayList<>();
+
+            if (!localValid()) {
+                return "";
+            }
+
+            //verifica si hay buses disponibles
+            if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
+                return "";
+            }
+
+            //Asignar el estatusViaje
+            EstatusViaje estatusViaje = new EstatusViaje();
+            estatusViaje.setIdestatusviaje("NO ASIGNADO");
+            Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
+            if (optional.isPresent()) {
+                estatusViaje = optional.get();
+            } else {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
+                return "";
+            }
+            solicitud.setEstatusViaje(estatusViaje);
+            /**
+             * Habilitarlo si no deseamos guardar los que estan en rojo
+             */
+//            if (!isValidCantidadPasajeros()) {
+//
+//                return "";
+//            }
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+
+            //si cambia el email o celular del responsable actualizar ese usuario
+            if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
+                usuarioRepository.update(responsable);
+                //actuliza el que esta en el login
+                if (responsable.getUsername().equals(jmoordb_user.getUsername())) {
+                    //  loginController.setUsuario(responsable);
+                }
+            }
+
+            Integer solicitudesGuardadas = 0;
+            Integer idSolicitudPadre = 0;
+            solicitud.setSolicitudpadre(0);
+            varFechaHoraPartida = solicitud.getFechahorapartida();
+            varFechaHoraRegreso = solicitud.getFechahoraregreso();
+            //Guarda la solicitud
+            for (DisponiblesBeans db : disponiblesBeansList) {
+                for (int i = 0; i < db.getBusesRecomendados(); i++) {
+                    solicitud.setPasajeros(db.getPasajerosPorViaje().get(i));
+                    solicitud.setFechahorapartida(db.getFechahorainicio());
+                    solicitud.setFechahoraregreso(db.getFechahorafin());
+                    solicitud.setNumerodevehiculos(1);
+                    if (insert()) {
+                        solicitudesGuardadas++;
+
+                        if (solicitudesGuardadas.equals(1)) {
+                            idSolicitudPadre = solicitud.getIdsolicitud();
+                        } else {
+                            solicitud.setSolicitudpadre(idSolicitudPadre);
+                        }
+
+                    }
+                }
+            }
+
+            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
+
+            //  Guardar las notificaciones
+            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
+            usuarioList = usuarioRepository.filters(filter);
+            if (usuarioList == null || usuarioList.isEmpty()) {
+            } else {
+                usuarioList.forEach((u) -> {
+                    saveNotification(u.getUsername());
+                });
+                push.send("Nueva solicitud docente ");
+            }
+
+            /**
+             * Enviar un email al docente y al mismo administrador
+             */
+            sendEmail(" creada(s) ");
+
+            facultadList = new ArrayList<>();
+            carreraList = new ArrayList<>();
+            reset();
+            inicializar();
+            return "";
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
-    }// </editor-fold>
+    }
 
-    // <editor-fold defaultstate="collapsed" desc="searchBy(String string)">
-    @Override
-    public String searchBy(String string) {
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
+    public String columnColor(String estatus) {
+        String color = "";
         try {
+            switch (estatus) {
+                case "RECHAZADO":
+                    color = "red";
+                case "CANCELADO":
+                    color = "pink";
+                    break;
+                case "APROBADO":
+                    color = "green";
+                    break;
+                case "SOLICITADO":
+                    color = "blue";
+                    break;
+                default:
+                    color = "black";
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return color;
+    } // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="columnColorDisponibles(DisponiblesBeans disponiblesBeans) ">
 
-            loginController.put("searchsolicitud", string);
-
-            writable = true;
-            move(page);
+    public String columnColorDisponibles(DisponiblesBeans disponiblesBeans) {
+        String color = "black";
+        try {
+            if (disponiblesBeans.getBusesRecomendados() > disponiblesBeans.getNumeroBuses()) {
+                color = "red";
+            }
+//            if (disponiblesBeans.getNumeroBuses() < solicitud.getNumerodevehiculos() || disponiblesBeans.getNumeroPasajeros() < solicitud.getPasajeros()) {
+//                color = "red";
+//            }
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-        return "";
-    }// </editor-fold>
+        return color;
+    } // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="columnColorDisponibles(DisponiblesBeans disponiblesBeans) ">
 
-// <editor-fold defaultstate="collapsed" desc="completeFiltradoUnidad">
+    /**
+     * Indica si los buses disponibles coindicen con los recomendados
+     *
+     * @param disponiblesBeans
+     * @return
+     */
+    public Boolean columnTieneBusesDisponibles(DisponiblesBeans disponiblesBeans) {
+        Boolean disponible = true;
+        try {
+            if (disponiblesBeans.getBusesRecomendados() > disponiblesBeans.getNumeroBuses()) {
+                disponible = false;
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return disponible;
+    } // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="completeSolicitudParaCopiar(String query)">
+    public List<Solicitud> completeSolicitudParaCopiar(String query) {
+        List<Solicitud> suggestions = new ArrayList<>();
+        try {
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            List<Solicitud> list = new ArrayList<>();
+            list = solicitudRepository.complete(query);
+            if (!list.isEmpty()) {
+                for (Solicitud s : list) {
+                    if (s.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")
+                            && (s.getUsuario().get(0).getUsername().equals(jmoordb_user.getUsername())
+                            || s.getUsuario().get(1).getUsername().equals(jmoordb_user.getUsername()))) {
+                        suggestions.add(s);
+                    }
+                }
+            }
+            if (!suggestions.isEmpty()) {
+                Collections.sort(suggestions,
+                        (Solicitud a, Solicitud b) -> a.getIdsolicitud().compareTo(b.getIdsolicitud()));
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+
+        return suggestions;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="completeFiltradoUnidad">
     public List<Unidad> completeFiltradoUnidad(String query) {
         suggestionsUnidad = new ArrayList<>();
         List<Unidad> temp = new ArrayList<>();
@@ -971,9 +815,9 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
             Boolean found = false;
             query = query.trim();
-            if (query.length() < 1) {
-                return suggestionsFacultad;
-            }
+//            if (query.length() < 1) {
+//                return suggestionsFacultad;
+//            }
 
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = facultadRepository.findRegexInText(field, query, true, new Document(field, 1));
@@ -1003,9 +847,9 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         try {
             Boolean found = false;
             query = query.trim();
-            if (query.length() < 1) {
-                return suggestionsCarrera;
-            }
+//            if (query.length() < 1) {
+//                return suggestionsCarrera;
+//            }
             String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
             temp = carreraRepository.findRegexInText(field, query, true, new Document(field, 1));
             temp = removeByNotFoundFacultad(temp);
@@ -1162,81 +1006,6 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="enviarEmails()">
-    public String enviarEmails() {
-        try {
-            Boolean enviados = false;
-
-            final String username = "avbravo@gmail.com";
-            final String password = "javnet180denver$";
-
-            Properties props = new Properties();
-            props.put("mail.transport.protocol", "smtp");
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.starttls.enable", "false");
-            props.put("mail.smtp.host", "smtpout.secureserver.net");
-            props.put("mail.smtp.port", stmpPort);
-            Session session = Session.getInstance(props,
-                    new javax.mail.Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(username, password);
-                }
-            });
-            Integer c = 0;
-            List<Usuario> list = usuarioRepository.findBy(new Document("activo", "si"));
-            if (!list.isEmpty()) {
-                for (Usuario u : list) {
-                    if (u.getEmail().contains("@") == true && JsfUtil.emailValidate(u.getEmail())) {
-                        Message message = new MimeMessage(session);
-                        message.setFrom(new InternetAddress("avbravo@gmail.com"));
-
-                        c++;
-
-                        message.setRecipients(Message.RecipientType.TO,
-                                InternetAddress.parse(u.getEmail()));
-
-                        message.setSubject("Solicitud de Viaje Docente");
-                        String texto = "";
-                        texto = " <h1> Solicitud #:" + solicitud.getIdsolicitud() + "  </h1>";
-                        texto = " <h1> Solicitadi por: " + solicitud.getUsuario().get(0).getNombre() + "  </h1>";
-                        texto += " <b>";
-                        texto += "<br> Fecha de partidad " + solicitud.getFechahorapartida() + " lugar de salida: " + solicitud.getLugarpartida()
-                                + "   <FONT COLOR=\"red\">Pendiente de aprobaciòn </FONT>  ";
-                        texto += "</b>";
-                        message.setContent(texto, "text/html");
-
-                        Transport.send(message);
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
-    public String columnColor(String estatus) {
-        String color = "";
-        try {
-            switch (estatus) {
-                case "RECHAZADO":
-                    color = "red";
-                    break;
-                case "APROBADO":
-                    color = "green";
-                    break;
-                default:
-                    color = "black";
-            }
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return color;
-    } // </editor-fold>
-
     // <editor-fold defaultstate="collapsed" desc="verificarEditable(Solicitud item)">
     /**
      * verifica si es editable
@@ -1270,19 +1039,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
-        // </editor-fold>
+
     }
 
-    // <editor-fold defaultstate="collapsed" desc="handleSelectResponsable(SelectEvent event)">
-    public void handleSelectResponsable(SelectEvent event) {
-        try {
-
-            responsableOld = responsable;
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-    }// </editor-fold>
-
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="completeFiltradoTipovehiculo(String query)">
     public List<Tipovehiculo> completeFiltradoTipovehiculo(String query) {
 
@@ -1347,31 +1107,80 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="completeSolicitudParaCopiar(String query)">
-    public List<Solicitud> completeSolicitudParaCopiar(String query) {
-        List<Solicitud> suggestions = new ArrayList<>();
+    // <editor-fold defaultstate="collapsed" desc="Boolean inicializar()">
+    private String inicializar() {
         try {
-            List<Solicitud> list = new ArrayList<>();
-            list = solicitudRepository.complete(query);
-            if (!list.isEmpty()) {
-                for (Solicitud s : list) {
-                    if (s.getTiposolicitud().getIdtiposolicitud().equals("ADMINISTRATIVO")
-                            && (s.getUsuario().get(0).getUsername().equals(loginController.getUsuario().getUsername())
-                            || s.getUsuario().get(1).getUsername().equals(loginController.getUsuario().getUsername()))) {
-                        suggestions.add(s);
-                    }
+
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            Date idsecond = solicitud.getFecha();
+            Integer id = solicitud.getIdsolicitud();
+
+            solicitud = new Solicitud();
+            solicitudSelected = new Solicitud();
+            solicitud.setIdsolicitud(id);
+            solicitud.setFecha(idsecond);
+            solicitud.setMision("---");
+            solicitud.setLugarpartida("UTP-AZUERO");
+            solicitud.setNumerodevehiculos(1);
+            solicitud.setPasajeros(25);
+            solicitud.setFechaestatus(DateUtil.getFechaHoraActual());
+            solicita = jmoordb_user;
+            responsable = solicita;
+            responsableOld = responsable;
+
+            usuarioList = new ArrayList<>();
+            usuarioList.add(solicita);
+            usuarioList.add(responsable);
+            solicitud.setUsuario(usuarioList);
+
+            solicitud.setPeriodoacademico(DateUtil.getAnioActual().toString());
+            solicitud.setFechahorapartida(solicitud.getFecha());
+            solicitud.setFechahoraregreso(solicitud.getFecha());
+            unidadList = new ArrayList<>();
+            unidadList.add(jmoordb_user.getUnidad());
+            solicitud.setUnidad(unidadList);
+
+            Integer mes = DateUtil.mesDeUnaFecha(solicitud.getFecha());
+
+            String idsemestre = "V";
+            if (mes <= 3) {
+                //verano
+                idsemestre = "V";
+
+            } else {
+                if (mes <= 7) {
+                    //primer
+                    idsemestre = "I";
+                } else {
+                    //segundo
+                    idsemestre = "II";
                 }
             }
-            if (!suggestions.isEmpty()) {
-                Collections.sort(suggestions,
-                        (Solicitud a, Solicitud b) -> a.getIdsolicitud().compareTo(b.getIdsolicitud()));
+            solicitud.setSemestre(semestreServices.findById(idsemestre));
+            List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+
+            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+            solicitud.setTipovehiculo(tipovehiculoList);
+
+            solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
+
+            String textsearch = "ADMINISTRATIVO";
+            Rol rol = (Rol) JmoordbContext.get("jmoordb_rol");
+            if (rol.getIdrol().toUpperCase().equals("DOCENTE")) {
+                textsearch = "DOCENTE";
             }
+            //
+//            diasSelected = new String[0];           
+//            diasSelected[0] = "Dia/ Dias Consecutivo";
+
+            solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
+            solicitudSelected = solicitud;
+            leyoSugerencias = false;
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-
-        return suggestions;
+        return "";
     }
     // </editor-fold>
 
@@ -1383,14 +1192,1167 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
             facultadList = solicitud.getFacultad();
             carreraList = solicitud.getCarrera();
-            tipovehiculoList = solicitud.getTipovehiculo();
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
-    @Override
-    public Integer sizeOfPage() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    // <editor-fold defaultstate="collapsed" desc="cargarSchedule()">
+    public void cargarSchedule() {
+        try {
+            totalAprobado = 0;
+            totalSolicitado = 0;
+            totalRechazadoCancelado = 0;
+            totalViajes = 0;
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            Document doc = new Document("usuario.0.username", jmoordb_user.getUsername());
+
+            List<Solicitud> list = solicitudRepository.findBy(doc, new Document("idsolicitud", -1));
+            eventModel = new DefaultScheduleModel();
+            if (!list.isEmpty()) {
+                list.forEach((a) -> {
+                    String nameOfCarrera = "";
+                    String nameOfViajes = "";
+                    String viajest = "";
+                    nameOfCarrera = a.getCarrera().stream().map((c) -> c.getDescripcion() + "").reduce(nameOfCarrera, String::concat);
+                    String tipoVehiculo = "{ ";
+                    tipoVehiculo = a.getTipovehiculo().stream().map((t) -> t.getIdtipovehiculo() + " ").reduce(tipoVehiculo, String::concat);
+                    tipoVehiculo += " }";
+                    String tema = "schedule-blue";
+                    switch (a.getEstatus().getIdestatus()) {
+                        case "SOLICITADO":
+                            totalSolicitado++;
+                            tema = "schedule-orange";
+                            break;
+                        case "APROBADO":
+                            totalAprobado++;
+                            viajest = "{";
+                            viajest = a.getViaje().stream().map((t) -> t.getIdviaje() + " ").reduce(viajest, String::concat);
+                            viajest = "}";
+
+                            tema = "schedule-green";
+                            break;
+                        case "RECHAZADO":
+                            totalRechazadoCancelado++;
+                            tema = "schedule-red";
+                            break;
+                        case "CANCELADO":
+                            totalRechazadoCancelado++;
+                            tema = "schedule-red";
+                            break;
+                    }
+                 String   texto =nameOfCarrera+ " "+viajest;
+//                    eventModel.addEvent(
+                            //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
+                            //                    );
+                            eventModel
+                    .addEvent(
+                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ")  " + a.getObjetivo() + " "
+                                    + texto,
+                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
+                    //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ") Mision: " + a.getObjetivo()+ " Responsable: " + a.getUsuario().get(1).getNombre() + " "
+                    //                                    + texto,
+                    //                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
+                    //                  
+                    );
+                });
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="onEventSelect(SelectEvent selectEvent)">
+    public void onEventSelect(SelectEvent selectEvent) {
+        try {
+
+            event = (ScheduleEvent) selectEvent.getObject();
+
+            String title = event.getTitle();
+            Integer i = title.indexOf(":");
+
+            Integer idsolicitud = 0;
+            if (i != -1) {
+                idsolicitud = Integer.parseInt(title.substring(1, i).trim());
+            }
+            solicitud.setIdsolicitud(idsolicitud);
+            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
+            if (optional.isPresent()) {
+                solicitud = optional.get();
+
+                solicita = solicitud.getUsuario().get(0);
+                responsable = solicitud.getUsuario().get(1);
+                facultadList = solicitud.getFacultad();
+                unidadList = solicitud.getUnidad();
+                carreraList = solicitud.getCarrera();
+                solicitudSelected = solicitud;
+
+            }
+
+        } catch (Exception e) {
+
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+    } // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
+    public String showDate(Date date) {
+        String h = "";
+        try {
+            h = DateUtil.dateFormatToString(date, "dd/MM/yyyy");
+        } catch (Exception e) {
+            JsfUtil.errorMessage("showDate() " + e.getLocalizedMessage());
+        }
+        return h;
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String showHour(Date date)">
+
+    public String showHour(Date date) {
+        String h = "";
+        try {
+            h = DateUtil.hourFromDateToString(date);
+        } catch (Exception e) {
+            JsfUtil.errorMessage("showHour() " + e.getLocalizedMessage());
+        }
+        return h;
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
+    private Boolean saveNotification(String username) {
+        try {
+            JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
+
+            jmoordbNotifications.setIdjmoordbnotifications(autoincrementableServices.getContador("jmoordbnNotifications"));
+            jmoordbNotifications.setUsername(username);
+            jmoordbNotifications.setMessage("Nueva solicitud de: " + responsable.getNombre());
+            jmoordbNotifications.setViewed("no");
+            jmoordbNotifications.setDate(DateUtil.fechaActual());
+            jmoordbNotifications.setType("solicituddocente");
+            jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
+            jmoordbNotificationsRepository.save(jmoordbNotifications);
+            return true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+
+        }
+        return false;
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
+    public Future<String> sendEmailAsync(String emailreceptor, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
+
+        CompletableFuture<String> completableFuture
+                = new CompletableFuture<>();
+
+        Executors.newCachedThreadPool().submit(new Callable<Object>() {
+
+            @Override
+            public Object call() throws Exception {
+
+                managerEmail.sendOutlook(emailreceptor, titulo, mensaje, emailemisor, passwordemisor);
+
+                completableFuture.complete("enviado");
+
+                return null;
+            }
+        });
+
+        return completableFuture;
+    }// </editor-fold>
+//    // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
+//
+
+    public Future<String> sendEmailCccBccAsync(String[] to, String[] cc, String[] bcc, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
+
+        CompletableFuture<String> completableFuture
+                = new CompletableFuture<>();
+
+        Executors.newCachedThreadPool().submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+
+                managerEmail.sendOutlook(to, cc, bcc, titulo, mensaje, emailemisor, passwordemisor, false);
+                completableFuture.complete("enviado");
+
+                return null;
+            }
+        });
+
+        return completableFuture;
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="calendarChangeListener(SelectEvent event)">
+    public void calendarChangeListener(SelectEvent event) {
+        try {
+//verifica si hay buses disponibles
+
+            if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
+
+            } else {
+                if (!solicitudServices.isValidDates(solicitud)) {
+                    return;
+                }
+                changeDaysViewAvailable();
+                if (diasSelected == null || diasSelected.length == 0) {
+                    // JsfUtil.warningDialog("texto", "Aun no ha seleccionado el rango");
+                } else {
+                    if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
+                        JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
+
+                        return;
+                    }
+                }
+
+                if (!solicitudServices.solicitudDisponible(solicitud, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yatienesolicitudenesasfechas"));
+
+                }
+
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="List<Vehiculo> busesActivo()">
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
+    public List<Vehiculo> busesActivo() {
+        Boolean haydisponibles = false;
+
+        List<Vehiculo> vehiculoList = new ArrayList<>();
+        List<Vehiculo> suggestions = new ArrayList<>();
+        try {
+
+            pasajerosDisponibles = 0;
+            Document doc = new Document("activo", "si").append("tipovehiculo.idtipovehiculo", "BUS").append("enreparacion", "no");
+            vehiculoList = vehiculoRepository.findBy(doc);
+            if (vehiculoList == null || vehiculoList.isEmpty()) {
+                return vehiculoList;
+            }
+            vehiculoList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
+                    .reversed());
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return vehiculoList;
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="isVehiculoActivoDisponible(Vehiculo vehiculo)">
+    public Boolean isVehiculoActivoDisponible(Vehiculo vehiculo) {
+        Boolean valid = false;
+        try {
+
+            if (vehiculo.getActivo().equals("no") && vehiculo.getEnreparacion().equals("si")) {
+
+            } else {
+                if (viajeServices.vehiculoDisponible(vehiculo, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
+                    valid = true;
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
     }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Boolean isVehiculoActivoDisponible(Vehiculo vehiculo,Date fechahorainicio, Date fechahorafin) ">
+    public Boolean isVehiculoActivoDisponible(Vehiculo vehiculo, Date fechahorainicio, Date fechahorafin) {
+        Boolean valid = false;
+        try {
+
+            if (vehiculo.getActivo().equals("no") && vehiculo.getEnreparacion().equals("si")) {
+
+            } else {
+                if (viajeServices.vehiculoDisponible(vehiculo, fechahorainicio, fechahorafin)) {
+                    valid = true;
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isValidCantidadPasajeros()">
+    private Boolean isValidCantidadPasajeros() {
+
+        try {
+
+            Boolean hayDisponiblesvehiculos = true;
+
+            for (DisponiblesBeans db : disponiblesBeansList) {
+                if (db.getBusesRecomendados() < db.getNumeroBuses()) {
+                    hayDisponiblesvehiculos = false;
+                }
+
+            }
+
+            if (!hayDisponiblesvehiculos) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeasignarbusesparapasajeros"));
+                return false;
+            }
+
+            return true;
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="String edit()">
+    @Override
+    public String edit() {
+        try {
+            leyoSugerencias = true;
+            solicitudGuardadasList = new ArrayList<>();
+            solicitudGuardadasList.add(solicitud);
+            if (solicitud.getEstatus().getIdestatus().equals("APROBAOD")) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeeditarsolicitudaprobada"));
+                return "";
+            }
+            if (!localValid()) {
+                return "";
+            }
+
+            if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
+
+            } else {
+                /**
+                 * Verifica que el numero de pasajeros no exceda la capacidad
+                 * maxima del bus con mayor capacidad , ya que cuando se edita
+                 * no se permite agregar mas buses.
+                 */
+
+                for (DisponiblesBeans db : disponiblesBeansList) {
+                    if (db.getVehiculo() == null || db.getVehiculo().isEmpty()) {
+
+                    } else {
+                        if (solicitud.getPasajeros() > db.getVehiculo().get(0).getPasajeros()) {
+
+                            JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.pasajerosexcedencapicidadbusdisponible"));
+                            return "";
+                        }
+                    }
+
+                }
+
+            }
+
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+
+            //si cambia el email o celular del responsable actualizar ese usuario
+            if (!responsableOld.getEmail().equals(responsable.getEmail()) || !responsableOld.getCelular().equals(responsable.getCelular())) {
+                usuarioRepository.update(responsable);
+                //actuliza el que esta en el login
+                if (responsable.getUsername().equals(jmoordb_user.getUsername())) {
+                    //  loginController.setUsuario(responsable);
+                }
+            }
+            Integer solicitudesGuardadas = 0;
+
+            varFechaHoraPartida = solicitud.getFechahorapartida();
+            varFechaHoraRegreso = solicitud.getFechahoraregreso();
+
+            /**
+             * Si es dias consecutivos es un solo intervalo para la reservacion
+             * se creara una solicitud para cada vehiculos solicitado
+             */
+            solicitudRepository.update(solicitud);
+
+            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
+
+            //  Guardar las notificaciones
+            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
+            usuarioList = usuarioRepository.filters(filter);
+            if (usuarioList == null || usuarioList.isEmpty()) {
+            } else {
+                usuarioList.forEach((u) -> {
+                    saveNotification(u.getUsername());
+                });
+                push.send("Edicicion de solicitud docente ");
+            }
+
+            /**
+             * Enviar un email al docente y al mismo administrador
+             */
+            sendEmail(" editada(s) ");
+
+            return "";
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Boolean beforePrepareView()">
+    @Override
+    public Boolean beforePrepareView() {
+        try {
+            Solicitud item = (Solicitud) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("item");
+            switch (item.getEstatus().getIdestatus()) {
+                case "SOLICITADO":
+                case "APROBADO":
+                    return true;
+                default:
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.soloseeditanlossolicitados"));
+                    return false;
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="handleSelect">
+    public String handleAutocompleteOfListXhtml(SelectEvent event) {
+        try {
+            JmoordbContext.put("searchsolicitud", "estatus");
+            JmoordbContext.put("_fieldsearchsolicitud", estatusSearch);
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="enviarMensajesDirectos()">
+    public String enviarMensajesDirectos() {
+        try {
+            if (messages.equals("")) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaymensajeparaenviar"));
+                return "";
+
+            }
+            //  Guardar las notificaciones
+            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
+            List<Usuario> usuarioList = usuarioRepository.filters(filter);
+            if (usuarioList == null || usuarioList.isEmpty()) {
+            } else {
+                usuarioList.forEach((u) -> {
+                    saveNotification(u.getUsername(), messages);
+                });
+                push.send("Mensaje de docente ");
+            }
+            JsfUtil.infoDialog("Informacion", "Se envio la notifacion a los administradores");
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
+    private Boolean saveNotification(String username, String mensaje) {
+        try {
+            JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
+
+            jmoordbNotifications.setIdjmoordbnotifications(autoincrementableServices.getContador("jmoordbnNotifications"));
+            jmoordbNotifications.setUsername(username);
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            jmoordbNotifications.setMessage("De: " + jmoordb_user.getNombre() + " email " + jmoordb_user.getEmail() + " Mensaje: " + mensaje);
+            jmoordbNotifications.setViewed("no");
+            jmoordbNotifications.setDate(DateUtil.fechaActual());
+            jmoordbNotifications.setType("mensajedocente");
+            jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
+            jmoordbNotificationsRepository.save(jmoordbNotifications);
+
+            return true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+
+        }
+        return false;
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="String goList()">
+    /**
+     * se invoca desde los menus
+     *
+     * @return
+     */
+    public String goList() {
+        JmoordbContext.put("solicitud", "golist");
+        return "/pages/solicituddocente/list.xhtml";
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="String changeDaysViewAvailable()">
+    /**
+     * cuando el usario selecciona el dia verifica los vehiculos disponibles y
+     * carga la lista de disponiblesBeansList y vehiculoDisponiblesList
+     *
+     * @return
+     */
+    public String changeDaysViewAvailable() {
+        try {
+
+            disponiblesBeansList = new ArrayList<>();
+
+            List<Vehiculo> vehiculoFreeList = new ArrayList<>();
+            varFechaHoraPartida = solicitud.getFechahorapartida();
+            varFechaHoraRegreso = solicitud.getFechahoraregreso();
+            List<Vehiculo> vehiculoList = new ArrayList<>();
+            vehiculoList = busesActivo();
+            if (vehiculoList == null || vehiculoList.isEmpty()) {
+                return "";
+            }
+            rangoAgenda = new ArrayList<>();
+            if (!isValidDiasConsecutivos()) {
+                return "";
+            }
+            solicitud.setRangoagenda(rangoAgenda);
+            Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
+            if (diasconsecutivos) {
+                //
+                Integer numeroBuses = 0;
+                Integer numeroPasajeros = 0;
+                for (Vehiculo v : vehiculoList) {
+
+                    if (isVehiculoActivoDisponible(v, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
+                        //agrega a la lista los vehiculos disponibles
+                        vehiculoFreeList.add(v);
+                        pasajerosDisponibles = 0;
+                        numeroBuses++;
+                        numeroPasajeros += v.getPasajeros();
+                    }
+                }
+//ordena la lista de vehiculos
+                vehiculoFreeList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
+                        .reversed());
+//Almacena los vehiculos disponibles
+                DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
+                disponiblesBeans.setIddisponible(1);
+                disponiblesBeans.setFechahorainicio(solicitud.getFechahorapartida());
+                disponiblesBeans.setFechahorafin(solicitud.getFechahoraregreso());
+                disponiblesBeans.setNumeroBuses(numeroBuses);
+                disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
+                disponiblesBeans.setVehiculo(vehiculoFreeList);
+                disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
+                disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
+                disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, solicitud.getPasajeros()));
+
+                disponiblesBeansList.add(disponiblesBeans);
+
+            } else {
+
+
+                /*
+                No son dias consecutivo
+                Se deben descomponer las fechas
+                verificar si son dias validos
+                Descomponener la fecha de inicio
+                 */
+                DecomposedDate fechaPartidaDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahorapartida());
+
+                //descomponer la fecha de regreso
+                DecomposedDate fechaRegresoDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahoraregreso());
+
+                varAnio = fechaPartidaDescompuesta.getYear();
+                //Determinar cuantos meses hay
+                Integer meses = DateUtil.numberOfMonthBetweenDecomposedDate(fechaPartidaDescompuesta, fechaRegresoDescompuesta);
+                //mismo mes
+                if (meses == 0) {
+                    foundVehicleSameMonth(fechaPartidaDescompuesta, fechaRegresoDescompuesta, vehiculoList);
+
+                } else {
+                    // mas de un mes recorrer todos los meses en ese intervalo
+                    if (meses > 0 && meses <= 12) {
+
+                        foundVehicleOtherMonth(fechaPartidaDescompuesta, fechaRegresoDescompuesta, vehiculoList, meses);
+
+                    } else {
+                        JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.verifiqueestasolicitandomas12meses"));
+                        return "";
+                    }
+                }
+
+            }// no son consecutivos
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean isValidDiasConsecutivos()">
+    /**
+     * Valida los dias consecutivos
+     *
+     * @return
+     */
+    private Boolean isValidDiasConsecutivos() {
+        Boolean valid = false;
+        try {
+            Integer c = 0;
+            diasconsecutivos = false;
+            for (String d : diasSelected) {
+                if (d.equals("Dia/ Dias Consecutivo")) {
+                    diasconsecutivos = true;
+                }
+                rangoAgenda.add(d);
+                c++;
+
+            }
+            if (c > 1 && diasconsecutivos) {
+
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.diasconsecutivosinvalidos"));
+
+                return false;
+            }
+            valid = true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    }// </editor-fold>
+
+// <editor-fold defaultstate="collapsed" desc="Boolean beforePrepareGoNew()">
+    @Override
+    public Boolean beforePrepareNew() {
+        try {
+            disponiblesBeansList = new ArrayList<>();
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return true;
+    }
+    // </editor-fold>
+
+// <editor-fold defaultstate="collapsed" desc="sendEmail()">
+    private String sendEmail(String msg) {
+        try {
+            /**
+             * Enviar un email al docente y al mismo administrador
+             */
+            Solicitud s0 = solicitudGuardadasList.get(0);
+
+            String varFacultadName = "";
+            String varCarreraName = "";
+            String varRango = "";
+            varFacultadName = s0.getFacultad().stream().map((f) -> "" + f.getDescripcion()).reduce(varFacultadName, String::concat);
+            for (Carrera c : s0.getCarrera()) {
+                varCarreraName = "" + c.getDescripcion();
+            }
+            for (String r : s0.getRangoagenda()) {
+                varRango = "" + r;
+            }
+            String header = "\n Detalle de la solicitud:"
+                    + "\n# : " + s0.getIdsolicitud()
+                    + "\nObjetivo : " + s0.getObjetivo()
+                    + "\nObservaciones: " + s0.getObservaciones()
+                    + "\nLugares: " + s0.getLugares()
+                    + "\nLugar de partida: " + s0.getLugarpartida()
+                    + "\nLugar de llegada: " + s0.getLugarllegada()
+                    + "\nFacultad: " + varFacultadName
+                    + "\nCarrera: " + varCarreraName
+                    + "\nRango: " + varRango
+                    + "\nEstatus: " + s0.getEstatus().getIdestatus() + "";
+
+            String texto = "\n____________________SOLICITUDES________________________________"
+                    + "\n|#              |      Partida      |                Regreso |"
+                    + "\n_________________________________________________________________";
+            for (Solicitud s : solicitudGuardadasList) {
+                texto += "\n|" + s.getIdsolicitud()
+                        + " | " + DateUtil.dateFormatToString(s.getFechahorapartida(), "dd/MM/yyyy hh:mm a")
+                        + " | " + DateUtil.dateFormatToString(s.getFechahoraregreso(), "dd/MM/yyyy hh:mm a")
+                        + "\n_________________________________________________________________";
+
+            }
+
+            String mensajeAdmin = "Hay solicitudes " + msg + "  de :" + solicita.getNombre()
+                    + "\nemail:" + solicita.getEmail()
+                    + "\n" + header
+                    + "\n" + texto
+                    + "\n Por favor ingrese al sistema de transporte para verificarlas.";
+            String mensaje = "Su solicitud ha";
+            if (solicitudGuardadasList.size() > 1) {
+                mensaje = "Sus solicitudes se han ";
+            }
+            mensaje += "  registrado en el sistema de Transporte"
+                    + "\n este pendiente de la aprobaciòn o rechazo de la misma"
+                    + "\n se le enviara un correo informandole al respecto"
+                    + "\n o puede ingresar al sistema y consultar su estatus."
+                    + "\n"
+                    + "\n " + header
+                    + texto
+                    + "\n Muchas gracias.";
+
+            List<JmoordbEmailMaster> jmoordbEmailMasterList = jmoordbEmailMasterRepository.findBy(new Document("activo", "si"));
+            if (jmoordbEmailMasterList == null || jmoordbEmailMasterList.isEmpty()) {
+
+            } else {
+                JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
+                //enviar al docente
+
+                Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                //    Future<String> completableFuture = managerEmail.sendAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+
+//String msg =completableFuture.get();
+                //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
+                if (usuarioList == null || usuarioList.isEmpty()) {
+
+                } else {
+
+//                    usuarioList.forEach((u) -> {
+//                        managerEmail.sendOutlook(u.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+//                    });
+//Divide para las copias y bcc,cc
+                    Integer size = usuarioList.size();
+                    String[] to; // list of recipient email addresses
+                    String[] cc;
+                    String[] bcc;
+
+                    if (size <= 5) {
+                        to = new String[usuarioList.size()];
+                        cc = new String[0];
+                        bcc = new String[0];
+                    } else {
+                        if (size > 5 && size <= 10) {
+                            to = new String[4];
+                            cc = new String[4];
+                            bcc = new String[0];
+                        } else {
+                            to = new String[4];
+                            cc = new String[4];
+                            bcc = new String[size - 8];
+                        }
+                    }
+                    index = 0;
+                    usuarioList.forEach((u) -> {
+
+                        if (index <= 5) {
+                            to[index] = u.getEmail();
+                        } else {
+                            if (index > 5 && index <= 10) {
+                                cc[index] = u.getEmail();
+                            } else {
+
+                                bcc[index] = u.getEmail();
+
+                            }
+                        }
+                        index++;
+                    });
+
+                    Future<String> completableFutureCC = sendEmailCccBccAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+//                  Future<String> completableFutureCC = managerEmail.sendAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                }
+
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean foundVehicleSameMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList)">
+    private Boolean foundVehicleSameMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList) {
+        try {
+
+// Encontrar las fechas en el rango
+            Integer numeroBuses = 0;
+            Integer numeroPasajeros = 0;
+
+            List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
+            fechasValidasList = validarRangoFechas(fechaPartidaDescompuesta.getYear(), fechaPartidaDescompuesta.getNameOfMonth());
+            //recorre todos los vehiculos 
+
+            Integer pasajerosPendientes = solicitud.getPasajeros();
+            Integer pasajeros = 0;
+            if (fechasValidasList.isEmpty()) {
+                //no hay fechas para guardar
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos"));
+                return false;
+            } else {
+                //Recorre las fechas validas
+                insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList);
+
+            }//isEmpty
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Boolean foundVehicleOtherMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList)">
+    private Boolean foundVehicleOtherMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList, Integer meses) {
+        try {
+            Integer numeroBuses = 0;
+            Integer numeroPasajeros = 0;
+            for (int i = 0; i <= meses; i++) {
+                //Verificar si es el mismo año
+                if (fechaPartidaDescompuesta.getYear().equals(fechaRegresoDescompuesta.getYear())) {
+                    Integer m = fechaPartidaDescompuesta.getMonth() + i;
+                    String nameOfMohth = DateUtil.nombreMes(m);
+                    List<FechaDiaUtils> list = validarRangoFechas(fechaPartidaDescompuesta.getYear(), nameOfMohth);
+                    List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
+                    if (list == null || list.isEmpty()) {
+                        JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes;" + nameOfMohth);
+
+                    } else {
+                        list.forEach((f) -> {
+                            fechasValidasList.add(f);
+                        });
+                    }
+                    if (fechasValidasList == null || fechasValidasList.isEmpty()) {
+                        JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayfechasvalidas"));
+                    } else {
+                        insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList);
+
+                    }
+
+                } else {
+                    //cambio el año   
+                    Integer m = fechaPartidaDescompuesta.getMonth() + i;
+                    if (m == 12) {
+                        varAnio = varAnio + 1;
+                    }
+                    if (m >= 12) {
+                        m = m - 12;
+
+                    }
+
+                    String nameOfMohth = DateUtil.nombreMes(m);
+
+                    List<FechaDiaUtils> list = validarRangoFechas(varAnio, nameOfMohth);
+                    List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
+                    if (list == null || list.isEmpty()) {
+                        JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes: " + nameOfMohth);
+                        //return "";
+                    } else {
+                        list.forEach((f) -> {
+                            fechasValidasList.add(f);
+                        });
+                    }
+                    if (fechasValidasList == null || fechasValidasList.isEmpty()) {
+                        JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayfechasvalidas"));
+                    } else {
+                        insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList);
+
+                    }
+
+                }
+
+            }
+            return true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean insertIntoDisponiblesList(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta,List<FechaDiaUtils> fechasValidasList, List<Vehiculo> vehiculoList )">
+    /**
+     * inserta elementos en disponiblesBeansList y vehiculosList
+     *
+     * @param fechaPartidaDescompuesta
+     * @param fechaRegresoDescompuesta
+     * @param fechasValidasList
+     * @param vehiculoList
+     * @return
+     */
+    private Boolean insertIntoDisponiblesList(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<FechaDiaUtils> fechasValidasList, List<Vehiculo> vehiculoList) {
+        try {
+            Integer contadorDispobibes = 0;
+            Integer numeroBuses = 0;
+            Integer numeroPasajeros = 0;
+            if (fechasValidasList == null || fechasValidasList.isEmpty()) {
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayfechasvalidas"));
+            } else {
+                for (FechaDiaUtils f : fechasValidasList) {
+                    List<Vehiculo> vehiculoFreeList = new ArrayList<>();
+                    numeroBuses = 0;
+                    numeroPasajeros = 0;
+                    //si es un dia valido
+                    if (isValidDayName(f.getName())) {
+                        Date newDatePartida = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), fechaPartidaDescompuesta.getHour(), fechaPartidaDescompuesta.getMinute());
+                        Date newDateRegreso = DateUtil.setHourToDate(DateUtil.convertirLocalDateToJavaDate(f.getDate()), fechaRegresoDescompuesta.getHour(), fechaRegresoDescompuesta.getMinute());
+                        for (Vehiculo v : vehiculoList) {
+
+                            if (isVehiculoActivoDisponible(v, newDatePartida, newDateRegreso)) {
+                                //agrega a la lista los vehiculos disponibles
+                                vehiculoFreeList.add(v);
+                                pasajerosDisponibles = 0;
+                                numeroBuses++;
+                                numeroPasajeros += v.getPasajeros();
+                            }
+
+                        }
+                        vehiculoFreeList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
+                                .reversed());
+                        DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
+                        disponiblesBeans.setIddisponible(++contadorDispobibes);
+                        disponiblesBeans.setFechahorainicio(newDatePartida);
+                        disponiblesBeans.setFechahorafin(newDateRegreso);
+                        disponiblesBeans.setNumeroBuses(numeroBuses);
+                        disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
+                        disponiblesBeans.setVehiculo(vehiculoFreeList);
+
+                        disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
+                        disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
+                        disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, solicitud.getPasajeros()));
+                        disponiblesBeansList.add(disponiblesBeans);
+                    }
+                }
+
+            }
+            return true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="vehiculosRecomendados(List<Vehiculo> vehiculoDisponiblesList)">
+    /**
+     * Devuelve la cantidad de vehiculos recomendados en base a los disponibles
+     *
+     * @param vehiculoDisponiblesList
+     * @return
+     */
+    private Integer vehiculosRecomendados(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros) {
+        Integer totalVehiculos = 0;
+        try {
+            Integer mayorCapacidad = vehiculoDisponiblesList.get(0).getPasajeros();
+            Integer pasajerosPendientes = pasajeros;
+            for (Vehiculo v : vehiculoDisponiblesList) {
+
+                if (pasajerosPendientes > 0) {
+                    totalVehiculos++;
+                    pasajerosPendientes -= v.getPasajeros();
+                    if (pasajerosPendientes < 0) {
+                        pasajerosPendientes = 0;
+                    }
+                }
+            }
+            if (pasajerosPendientes > 0) {
+                if (pasajerosPendientes <= mayorCapacidad) {
+                    totalVehiculos++;
+                } else {
+                    Integer residuo = pasajerosPendientes % mayorCapacidad;
+                    Integer divisor = pasajerosPendientes / mayorCapacidad;
+                    if (residuo > 0) {
+                        divisor++;
+                    }
+                    totalVehiculos += divisor;
+                }
+
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return totalVehiculos;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Integer pasajerosRecomendados(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros)">
+    /**
+     * Devuelve la cantidad de pasajeros que quedan pendientes
+     *
+     * @param vehiculoDisponiblesList
+     * @return
+     */
+    private Integer pasajerosRecomendados(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros) {
+        Integer pasajerosPendientes = pasajeros;
+        try {
+            Integer mayorCapacidad = vehiculoDisponiblesList.get(0).getPasajeros();
+            for (Vehiculo v : vehiculoDisponiblesList) {
+
+                if (pasajerosPendientes > 0) {
+                    pasajerosPendientes -= v.getPasajeros();
+                    if (pasajerosPendientes < 0) {
+                        pasajerosPendientes = 0;
+                    }
+
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return pasajerosPendientes;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="List<Integer> listPasajerosRecomendados(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros)">
+    /**
+     * Devuelve la lista de pasajeros recomendados para cada viaje
+     *
+     * @param vehiculoDisponiblesList
+     * @return
+     */
+    private List<Integer> generarPasajerosPorViajes(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros) {
+
+        List<Integer> pasajerosRecomendadosList = new ArrayList<>();
+        try {
+            Integer mayorCapacidad = vehiculoDisponiblesList.get(0).getPasajeros();
+            Integer pasajerosPendientes = pasajeros;
+
+            if (pasajeros <= mayorCapacidad) {
+                //Si es igual o menor que la capacidad del bus con mayor capacidad
+                pasajerosRecomendadosList.add(pasajeros);
+            } else {
+                for (Vehiculo v : vehiculoDisponiblesList) {
+                    if (pasajerosPendientes > 0) {
+                        if (pasajerosPendientes >= v.getPasajeros()) {
+                            pasajerosPendientes -= v.getPasajeros();
+                            pasajerosRecomendadosList.add(v.getPasajeros());
+                        } else {
+
+                            pasajerosRecomendadosList.add(pasajerosPendientes);
+                            pasajerosPendientes = 0;
+                        }
+
+                    }
+
+                }
+                // revisa los pendientes
+
+                if (pasajerosPendientes <= mayorCapacidad) {
+                    pasajerosRecomendadosList.add(pasajerosPendientes);
+                } else {
+                    Integer residuo = pasajerosPendientes % mayorCapacidad;
+                    Integer divisor = pasajerosPendientes / mayorCapacidad;
+
+                    if (residuo > 0) {
+                        divisor++;
+                    }
+
+                    for (Integer i = 1; i <= divisor; i++) {
+                        if (i < divisor) {
+                            pasajerosRecomendadosList.add(mayorCapacidad);
+                        } else {
+                            pasajerosRecomendadosList.add(residuo);
+                        }
+                    }
+
+                }
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return pasajerosRecomendadosList;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="String  cancel()">
+    public String cancel() {
+        try {
+            Solicitud item = (Solicitud) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("item");
+            if (item.getEstatus().getIdestatus().equals("SOLICITADO")) {
+                return "";
+            } else {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.soloseeditanlossolicitados"));
+                return "";
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+    // </editor-fold>
+
+// <editor-fold defaultstate="collapsed" desc="String delete())">
+    /*
+    En lugar de eliminarla se pasa el estado a CANCELADO.
+     */
+    @Override
+    public String delete() {
+        try {
+            if (!beforeDelete()) {
+                return "";
+            }
+            Document doc = new Document("idestatus", "CANCELADO");
+            Estatus estatus = new Estatus();
+            estatus.setIdestatus("CANCELADO");
+            Optional<Estatus> optional = estatusRepository.findById(estatus);
+            if (!optional.isPresent()) {
+                JsfUtil.warningMessage(rf.getMessage("warning.noexisteestatuscancelado"));
+                return "";
+            }
+            estatus = optional.get();
+            solicitud.setEstatus(estatus);
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            solicitud = solicitudRepository.addUserInfoForEditMethod(solicitud, jmoordb_user.getUsername(), "update");
+            /**
+             * Verifica si el viaje se realizo si es asi no se puede eliminar si
+             * tiene viaje se van a limpiar esos viajes
+             */
+            Boolean isRealizado = false;
+            if (solicitud.getViaje() == null || solicitud.getViaje().isEmpty()) {
+
+            } else {
+                for (Viaje v : solicitud.getViaje()) {
+                    if (v.getRealizado().equals("si")) {
+                        isRealizado = true;
+                    }
+                }
+
+            }
+
+            if (isRealizado) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedecancelartieneviajesrealizados"));
+            }
+            List<Viaje> viajeList = new ArrayList<>();
+            solicitud.setViaje(viajeList);
+//guarda el historial
+            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(),
+                    jmoordb_user.getUsername(),
+                    "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+//Remuevo los viajes que tenga asignados
+            if (solicitudRepository.update(solicitud)) {
+                JsfUtil.infoDialog("Mensaje", rf.getMessage("info.cancelacionsolicitudes"));
+            } else {
+
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.cancelacionsolicitudesfallida"));
+            }
+
+            //  Guardar las notificaciones
+            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
+            List<Usuario> usuarioList = usuarioRepository.filters(filter);
+            if (usuarioList == null || usuarioList.isEmpty()) {
+            } else {
+                usuarioList.forEach((u) -> {
+                    saveNotification(u.getUsername());
+                });
+                push.send("Se cancelo una solicitud ");
+            }
+            solicitudGuardadasList = new ArrayList<>();
+            solicitudGuardadasList.add(solicitud);
+            /**
+             * Enviar un email al docente y al mismo administrador
+             */
+            sendEmail(" cancelada(s) ");
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+
+        return "";
+    }
+    // </editor-fold>
 }

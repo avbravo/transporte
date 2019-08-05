@@ -119,7 +119,7 @@
                         <jmoordbjsf:pinputText span="4"  value="#{solicitudDocenteController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
 
                         <p:outputLabel  value="#{msg['field.email']}" />
-                        <jmoordbjsf:pemail size="35" value="#{solicitudDocenteController.responsable.email}" id="email"  label="#{msg['field.email']}" />
+                        <jmoordbjsf:pemail required="true" size="35" value="#{solicitudDocenteController.responsable.email}" id="email"  label="#{msg['field.email']}" />
 
 
 
@@ -127,7 +127,7 @@
 
                         <p:outputLabel  value="#{msg['field.periodoacademico']}" />
 
-                        <jmoordbjsf:pinputText span="4" value="#{solicitudDocenteController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
+                        <jmoordbjsf:pinputText required="true" span="4" value="#{solicitudDocenteController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
 
 
                         <p:outputLabel  value="#{msg['field.semestre']}" />
@@ -162,7 +162,7 @@
                                         value="#{solicitudDocenteController.facultadList}"
                                         completeMethod="#{solicitudDocenteController.completeFiltradoFacultad}"
                                         var="p"
-                                        required="false"
+                                        required="true"
 size="50"
 
                                         itemLabel="#{p.descripcion}"
@@ -184,6 +184,7 @@ size="50"
 
                         <p:outputLabel  value="#{msg['field.carrera']}" />
                         <p:autoComplete dropdown="true"
+                                        
                                         id="carrera"
                                         multiple="true"
                                         scrollHeight="250"
@@ -192,7 +193,7 @@ size="50"
                                         value="#{solicitudDocenteController.carreraList}"
                                         completeMethod="#{solicitudDocenteController.completeFiltradoCarrera}"
                                         var="p"
-                                        required="false"
+                                        required="true"
                                         itemLabel="#{p.descripcion}"
                                         itemValue="#{p}" forceSelection="true">
                             <f:converter binding="#{carreraConverter}"/>
@@ -221,7 +222,7 @@ size="50"
 
 
                         <p:outputLabel  value="#{msg['field.numerogrupos']}" />
-                        <p:chips id="numerogrupo" value="#{solicitudDocenteController.solicitud.numerogrupo}" placeholder="#{msg['field.chips']}" title="#{msg['field.chips']}" />
+                        <p:chips  required="true" id="numerogrupo" value="#{solicitudDocenteController.solicitud.numerogrupo}" placeholder="#{msg['field.chips']}" title="#{msg['field.chips']}" />
 
 
                         <p:spacer/>
@@ -238,15 +239,16 @@ size="50"
                                                  dropdown="true"
                                                  fromstart="true"
                                                  minQueryLength="0"
+                                                 required="true"
                                                  update=""/>
 
                         <p:outputLabel  value="#{msg['field.objetivo']}" />
-                        <p:inputTextarea rows="2" cols="80" value="#{solicitudDocenteController.solicitud.objetivo}" id="objetivo"   />
+                        <p:inputTextarea required="true" rows="2" cols="80" value="#{solicitudDocenteController.solicitud.objetivo}" id="objetivo"   />
 
 
 
                         <p:outputLabel  value="#{msg['field.lugares']}" />
-                        <p:chips  value="#{solicitudDocenteController.solicitud.lugares}" id="lugares" placeholder="#{msg['field.chips']}" title="#{msg['field.chips']}" >
+                        <p:chips required="true" value="#{solicitudDocenteController.solicitud.lugares}" id="lugares" placeholder="#{msg['field.chips']}" title="#{msg['field.chips']}" >
 
                         </p:chips>
 
@@ -263,7 +265,8 @@ size="50"
                         <p:outputLabel  value="#{msg['field.pasajeros']}" >
                             <i class="pi pi-users"></i>
                         </p:outputLabel>
-                        <b:touchSpin  col-md="3"  min="1"  step="1" value="#{solicitudDocenteController.solicitud.pasajeros}" id="pasajeros" max="250" 
+                        <b:touchSpin   required="true"
+                            col-md="3"  min="1"  step="1" value="#{solicitudDocenteController.solicitud.pasajeros}" id="pasajeros" max="250" 
                                       onchange="ajax:solicitudDocenteController.changeDaysViewAvailable()"
                                       update=":form:datatableDisponibles"
                                       process="@this, pasajeros"
@@ -276,7 +279,7 @@ size="50"
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
 
-                        <jmoordbjsf:calendar 
+                        <jmoordbjsf:calendar required="true"
                             pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
                             listener="#{solicitudDocenteController.calendarChangeListener}"
                             update=":form:msg   :form:datatableDisponibles"
@@ -286,7 +289,8 @@ size="50"
 
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
 
-                        <jmoordbjsf:calendar pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                        <jmoordbjsf:calendar required="true"
+                            pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
 
                                              label="#{msg['field.fechahoraregreso']}"
                                              listener="#{solicitudDocenteController.calendarChangeListener}"
@@ -306,7 +310,7 @@ size="50"
 
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <jmoordbjsf:pinputText size="60" value="#{solicitudDocenteController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
+                        <jmoordbjsf:pinputText required="true" size="60" value="#{solicitudDocenteController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
 
 
 
@@ -315,7 +319,7 @@ size="50"
                         </p:outputLabel>
 
 
-                        <jmoordbjsf:pinputText  size="60" value="#{solicitudDocenteController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
+                        <jmoordbjsf:pinputText required="true" size="60" value="#{solicitudDocenteController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
 
 
 
@@ -323,7 +327,7 @@ size="50"
                         <p:outputLabel  value="#{msg['field.recursossolicitados']}" >
                             <i class="pi pi-briefcase"></i>
                         </p:outputLabel>
-                        <p:chips value="#{solicitudDocenteController.solicitud.recursossolicitados}" id="recursossolicitados" placeholder="#{msg['field.chips']}" title="#{msg['field.chips']}"   />
+                        <p:chips required="true" value="#{solicitudDocenteController.solicitud.recursossolicitados}" id="recursossolicitados" placeholder="#{msg['field.chips']}" title="#{msg['field.chips']}"   />
 
                         <p:outputLabel  value="#{msg['field.observaciones']}" >
                             <i class="pi pi-comment"></i>

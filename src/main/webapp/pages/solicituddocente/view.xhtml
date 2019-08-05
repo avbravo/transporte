@@ -72,6 +72,7 @@
                                                  dropdown="true"
                                                  minQueryLength="0"
                                                  update=":form:panel"
+                                                 required="true"
                                                  />
 
 
@@ -79,7 +80,7 @@
                         <jmoordbjsf:inputText span="4"  value="#{solicitudDocenteController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
 
                         <p:outputLabel  value="#{msg['field.email']}" />
-                        <jmoordbjsf:email span="8" value="#{solicitudDocenteController.responsable.email}" id="email"  label="#{msg['field.email']}" />
+                        <jmoordbjsf:email required="true" span="8" value="#{solicitudDocenteController.responsable.email}" id="email"  label="#{msg['field.email']}" />
 
 
                         <p:outputLabel  value="#{msg['field.semestre']}" />
@@ -97,7 +98,7 @@
                                                  />
 
                         <p:outputLabel  value="#{msg['field.periodoacademico']}" />
-                        <jmoordbjsf:inputText span="4" value="#{solicitudDocenteController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
+                        <jmoordbjsf:inputText  required="true" span="4" value="#{solicitudDocenteController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
 
 
 
@@ -115,7 +116,7 @@
                                         value="#{solicitudDocenteController.facultadList}"
                                         completeMethod="#{solicitudDocenteController.completeFiltradoFacultad}"
                                         var="p"
-                                        required="false"
+                                      required="true"
 
 
                                         itemLabel="#{p.descripcion}"
@@ -145,7 +146,7 @@
                                         value="#{solicitudDocenteController.carreraList}"
                                         completeMethod="#{solicitudDocenteController.completeFiltradoCarrera}"
                                         var="p"
-                                        required="false"
+                                       required="true"
                                         itemLabel="#{p.descripcion}"
                                         itemValue="#{p}" forceSelection="true">
                             <f:converter binding="#{carreraConverter}"/>
@@ -174,7 +175,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.numerogrupos']}" />
-                        <p:chips id="numerogrupo" value="#{solicitudDocenteController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
+                        <p:chips required="true" id="numerogrupo" value="#{solicitudDocenteController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
 
 
                         <p:spacer/>
@@ -191,15 +192,16 @@
                                                  dropdown="true"
                                                  fromstart="true"
                                                  minQueryLength="0"
+                                                 required="true"
                                                  update=""/>
 
                         <p:outputLabel  value="#{msg['field.objetivo']}" />
-                        <b:inputTextarea rows="2" span="8"  value="#{solicitudDocenteController.solicitud.objetivo}" id="objetivo"   />
+                        <b:inputTextarea required="true" rows="2" span="8"  value="#{solicitudDocenteController.solicitud.objetivo}" id="objetivo"   />
 
 
 
                         <p:outputLabel  value="#{msg['field.lugares']}" />
-                        <p:chips value="#{solicitudDocenteController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
+                        <p:chips required="true" value="#{solicitudDocenteController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
                         
                         <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
                          <b:touchSpin disabled="true" col-md="3"  min="1"  max="20"  step="1" value="#{solicitudDocenteController.solicitud.numerodevehiculos}" id="numerodevehiculos"  
@@ -213,7 +215,7 @@
                         <p:outputLabel  value="#{msg['field.pasajeros']}" >
                             <i class="pi pi-users"></i>
                         </p:outputLabel>
-                        <b:touchSpin  col-md="3"  min="1"  step="1" value="#{solicitudDocenteController.solicitud.pasajeros}" id="pasajeros" max="250" 
+                        <b:touchSpin required="true" col-md="3"  min="1"  step="1" value="#{solicitudDocenteController.solicitud.pasajeros}" id="pasajeros" max="250" 
                                       onchange="ajax:solicitudDocenteController.changeDaysViewAvailable()"
                                       update=":form:datatableDisponibles"
                                       process="@this, pasajeros"
@@ -224,7 +226,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
-                        <jmoordbjsf:calendar 
+                        <jmoordbjsf:calendar required="true"
                             pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}"
                             listener="#{solicitudDocenteController.calendarChangeListener}"
                             update=":form:msg"
@@ -233,7 +235,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
-                        <jmoordbjsf:calendar pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                        <jmoordbjsf:calendar required="true" pattern="dd/MM/yyyy HH:mm a" value="#{solicitudDocenteController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
                                              listener="#{solicitudDocenteController.calendarChangeListener}"
                                              update=":form:msg "
 
@@ -252,18 +254,18 @@
                         </p:selectCheckboxMenu>
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <jmoordbjsf:inputText span="8" value="#{solicitudDocenteController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
+                        <jmoordbjsf:inputText required="true" span="8" value="#{solicitudDocenteController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
 
 
                         <p:outputLabel  value="#{msg['field.lugarllegada']}" />
-                        <jmoordbjsf:inputText span="8" value="#{solicitudDocenteController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
+                        <jmoordbjsf:inputText required="true" span="8" value="#{solicitudDocenteController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
 
 
                         <p:outputLabel  value="#{msg['field.recursossolicitados']}" />
-                        <p:chips value="#{solicitudDocenteController.solicitud.recursossolicitados}" id="recursossolicitados" title="#{msg['field.chips']}"   />
+                        <p:chips required="true" value="#{solicitudDocenteController.solicitud.recursossolicitados}" id="recursossolicitados" title="#{msg['field.chips']}"   />
 
                         <p:outputLabel  value="#{msg['field.observaciones']}" />
-                        <b:inputTextarea required="true" rows="2" span="8" value="#{solicitudDocenteController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
+                        <b:inputTextarea required="true" required="true" rows="2" span="8" value="#{solicitudDocenteController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
 
 
                     </b:panelGrid>
