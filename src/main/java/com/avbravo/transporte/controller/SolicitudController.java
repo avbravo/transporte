@@ -111,7 +111,7 @@ import org.primefaces.model.ScheduleModel;
 
 @Setter
 
-public class SolicitudDocenteController implements Serializable, IController {
+public class SolicitudController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
@@ -265,7 +265,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 //    
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public SolicitudDocenteController() {
+    public SolicitudController() {
     }
 
     // </editor-fold>
@@ -661,7 +661,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername());
+                    saveNotification(u.getUsername(),"solicituddocente");
                 });
                 push.send("Nueva solicitud docente ");
             }
@@ -1319,7 +1319,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
-    private Boolean saveNotification(String username) {
+    private Boolean saveNotification(String username, String tiposolicitud) {
         try {
             JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
 
@@ -1328,7 +1328,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             jmoordbNotifications.setMessage("Nueva solicitud de: " + responsable.getNombre());
             jmoordbNotifications.setViewed("no");
             jmoordbNotifications.setDate(DateUtil.fechaActual());
-            jmoordbNotifications.setType("solicituddocente");
+            jmoordbNotifications.setType(tiposolicitud);
+//            jmoordbNotifications.setType("solicituddocente");
             jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
             jmoordbNotificationsRepository.save(jmoordbNotifications);
             return true;
@@ -1581,7 +1582,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername());
+                    saveNotification(u.getUsername(),"solicituddocente");
                 });
                 push.send("Edicicion de solicitud docente ");
             }
@@ -1646,7 +1647,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(), messages);
+                    saveNotificationWithMessages(u.getUsername(), messages);
                 });
                 push.send("Mensaje de docente ");
             }
@@ -1659,7 +1660,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
-    private Boolean saveNotification(String username, String mensaje) {
+    private Boolean saveNotificationWithMessages(String username, String mensaje) {
         try {
             JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
 
@@ -1687,9 +1688,11 @@ public class SolicitudDocenteController implements Serializable, IController {
      *
      * @return
      */
-    public String goList() {
+    public String goList(String ruta) {
+        ruta =ruta.trim();
         JmoordbContext.put("solicitud", "golist");
-        return "/pages/solicituddocente/list.xhtml";
+        return "/pages/"+ruta+"/list.xhtml";
+//        return "/pages/solicituddocente/list.xhtml";
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="String changeDaysViewAvailable()">
@@ -2337,7 +2340,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername());
+                    saveNotification(u.getUsername(),"solicituddocente");
                 });
                 push.send("Se cancelo una solicitud ");
             }

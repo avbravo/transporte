@@ -28,7 +28,7 @@
         <jmoordbjsf:cssschedule/>  
         <jmoordbjsf:jsschedule/>
 
-        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('DOCENTE')}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
@@ -40,8 +40,8 @@
                 <b:panelGrid  colSpans="2,10" size="sm" > 
 
                     <p:outputLabel value="#{msg['field.mensaje']}"/>
-                    <p:inputTextarea  value="#{solicitudDocenteController.messages}"/>
-                    <p:commandButton value="#{msg['button.send']}" action="#{solicitudDocenteController.enviarMensajesDirectos()}"
+                    <p:inputTextarea  value="#{solicitudController.messages}"/>
+                    <p:commandButton value="#{msg['button.send']}" action="#{solicitudController.enviarMensajesDirectos()}"
                                      update=":form:msgs"
                                      />
                 </b:panelGrid>
@@ -54,6 +54,6 @@
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('DOCENTE')}"/>
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRATIVO')}"/>
     </ui:define>
 </ui:composition>
