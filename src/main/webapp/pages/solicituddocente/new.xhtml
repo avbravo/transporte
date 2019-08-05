@@ -111,6 +111,7 @@
                                                  dropdown="true"
                                                  minQueryLength="0"
                                                  update=":form:panel"
+                                                 size="50"
                                                  />
 
 
@@ -141,6 +142,7 @@
                                                  required="true"
                                                  minQueryLength="0"
                                                  field="descripcion"
+                                                 size="50"
                                                  />
 
 
@@ -161,7 +163,7 @@
                                         completeMethod="#{solicitudDocenteController.completeFiltradoFacultad}"
                                         var="p"
                                         required="false"
-
+size="50"
 
                                         itemLabel="#{p.descripcion}"
                                         itemValue="#{p}" forceSelection="true">
@@ -301,7 +303,7 @@
                                     listener="#{solicitudDocenteController.changeDaysViewAvailable()}"
                                     process="@this,pasajeros"/>
                         </p:selectCheckboxMenu>
-                       
+
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <jmoordbjsf:pinputText size="60" value="#{solicitudDocenteController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
@@ -316,24 +318,7 @@
                         <jmoordbjsf:pinputText  size="60" value="#{solicitudDocenteController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
 
 
-                        
-                        
-                           <p:outputLabel value="#{msg['field.idlugares']}"/>
 
-
-   <jmoordbjsf:autocomplete converter="#{lugaresConverter}"
-                            completeMethod="#{solicitudDocenteController.lugaresServices.completeWithInsert}"
-                                             labeltip1="#{msg['field.idlugares']} #{p.idlugares}" 
-                                             listener="#{solicitudDocenteController.handleAutocompleteOfListXhtml}"
-                                             value="#{solicitudDocenteController.lugaresLlegada}"
-                                             itemLabel=" #{p.idlugares}"
-                                             field="idlugares"
-                                               dropdown="true"
-                                               
-                                                 minQueryLength="0"
-                                             update=""/>
-   <p:spacer/>
-                        <p:staticMessage severity="info" summary="INFO!" detail="Si es un lugar nuevo de dos espacio al final para agregarlo!" />
 
                         <p:outputLabel  value="#{msg['field.recursossolicitados']}" >
                             <i class="pi pi-briefcase"></i>
