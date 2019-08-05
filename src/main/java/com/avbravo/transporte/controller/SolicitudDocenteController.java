@@ -218,8 +218,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     ErrorInfoServices errorServices;
     @Inject
     EstatusServices estatusServices;
-    @Inject
-    LugaresServices lugaresServices;
+  
     @Inject
     SemestreServices semestreServices;
     @Inject
