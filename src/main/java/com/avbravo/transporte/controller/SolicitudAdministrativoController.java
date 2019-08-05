@@ -661,13 +661,13 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername());
+                    saveNotification(u.getUsername(),"solicitudadministrativo");
                 });
-                push.send("Nueva solicitud docente ");
+                push.send("Nueva solicitud Administrativo ");
             }
 
             /**
-             * Enviar un email al docente y al mismo administrador
+             * Enviar un email al administrativo y al mismo administrador
              */
             sendEmail(" creada(s) ");
 
@@ -1319,7 +1319,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
-    private Boolean saveNotification(String username) {
+    private Boolean saveNotification(String username, String tiposolicitud) {
         try {
             JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
 
@@ -1328,7 +1328,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             jmoordbNotifications.setMessage("Nueva solicitud de: " + responsable.getNombre());
             jmoordbNotifications.setViewed("no");
             jmoordbNotifications.setDate(DateUtil.fechaActual());
-            jmoordbNotifications.setType("solicituddocente");
+            jmoordbNotifications.setType(tiposolicitud);
+//            jmoordbNotifications.setType("solicitudadministrativo");
             jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
             jmoordbNotificationsRepository.save(jmoordbNotifications);
             return true;
@@ -1424,7 +1425,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
      * @param query
      * @return
      */
-    public List<Vehiculo> busesActivo() {
+    public List<Vehiculo> vehiculosActivo() {
         Boolean haydisponibles = false;
 
         List<Vehiculo> vehiculoList = new ArrayList<>();
@@ -1581,13 +1582,13 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername());
+                    saveNotification(u.getUsername(),"solicitudadministrativo");
                 });
-                push.send("Edicicion de solicitud docente ");
+                push.send("Edicicion de solicitud administrativo ");
             }
 
             /**
-             * Enviar un email al docente y al mismo administrador
+             * Enviar un email al administrativo y al mismo administrador
              */
             sendEmail(" editada(s) ");
 
@@ -1646,9 +1647,9 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(), messages);
+                    saveNotificationWithMessages(u.getUsername(), messages);
                 });
-                push.send("Mensaje de docente ");
+                push.send("Mensaje de administrativo ");
             }
             JsfUtil.infoDialog("Informacion", "Se envio la notifacion a los administradores");
         } catch (Exception e) {
@@ -1659,7 +1660,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
-    private Boolean saveNotification(String username, String mensaje) {
+    private Boolean saveNotificationWithMessages(String username, String mensaje) {
         try {
             JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
 
@@ -1669,7 +1670,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             jmoordbNotifications.setMessage("De: " + jmoordb_user.getNombre() + " email " + jmoordb_user.getEmail() + " Mensaje: " + mensaje);
             jmoordbNotifications.setViewed("no");
             jmoordbNotifications.setDate(DateUtil.fechaActual());
-            jmoordbNotifications.setType("mensajedocente");
+            jmoordbNotifications.setType("mensajeadministrativo");
             jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
             jmoordbNotificationsRepository.save(jmoordbNotifications);
 
@@ -1687,9 +1688,11 @@ public class SolicitudAdministrativoController implements Serializable, IControl
      *
      * @return
      */
-    public String goList() {
+    public String goList(String ruta) {
+        ruta =ruta.trim();
         JmoordbContext.put("solicitud", "golist");
-        return "/pages/solicituddocente/list.xhtml";
+        return "/pages/"+ruta+"/list.xhtml";
+//        return "/pages/solicitudadministrativo/list.xhtml";
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="String changeDaysViewAvailable()">
@@ -1708,7 +1711,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
             List<Vehiculo> vehiculoList = new ArrayList<>();
-            vehiculoList = busesActivo();
+            vehiculoList = vehiculosActivo();
             if (vehiculoList == null || vehiculoList.isEmpty()) {
                 return "";
             }
@@ -1838,7 +1841,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     private String sendEmail(String msg) {
         try {
             /**
-             * Enviar un email al docente y al mismo administrador
+             * Enviar un email al administrativo y al mismo administrador
              */
             Solicitud s0 = solicitudGuardadasList.get(0);
 
@@ -1898,7 +1901,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
             } else {
                 JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
-                //enviar al docente
+                //enviar al administrativo
 
                 Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
                 //    Future<String> completableFuture = managerEmail.sendAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
@@ -2337,14 +2340,14 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername());
+                    saveNotification(u.getUsername(),"solicitudadministrativo");
                 });
                 push.send("Se cancelo una solicitud ");
             }
             solicitudGuardadasList = new ArrayList<>();
             solicitudGuardadasList.add(solicitud);
             /**
-             * Enviar un email al docente y al mismo administrador
+             * Enviar un email al administrativo y al mismo administrador
              */
             sendEmail(" cancelada(s) ");
 
@@ -2355,4 +2358,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         return "";
     }
     // </editor-fold>
+    
+    
+
 }

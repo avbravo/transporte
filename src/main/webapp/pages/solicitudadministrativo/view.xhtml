@@ -36,19 +36,19 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('ADMINISTRATIVO')}"> 
 
                         <p:outputLabel  value="#{msg['field.fecha']}" />
-                        <jmoordbjsf:labelDate  value="#{solicitudController.solicitud.fecha}" id="fecha"   />
+                        <jmoordbjsf:labelDate  value="#{solicitudAdministrativoController.solicitud.fecha}" id="fecha"   />
                         <p:outputLabel  value="#{msg['field.idsolicitud']}" />
-                        <p:outputLabel  value="#{solicitudController.solicitud.idsolicitud}" id="idsolicitud"   />
+                        <p:outputLabel  value="#{solicitudAdministrativoController.solicitud.idsolicitud}" id="idsolicitud"   />
 
 
                         <p:outputLabel  value="#{msg['field.solicitadopor']}" />
                         <b:column>
                             <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-                                                     completeMethod="#{solicitudController.usuarioServices.complete}"
+                                                     completeMethod="#{solicitudAdministrativoController.usuarioServices.complete}"
                                                      labeltip1="#{msg['field.username']} #{p.username}"
                                                      labeltip2="#{msg['field.nombre']} #{p.nombre}"  
-                                                     listener="#{solicitudController.handleSelect}"
-                                                     value="#{solicitudController.solicita}"
+                                                     listener="#{solicitudAdministrativoController.handleSelect}"
+                                                     value="#{solicitudAdministrativoController.solicita}"
                                                      itemLabel=" #{p.nombre}"
                                                      field="nombre"
                                                      dropdown="true"
@@ -62,11 +62,11 @@
 
                         <p:outputLabel value="#{msg['field.responsable']}"/>
                         <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-                                                 completeMethod="#{solicitudController.usuarioServices.complete}"
+                                                 completeMethod="#{solicitudAdministrativoController.usuarioServices.complete}"
                                                  labeltip1="#{msg['field.username']} #{p.username}"
                                                  labeltip2="#{msg['field.nombre']} #{p.nombre}"   
-                                                 listener="#{solicitudController.handleSelect}"
-                                                 value="#{solicitudController.responsable}"
+                                                 listener="#{solicitudAdministrativoController.handleSelect}"
+                                                 value="#{solicitudAdministrativoController.responsable}"
                                                  itemLabel=" #{p.nombre}"
                                                  field="nombre"
                                                  dropdown="true"
@@ -77,19 +77,19 @@
 
 
                         <p:outputLabel  value="#{msg['field.telefono']}" />
-                        <jmoordbjsf:inputText span="4"  value="#{solicitudController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
+                        <jmoordbjsf:inputText span="4"  value="#{solicitudAdministrativoController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
 
                         <p:outputLabel  value="#{msg['field.email']}" />
-                        <jmoordbjsf:email required="true" span="8" value="#{solicitudController.responsable.email}" id="email"  label="#{msg['field.email']}" />
+                        <jmoordbjsf:email required="true" span="8" value="#{solicitudAdministrativoController.responsable.email}" id="email"  label="#{msg['field.email']}" />
 
 
                         <p:outputLabel  value="#{msg['field.semestre']}" />
                         <jmoordbjsf:autocomplete converter="#{semestreConverter}"
-                                                 completeMethod="#{solicitudController.semestreServices.complete}"
+                                                 completeMethod="#{solicitudAdministrativoController.semestreServices.complete}"
                                                  labeltip1="#{p.idsemestre}"
                                                  labeltip2="#{p.descripcion}"    
-                                                 listener="#{solicitudController.handleSelect}"
-                                                 value="#{solicitudController.solicitud.semestre}"
+                                                 listener="#{solicitudAdministrativoController.handleSelect}"
+                                                 value="#{solicitudAdministrativoController.solicitud.semestre}"
                                                  itemLabel="#{p.idsemestre}"
                                                  dropdown="true"
                                                  required="true"
@@ -98,7 +98,7 @@
                                                  />
 
                         <p:outputLabel  value="#{msg['field.periodoacademico']}" />
-                        <jmoordbjsf:inputText  required="true" span="4" value="#{solicitudController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
+                        <jmoordbjsf:inputText  required="true" span="4" value="#{solicitudAdministrativoController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
 
 
 
@@ -113,8 +113,8 @@
                                         scrollHeight="250"
 
                                         emptyMessage="#{app['info.nohayregistros']}"
-                                        value="#{solicitudController.facultadList}"
-                                        completeMethod="#{solicitudController.completeFiltradoFacultad}"
+                                        value="#{solicitudAdministrativoController.facultadList}"
+                                        completeMethod="#{solicitudAdministrativoController.completeFiltradoFacultad}"
                                         var="p"
                                       required="true"
 
@@ -125,9 +125,9 @@
                             <f:attribute name="field" value="descripcion"/>
                             <f:attribute name="fielddropdown" value="false"/>
                             <f:attribute name="fieldquerylenth" value="1"/>
-                            <p:ajax event="itemSelect" listener="#{solicitudController.handleSelect}"
+                            <p:ajax event="itemSelect" listener="#{solicitudAdministrativoController.handleSelect}"
                                     update="carrera"     />
-                            <p:ajax event="itemUnselect" listener="#{solicitudController.itemUnselect}"
+                            <p:ajax event="itemUnselect" listener="#{solicitudAdministrativoController.itemUnselect}"
                                     update="carrera"
                                     />
 
@@ -143,8 +143,8 @@
                                         scrollHeight="250"
                                         size="55"
                                         emptyMessage="#{app['info.nohayregistros']}"
-                                        value="#{solicitudController.carreraList}"
-                                        completeMethod="#{solicitudController.completeFiltradoCarrera}"
+                                        value="#{solicitudAdministrativoController.carreraList}"
+                                        completeMethod="#{solicitudAdministrativoController.completeFiltradoCarrera}"
                                         var="p"
                                        required="true"
                                         itemLabel="#{p.descripcion}"
@@ -153,10 +153,10 @@
                             <f:attribute name="field" value="descripcion"/>
                             <f:attribute name="fielddropdown" value="false"/>
                             <f:attribute name="fieldquerylenth" value="1"/>
-                            <p:ajax event="itemSelect" listener="#{solicitudController.handleSelect}"
+                            <p:ajax event="itemSelect" listener="#{solicitudAdministrativoController.handleSelect}"
                                     update=""
                                     />
-                            <p:ajax event="itemUnselect" listener="#{solicitudController.itemUnselect}"
+                            <p:ajax event="itemUnselect" listener="#{solicitudAdministrativoController.itemUnselect}"
                                     update=""
                                     />
                             <!--                            <f:facet name="itemtip">
@@ -175,7 +175,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.numerogrupos']}" />
-                        <p:chips required="true" id="numerogrupo" value="#{solicitudController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
+                        <p:chips required="true" id="numerogrupo" value="#{solicitudAdministrativoController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
 
 
                         <p:spacer/>
@@ -183,10 +183,10 @@
 
                         <p:outputLabel value="#{msg['field.idtipogira']}"/>
                         <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
-                                                 completeMethod="#{solicitudController.tipogiraServices.complete}" 
+                                                 completeMethod="#{solicitudAdministrativoController.tipogiraServices.complete}" 
                                                  labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"  
-                                                 listener="#{solicitudController.handleSelect}"
-                                                 value="#{solicitudController.solicitud.tipogira}"
+                                                 listener="#{solicitudAdministrativoController.handleSelect}"
+                                                 value="#{solicitudAdministrativoController.solicitud.tipogira}"
                                                  itemLabel=" #{p.idtipogira}"
                                                  field="idtipogira"
                                                  dropdown="true"
@@ -196,16 +196,16 @@
                                                  update=""/>
 
                         <p:outputLabel  value="#{msg['field.objetivo']}" />
-                          <p:inputTextarea required="true" rows="2" cols="80" value="#{solicitudController.solicitud.objetivo}" id="objetivo"   />
+                          <p:inputTextarea required="true" rows="2" cols="80" value="#{solicitudAdministrativoController.solicitud.objetivo}" id="objetivo"   />
 
 
 
                         <p:outputLabel  value="#{msg['field.lugares']}" />
-                        <p:chips required="true" value="#{solicitudController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
+                        <p:chips required="true" value="#{solicitudAdministrativoController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
                         
                         <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
-                         <b:touchSpin disabled="true" col-md="3"  min="1"  max="20"  step="1" value="#{solicitudController.solicitud.numerodevehiculos}" id="numerodevehiculos"  
-                                     onchange="ajax:solicitudController.changeDaysViewAvailable()"
+                         <b:touchSpin disabled="true" col-md="3"  min="1"  max="20"  step="1" value="#{solicitudAdministrativoController.solicitud.numerodevehiculos}" id="numerodevehiculos"  
+                                     onchange="ajax:solicitudAdministrativoController.changeDaysViewAvailable()"
                                      update=":form:datatableDisponibles"
                                      process="@this,pasajeros"
                                      >
@@ -215,8 +215,8 @@
                         <p:outputLabel  value="#{msg['field.pasajeros']}" >
                             <i class="pi pi-users"></i>
                         </p:outputLabel>
-                        <b:touchSpin required="true" col-md="3"  min="1"  step="1" value="#{solicitudController.solicitud.pasajeros}" id="pasajeros" max="250" 
-                                      onchange="ajax:solicitudController.changeDaysViewAvailable()"
+                        <b:touchSpin required="true" col-md="3"  min="1"  step="1" value="#{solicitudAdministrativoController.solicitud.pasajeros}" id="pasajeros" max="250" 
+                                      onchange="ajax:solicitudAdministrativoController.changeDaysViewAvailable()"
                                       update=":form:datatableDisponibles"
                                       process="@this, pasajeros"
                                       >
@@ -227,52 +227,52 @@
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
                         <jmoordbjsf:calendar required="true"
-                            pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}"
-                            listener="#{solicitudController.calendarChangeListener}"
+                            pattern="dd/MM/yyyy HH:mm a" value="#{solicitudAdministrativoController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}"
+                            listener="#{solicitudAdministrativoController.calendarChangeListener}"
                             update=":form:msg"
                             />
 
 
 
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
-                        <jmoordbjsf:calendar required="true" pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
-                                             listener="#{solicitudController.calendarChangeListener}"
+                        <jmoordbjsf:calendar required="true" pattern="dd/MM/yyyy HH:mm a" value="#{solicitudAdministrativoController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                                             listener="#{solicitudAdministrativoController.calendarChangeListener}"
                                              update=":form:msg "
 
                                              label="#{msg['field.fechahoraregreso']}" />
 
                        <p:outputLabel  value="#{msg['field.dias']}" />
-                        <p:selectCheckboxMenu id="multiple" value="#{solicitudController.diasSelected}" label="#{msg['field.rangoagenda']}" multiple="true"
+                        <p:selectCheckboxMenu id="multiple" value="#{solicitudAdministrativoController.diasSelected}" label="#{msg['field.rangoagenda']}" multiple="true"
                                               required="true" 
                                               disabled="true"
                                               requiredMessage="#{msg['field.rangoagenda']} #{app['info.required']}"
                                               panelStyle="width:250px">
-                            <f:selectItems value="#{solicitudController.diasList}" />
+                            <f:selectItems value="#{solicitudAdministrativoController.diasList}" />
                           <p:ajax event="change" update=":form:datatableDisponibles"
-                                    listener="#{solicitudController.changeDaysViewAvailable()}"
+                                    listener="#{solicitudAdministrativoController.changeDaysViewAvailable()}"
                                     process="@this,pasajeros"/>
                         </p:selectCheckboxMenu>
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <jmoordbjsf:inputText required="true" span="8" value="#{solicitudController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
+                        <jmoordbjsf:inputText required="true" span="8" value="#{solicitudAdministrativoController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
 
 
                         <p:outputLabel  value="#{msg['field.lugarllegada']}" />
-                        <jmoordbjsf:inputText required="true" span="8" value="#{solicitudController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
+                        <jmoordbjsf:inputText required="true" span="8" value="#{solicitudAdministrativoController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
 
 
                         <p:outputLabel  value="#{msg['field.recursossolicitados']}" />
-                        <p:chips required="true" value="#{solicitudController.solicitud.recursossolicitados}" id="recursossolicitados" title="#{msg['field.chips']}"   />
+                        <p:chips required="true" value="#{solicitudAdministrativoController.solicitud.recursossolicitados}" id="recursossolicitados" title="#{msg['field.chips']}"   />
 
                         <p:outputLabel  value="#{msg['field.observaciones']}" />
-                        <b:inputTextarea required="true"  rows="2" span="8" value="#{solicitudController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
+                        <b:inputTextarea required="true"  rows="2" span="8" value="#{solicitudAdministrativoController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
 
 
                     </b:panelGrid>
 
                     <b:row>
                         <b:column span="12">
-                              <p:dataTable value="#{solicitudController.disponiblesBeansList}" 
+                              <p:dataTable value="#{solicitudAdministrativoController.disponiblesBeansList}" 
                                          id="datatableDisponibles"
 
 
@@ -302,23 +302,23 @@
                                 </p:columnGroup>
 
                                 <p:column headerText="#{msg['field.fecha']}" style="width:75px">
-                                    <h:outputText value="#{solicitudController.showDate(item.fechahorainicio)}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
+                                    <h:outputText value="#{solicitudAdministrativoController.showDate(item.fechahorainicio)}" style="color: #{solicitudAdministrativoController.columnColorDisponibles(item)}"  />
                                 </p:column>
                                 <p:column headerText="#{msg['field.buses']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroBuses}" style="color: #{solicitudController.columnColorDisponibles(item)}" />
+                                    <p:outputLabel value="#{item.numeroBuses}" style="color: #{solicitudAdministrativoController.columnColorDisponibles(item)}" />
                                 </p:column>
                                 <p:column headerText="#{msg['field.pasajeros']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroPasajeros}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
+                                    <p:outputLabel value="#{item.numeroPasajeros}" style="color: #{solicitudAdministrativoController.columnColorDisponibles(item)}"  />
                                 </p:column>
                                 <p:column headerText="#{msg['field.busesRecomendados']}" style="width:75px">
-                                    <p:outputLabel value="#{item.busesRecomendados}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
+                                    <p:outputLabel value="#{item.busesRecomendados}" style="color: #{solicitudAdministrativoController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
                                 <p:column headerText="" style="width:45px">
-                                    <p:outputLabel value="" rendered="#{solicitudController.columnTieneBusesDisponibles(item)}" >
+                                    <p:outputLabel value="" rendered="#{solicitudAdministrativoController.columnTieneBusesDisponibles(item)}" >
                                         <i class="pi pi-check"></i>
                                     </p:outputLabel>
-                                    <p:outputLabel value="" rendered="#{!solicitudController.columnTieneBusesDisponibles(item)}" >
+                                    <p:outputLabel value="" rendered="#{!solicitudAdministrativoController.columnTieneBusesDisponibles(item)}" >
                                         <i class="pi pi-exclamation-triangle"></i>
                                     </p:outputLabel>                                  
                                 </p:column>
@@ -334,7 +334,7 @@
                     <b:row>
 
                         <b:column span="12">
-                            <p:dataList value="#{solicitudController.sugerenciaDataModel}" var="item" type="ordered">
+                            <p:dataList value="#{solicitudAdministrativoController.sugerenciaDataModel}" var="item" type="ordered">
                                 <f:facet name="header">
                                     <p:outputLabel value="#{msg['field.sugerencia']}"/>
                                 </f:facet>
@@ -355,7 +355,7 @@
                                 renderedEdit="#{p:ifGranted('ADMINISTRATIVO')}"
                                 renderedList="#{p:ifGranted('ADMINISTRATIVO')}"                    
                                 renderedPrint="false"                    
-                                controller="#{solicitudController}"
+                                controller="#{solicitudAdministrativoController}"
 
                                 url  = "/pages/solicituddocente/list.xhtml"
                                 />
