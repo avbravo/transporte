@@ -133,17 +133,16 @@
 
 
 
-                            <p:outputLabel  value="#{msg['field.facultad']}" />
-                            <p:repeat value="#{item.facultad}" var="car">
-                                <p:outputLabel value="#{car.descripcion}"/>
+                            <p:outputLabel  value="#{msg['field.tipovehiculo']}" />
+                            <p:repeat value="#{item.tipovehiculo}" var="car">
+                                <p:outputLabel value="#{car.idtipovehiculo}"/>
                             </p:repeat>
 
                             <p:outputLabel  value="#{msg['field.carrera']}" />
                             <p:repeat value="#{item.carrera}" var="car">
                                 <p:outputLabel value="#{car.descripcion}"/>
                             </p:repeat>
-                            <p:outputLabel  value="#{msg['field.numerogrupos']}" />
-                            <p:outputLabel  value="#{item.numerogrupo}" />
+                          
 
 
 

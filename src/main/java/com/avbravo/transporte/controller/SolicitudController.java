@@ -136,7 +136,8 @@ public class SolicitudController implements Serializable, IController {
     private Integer totalRechazadoCancelado = 0;
     private Integer totalViajes = 0;
     /**
-     * se usan para obtener los lugares y asignarselo a los atributos lugres de partida y llegada de la solicitud
+     * se usan para obtener los lugares y asignarselo a los atributos lugres de
+     * partida y llegada de la solicitud
      */
     Lugares lugaresPartida = new Lugares();
     Lugares lugaresLlegada = new Lugares();
@@ -218,7 +219,7 @@ public class SolicitudController implements Serializable, IController {
     ErrorInfoServices errorServices;
     @Inject
     EstatusServices estatusServices;
-  
+
     @Inject
     SemestreServices semestreServices;
     @Inject
@@ -661,7 +662,7 @@ public class SolicitudController implements Serializable, IController {
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(),"solicituddocente");
+                    saveNotification(u.getUsername(), "solicituddocente");
                 });
                 push.send("Nueva solicitud docente ");
             }
@@ -1112,8 +1113,15 @@ public class SolicitudController implements Serializable, IController {
         try {
 
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            Date idsecond = solicitud.getFecha();
-            Integer id = solicitud.getIdsolicitud();
+            Integer id = 0;
+            Date idsecond = new Date();
+
+            if (solicitud == null || solicitud.getFecha() == null) {
+                idsecond = DateUtil.getFechaHoraActual();
+            } else {
+                idsecond = solicitud.getFecha();
+                id = solicitud.getIdsolicitud();
+            }
 
             solicitud = new Solicitud();
             solicitudSelected = new Solicitud();
@@ -1241,20 +1249,20 @@ public class SolicitudController implements Serializable, IController {
                             tema = "schedule-red";
                             break;
                     }
-                 String   texto =nameOfCarrera+ " "+viajest;
+                    String texto = nameOfCarrera + " " + viajest;
 //                    eventModel.addEvent(
-                            //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
-                            //                    );
-                            eventModel
-                    .addEvent(
-                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ")  " + a.getObjetivo() + " "
-                                    + texto,
-                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
-                    //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ") Mision: " + a.getObjetivo()+ " Responsable: " + a.getUsuario().get(1).getNombre() + " "
-                    //                                    + texto,
-                    //                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
-                    //                  
-                    );
+                    //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
+                    //                    );
+                    eventModel
+                            .addEvent(
+                                    new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ")  " + a.getObjetivo() + " "
+                                            + texto,
+                                            a.getFechahorapartida(), a.getFechahoraregreso(), tema)
+                            //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ") Mision: " + a.getObjetivo()+ " Responsable: " + a.getUsuario().get(1).getNombre() + " "
+                            //                                    + texto,
+                            //                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
+                            //                  
+                            );
                 });
             }
 
@@ -1582,7 +1590,7 @@ public class SolicitudController implements Serializable, IController {
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(),"solicituddocente");
+                    saveNotification(u.getUsername(), "solicituddocente");
                 });
                 push.send("Edicicion de solicitud docente ");
             }
@@ -1689,9 +1697,9 @@ public class SolicitudController implements Serializable, IController {
      * @return
      */
     public String goList(String ruta) {
-        ruta =ruta.trim();
+        ruta = ruta.trim();
         JmoordbContext.put("solicitud", "golist");
-        return "/pages/"+ruta+"/list.xhtml";
+        return "/pages/" + ruta + "/list.xhtml";
 //        return "/pages/solicituddocente/list.xhtml";
     }// </editor-fold>
 
@@ -2340,7 +2348,7 @@ public class SolicitudController implements Serializable, IController {
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(),"solicituddocente");
+                    saveNotification(u.getUsername(), "solicituddocente");
                 });
                 push.send("Se cancelo una solicitud ");
             }

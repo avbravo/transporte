@@ -136,7 +136,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     private Integer totalRechazadoCancelado = 0;
     private Integer totalViajes = 0;
     /**
-     * se usan para obtener los lugares y asignarselo a los atributos lugres de partida y llegada de la solicitud
+     * se usan para obtener los lugares y asignarselo a los atributos lugres de
+     * partida y llegada de la solicitud
      */
     Lugares lugaresPartida = new Lugares();
     Lugares lugaresLlegada = new Lugares();
@@ -218,7 +219,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     ErrorInfoServices errorServices;
     @Inject
     EstatusServices estatusServices;
-  
+
     @Inject
     SemestreServices semestreServices;
     @Inject
@@ -303,8 +304,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     .withNameFieldOfRowPage("rowPage")
                     .withTypeKey("primary")
                     .withSearchLowerCase(false)
-                    .withPathReportDetail("/resources/reportes/solicitud/details.jasper")
-                    .withPathReportAll("/resources/reportes/solicitud/all.jasper")
+                    .withPathReportDetail("/resources/reportes/solicitudadministrativo/details.jasper")
+                    .withPathReportAll("/resources/reportes/solicitudadministrativo/all.jasper")
                     .withparameters(parameters)
                     .withResetInSave(false)
                     .build();
@@ -661,7 +662,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(),"solicitudadministrativo");
+                    saveNotification(u.getUsername(), "solicitudadministrativo");
                 });
                 push.send("Nueva solicitud Administrativo ");
             }
@@ -1110,10 +1111,16 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     // <editor-fold defaultstate="collapsed" desc="Boolean inicializar()">
     private String inicializar() {
         try {
+            Integer id = 0;
+            Date idsecond = new Date();
 
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            Date idsecond = solicitud.getFecha();
-            Integer id = solicitud.getIdsolicitud();
+            if (solicitud == null || solicitud.getFecha() == null) {
+                idsecond = DateUtil.getFechaHoraActual();
+            } else {
+                idsecond = solicitud.getFecha();
+                id = solicitud.getIdsolicitud();
+            }
 
             solicitud = new Solicitud();
             solicitudSelected = new Solicitud();
@@ -1241,20 +1248,20 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                             tema = "schedule-red";
                             break;
                     }
-                 String   texto =nameOfCarrera+ " "+viajest;
+                    String texto = nameOfCarrera + " " + viajest;
 //                    eventModel.addEvent(
-                            //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
-                            //                    );
-                            eventModel
-                    .addEvent(
-                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ")  " + a.getObjetivo() + " "
-                                    + texto,
-                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
-                    //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ") Mision: " + a.getObjetivo()+ " Responsable: " + a.getUsuario().get(1).getNombre() + " "
-                    //                                    + texto,
-                    //                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
-                    //                  
-                    );
+                    //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
+                    //                    );
+                    eventModel
+                            .addEvent(
+                                    new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ")  " + a.getObjetivo() + " "
+                                            + texto,
+                                            a.getFechahorapartida(), a.getFechahoraregreso(), tema)
+                            //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ") Mision: " + a.getObjetivo()+ " Responsable: " + a.getUsuario().get(1).getNombre() + " "
+                            //                                    + texto,
+                            //                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
+                            //                  
+                            );
                 });
             }
 
@@ -1582,7 +1589,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(),"solicitudadministrativo");
+                    saveNotification(u.getUsername(), "solicitudadministrativo");
                 });
                 push.send("Edicicion de solicitud administrativo ");
             }
@@ -1689,9 +1696,9 @@ public class SolicitudAdministrativoController implements Serializable, IControl
      * @return
      */
     public String goList(String ruta) {
-        ruta =ruta.trim();
+        ruta = ruta.trim();
         JmoordbContext.put("solicitud", "golist");
-        return "/pages/"+ruta+"/list.xhtml";
+        return "/pages/" + ruta + "/list.xhtml";
 //        return "/pages/solicitudadministrativo/list.xhtml";
     }// </editor-fold>
 
@@ -2340,7 +2347,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(),"solicitudadministrativo");
+                    saveNotification(u.getUsername(), "solicitudadministrativo");
                 });
                 push.send("Se cancelo una solicitud ");
             }
@@ -2358,7 +2365,5 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         return "";
     }
     // </editor-fold>
-    
-    
 
 }
