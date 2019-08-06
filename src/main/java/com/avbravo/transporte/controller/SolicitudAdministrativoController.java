@@ -34,6 +34,7 @@ import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.jmoordbutils.dates.DecomposedDate;
 import com.avbravo.jmoordbutils.email.ManagerEmail;
 import com.avbravo.transporte.beans.DisponiblesBeans;
+import com.avbravo.transporte.beans.TipoVehiculoCantidadBeans;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.datamodel.SugerenciaDataModel;
 import com.avbravo.transporteejb.entity.Estatus;
@@ -57,12 +58,12 @@ import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
-import com.avbravo.transporteejb.services.LugaresServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TipogiraServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
+import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.eq;
@@ -83,6 +84,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.push.Push;
@@ -94,6 +96,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
@@ -176,6 +179,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     List<Tiposolicitud> tiposolicitudList = new ArrayList<>();
     List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
     List<Tipovehiculo> suggestionsTipovehiculo = new ArrayList<>();
+    List<TipoVehiculoCantidadBeans> tipoVehiculoCantidadBeansList = new ArrayList<>();
 
     List<String> rangoAgenda = new ArrayList<>();
     //
@@ -236,6 +240,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     @Inject
     ViajeServices viajeServices;
     @Inject
+    VehiculoServices vehiculoServices;
+    @Inject
     UsuarioServices usuarioServices;
     @Inject
     JmoordbResourcesFiles rf;
@@ -275,6 +281,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     @PostConstruct
     public void init() {
         try {
+
             eventModel = new DefaultScheduleModel();
             // eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", DateUtil.fechaHoraActual(), DateUtil.fechaHoraActual()));
 
@@ -1186,6 +1193,20 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             solicitudSelected = solicitud;
             leyoSugerencias = false;
 
+            //inicializa tipo de vehiculos
+            List<Tipovehiculo> list = tipovehiculoRepository.findBy("activo", "si");
+            if (list == null || list.isEmpty()) {
+
+            } else {
+                Integer maximo = 0;
+                for (Tipovehiculo tv : list) {
+                    maximo = vehiculoServices.cantidadVehiculosPorTipo(tv);
+                    TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans = new TipoVehiculoCantidadBeans(tv, 0, maximo);
+                    tipoVehiculoCantidadBeansList.add(tipoVehiculoCantidadBeans);
+                }
+
+            }
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1434,7 +1455,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
      * @param query
      * @return
      */
-    public List<Vehiculo> vehiculosActivo() {
+    public List<Vehiculo> vehiculosActivo(Tipovehiculo tipovehiculo) {
         Boolean haydisponibles = false;
 
         List<Vehiculo> vehiculoList = new ArrayList<>();
@@ -1444,39 +1465,9 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (tipovehiculoList == null || tipovehiculoList.isEmpty()) {
                 return vehiculoList;
             }
-            /**
-             * Filtra para colocar un solo tipo de vehiculo por cada categoria
-             */
-            List<Tipovehiculo> list = new ArrayList<>();
-            for (Tipovehiculo tv : tipovehiculoList) {
-                if (list == null || list.isEmpty()) {
-                    list.add(tv);
-                } else {
-                    Boolean found = false;
-                    for (Tipovehiculo t : list) {
-                        if (t.getIdtipovehiculo().equals(tv.getIdtipovehiculo())) {
-                            found = true;
-                        }
-                    }
-                    if (!found) {
-                        list.add(tv);
-                    }
-                }
-
-            }
-            Bson filter = Filters.and(
-                    Filters.or(
-                            Filters.eq("Poblacion", 8579),
-                            Filters.eq("Poblacion", 4567),
-                            Filters.or(
-                                    Filters.eq("Pais", "España"),
-                                    Filters.eq("Siglas", "cu")
-                            )//or
-                    ) //or
-            );//and
 
             pasajerosDisponibles = 0;
-            Document doc = new Document("activo", "si").append("tipovehiculo.idtipovehiculo", "BUS").append("enreparacion", "no");
+            Document doc = new Document("activo", "si").append("tipovehiculo.idtipovehiculo", tipovehiculo.getIdtipovehiculo()).append("enreparacion", "no");
             vehiculoList = vehiculoRepository.findBy(doc);
             if (vehiculoList == null || vehiculoList.isEmpty()) {
                 return vehiculoList;
@@ -1749,20 +1740,31 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         try {
 
             disponiblesBeansList = new ArrayList<>();
-
-            List<Vehiculo> vehiculoFreeList = new ArrayList<>();
-            varFechaHoraPartida = solicitud.getFechahorapartida();
-            varFechaHoraRegreso = solicitud.getFechahoraregreso();
-            List<Vehiculo> vehiculoList = new ArrayList<>();
-            vehiculoList = vehiculosActivo();
-            if (vehiculoList == null || vehiculoList.isEmpty()) {
-                return "";
-            }
             rangoAgenda = new ArrayList<>();
             if (!isValidDiasConsecutivos()) {
                 return "";
             }
             solicitud.setRangoagenda(rangoAgenda);
+            List<Vehiculo> vehiculoFreeList = new ArrayList<>();
+            varFechaHoraPartida = solicitud.getFechahorapartida();
+            varFechaHoraRegreso = solicitud.getFechahoraregreso();
+            List<Vehiculo> vehiculoList = new ArrayList<>();
+            if (tipoVehiculoCantidadBeansList == null || tipoVehiculoCantidadBeansList.isEmpty()) {
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.seleccionetipodevehiculos"));
+                return "";
+            }
+            if (totalTipoVehiculo() == 0) {
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.indiquelacantidaddevehiculosportipo"));
+                return "";
+            }
+            //Genero para cada fecha y cada tipo
+            for (TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans : tipoVehiculoCantidadBeansList) {
+                if (tipoVehiculoCantidadBeans.getCantidad() > 0) {
+vehiculoList = vehiculosActivo(tipoVehiculoCantidadBeans.getTipovehiculo());
+            if (vehiculoList == null || vehiculoList.isEmpty()) {
+                return "";
+            }
+
             Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
             if (diasconsecutivos) {
                 //
@@ -1829,6 +1831,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 }
 
             }// no son consecutivos
+                }
+            }
+
+            
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -2402,4 +2408,38 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }
     // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="onCellEdit(CellEditEvent event)">
+    /**
+     * analiza los cambios en la celda del datatable
+     *
+     * @param event
+     */
+    public void onCellEdit(CellEditEvent event) {
+        Object oldValue = event.getOldValue();
+        Object newValue = event.getNewValue();
+        int alteredRow = event.getRowIndex();
+        Integer v = (Integer) newValue;
+        if (v < 0 || v > tipoVehiculoCantidadBeansList.get(alteredRow).getMaximo()) {
+            tipoVehiculoCantidadBeansList.get(alteredRow).setCantidad(0);
+        }
+
+        if (newValue != null && !newValue.equals(oldValue)) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed", "Old: " + oldValue + ", New:" + newValue);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }   // </editor-fold>  
+
+    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    public Integer totalTipoVehiculo() {
+        Integer total = 0;
+        try {
+            for (TipoVehiculoCantidadBeans tvc : tipoVehiculoCantidadBeansList) {
+                total += tvc.getCantidad();
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return total;
+    }
+    // </editor-fold>  
 }
