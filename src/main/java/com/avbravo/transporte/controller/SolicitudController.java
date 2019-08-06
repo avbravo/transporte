@@ -1675,7 +1675,7 @@ public class SolicitudController implements Serializable, IController {
             jmoordbNotifications.setIdjmoordbnotifications(autoincrementableServices.getContador("jmoordbnNotifications"));
             jmoordbNotifications.setUsername(username);
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            jmoordbNotifications.setMessage("De: " + jmoordb_user.getNombre() + " email " + jmoordb_user.getEmail() + " Mensaje: " + mensaje);
+            jmoordbNotifications.setMessage(mensaje);
             jmoordbNotifications.setViewed("no");
             jmoordbNotifications.setDate(DateUtil.fechaActual());
             jmoordbNotifications.setType("mensajedocente");

@@ -10,7 +10,7 @@
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
     <ui:define name="content">
-         
+
 
         <style>
             .thumbnail { max-width: 100%; }
@@ -28,56 +28,77 @@
 
             <b:panel collapsible="false" title="#{app['titlelist.jmoordbNotifications']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-         <b:commandButton value="#{app['button.markall']}" 
-             action="#{jmoordbNotificationsController.markAsViewedAll()}"
-                                          iconAwesome="fa-check-square-o" 
-                                         update=":form:dataTable, :form:msgs"/>
-                       
+                <b:commandButton value="#{app['button.markall']}" 
+                                 action="#{jmoordbNotificationsController.markAsViewedAll()}"
+                                 iconAwesome="fa-check-square-o" 
+                                 update=":form:dataTable, :form:msgs"/>
+
             </b:panel>
             <b:panel collapsible="false" id="dataTable"  look="primary">
-                
-                 <jmoordbjsf:paginator 
+
+                <jmoordbjsf:paginator 
                     controller="#{jmoordbNotificationsController}"     
-                   renderedNew="false"
-                   renderedPrint="false"
+                    renderedNew="false"
+                    renderedPrint="false"
                     rowPage="#{jmoordbNotificationsController.rowPage}"                   
                     page="#{jmoordbNotificationsController.page}"
                     pages="#{jmoordbNotificationsController.pages}"
                     skip="ajax:jmoordbNotificationsController.skip()" 
                     url = "/pages/jmoordbNotifications/new.xhtml"
                     />
-               
-                <b:dataTable value="#{jmoordbNotificationsController.jmoordbNotificationsDataModel}"
+
+                <p:dataTable value="#{jmoordbNotificationsController.jmoordbNotificationsDataModel}"
                              var="item"
                              id="dataTable2"
-                             paginated="false"
-                             onpage="console.log('page');">
+                             reflow="true"
+                             >
+                    <p:column style="width:16px">
+                        <p:rowToggler />
+                    </p:column>
 
+                    <p:column  headerText="#{app['field.idjmoordbnotifications']}" style="width:75px">
+                        <p:outputLabel value="#{item.idjmoordbnotifications}"/>
+                    </p:column>
 
-                    <b:dataTableColumn value="#{item.idjmoordbnotifications}" label="#{app['field.idjmoordbnotifications']}"/>
+                    <p:column  headerText="#{app['field.message']}">
+                        <p:outputLabel value="#{item.message}"/>
+                    </p:column>  
+                 
                     
-                    <b:dataTableColumn value="#{item.message}" label="#{app['field.message']}"/>
-                    <b:dataTableColumn value="#{item.type}" label="#{app['field.type']}"/>
-                  
-                    <b:dataTableColumn value="#{jmoordbNotificationsController.showDate(item.date)}" label="#{app['field.date']}"/>
 
-                    <b:dataTableColumn value="#{item.viewed}" label="#{app['field.viewed']}" />
+                    <p:rowExpansion>
 
-                    <b:dataTableColumn label="">
+                        <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
+                            <p:outputLabel value="#{app['field.type']}"/>
+                            <p:outputLabel value="#{item.type}"/>
+                            <p:outputLabel value="#{msg['field.nombre']}"/>
+                            <p:outputLabel value="#{jmoordbNotificationsController.generateUsuario(item.username).nombre}"/>
+                            <p:outputLabel value="#{app['field.email']}"/>
+                            <p:outputLabel value="#{jmoordbNotificationsController.generateUsuario(item.username).email}"/>
+
+                        </b:panelGrid>
+                    </p:rowExpansion>
+                    <p:column  headerText="#{app['field.date']}" style="width:80px">
+                        <p:outputLabel value="#{jmoordbNotificationsController.showDate(item.date)}"/>
+                    </p:column>
+                    <p:column  headerText="#{app['field.viewed']}" style="width:50px">
+                        <p:outputLabel value="#{item.viewed}"/>
+                    </p:column>
+                    <p:column headerText="" style="width:70px">
                         <b:commandButton action="#{jmoordbNotificationsController.markAsViewed(item)}"
-                                          iconAwesome="fa-check-square-o" 
+                                         iconAwesome="fa-check-square-o" 
                                          update=":form:dataTable, :form:msgs"/>
-                       
 
-                     
-                    </b:dataTableColumn>
 
-                </b:dataTable>
+
+                    </p:column>
+
+                </p:dataTable>
             </b:panel>
 
         </b:form>
 
         <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR, DOCENTE, ADMINISTRATIVO, SECRETARIA')}"/>
-        
+
     </ui:define>
 </ui:composition>

@@ -458,8 +458,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
             String textsearch = "ADMINISTRATIVO";
             Rol rol = (Rol) JmoordbContext.get("jmoordb_rol");
-            if (rol.getIdrol().toUpperCase().equals("DOCENTE")) {
-                textsearch = "DOCENTE";
+            if (rol.getIdrol().toUpperCase().equals("ADMINISTRATIVO")) {
+                textsearch = "ADMINISTRATIVO";
             }
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
             if (!solicitudServices.isValid(solicitud)) {
@@ -754,7 +754,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             list = solicitudRepository.complete(query);
             if (!list.isEmpty()) {
                 for (Solicitud s : list) {
-                    if (s.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")
+                    if (s.getTiposolicitud().getIdtiposolicitud().equals("ADMINISTRATIVO")
                             && (s.getUsuario().get(0).getUsername().equals(jmoordb_user.getUsername())
                             || s.getUsuario().get(1).getUsername().equals(jmoordb_user.getUsername()))) {
                         suggestions.add(s);
@@ -1173,8 +1173,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
             String textsearch = "ADMINISTRATIVO";
             Rol rol = (Rol) JmoordbContext.get("jmoordb_rol");
-            if (rol.getIdrol().toUpperCase().equals("DOCENTE")) {
-                textsearch = "DOCENTE";
+            if (rol.getIdrol().toUpperCase().equals("ADMINISTRATIVO")) {
+                textsearch = "ADMINISTRATIVO";
             }
             //
 //            diasSelected = new String[0];           
@@ -1674,7 +1674,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             jmoordbNotifications.setIdjmoordbnotifications(autoincrementableServices.getContador("jmoordbnNotifications"));
             jmoordbNotifications.setUsername(username);
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            jmoordbNotifications.setMessage("De: " + jmoordb_user.getNombre() + " email " + jmoordb_user.getEmail() + " Mensaje: " + mensaje);
+            jmoordbNotifications.setMessage(mensaje);
             jmoordbNotifications.setViewed("no");
             jmoordbNotifications.setDate(DateUtil.fechaActual());
             jmoordbNotifications.setType("mensajeadministrativo");

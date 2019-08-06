@@ -22,6 +22,7 @@ import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.transporteejb.entity.Usuario;
+import com.avbravo.transporteejb.services.UsuarioServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -85,6 +86,8 @@ public class JmoordbNotificationsController implements Serializable, IController
     JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
+    @Inject
+    UsuarioServices usuarioServices;
 
     //List of Relations
     //Repository of Relations
@@ -275,8 +278,22 @@ public class JmoordbNotificationsController implements Serializable, IController
             Integer total = jmoordbNotificationsRepository.count(doc);
             return total;
         } catch (Exception e) {
-            JsfUtil.errorDialog("countNotViewed())", e.getLocalizedMessage());
+            JsfUtil.errorDialog("countNotViewed()", e.getLocalizedMessage());
         }
         return 0;
     }// </editor-fold>
+    
+  // <editor-fold defaultstate="collapsed" desc="metodo()">
+    public Usuario generateUsuario(String username){
+  
+        Usuario usuario = new Usuario();
+        try {
+            usuario = usuarioServices.findById(username);
+
+        } catch (Exception e) {
+             JsfUtil.errorDialog("generateUsuario(()", e.getLocalizedMessage());
+        }
+        return usuario;
+    }
+   // </editor-fold>       
 }
