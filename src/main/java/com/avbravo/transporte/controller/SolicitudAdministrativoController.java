@@ -64,6 +64,7 @@ import com.avbravo.transporteejb.services.TiposolicitudServices;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.ViajeServices;
+import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.or;
 
@@ -1439,6 +1440,40 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         List<Vehiculo> vehiculoList = new ArrayList<>();
         List<Vehiculo> suggestions = new ArrayList<>();
         try {
+            //Verifica si se selecciono los tipos de vehiculos
+            if (tipovehiculoList == null || tipovehiculoList.isEmpty()) {
+                return vehiculoList;
+            }
+            /**
+             * Filtra para colocar un solo tipo de vehiculo por cada categoria
+             */
+            List<Tipovehiculo> list = new ArrayList<>();
+            for (Tipovehiculo tv : tipovehiculoList) {
+                if (list == null || list.isEmpty()) {
+                    list.add(tv);
+                } else {
+                    Boolean found = false;
+                    for (Tipovehiculo t : list) {
+                        if (t.getIdtipovehiculo().equals(tv.getIdtipovehiculo())) {
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        list.add(tv);
+                    }
+                }
+
+            }
+            Bson filter = Filters.and(
+                    Filters.or(
+                            Filters.eq("Poblacion", 8579),
+                            Filters.eq("Poblacion", 4567),
+                            Filters.or(
+                                    Filters.eq("Pais", "España"),
+                                    Filters.eq("Siglas", "cu")
+                            )//or
+                    ) //or
+            );//and
 
             pasajerosDisponibles = 0;
             Document doc = new Document("activo", "si").append("tipovehiculo.idtipovehiculo", "BUS").append("enreparacion", "no");
