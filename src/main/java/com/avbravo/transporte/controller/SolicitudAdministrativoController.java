@@ -349,6 +349,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 diasSelected[contador++] = s;
 
             }
+            tipovehiculoList = solicitud.getTipovehiculo();
             disponiblesBeansList = new ArrayList<>();
             // hayBusDisponiblesConFechas();
 

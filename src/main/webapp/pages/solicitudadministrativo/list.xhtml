@@ -67,7 +67,7 @@
                     page="#{solicitudAdministrativoController.page}"
                     pages="#{solicitudAdministrativoController.pages}"
                     skip="ajax:solicitudAdministrativoController.skip()" 
-                    url = "/pages/solicituddocente/new.xhtml"
+                    url = "/pages/solicitudadministrativo/new.xhtml"
                     />
 
 
@@ -104,7 +104,7 @@
                         <jmoordbjsf:commandbuttondatatableprepareView
                             rendered="#{(item.estatus.idestatus eq 'SOLICITADO') or ((item.estatus.idestatus eq 'APROBADO'))}"
                             controller="#{solicitudAdministrativoController}"
-                            url="/pages/solicituddocente/view.xhtml"
+                            url="/pages/solicitudadministrativo/view.xhtml"
                             item="#{item}"
                             />                
                     </p:column>

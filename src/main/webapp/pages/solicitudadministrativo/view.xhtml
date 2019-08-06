@@ -83,103 +83,8 @@
                         <jmoordbjsf:email required="true" span="8" value="#{solicitudAdministrativoController.responsable.email}" id="email"  label="#{msg['field.email']}" />
 
 
-                        <p:outputLabel  value="#{msg['field.semestre']}" />
-                        <jmoordbjsf:autocomplete converter="#{semestreConverter}"
-                                                 completeMethod="#{solicitudAdministrativoController.semestreServices.complete}"
-                                                 labeltip1="#{p.idsemestre}"
-                                                 labeltip2="#{p.descripcion}"    
-                                                 listener="#{solicitudAdministrativoController.handleSelect}"
-                                                 value="#{solicitudAdministrativoController.solicitud.semestre}"
-                                                 itemLabel="#{p.idsemestre}"
-                                                 dropdown="true"
-                                                 required="true"
-                                                 minQueryLength="0"
-                                                 field="descripcion"
-                                                 />
+                       
 
-                        <p:outputLabel  value="#{msg['field.periodoacademico']}" />
-                        <jmoordbjsf:inputText  required="true" span="4" value="#{solicitudAdministrativoController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
-
-
-
-
-
-
-
-
-                        <p:outputLabel  value="#{msg['field.facultad']}" />
-                        <p:autoComplete dropdown="true"
-                                        multiple="true"
-                                        scrollHeight="250"
-
-                                        emptyMessage="#{app['info.nohayregistros']}"
-                                        value="#{solicitudAdministrativoController.facultadList}"
-                                        completeMethod="#{solicitudAdministrativoController.completeFiltradoFacultad}"
-                                        var="p"
-                                      required="true"
-
-
-                                        itemLabel="#{p.descripcion}"
-                                        itemValue="#{p}" forceSelection="true">
-                            <f:converter binding="#{facultadConverter}"/>
-                            <f:attribute name="field" value="descripcion"/>
-                            <f:attribute name="fielddropdown" value="false"/>
-                            <f:attribute name="fieldquerylenth" value="1"/>
-                            <p:ajax event="itemSelect" listener="#{solicitudAdministrativoController.handleSelect}"
-                                    update="carrera"     />
-                            <p:ajax event="itemUnselect" listener="#{solicitudAdministrativoController.itemUnselect}"
-                                    update="carrera"
-                                    />
-
-
-                        </p:autoComplete>
-
-
-
-                        <p:outputLabel  value="#{msg['field.carrera']}" />
-                        <p:autoComplete dropdown="true"
-                                        id="carrera"
-                                        multiple="true"
-                                        scrollHeight="250"
-                                        size="55"
-                                        emptyMessage="#{app['info.nohayregistros']}"
-                                        value="#{solicitudAdministrativoController.carreraList}"
-                                        completeMethod="#{solicitudAdministrativoController.completeFiltradoCarrera}"
-                                        var="p"
-                                       required="true"
-                                        itemLabel="#{p.descripcion}"
-                                        itemValue="#{p}" forceSelection="true">
-                            <f:converter binding="#{carreraConverter}"/>
-                            <f:attribute name="field" value="descripcion"/>
-                            <f:attribute name="fielddropdown" value="false"/>
-                            <f:attribute name="fieldquerylenth" value="1"/>
-                            <p:ajax event="itemSelect" listener="#{solicitudAdministrativoController.handleSelect}"
-                                    update=""
-                                    />
-                            <p:ajax event="itemUnselect" listener="#{solicitudAdministrativoController.itemUnselect}"
-                                    update=""
-                                    />
-                            <!--                            <f:facet name="itemtip">
-                                                            <h:panelGrid columns="1" cellpadding="5">
-                                                                <h:outputText value="#{msg['field.descripcion']} #{p.descripcion}" />
-                            
-                            
-                                                            </h:panelGrid>
-                                                        </f:facet>-->
-
-                        </p:autoComplete>
-
-
-
-
-
-
-                        <p:outputLabel  value="#{msg['field.numerogrupos']}" />
-                        <p:chips required="true" id="numerogrupo" value="#{solicitudAdministrativoController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
-
-
-                        <p:spacer/>
-                        <p:spacer/>
 
                         <p:outputLabel value="#{msg['field.idtipogira']}"/>
                         <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
@@ -224,6 +129,29 @@
                         </b:touchSpin>
 
 
+
+                        <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
+                        <p:autoComplete dropdown="true"
+                                        multiple="true"
+                                        scrollHeight="250"
+                                        size="55"
+                                        emptyMessage="#{app['info.nohayregistros']}"
+                                        value="#{solicitudAdministrativoController.tipovehiculoList}"
+                                        completeMethod="#{solicitudAdministrativoController.completeFiltradoTipovehiculo}"
+                                        var="p"
+                                        required="false"
+                                        itemLabel="#{p.idtipovehiculo}"
+                                        itemValue="#{p}" forceSelection="true">
+                            <f:converter binding="#{tipovehiculoConverter}"/>
+                            <f:attribute name="field" value="idtipovehiculo"/>
+                            <f:attribute name="fielddropdown" value="false"/>
+                            <f:attribute name="fieldquerylenth" value="1"/>
+                            <p:ajax event="itemSelect" listener="#{solicitudAdministrativoController.handleSelect}"
+                                    update=""
+                                    />
+
+
+                        </p:autoComplete>
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
                         <jmoordbjsf:calendar required="true"
