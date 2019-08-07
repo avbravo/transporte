@@ -95,6 +95,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.primefaces.component.api.UIColumn;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -649,11 +650,11 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     System.out.println("==============>> voy a verificar ");
                     //Aqui revisar la cantidad de pasajeros
                     solicitud.setPasajeros(db.getPasajerosPorViaje().get(0));
-                    
+
                     solicitud.setFechahorapartida(db.getFechahorainicio());
                     solicitud.setFechahoraregreso(db.getFechahorafin());
                     solicitud.setNumerodevehiculos(1);
-                    
+
                     if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
                         solicitudesGuardadas++;
 
@@ -667,8 +668,6 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 }
             }
 
-            
-
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
             usuarioList = usuarioRepository.filters(filter);
@@ -679,7 +678,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 });
                 push.send("Nueva solicitud Administrativo ");
             }
-JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
+            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
             /**
              * Enviar un email al administrativo y al mismo administrador
              */
@@ -1143,7 +1142,7 @@ JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
             solicitud.setMision("---");
             solicitud.setLugarpartida("UTP-AZUERO");
             solicitud.setNumerodevehiculos(1);
-            solicitud.setPasajeros(25);
+            solicitud.setPasajeros(0);
             solicitud.setFechaestatus(DateUtil.getFechaHoraActual());
             solicita = jmoordb_user;
             responsable = solicita;
@@ -1206,7 +1205,7 @@ JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
                 Integer maximo = 0;
                 for (Tipovehiculo tv : list) {
                     maximo = vehiculoServices.cantidadVehiculosPorTipo(tv);
-                    TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans = new TipoVehiculoCantidadBeans(tv, 0, maximo,0);
+                    TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans = new TipoVehiculoCantidadBeans(tv, 0, maximo, 0);
                     tipoVehiculoCantidadBeansList.add(tipoVehiculoCantidadBeans);
                 }
 
@@ -1755,7 +1754,7 @@ JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
                 JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.seleccionetipodevehiculos"));
                 return "";
             }
-            if (totalTipoVehiculo() == 0) {
+            if (calcularTotalVehiculo()== 0) {
                 JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.indiquelacantidaddevehiculosportipo"));
                 return "";
             }
@@ -1800,7 +1799,6 @@ JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
                         disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
                         disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
                         disponiblesBeansList.add(disponiblesBeans);
-
 
                     } else {
 
@@ -1848,7 +1846,7 @@ JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
 
             System.out.println("iddisponible" + d.getIddisponible());
             System.out.println("fecha inicio" + d.getFechahorainicio() + " fecha fin" + d.getFechahorafin());
-            System.out.println("N. Buses" + d.getNumeroBuses() + "No. Pasajeros" + d.getNumeroPasajeros() + "PasajerosPendientes: " + d.getPasajerosPendientes() + " NumeroVehiculosSolicitados  "+d.getNumeroVehiculosSolicitados());
+            System.out.println("N. Buses" + d.getNumeroBuses() + "No. Pasajeros" + d.getNumeroPasajeros() + "PasajerosPendientes: " + d.getPasajerosPendientes() + " NumeroVehiculosSolicitados  " + d.getNumeroVehiculosSolicitados());
             for (Vehiculo v : d.getVehiculo()) {
                 System.out.println("........ " + v.getMarca() + " tipo:" + v.getTipovehiculo().getIdtipovehiculo());
             }
@@ -2029,7 +2027,7 @@ JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Boolean foundVehicleSameMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList,TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans)">
-    private Boolean foundVehicleSameMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList,TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans) {
+    private Boolean foundVehicleSameMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList, TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans) {
         try {
 
 // Encontrar las fechas en el rango
@@ -2061,7 +2059,7 @@ JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Boolean foundVehicleOtherMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList,TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans)">
-    private Boolean foundVehicleOtherMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList, Integer meses,TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans) {
+    private Boolean foundVehicleOtherMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList, Integer meses, TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans) {
         try {
             Integer numeroBuses = 0;
             Integer numeroPasajeros = 0;
@@ -2139,7 +2137,7 @@ JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
      * @param vehiculoList
      * @return
      */
-    private Boolean insertIntoDisponiblesList(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<FechaDiaUtils> fechasValidasList, List<Vehiculo> vehiculoList,TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans) {
+    private Boolean insertIntoDisponiblesList(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<FechaDiaUtils> fechasValidasList, List<Vehiculo> vehiculoList, TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans) {
         try {
             Integer contadorDispobibes = 0;
             Integer numeroBuses = 0;
@@ -2176,11 +2174,11 @@ JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
                         disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
                         disponiblesBeans.setVehiculo(vehiculoFreeList);
 
-                        disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
-                        disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
-                        disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, solicitud.getPasajeros()));
-                         disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
-                         disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
+                        disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
+                        disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
+                        disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
+                        disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
+                        disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
                         disponiblesBeansList.add(disponiblesBeans);
                     }
                 }
@@ -2434,13 +2432,23 @@ JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
         Object oldValue = event.getOldValue();
         Object newValue = event.getNewValue();
         int alteredRow = event.getRowIndex();
+        //Obtiene el encabezado de la columna que se edita la propiedad headerText
+        UIColumn col = (UIColumn) event.getColumn();
+       
         Integer v = (Integer) newValue;
-        if (v < 0 || v > tipoVehiculoCantidadBeansList.get(alteredRow).getMaximo()) {
-            tipoVehiculoCantidadBeansList.get(alteredRow).setCantidad(0);
+        switch (col.getHeaderText().toUpperCase()) {
+            case "VEHICULOS":
+                if (v < 0 || v > tipoVehiculoCantidadBeansList.get(alteredRow).getMaximo()) {
+                    tipoVehiculoCantidadBeansList.get(alteredRow).setCantidad(0);
+                }
+                break;
+            case "PASAJEROS":
+                if (tipoVehiculoCantidadBeansList.get(alteredRow).getPasajeros() < 0) {
+                    tipoVehiculoCantidadBeansList.get(alteredRow).setPasajeros(0);
+                }
+                break;
         }
-        if(tipoVehiculoCantidadBeansList.get(alteredRow).getPasajeros() <0){
-            tipoVehiculoCantidadBeansList.get(alteredRow).setPasajeros(0);
-        }
+
         changeDaysViewAvailable();
         if (newValue != null && !newValue.equals(oldValue)) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed", "Old: " + oldValue + ", New:" + newValue);
@@ -2448,17 +2456,36 @@ JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
         }
     }   // </editor-fold>  
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
-    public Integer totalTipoVehiculo() {
+    // <editor-fold defaultstate="collapsed" desc="Integer calcularTotalVehiculo() ">
+    public Integer calcularTotalVehiculo() {
         Integer total = 0;
+    
         try {
             for (TipoVehiculoCantidadBeans tvc : tipoVehiculoCantidadBeansList) {
                 total += tvc.getCantidad();
+            
             }
+solicitud.setNumerodevehiculos(total);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return total;
+    }
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="Integer calcularTotalPasajeros()">
+     public Integer calcularTotalPasajeros() {
+     
+        Integer totalpasajeros=0;
+        try {
+            for (TipoVehiculoCantidadBeans tvc : tipoVehiculoCantidadBeansList) {
+           
+                totalpasajeros+= tvc.getPasajeros();
+            }
+            solicitud.setPasajeros(totalpasajeros);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return totalpasajeros;
     }
     // </editor-fold>  
 }
