@@ -1721,7 +1721,9 @@ public class SolicitudController implements Serializable, IController {
             List<Vehiculo> vehiculoList = new ArrayList<>();
             vehiculoList = busesActivo();
             if (vehiculoList == null || vehiculoList.isEmpty()) {
-                return "";
+                  JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayvehiculosactivosconesascondiciones"));
+                        return "";
+ 
             }
             rangoAgenda = new ArrayList<>();
             if (!isValidDiasConsecutivos()) {

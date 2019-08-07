@@ -1760,81 +1760,80 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             //Genero para cada fecha y cada tipo
             for (TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans : tipoVehiculoCantidadBeansList) {
                 if (tipoVehiculoCantidadBeans.getCantidad() > 0) {
-vehiculoList = vehiculosActivo(tipoVehiculoCantidadBeans.getTipovehiculo());
-            if (vehiculoList == null || vehiculoList.isEmpty()) {
-                return "";
-            }
-
-            Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
-            if (diasconsecutivos) {
-                //
-                Integer numeroBuses = 0;
-                Integer numeroPasajeros = 0;
-                for (Vehiculo v : vehiculoList) {
-
-                    if (isVehiculoActivoDisponible(v, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
-                        //agrega a la lista los vehiculos disponibles
-                        vehiculoFreeList.add(v);
-                        pasajerosDisponibles = 0;
-                        numeroBuses++;
-                        numeroPasajeros += v.getPasajeros();
+                    vehiculoList = vehiculosActivo(tipoVehiculoCantidadBeans.getTipovehiculo());
+                    if (vehiculoList == null || vehiculoList.isEmpty()) {
+                          JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayvehiculosactivosconesascondiciones"));
+                        return "";
                     }
-                }
+
+                    Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
+                    if (diasconsecutivos) {
+                        //
+                        Integer numeroBuses = 0;
+                        Integer numeroPasajeros = 0;
+                        for (Vehiculo v : vehiculoList) {
+
+                            if (isVehiculoActivoDisponible(v, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
+                                //agrega a la lista los vehiculos disponibles
+                                vehiculoFreeList.add(v);
+                                pasajerosDisponibles = 0;
+                                numeroBuses++;
+                                numeroPasajeros += v.getPasajeros();
+                            }
+                        }
 //ordena la lista de vehiculos
-                vehiculoFreeList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
-                        .reversed());
+                        vehiculoFreeList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
+                                .reversed());
 //Almacena los vehiculos disponibles
-                DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
-                disponiblesBeans.setIddisponible(1);
-                disponiblesBeans.setFechahorainicio(solicitud.getFechahorapartida());
-                disponiblesBeans.setFechahorafin(solicitud.getFechahoraregreso());
-                disponiblesBeans.setNumeroBuses(numeroBuses);
-                disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
-                disponiblesBeans.setVehiculo(vehiculoFreeList);
-                disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
-                disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
-                disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, solicitud.getPasajeros()));
+                        DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
+                        disponiblesBeans.setIddisponible(1);
+                        disponiblesBeans.setFechahorainicio(solicitud.getFechahorapartida());
+                        disponiblesBeans.setFechahorafin(solicitud.getFechahoraregreso());
+                        disponiblesBeans.setNumeroBuses(numeroBuses);
+                        disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
+                        disponiblesBeans.setVehiculo(vehiculoFreeList);
+                        disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
+                        disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
+                        disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, solicitud.getPasajeros()));
 
-                disponiblesBeansList.add(disponiblesBeans);
+                        disponiblesBeansList.add(disponiblesBeans);
 
-            } else {
+                    } else {
 
 
-                /*
+                        /*
                 No son dias consecutivo
                 Se deben descomponer las fechas
                 verificar si son dias validos
                 Descomponener la fecha de inicio
-                 */
-                DecomposedDate fechaPartidaDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahorapartida());
+                         */
+                        DecomposedDate fechaPartidaDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahorapartida());
 
-                //descomponer la fecha de regreso
-                DecomposedDate fechaRegresoDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahoraregreso());
+                        //descomponer la fecha de regreso
+                        DecomposedDate fechaRegresoDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahoraregreso());
 
-                varAnio = fechaPartidaDescompuesta.getYear();
-                //Determinar cuantos meses hay
-                Integer meses = DateUtil.numberOfMonthBetweenDecomposedDate(fechaPartidaDescompuesta, fechaRegresoDescompuesta);
-                //mismo mes
-                if (meses == 0) {
-                    foundVehicleSameMonth(fechaPartidaDescompuesta, fechaRegresoDescompuesta, vehiculoList);
+                        varAnio = fechaPartidaDescompuesta.getYear();
+                        //Determinar cuantos meses hay
+                        Integer meses = DateUtil.numberOfMonthBetweenDecomposedDate(fechaPartidaDescompuesta, fechaRegresoDescompuesta);
+                        //mismo mes
+                        if (meses == 0) {
+                            foundVehicleSameMonth(fechaPartidaDescompuesta, fechaRegresoDescompuesta, vehiculoList);
 
-                } else {
-                    // mas de un mes recorrer todos los meses en ese intervalo
-                    if (meses > 0 && meses <= 12) {
+                        } else {
+                            // mas de un mes recorrer todos los meses en ese intervalo
+                            if (meses > 0 && meses <= 12) {
 
-                        foundVehicleOtherMonth(fechaPartidaDescompuesta, fechaRegresoDescompuesta, vehiculoList, meses);
+                                foundVehicleOtherMonth(fechaPartidaDescompuesta, fechaRegresoDescompuesta, vehiculoList, meses);
 
-                    } else {
-                        JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.verifiqueestasolicitandomas12meses"));
-                        return "";
-                    }
-                }
+                            } else {
+                                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.verifiqueestasolicitandomas12meses"));
+                                return "";
+                            }
+                        }
 
-            }// no son consecutivos
+                    }// no son consecutivos
                 }
             }
-
-            
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
