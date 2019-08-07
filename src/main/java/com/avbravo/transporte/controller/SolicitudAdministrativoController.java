@@ -65,7 +65,6 @@ import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
-import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.or;
 
@@ -501,7 +500,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Boolean insert()">
-    public Boolean insert() {
+    public Boolean insert(Tipovehiculo tipovehiculo) {
         try {
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             Integer idsolicitud = autoincrementableServices.getContador("solicitud");
@@ -516,7 +515,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             //Lo datos del usuario
             List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
 
-            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+//            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+            tipovehiculoList.add(tipovehiculo);
             solicitud.setTipovehiculo(tipovehiculoList);
             solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
@@ -645,12 +645,16 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
             //Guarda la solicitud
             for (DisponiblesBeans db : disponiblesBeansList) {
-                for (int i = 0; i < db.getBusesRecomendados(); i++) {
-                    solicitud.setPasajeros(db.getPasajerosPorViaje().get(i));
+                for (int i = 0; i < db.getNumeroVehiculosSolicitados(); i++) {
+                    System.out.println("==============>> voy a verificar ");
+                    //Aqui revisar la cantidad de pasajeros
+                    solicitud.setPasajeros(db.getPasajerosPorViaje().get(0));
+                    
                     solicitud.setFechahorapartida(db.getFechahorainicio());
                     solicitud.setFechahoraregreso(db.getFechahorafin());
                     solicitud.setNumerodevehiculos(1);
-                    if (insert()) {
+                    
+                    if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
                         solicitudesGuardadas++;
 
                         if (solicitudesGuardadas.equals(1)) {
@@ -663,7 +667,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 }
             }
 
-            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
+            
 
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
@@ -675,7 +679,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 });
                 push.send("Nueva solicitud Administrativo ");
             }
-
+JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
             /**
              * Enviar un email al administrativo y al mismo administrador
              */
@@ -722,7 +726,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     public String columnColorDisponibles(DisponiblesBeans disponiblesBeans) {
         String color = "black";
         try {
-            if (disponiblesBeans.getBusesRecomendados() > disponiblesBeans.getNumeroBuses()) {
+            if ((disponiblesBeans.getNumeroVehiculosSolicitados() > disponiblesBeans.getNumeroBuses()) || disponiblesBeans.getNumeroPasajerosSolicitados() > disponiblesBeans.getNumeroPasajeros()) {
                 color = "red";
             }
 //            if (disponiblesBeans.getNumeroBuses() < solicitud.getNumerodevehiculos() || disponiblesBeans.getNumeroPasajeros() < solicitud.getPasajeros()) {
@@ -1120,6 +1124,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     // <editor-fold defaultstate="collapsed" desc="Boolean inicializar()">
     private String inicializar() {
         try {
+            tipoVehiculoCantidadBeansList = new ArrayList<>();
             Integer id = 0;
             Date idsecond = new Date();
 
@@ -1201,7 +1206,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 Integer maximo = 0;
                 for (Tipovehiculo tv : list) {
                     maximo = vehiculoServices.cantidadVehiculosPorTipo(tv);
-                    TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans = new TipoVehiculoCantidadBeans(tv, 0, maximo);
+                    TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans = new TipoVehiculoCantidadBeans(tv, 0, maximo,0);
                     tipoVehiculoCantidadBeansList.add(tipoVehiculoCantidadBeans);
                 }
 
@@ -1462,9 +1467,6 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         List<Vehiculo> suggestions = new ArrayList<>();
         try {
             //Verifica si se selecciono los tipos de vehiculos
-            if (tipovehiculoList == null || tipovehiculoList.isEmpty()) {
-                return vehiculoList;
-            }
 
             pasajerosDisponibles = 0;
             Document doc = new Document("activo", "si").append("tipovehiculo.idtipovehiculo", tipovehiculo.getIdtipovehiculo()).append("enreparacion", "no");
@@ -1738,7 +1740,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
      */
     public String changeDaysViewAvailable() {
         try {
-
+            Integer iddisponible = 0;
             disponiblesBeansList = new ArrayList<>();
             rangoAgenda = new ArrayList<>();
             if (!isValidDiasConsecutivos()) {
@@ -1762,13 +1764,13 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 if (tipoVehiculoCantidadBeans.getCantidad() > 0) {
                     vehiculoList = vehiculosActivo(tipoVehiculoCantidadBeans.getTipovehiculo());
                     if (vehiculoList == null || vehiculoList.isEmpty()) {
-                          JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayvehiculosactivosconesascondiciones"));
+                        JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayvehiculosactivosconesascondiciones"));
                         return "";
                     }
-
+                    vehiculoFreeList = new ArrayList<>();
                     Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
                     if (diasconsecutivos) {
-                        //
+                        //dias consecutivos
                         Integer numeroBuses = 0;
                         Integer numeroPasajeros = 0;
                         for (Vehiculo v : vehiculoList) {
@@ -1786,7 +1788,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                                 .reversed());
 //Almacena los vehiculos disponibles
                         DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
-                        disponiblesBeans.setIddisponible(1);
+                        disponiblesBeans.setIddisponible(iddisponible++);
                         disponiblesBeans.setFechahorainicio(solicitud.getFechahorapartida());
                         disponiblesBeans.setFechahorafin(solicitud.getFechahoraregreso());
                         disponiblesBeans.setNumeroBuses(numeroBuses);
@@ -1795,8 +1797,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                         disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
                         disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
                         disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, solicitud.getPasajeros()));
-
+                        disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
+                        disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
                         disponiblesBeansList.add(disponiblesBeans);
+
 
                     } else {
 
@@ -1817,13 +1821,13 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                         Integer meses = DateUtil.numberOfMonthBetweenDecomposedDate(fechaPartidaDescompuesta, fechaRegresoDescompuesta);
                         //mismo mes
                         if (meses == 0) {
-                            foundVehicleSameMonth(fechaPartidaDescompuesta, fechaRegresoDescompuesta, vehiculoList);
+                            foundVehicleSameMonth(fechaPartidaDescompuesta, fechaRegresoDescompuesta, vehiculoList, tipoVehiculoCantidadBeans);
 
                         } else {
                             // mas de un mes recorrer todos los meses en ese intervalo
                             if (meses > 0 && meses <= 12) {
 
-                                foundVehicleOtherMonth(fechaPartidaDescompuesta, fechaRegresoDescompuesta, vehiculoList, meses);
+                                foundVehicleOtherMonth(fechaPartidaDescompuesta, fechaRegresoDescompuesta, vehiculoList, meses, tipoVehiculoCantidadBeans);
 
                             } else {
                                 JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.verifiqueestasolicitandomas12meses"));
@@ -1837,6 +1841,17 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        System.out.println("-------DISPONIBLES------");
+        for (DisponiblesBeans d : disponiblesBeansList) {
+            System.out.println("=================(*)============");
+
+            System.out.println("iddisponible" + d.getIddisponible());
+            System.out.println("fecha inicio" + d.getFechahorainicio() + " fecha fin" + d.getFechahorafin());
+            System.out.println("N. Buses" + d.getNumeroBuses() + "No. Pasajeros" + d.getNumeroPasajeros() + "PasajerosPendientes: " + d.getPasajerosPendientes() + " NumeroVehiculosSolicitados  "+d.getNumeroVehiculosSolicitados());
+            for (Vehiculo v : d.getVehiculo()) {
+                System.out.println("........ " + v.getMarca() + " tipo:" + v.getTipovehiculo().getIdtipovehiculo());
+            }
         }
         return "";
     }// </editor-fold>
@@ -2013,8 +2028,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Boolean foundVehicleSameMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList)">
-    private Boolean foundVehicleSameMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList) {
+    // <editor-fold defaultstate="collapsed" desc="Boolean foundVehicleSameMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList,TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans)">
+    private Boolean foundVehicleSameMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList,TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans) {
         try {
 
 // Encontrar las fechas en el rango
@@ -2033,7 +2048,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 return false;
             } else {
                 //Recorre las fechas validas
-                insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList);
+                insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList, tipoVehiculoCantidadBeans);
 
             }//isEmpty
 
@@ -2045,8 +2060,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="Boolean foundVehicleOtherMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList)">
-    private Boolean foundVehicleOtherMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList, Integer meses) {
+    // <editor-fold defaultstate="collapsed" desc="Boolean foundVehicleOtherMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList,TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans)">
+    private Boolean foundVehicleOtherMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList, Integer meses,TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans) {
         try {
             Integer numeroBuses = 0;
             Integer numeroPasajeros = 0;
@@ -2068,7 +2083,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     if (fechasValidasList == null || fechasValidasList.isEmpty()) {
                         JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayfechasvalidas"));
                     } else {
-                        insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList);
+                        insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList, tipoVehiculoCantidadBeans);
 
                     }
 
@@ -2098,7 +2113,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     if (fechasValidasList == null || fechasValidasList.isEmpty()) {
                         JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayfechasvalidas"));
                     } else {
-                        insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList);
+                        insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList, tipoVehiculoCantidadBeans);
 
                     }
 
@@ -2114,7 +2129,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Boolean insertIntoDisponiblesList(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta,List<FechaDiaUtils> fechasValidasList, List<Vehiculo> vehiculoList )">
+    // <editor-fold defaultstate="collapsed" desc="Boolean insertIntoDisponiblesList(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta,List<FechaDiaUtils> fechasValidasList, List<Vehiculo> vehiculoList ,TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans)">
     /**
      * inserta elementos en disponiblesBeansList y vehiculosList
      *
@@ -2124,7 +2139,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
      * @param vehiculoList
      * @return
      */
-    private Boolean insertIntoDisponiblesList(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<FechaDiaUtils> fechasValidasList, List<Vehiculo> vehiculoList) {
+    private Boolean insertIntoDisponiblesList(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<FechaDiaUtils> fechasValidasList, List<Vehiculo> vehiculoList,TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans) {
         try {
             Integer contadorDispobibes = 0;
             Integer numeroBuses = 0;
@@ -2164,6 +2179,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                         disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
                         disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
                         disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, solicitud.getPasajeros()));
+                         disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
+                         disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
                         disponiblesBeansList.add(disponiblesBeans);
                     }
                 }
@@ -2421,7 +2438,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         if (v < 0 || v > tipoVehiculoCantidadBeansList.get(alteredRow).getMaximo()) {
             tipoVehiculoCantidadBeansList.get(alteredRow).setCantidad(0);
         }
-
+        if(tipoVehiculoCantidadBeansList.get(alteredRow).getPasajeros() <0){
+            tipoVehiculoCantidadBeansList.get(alteredRow).setPasajeros(0);
+        }
+        changeDaysViewAvailable();
         if (newValue != null && !newValue.equals(oldValue)) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed", "Old: " + oldValue + ", New:" + newValue);
             FacesContext.getCurrentInstance().addMessage(null, msg);

@@ -4,7 +4,7 @@
 
     <groupId>com.avbravo</groupId>
     <artifactId>transporte</artifactId>
-    <version>19.7.3</version>
+    <version>19.7.4</version>
     <packaging>war</packaging>
 
     <name>transporte</name>

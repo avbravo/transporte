@@ -25,21 +25,38 @@ public class DisponiblesBeans {
     private Integer busesRecomendados=0;
     private Integer pasajerosPendientes=0;
     private List<Integer> pasajerosPorViaje = new ArrayList<>();
+    private Integer numeroVehiculosSolicitados =0;
+    private Integer numeroPasajerosSolicitados =0;
   
     
 
     public DisponiblesBeans() {
     }
 
-    public DisponiblesBeans(Integer iddisponible, Date fechahorainicio, Date fechahorafin, Integer numeroBuses, Integer numeroPasajeros, List<Vehiculo> vehiculo) {
-        this.iddisponible = iddisponible;
-        this.fechahorainicio = fechahorainicio;
-        this.fechahorafin = fechahorafin;
-        this.numeroBuses = numeroBuses;
-        this.numeroPasajeros = numeroPasajeros;
-        this.vehiculo = vehiculo;
+    public Integer getNumeroPasajerosSolicitados() {
+        return numeroPasajerosSolicitados;
     }
 
+    public void setNumeroPasajerosSolicitados(Integer numeroPasajerosSolicitados) {
+        this.numeroPasajerosSolicitados = numeroPasajerosSolicitados;
+    }
+
+   
+    
+    
+
+    public Integer getNumeroVehiculosSolicitados() {
+        return numeroVehiculosSolicitados;
+    }
+
+    public void setNumeroVehiculosSolicitados(Integer numeroVehiculosSolicitados) {
+        this.numeroVehiculosSolicitados = numeroVehiculosSolicitados;
+    }
+
+    
+    
+    
+    
     public Integer getIddisponible() {
         return iddisponible;
     }

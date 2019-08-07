@@ -654,7 +654,7 @@ public class SolicitudController implements Serializable, IController {
                 }
             }
 
-            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
+           
 
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
@@ -666,7 +666,7 @@ public class SolicitudController implements Serializable, IController {
                 });
                 push.send("Nueva solicitud docente ");
             }
-
+ JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
             /**
              * Enviar un email al docente y al mismo administrador
              */
@@ -1759,7 +1759,7 @@ public class SolicitudController implements Serializable, IController {
                 disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
                 disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
                 disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, solicitud.getPasajeros()));
-
+disponiblesBeans.setNumeroVehiculosSolicitados(1);
                 disponiblesBeansList.add(disponiblesBeans);
 
             } else {
