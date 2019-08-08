@@ -349,7 +349,7 @@
                                 <p:columnGroup type="header">
                                     <p:row>
 
-                                        <p:column rowspan="3" headerText="#{msg['field.fecha']}" />
+                                        <p:column rowspan="3"  style="width:95px" headerText="#{msg['field.fecha']}" />
                                         <p:column colspan="4" headerText="#{msg['tabletitle.resultado']}" />
                                     </p:row>
                                     <p:row>
@@ -367,7 +367,7 @@
 
                                     </p:row>
                                 </p:columnGroup>
-                                <p:column style="width:16px">
+                                <p:column style="width:95px">
                                     <p:rowToggler />
                                     <h:outputText value="#{solicitudController.showDate(item.fechahorainicio)}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
                                 </p:column>
