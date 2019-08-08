@@ -345,6 +345,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     // <editor-fold defaultstate="collapsed" desc="Boolean view()">
     public Boolean view() {
         try {
+            tipoVehiculoCantidadBeansList = new ArrayList<>();
             solicitudOld = solicitud;
             solicita = solicitud.getUsuario().get(0);
             solicitaOld = solicitud.getUsuario().get(0);
@@ -362,6 +363,32 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             tipovehiculoList = solicitud.getTipovehiculo();
             disponiblesBeansList = new ArrayList<>();
             // hayBusDisponiblesConFechas();
+            
+              /**
+               * Carga los tipos de vehiculos disponibles con las cantidades seleccionadas,
+               */
+            List<Tipovehiculo> list = tipovehiculoRepository.findBy("activo", "si");
+            if (list == null || list.isEmpty()) {
+
+            } else {
+                Integer maximo = 0;
+                Integer numerovehiculo=0;
+                Integer numeropasajero=0;
+                for (Tipovehiculo tv : list) {
+                    maximo = vehiculoServices.cantidadVehiculosPorTipo(tv);
+                    if(tv.getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())){
+                       numerovehiculo= 1;
+                       numeropasajero= solicitud.getPasajeros();
+                         TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans = new TipoVehiculoCantidadBeans(tv, numerovehiculo, maximo, numeropasajero);
+                    tipoVehiculoCantidadBeansList.add(tipoVehiculoCantidadBeans);
+                    }else{
+                        numerovehiculo=0;
+                        numeropasajero=0;
+                    }
+                  
+                }
+
+            }
 
             changeDaysViewAvailable();
             if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
@@ -1574,6 +1601,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
 
             } else {
+                  if(!isValidDisponibles()){
+                  JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.listavehiculosnoesvalida"));
+                return "";
+            }
                 /**
                  * Verifica que el numero de pasajeros no exceda la capacidad
                  * maxima del bus con mayor capacidad , ya que cuando se edita
