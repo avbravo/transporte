@@ -149,9 +149,9 @@
 
                         </p:chips>
 
-                      
 
-                      
+
+
 
                         <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
                         <p:dataTable id="datatableTipoVehiculo" var="item" value="#{solicitudAdministrativoController.tipoVehiculoCantidadBeansList}" 
@@ -188,13 +188,13 @@
                             </p:column>
                         </p:dataTable>
 
-  <p:outputLabel  value="#{msg['field.pasajeros']}" >
+                        <p:outputLabel  value="#{msg['field.pasajeros']}" >
                             <i class="pi pi-users"></i>
                         </p:outputLabel>
                         <p:outputLabel value="#{solicitudAdministrativoController.calcularTotalPasajeros()}" id="pasajeros"/>
-                          
+
                         <p:outputLabel value="#{msg['field.totaltipovehiculo']}" />
-                     <p:outputLabel id="totalTipoVehiculoCantidad" value="#{solicitudAdministrativoController.calcularTotalVehiculo()}"/>
+                        <p:outputLabel id="totalTipoVehiculoCantidad" value="#{solicitudAdministrativoController.calcularTotalVehiculo()}"/>
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
 
@@ -265,7 +265,9 @@
                                 <f:facet name="header">
                                     <p:outputLabel  value="#{msg['tabletitle.vehiculos']}" />
                                 </f:facet>
-
+                                <p:column style="width:16px">
+                                    <p:rowToggler />
+                                </p:column>
 
                                 <p:column headerText="#{msg['field.fecha']}" style="width:75px">
                                     <h:outputText value="#{solicitudAdministrativoController.showDate(item.fechahorainicio)}" style="color: #{solicitudAdministrativoController.columnColorDisponibles(item)}"  />
@@ -291,7 +293,7 @@
                                     <p:outputLabel value="#{item.numeroPasajerosSolicitados}" style="color: #{solicitudAdministrativoController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
-                                  <p:column headerText="#{msg['field.vehiculosRecomendados']}" style="width:75px">
+                                <p:column headerText="#{msg['field.vehiculosRecomendados']}" style="width:75px">
                                     <p:outputLabel value="#{item.busesRecomendados}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
@@ -299,11 +301,32 @@
                                     <p:outputLabel value="" rendered="#{solicitudAdministrativoController.columnTieneBusesDisponibles(item)}" >
                                         <i class="pi pi-check"></i>
                                     </p:outputLabel>
+
                                     <p:outputLabel value="" rendered="#{!solicitudAdministrativoController.columnTieneBusesDisponibles(item)}" >
                                         <i class="pi pi-exclamation-triangle"></i>
                                     </p:outputLabel>                                  
                                 </p:column>
+                                <p:rowExpansion>
 
+                                 
+
+                                        <p:dataTable value ="#{item.vehiculo}" var="car">
+                                            <p:column headerText="#{msg['field.marca']}">
+                                                <p:outputLabel value="#{car.marca}"/>
+                                            </p:column>
+                                            <p:column headerText="#{msg['field.modelo']}">
+                                                <p:outputLabel value="#{car.modelo}"/>
+                                            </p:column>
+                                            <p:column headerText="#{msg['field.placa']}">
+                                                <p:outputLabel value="#{car.placa}"/>
+                                            </p:column>
+                                            <p:column headerText="#{msg['field.pasajeros']}">
+                                                <p:outputLabel value="#{car.pasajeros}"/>
+                                            </p:column>
+                                        </p:dataTable>
+
+                                
+                                </p:rowExpansion>
 
                             </p:dataTable>                                
 
@@ -361,6 +384,10 @@
 
 
             </h:panelGroup>
+
+
+
+
         </b:form>
         <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRATIVO')}"/>
 

@@ -155,6 +155,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     List<Sugerencia> sugerenciaList = new ArrayList<>();
     List<DisponiblesBeans> disponiblesBeansList = new ArrayList<>();
 
+   DisponiblesBeans disponiblesBeansSelected = new DisponiblesBeans();
+
     //Entity
     Solicitud solicitud = new Solicitud();
     Solicitud solicitudSelected;
