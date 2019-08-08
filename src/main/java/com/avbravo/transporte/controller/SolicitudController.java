@@ -599,7 +599,10 @@ public class SolicitudController implements Serializable, IController {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
                 return "";
             }
-
+ if(!isValidDisponibles()){
+                  JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.listavehiculosnoesvalida"));
+                return "";
+            }
             //Asignar el estatusViaje
             EstatusViaje estatusViaje = new EstatusViaje();
             estatusViaje.setIdestatusviaje("NO ASIGNADO");
@@ -2368,4 +2371,27 @@ disponiblesBeans.setNumeroVehiculosSolicitados(1);
         return "";
     }
     // </editor-fold>
+    
+    
+     // <editor-fold defaultstate="collapsed" desc="Boolean isValidDisponibles()">
+     /**
+      * Verifica que la lista de disponibles sea valida en base cantidad de pasajeros
+      * buses o recomandados
+      * @return 
+      */
+     private Boolean isValidDisponibles(){
+         Boolean valid=true;
+         try {
+             for(DisponiblesBeans db:disponiblesBeansList ){
+                 if(db.getBusesRecomendados() == 0 || db.getNumeroPasajerosSolicitados() ==0 || db.getNumeroVehiculosSolicitados() ==0){
+                     valid = false;
+                 }
+             }
+             
+         } catch (Exception e) {
+               errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+         }
+         return valid;
+     }
+    // </editor-fold>  
 }

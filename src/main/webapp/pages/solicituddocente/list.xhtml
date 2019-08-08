@@ -75,7 +75,7 @@
                 <p:dataTable var="item" value="#{solicitudController.solicitudDataModel}"
                              reflow="true">
                     <f:facet name="header">
-                        "#{msg['titlelist.solicituddocente']}"
+                        <p:outputLabel value="#{msg['titlelist.solicituddocente']}"/>
                     </f:facet>
                     <p:column style="width:16px">
                         <p:rowToggler />

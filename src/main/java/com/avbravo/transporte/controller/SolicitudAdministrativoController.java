@@ -611,6 +611,11 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
                 return "";
             }
+            if(!isValidDisponibles()){
+                  JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.listavehiculosnoesvalida"));
+                return "";
+            }
+            
 
             //Asignar el estatusViaje
             EstatusViaje estatusViaje = new EstatusViaje();
@@ -648,8 +653,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
             //Guarda la solicitud
             for (DisponiblesBeans db : disponiblesBeansList) {
-                for (int i = 0; i < db.getNumeroVehiculosSolicitados(); i++) {
-                    System.out.println("==============>> voy a verificar ");
+                for (int i = 0; i < db.getBusesRecomendados(); i++) {
+                
                     //Aqui revisar la cantidad de pasajeros
                     solicitud.setPasajeros(db.getPasajerosPorViaje().get(0));
 
@@ -1795,9 +1800,9 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                         disponiblesBeans.setNumeroBuses(numeroBuses);
                         disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
                         disponiblesBeans.setVehiculo(vehiculoFreeList);
-                        disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
-                        disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
-                        disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, solicitud.getPasajeros()));
+                        disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
+                        disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
+                        disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
                         disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
                         disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
                         disponiblesBeansList.add(disponiblesBeans);
@@ -2489,5 +2494,27 @@ solicitud.setNumerodevehiculos(total);
         }
         return totalpasajeros;
     }
+    // </editor-fold>  
+     
+     // <editor-fold defaultstate="collapsed" desc="Boolean isValidDisponibles()">
+     /**
+      * Verifica que la lista de disponibles sea valida en base cantidad de pasajeros
+      * buses o recomandados
+      * @return 
+      */
+     private Boolean isValidDisponibles(){
+         Boolean valid=true;
+         try {
+             for(DisponiblesBeans db:disponiblesBeansList ){
+                 if(db.getBusesRecomendados() == 0 || db.getNumeroPasajerosSolicitados() ==0 || db.getNumeroVehiculosSolicitados() ==0){
+                     valid = false;
+                 }
+             }
+             
+         } catch (Exception e) {
+               errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+         }
+         return valid;
+     }
     // </editor-fold>  
 }

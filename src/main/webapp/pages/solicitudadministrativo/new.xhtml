@@ -266,8 +266,8 @@
                                 <p:columnGroup type="header">
                                     <p:row>
 
-                                        <p:column rowspan="1" style="width:80px" headerText="#{msg['field.fecha']}" />
-                                        <p:column colspan="1"  style="width:85px" headerText="#{msg['field.tipovehiculo']}" />
+                                        <p:column rowspan="1" style="width:95px" headerText="#{msg['field.fecha']}" />
+                                        <p:column colspan="1"  style="width:95px" headerText="#{msg['field.tipovehiculo']}" />
                                         <p:column colspan="5" headerText="#{msg['tabletitle.resultado']}" />
                                     </p:row>
                                     <p:row>
@@ -290,14 +290,14 @@
                                     </p:row>
                                 </p:columnGroup>
 
-                                <p:column style="width:75px">
+                                <p:column style="width:95px">
 
                                     <p:rowToggler />
                                     <h:outputText value="#{solicitudAdministrativoController.showDate(item.fechahorainicio)}" style="color: #{solicitudAdministrativoController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
 
-                                <p:column headerText="#{msg['field.tipovehiculo']}" style="width:75px">
+                                <p:column headerText="#{msg['field.tipovehiculo']}" style="width:95px">
                                     <h:outputText value="#{item.vehiculo.get(0).tipovehiculo.idtipovehiculo}" style="color: #{solicitudAdministrativoController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
