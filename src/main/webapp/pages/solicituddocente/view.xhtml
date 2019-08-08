@@ -300,10 +300,11 @@
 
                                     </p:row>
                                 </p:columnGroup>
-
-                                <p:column headerText="#{msg['field.fecha']}" style="width:75px">
+ <p:column style="width:16px">
+                                    <p:rowToggler />
                                     <h:outputText value="#{solicitudController.showDate(item.fechahorainicio)}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
                                 </p:column>
+                               
                                 <p:column headerText="#{msg['field.buses']}" style="width:75px">
                                     <p:outputLabel value="#{item.numeroBuses}" style="color: #{solicitudController.columnColorDisponibles(item)}" />
                                 </p:column>
@@ -322,6 +323,23 @@
                                         <i class="pi pi-exclamation-triangle"></i>
                                     </p:outputLabel>                                  
                                 </p:column>
+<p:rowExpansion>
+                                    <p:dataTable value ="#{item.vehiculo}" var="car">
+                                        <p:column headerText="#{msg['field.marca']}">
+                                            <p:outputLabel value="#{car.marca}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['field.modelo']}">
+                                            <p:outputLabel value="#{car.modelo}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['field.placa']}">
+                                            <p:outputLabel value="#{car.placa}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['field.pasajeros']}">
+                                            <p:outputLabel value="#{car.pasajeros}"/>
+                                        </p:column>
+                                    </p:dataTable>
+
+                                </p:rowExpansion>
 
 
                             </p:dataTable>                                  

@@ -163,7 +163,7 @@
                                         completeMethod="#{solicitudController.completeFiltradoFacultad}"
                                         var="p"
                                         required="true"
-size="50"
+                                        size="50"
 
                                         itemLabel="#{p.descripcion}"
                                         itemValue="#{p}" forceSelection="true">
@@ -184,7 +184,7 @@ size="50"
 
                         <p:outputLabel  value="#{msg['field.carrera']}" />
                         <p:autoComplete dropdown="true"
-                                        
+
                                         id="carrera"
                                         multiple="true"
                                         scrollHeight="250"
@@ -266,11 +266,11 @@ size="50"
                             <i class="pi pi-users"></i>
                         </p:outputLabel>
                         <b:touchSpin   required="true"
-                            col-md="3"  min="1"  step="1" value="#{solicitudController.solicitud.pasajeros}" id="pasajeros" max="250" 
-                                      onchange="ajax:solicitudController.changeDaysViewAvailable()"
-                                      update=":form:datatableDisponibles"
-                                      process="@this, pasajeros"
-                                      >
+                                       col-md="3"  min="1"  step="1" value="#{solicitudController.solicitud.pasajeros}" id="pasajeros" max="250" 
+                                       onchange="ajax:solicitudController.changeDaysViewAvailable()"
+                                       update=":form:datatableDisponibles"
+                                       process="@this, pasajeros"
+                                       >
 
                         </b:touchSpin>
 
@@ -280,17 +280,17 @@ size="50"
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
 
                         <jmoordbjsf:calendar required="true"
-                            pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
-                            listener="#{solicitudController.calendarChangeListener}"
-                            update=":form:msg   :form:datatableDisponibles"
-                            />
+                                             pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
+                                             listener="#{solicitudController.calendarChangeListener}"
+                                             update=":form:msg   :form:datatableDisponibles"
+                                             />
 
 
 
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
 
                         <jmoordbjsf:calendar required="true"
-                            pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                                             pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
 
                                              label="#{msg['field.fechahoraregreso']}"
                                              listener="#{solicitudController.calendarChangeListener}"
@@ -348,6 +348,7 @@ size="50"
                                 </f:facet>
                                 <p:columnGroup type="header">
                                     <p:row>
+
                                         <p:column rowspan="3" headerText="#{msg['field.fecha']}" />
                                         <p:column colspan="4" headerText="#{msg['tabletitle.resultado']}" />
                                     </p:row>
@@ -366,10 +367,12 @@ size="50"
 
                                     </p:row>
                                 </p:columnGroup>
-
-                                <p:column headerText="#{msg['field.fecha']}" style="width:75px">
+                                <p:column style="width:16px">
+                                    <p:rowToggler />
                                     <h:outputText value="#{solicitudController.showDate(item.fechahorainicio)}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
                                 </p:column>
+
+
                                 <p:column headerText="#{msg['field.buses']}" style="width:75px">
                                     <p:outputLabel value="#{item.numeroBuses}" style="color: #{solicitudController.columnColorDisponibles(item)}" />
                                 </p:column>
@@ -388,6 +391,23 @@ size="50"
                                         <i class="pi pi-exclamation-triangle"></i>
                                     </p:outputLabel>                                  
                                 </p:column>
+                                <p:rowExpansion>
+                                    <p:dataTable value ="#{item.vehiculo}" var="car">
+                                        <p:column headerText="#{msg['field.marca']}">
+                                            <p:outputLabel value="#{car.marca}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['field.modelo']}">
+                                            <p:outputLabel value="#{car.modelo}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['field.placa']}">
+                                            <p:outputLabel value="#{car.placa}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg['field.pasajeros']}">
+                                            <p:outputLabel value="#{car.pasajeros}"/>
+                                        </p:column>
+                                    </p:dataTable>
+
+                                </p:rowExpansion>
 
 
                             </p:dataTable>                                
