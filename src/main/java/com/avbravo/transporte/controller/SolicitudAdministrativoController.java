@@ -1598,8 +1598,8 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
             leyoSugerencias = true;
             solicitudGuardadasList = new ArrayList<>();
             solicitudGuardadasList.add(solicitud);
-            if (solicitud.getEstatus().getIdestatus().equals("APROBAOD")) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeeditarsolicitudaprobada"));
+      if (solicitud.getEstatus().getIdestatus().equals("APROBAOD") ||solicitud.getEstatus().getIdestatus().equals("CANCELADO") ) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeeditarsolicitudaprobadaocancelada"));
                 return "";
             }
             if (!localValid()) {
