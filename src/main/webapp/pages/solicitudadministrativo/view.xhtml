@@ -56,50 +56,7 @@
                                                  disabled="true"
                                                  />
 
-                        <p:outputLabel  value="#{msg['field.copiarsolicituddesde']}" >
-                            <i class="pi pi-download"></i>
-                        </p:outputLabel>
-
-
-                        <jmoordbjsf:autocompleteWithCalendarDateTime
-                            converter="#{solicitudConverter}"
-                            completeMethod="#{solicitudAdministrativoController.completeSolicitudParaCopiar}"    
-                            labeltip1="#{msg['field.idsolicitud']}"
-                            labelvalue1="#{p.idsolicitud}"   
-                            labeltip2="#{msg['field.solicitadopor']}" 
-                            labelvalue2="#{p.usuario.get(0).nombre}"
-                            labeltip3="#{msg['field.responsable']}"
-                            labelvalue3="#{p.usuario.get(1).nombre}"
-                            labeltip4="#{msg['field.objetivo']} "
-                            labelvalue4="#{p.objetivo}" 
-                            labeltip5="#{msg['field.lugares']}" 
-                            labelvalue5="#{p.lugares}"
-                            calendarsize="20"
-                            columnpaneltip="2"
-                            calendardatelabel1="#{msg['field.fechapartida']}" 
-                            calendardatevalue1="#{p.fechahorapartida}" 
-
-                            calendartimelabel1="#{msg['field.horapartida']}"
-                            calendartimevalue1="#{p.fechahorapartida}"  
-
-                            calendardatelabel2="#{msg['field.fecharegreso']}" 
-                            calendardatevalue2="#{p.fechahoraregreso}"  
-
-
-                            calendartimelabel2="#{msg['field.horaregreso']}" 
-                            calendartimevalue2="#{p.fechahoraregreso}"  
-
-
-                            listener="#{solicitudAdministrativoController.handleSelectCopiarDesde}"
-                            value="#{solicitudAdministrativoController.solicitudCopiar}"
-                            itemLabel=" #{p.objetivo}"
-                            field="mision"
-                            dropdown="true"
-                            minQueryLength="0"
-                            update=":form:panel"
-                            />
-
-
+                        
 
                         <p:outputLabel value="#{msg['field.responsable']}"/>
                         <jmoordbjsf:autocomplete converter="#{usuarioConverter}"

@@ -599,8 +599,8 @@ public class SolicitudController implements Serializable, IController {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
                 return "";
             }
- if(!isValidDisponibles()){
-                  JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.listavehiculosnoesvalida"));
+            if (!isValidDisponibles()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.listavehiculosnoesvalida"));
                 return "";
             }
             //Asignar el estatusViaje
@@ -657,8 +657,6 @@ public class SolicitudController implements Serializable, IController {
                 }
             }
 
-           
-
             //  Guardar las notificaciones
             Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
             usuarioList = usuarioRepository.filters(filter);
@@ -669,7 +667,7 @@ public class SolicitudController implements Serializable, IController {
                 });
                 push.send("Nueva solicitud docente ");
             }
- JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
+            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
             /**
              * Enviar un email al docente y al mismo administrador
              */
@@ -765,8 +763,13 @@ public class SolicitudController implements Serializable, IController {
                 }
             }
             if (!suggestions.isEmpty()) {
-                Collections.sort(suggestions,
-                        (Solicitud a, Solicitud b) -> a.getIdsolicitud().compareTo(b.getIdsolicitud()));
+//                Collections.sort(suggestions,
+//                        (Solicitud a, Solicitud b) -> a.getIdsolicitud().compareTo(b.getIdsolicitud()));
+                suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
+                        .reversed()
+                        .thenComparing(Comparator.comparing(Solicitud::getIdsolicitud)
+                                .reversed())
+                );
             }
 
         } catch (Exception e) {
@@ -1724,9 +1727,9 @@ public class SolicitudController implements Serializable, IController {
             List<Vehiculo> vehiculoList = new ArrayList<>();
             vehiculoList = busesActivo();
             if (vehiculoList == null || vehiculoList.isEmpty()) {
-                  JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayvehiculosactivosconesascondiciones"));
-                        return "";
- 
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayvehiculosactivosconesascondiciones"));
+                return "";
+
             }
             rangoAgenda = new ArrayList<>();
             if (!isValidDiasConsecutivos()) {
@@ -1762,7 +1765,7 @@ public class SolicitudController implements Serializable, IController {
                 disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
                 disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
                 disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, solicitud.getPasajeros()));
-disponiblesBeans.setNumeroVehiculosSolicitados(1);
+                disponiblesBeans.setNumeroVehiculosSolicitados(1);
                 disponiblesBeansList.add(disponiblesBeans);
 
             } else {
@@ -2371,27 +2374,27 @@ disponiblesBeans.setNumeroVehiculosSolicitados(1);
         return "";
     }
     // </editor-fold>
-    
-    
-     // <editor-fold defaultstate="collapsed" desc="Boolean isValidDisponibles()">
-     /**
-      * Verifica que la lista de disponibles sea valida en base cantidad de pasajeros
-      * buses o recomandados
-      * @return 
-      */
-     private Boolean isValidDisponibles(){
-         Boolean valid=true;
-         try {
-             for(DisponiblesBeans db:disponiblesBeansList ){
-                 if(db.getBusesRecomendados() == 0 || db.getNumeroPasajerosSolicitados() ==0 || db.getNumeroVehiculosSolicitados() ==0){
-                     valid = false;
-                 }
-             }
-             
-         } catch (Exception e) {
-               errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-         }
-         return valid;
-     }
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean isValidDisponibles()">
+    /**
+     * Verifica que la lista de disponibles sea valida en base cantidad de
+     * pasajeros buses o recomandados
+     *
+     * @return
+     */
+    private Boolean isValidDisponibles() {
+        Boolean valid = true;
+        try {
+            for (DisponiblesBeans db : disponiblesBeansList) {
+                if (db.getBusesRecomendados() == 0 || db.getNumeroPasajerosSolicitados() == 0 || db.getNumeroVehiculosSolicitados() == 0) {
+                    valid = false;
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    }
     // </editor-fold>  
 }

@@ -808,8 +808,16 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 }
             }
             if (!suggestions.isEmpty()) {
-                Collections.sort(suggestions,
-                        (Solicitud a, Solicitud b) -> a.getIdsolicitud().compareTo(b.getIdsolicitud()));
+ 
+//                Collections.sort(suggestions,
+//                        (Solicitud a, Solicitud b) -> a.getIdsolicitud().compareTo(b.getIdsolicitud()));
+//                
+                
+suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
+                      .reversed()
+                      .thenComparing(Comparator.comparing(Solicitud::getIdsolicitud)
+                      .reversed())
+);
             }
 
         } catch (Exception e) {
