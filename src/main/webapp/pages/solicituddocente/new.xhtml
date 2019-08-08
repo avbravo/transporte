@@ -354,14 +354,14 @@
                                     </p:row>
                                     <p:row>
                                         <p:column colspan="2" headerText="#{msg['tabletitle.disponibles']}" />
-                                        <p:column colspan="3" headerText="#{msg['tabletitle.recomendados']}" />
+                                        <p:column colspan="1" headerText="#{msg['tabletitle.recomendados']}" />
 
                                     </p:row>
                                     <p:row>
                                         <p:column headerText="#{msg['field.buses']}" />
                                         <p:column headerText="#{msg['field.pasajeros']}" />
                                         <p:column headerText="#{msg['field.buses']}" />
-                                        <p:column headerText="" />
+                                   
 
 
 
@@ -383,14 +383,7 @@
                                     <p:outputLabel value="#{item.busesRecomendados}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
-                                <p:column headerText="" style="width:45px">
-                                    <p:outputLabel value="" rendered="#{solicitudController.columnTieneBusesDisponibles(item)}" >
-                                        <i class="pi pi-check"></i>
-                                    </p:outputLabel>
-                                    <p:outputLabel value="" rendered="#{!solicitudController.columnTieneBusesDisponibles(item)}" >
-                                        <i class="pi pi-exclamation-triangle"></i>
-                                    </p:outputLabel>                                  
-                                </p:column>
+                              
                                 <p:rowExpansion>
                                     <p:dataTable value ="#{item.vehiculo}" var="car">
                                         <p:column headerText="#{msg['field.marca']}">

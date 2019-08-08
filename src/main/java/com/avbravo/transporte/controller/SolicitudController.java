@@ -2386,7 +2386,7 @@ public class SolicitudController implements Serializable, IController {
         Boolean valid = true;
         try {
             for (DisponiblesBeans db : disponiblesBeansList) {
-                if (db.getBusesRecomendados() == 0 || db.getNumeroPasajerosSolicitados() == 0 || db.getNumeroVehiculosSolicitados() == 0) {
+                if (db.getBusesRecomendados() == 0 ||  db.getNumeroVehiculosSolicitados() == 0) {
                     valid = false;
                 }
             }
