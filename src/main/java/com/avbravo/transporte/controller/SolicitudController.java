@@ -57,20 +57,19 @@ import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
-import com.avbravo.transporteejb.services.LugaresServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TipogiraServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.ViajeServices;
+import com.avbravo.transporteejb.services.VistoBuenoServices;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.or;
 
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -236,6 +235,9 @@ public class SolicitudController implements Serializable, IController {
     ViajeServices viajeServices;
     @Inject
     UsuarioServices usuarioServices;
+    @Inject
+    VistoBuenoServices vistoBuenoServices;
+    
     @Inject
     JmoordbResourcesFiles rf;
     @Inject
@@ -644,6 +646,7 @@ public class SolicitudController implements Serializable, IController {
                     solicitud.setFechahorapartida(db.getFechahorainicio());
                     solicitud.setFechahoraregreso(db.getFechahorafin());
                     solicitud.setNumerodevehiculos(1);
+                     solicitud.setVistoBueno(vistoBuenoServices.inicializar());
                     if (insert()) {
                         solicitudesGuardadas++;
 

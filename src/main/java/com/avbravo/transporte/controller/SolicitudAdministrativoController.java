@@ -65,13 +65,13 @@ import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
+import com.avbravo.transporteejb.services.VistoBuenoServices;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.or;
 
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -226,6 +226,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     ErrorInfoServices errorServices;
     @Inject
     EstatusServices estatusServices;
+    @Inject
+    VistoBuenoServices vistoBuenoServices;
 
     @Inject
     SemestreServices semestreServices;
@@ -688,6 +690,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     solicitud.setFechahorapartida(db.getFechahorainicio());
                     solicitud.setFechahoraregreso(db.getFechahorafin());
                     solicitud.setNumerodevehiculos(1);
+                    solicitud.setVistoBueno(vistoBuenoServices.inicializar());
 
                     if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
                         solicitudesGuardadas++;
