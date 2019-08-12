@@ -28,7 +28,7 @@
             <h:panelGroup id="content" layout="block" > 
 
                 <jmoordbjsf:messages id="msg"/>
-
+   
 
 
                 <b:panel collapsible="false" title="#{msg['title.solicitudadministrativo']}" look="primary" rendered="#{p:ifGranted('ADMINISTRATIVO')}" >
@@ -187,38 +187,49 @@
                                 </p:cellEditor>
                             </p:column>
                         </p:dataTable>
-                        
-                        
-                            <p:outputLabel value="#{msg['field.totaltipovehiculo']}" />
+
+
+                        <p:outputLabel value="#{msg['field.totaltipovehiculo']}" />
                         <p:outputLabel id="totalTipoVehiculoCantidad" value="#{solicitudAdministrativoController.calcularTotalVehiculo()}"/>
 
-                        
+
 
                         <p:outputLabel  value="#{msg['field.pasajeros']}" >
                             <i class="pi pi-users"></i>
                         </p:outputLabel>
                         <p:outputLabel value="#{solicitudAdministrativoController.calcularTotalPasajeros()}" id="pasajeros"/>
 
-                    
+
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
-
-                        <jmoordbjsf:calendar required="true"
-                                             pattern="dd/MM/yyyy HH:mm a" value="#{solicitudAdministrativoController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
-                                             listener="#{solicitudAdministrativoController.calendarChangeListener}"
-                                             update=":form:msg   :form:datatableDisponibles"
-                                             />
-
+                        <b:row>
+                            <b:column medium-screen="4">
+                                <jmoordbjsf:calendar required="true"
+                                                     pattern="dd/MM/yyyy HH:mm a" value="#{solicitudAdministrativoController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
+                                                     listener="#{solicitudAdministrativoController.calendarChangeListener}"
+                                                     update=" :form:datatableDisponibles, :form:horapartida"
+                                                     />
+                            </b:column>
+                            <b:column medium-screen="2">
+                                <p:outputLabel id="horapartida" value="#{solicitudAdministrativoController.showHour(solicitudAdministrativoController.solicitud.fechahorapartida)}"  />
+                            </b:column>
+                        </b:row>
 
 
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
-
+<b:row>
+                            <b:column medium-screen="4">
                         <jmoordbjsf:calendar required="true"
                                              pattern="dd/MM/yyyy HH:mm a" value="#{solicitudAdministrativoController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
 
                                              label="#{msg['field.fechahoraregreso']}"
                                              listener="#{solicitudAdministrativoController.calendarChangeListener}"
-                                             update=":form:msg,   :form:datatableDisponibles"
+                                           update=":form:msg  :form:datatableDisponibles, :form:horaregreso"
                                              />
+                          </b:column>
+                            <b:column medium-screen="2">
+                                <p:outputLabel id="horaregreso" value="#{solicitudAdministrativoController.showHour(solicitudAdministrativoController.solicitud.fechahoraregreso)}"  />
+                            </b:column>
+                        </b:row>
 
                         <p:outputLabel  value="#{msg['field.dias']}" />
                         <p:selectCheckboxMenu id="multiple" value="#{solicitudAdministrativoController.diasSelected}" label="#{msg['field.dias']}" multiple="true"
@@ -290,7 +301,7 @@
                                         <p:column headerText="#{msg['field.vehiculos']}" />
                                         <p:column headerText="#{msg['field.pasajeros']}" /> 
                                         <p:column headerText="#{msg['field.recomendados']}" />
-                             
+
                                     </p:row>
                                 </p:columnGroup>
 

@@ -1472,7 +1472,7 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!solicitudServices.isValidDates(solicitud)) {
+                if (!solicitudServices.isValidDates(solicitud,true)) {
                     return;
                 }
                 changeDaysViewAvailable();
@@ -1480,14 +1480,16 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
                     // JsfUtil.warningDialog("texto", "Aun no ha seleccionado el rango");
                 } else {
                     if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
-                        JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
+//                        JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
+                        JsfUtil.warningMessage( rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
 
                         return;
                     }
                 }
 
                 if (!solicitudServices.solicitudDisponible(solicitud, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
-                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yatienesolicitudenesasfechas"));
+//                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yatienesolicitudenesasfechas"));
+                    JsfUtil.warningMessage( rf.getMessage("warning.yatienesolicitudenesasfechas"));
 
                 }
 

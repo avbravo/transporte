@@ -28,7 +28,7 @@
             <h:panelGroup id="content" layout="block" > 
 
                 <jmoordbjsf:messages id="msg"/>
-
+            
 
 
                 <b:panel collapsible="false" title="#{msg['title.solicituddocente']}" look="primary" rendered="#{p:ifGranted('DOCENTE')}" >
@@ -305,24 +305,40 @@
 
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
-
-                        <jmoordbjsf:calendar required="true"
-                                             pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
-                                             listener="#{solicitudController.calendarChangeListener}"
-                                             update=":form:msg   :form:datatableDisponibles"
-                                             />
+                        <b:row>
+                            <b:column medium-screen="4">
+                                <jmoordbjsf:calendar required="true"
+                                                     pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
+                                                     listener="#{solicitudController.calendarChangeListener}"
+                                                     update=":form:msg :form:datatableDisponibles, :form:horapartida"
+                                                     />
+                            </b:column>
+                            <b:column medium-screen="2">
+                                <p:outputLabel id="horapartida" value="#{solicitudController.showHour(solicitudController.solicitud.fechahorapartida)}"  />
+                            </b:column>
+                        </b:row>
 
 
 
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
 
-                        <jmoordbjsf:calendar required="true"
+                         <b:row>
+                            <b:column medium-screen="4">
+                                 <jmoordbjsf:calendar required="true"
                                              pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
 
                                              label="#{msg['field.fechahoraregreso']}"
                                              listener="#{solicitudController.calendarChangeListener}"
-                                             update=":form:msg,   :form:datatableDisponibles"
+                                             update=":form:msg  :form:datatableDisponibles :form:horaregreso"
                                              />
+                            </b:column>
+                            <b:column medium-screen="2">
+                                <p:outputLabel id="horaregreso" value="#{solicitudController.showHour(solicitudController.solicitud.fechahoraregreso)}"  />
+                            </b:column>
+                        </b:row>
+
+                        
+                      
 
                         <p:outputLabel  value="#{msg['field.dias']}" />
                         <p:selectCheckboxMenu id="multiple" value="#{solicitudController.diasSelected}" label="#{msg['field.dias']}" multiple="true"
