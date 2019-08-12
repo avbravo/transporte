@@ -34,7 +34,6 @@ import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.jmoordbutils.dates.DecomposedDate;
 import com.avbravo.jmoordbutils.email.ManagerEmail;
 import com.avbravo.transporte.beans.DisponiblesBeans;
-import com.avbravo.transporte.beans.TipoVehiculoCantidadBeans;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.datamodel.SugerenciaDataModel;
 import com.avbravo.transporteejb.entity.Estatus;
@@ -63,7 +62,6 @@ import com.avbravo.transporteejb.services.TipogiraServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
 import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
-import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 import com.avbravo.transporteejb.services.VistoBuenoServices;
 import static com.mongodb.client.model.Filters.eq;
@@ -83,7 +81,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.push.Push;
@@ -95,8 +92,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.primefaces.component.api.UIColumn;
-import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
@@ -115,7 +110,7 @@ import org.primefaces.model.ScheduleModel;
 
 @Setter
 
-public class SolicitudController implements Serializable, IController {
+public class SolicitudController1 implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
@@ -155,8 +150,6 @@ public class SolicitudController implements Serializable, IController {
     List<Sugerencia> sugerenciaList = new ArrayList<>();
     List<DisponiblesBeans> disponiblesBeansList = new ArrayList<>();
 
-    DisponiblesBeans disponiblesBeansSelected = new DisponiblesBeans();
-
     //Entity
     Solicitud solicitud = new Solicitud();
     Solicitud solicitudSelected;
@@ -181,7 +174,6 @@ public class SolicitudController implements Serializable, IController {
     List<Tiposolicitud> tiposolicitudList = new ArrayList<>();
     List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
     List<Tipovehiculo> suggestionsTipovehiculo = new ArrayList<>();
-    List<TipoVehiculoCantidadBeans> tipoVehiculoCantidadBeansList = new ArrayList<>();
 
     List<String> rangoAgenda = new ArrayList<>();
     //
@@ -226,8 +218,6 @@ public class SolicitudController implements Serializable, IController {
     ErrorInfoServices errorServices;
     @Inject
     EstatusServices estatusServices;
-    @Inject
-    VistoBuenoServices vistoBuenoServices;
 
     @Inject
     SemestreServices semestreServices;
@@ -244,9 +234,10 @@ public class SolicitudController implements Serializable, IController {
     @Inject
     ViajeServices viajeServices;
     @Inject
-    VehiculoServices vehiculoServices;
-    @Inject
     UsuarioServices usuarioServices;
+    @Inject
+    VistoBuenoServices vistoBuenoServices;
+    
     @Inject
     JmoordbResourcesFiles rf;
     @Inject
@@ -277,7 +268,7 @@ public class SolicitudController implements Serializable, IController {
 //    
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public SolicitudController() {
+    public SolicitudController1() {
     }
 
     // </editor-fold>
@@ -285,7 +276,6 @@ public class SolicitudController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-
             eventModel = new DefaultScheduleModel();
             // eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", DateUtil.fechaHoraActual(), DateUtil.fechaHoraActual()));
 
@@ -316,8 +306,8 @@ public class SolicitudController implements Serializable, IController {
                     .withNameFieldOfRowPage("rowPage")
                     .withTypeKey("primary")
                     .withSearchLowerCase(false)
-                    .withPathReportDetail("/resources/reportes/solicituddocentedetails.jasper")
-                    .withPathReportAll("/resources/reportes/solicituddocente/all.jasper")
+                    .withPathReportDetail("/resources/reportes/solicitud/details.jasper")
+                    .withPathReportAll("/resources/reportes/solicitud/all.jasper")
                     .withparameters(parameters)
                     .withResetInSave(false)
                     .build();
@@ -347,7 +337,6 @@ public class SolicitudController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="Boolean view()">
     public Boolean view() {
         try {
-            tipoVehiculoCantidadBeansList = new ArrayList<>();
             solicitudOld = solicitud;
             solicita = solicitud.getUsuario().get(0);
             solicitaOld = solicitud.getUsuario().get(0);
@@ -362,36 +351,8 @@ public class SolicitudController implements Serializable, IController {
                 diasSelected[contador++] = s;
 
             }
-            tipovehiculoList = solicitud.getTipovehiculo();
             disponiblesBeansList = new ArrayList<>();
             // hayBusDisponiblesConFechas();
-
-            /**
-             * Carga los tipos de vehiculos disponibles con las cantidades
-             * seleccionadas,
-             */
-            List<Tipovehiculo> list = tipovehiculoRepository.findBy("activo", "si");
-            if (list == null || list.isEmpty()) {
-
-            } else {
-                Integer maximo = 0;
-                Integer numerovehiculo = 0;
-                Integer numeropasajero = 0;
-                for (Tipovehiculo tv : list) {
-                    maximo = vehiculoServices.cantidadVehiculosPorTipo(tv);
-                    if (tv.getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())) {
-                        numerovehiculo = 1;
-                        numeropasajero = solicitud.getPasajeros();
-                        TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans = new TipoVehiculoCantidadBeans(tv, numerovehiculo, maximo, numeropasajero);
-                        tipoVehiculoCantidadBeansList.add(tipoVehiculoCantidadBeans);
-                    } else {
-                        numerovehiculo = 0;
-                        numeropasajero = 0;
-                    }
-
-                }
-
-            }
 
             changeDaysViewAvailable();
             if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
@@ -533,7 +494,7 @@ public class SolicitudController implements Serializable, IController {
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Boolean insert()">
-    public Boolean insert(Tipovehiculo tipovehiculo) {
+    public Boolean insert() {
         try {
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             Integer idsolicitud = autoincrementableServices.getContador("solicitud");
@@ -548,8 +509,7 @@ public class SolicitudController implements Serializable, IController {
             //Lo datos del usuario
             List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
 
-//            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
-            tipovehiculoList.add(tipovehiculo);
+            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
             solicitud.setTipovehiculo(tipovehiculoList);
             solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
@@ -645,7 +605,6 @@ public class SolicitudController implements Serializable, IController {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.listavehiculosnoesvalida"));
                 return "";
             }
-
             //Asignar el estatusViaje
             EstatusViaje estatusViaje = new EstatusViaje();
             estatusViaje.setIdestatusviaje("NO ASIGNADO");
@@ -683,16 +642,12 @@ public class SolicitudController implements Serializable, IController {
             //Guarda la solicitud
             for (DisponiblesBeans db : disponiblesBeansList) {
                 for (int i = 0; i < db.getBusesRecomendados(); i++) {
-
-                    //Aqui revisar la cantidad de pasajeros
-                    solicitud.setPasajeros(db.getPasajerosPorViaje().get(0));
-
+                    solicitud.setPasajeros(db.getPasajerosPorViaje().get(i));
                     solicitud.setFechahorapartida(db.getFechahorainicio());
                     solicitud.setFechahoraregreso(db.getFechahorafin());
                     solicitud.setNumerodevehiculos(1);
-                    solicitud.setVistoBueno(vistoBuenoServices.inicializar());
-
-                    if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
+                     solicitud.setVistoBueno(vistoBuenoServices.inicializar());
+                    if (insert()) {
                         solicitudesGuardadas++;
 
                         if (solicitudesGuardadas.equals(1)) {
@@ -713,11 +668,11 @@ public class SolicitudController implements Serializable, IController {
                 usuarioList.forEach((u) -> {
                     saveNotification(u.getUsername(), "solicituddocente");
                 });
-                push.send("Nueva solicitud Docente ");
+                push.send("Nueva solicitud docente ");
             }
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
             /**
-             * Enviar un email al administrativo y al mismo administrador
+             * Enviar un email al docente y al mismo administrador
              */
             sendEmail(" creada(s) ");
 
@@ -762,7 +717,7 @@ public class SolicitudController implements Serializable, IController {
     public String columnColorDisponibles(DisponiblesBeans disponiblesBeans) {
         String color = "black";
         try {
-            if ((disponiblesBeans.getNumeroVehiculosSolicitados() > disponiblesBeans.getNumeroBuses()) || disponiblesBeans.getNumeroPasajerosSolicitados() > disponiblesBeans.getNumeroPasajeros()) {
+            if (disponiblesBeans.getBusesRecomendados() > disponiblesBeans.getNumeroBuses()) {
                 color = "red";
             }
 //            if (disponiblesBeans.getNumeroBuses() < solicitud.getNumerodevehiculos() || disponiblesBeans.getNumeroPasajeros() < solicitud.getPasajeros()) {
@@ -811,10 +766,8 @@ public class SolicitudController implements Serializable, IController {
                 }
             }
             if (!suggestions.isEmpty()) {
-
 //                Collections.sort(suggestions,
 //                        (Solicitud a, Solicitud b) -> a.getIdsolicitud().compareTo(b.getIdsolicitud()));
-//                
                 suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
                         .reversed()
                         .thenComparing(Comparator.comparing(Solicitud::getIdsolicitud)
@@ -1167,11 +1120,11 @@ public class SolicitudController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="Boolean inicializar()">
     private String inicializar() {
         try {
-            tipoVehiculoCantidadBeansList = new ArrayList<>();
+
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             Integer id = 0;
             Date idsecond = new Date();
 
-            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             if (solicitud == null || solicitud.getFecha() == null) {
                 idsecond = DateUtil.getFechaHoraActual();
             } else {
@@ -1186,7 +1139,7 @@ public class SolicitudController implements Serializable, IController {
             solicitud.setMision("---");
             solicitud.setLugarpartida("UTP-AZUERO");
             solicitud.setNumerodevehiculos(1);
-            solicitud.setPasajeros(0);
+            solicitud.setPasajeros(25);
             solicitud.setFechaestatus(DateUtil.getFechaHoraActual());
             solicita = jmoordb_user;
             responsable = solicita;
@@ -1240,20 +1193,6 @@ public class SolicitudController implements Serializable, IController {
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
             solicitudSelected = solicitud;
             leyoSugerencias = false;
-
-            //inicializa tipo de vehiculos
-            List<Tipovehiculo> list = tipovehiculoRepository.findBy("activo", "si");
-            if (list == null || list.isEmpty()) {
-
-            } else {
-                Integer maximo = 0;
-                for (Tipovehiculo tv : list) {
-                    maximo = vehiculoServices.cantidadVehiculosPorTipo(tv);
-                    TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans = new TipoVehiculoCantidadBeans(tv, 0, maximo, 0);
-                    tipoVehiculoCantidadBeansList.add(tipoVehiculoCantidadBeans);
-                }
-
-            }
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1407,7 +1346,7 @@ public class SolicitudController implements Serializable, IController {
             jmoordbNotifications.setViewed("no");
             jmoordbNotifications.setDate(DateUtil.fechaActual());
             jmoordbNotifications.setType(tiposolicitud);
-//            jmoordbNotifications.setType("solicitudadministrativo");
+//            jmoordbNotifications.setType("solicituddocente");
             jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
             jmoordbNotificationsRepository.save(jmoordbNotifications);
             return true;
@@ -1503,16 +1442,15 @@ public class SolicitudController implements Serializable, IController {
      * @param query
      * @return
      */
-    public List<Vehiculo> vehiculosActivo(Tipovehiculo tipovehiculo) {
+    public List<Vehiculo> busesActivo() {
         Boolean haydisponibles = false;
 
         List<Vehiculo> vehiculoList = new ArrayList<>();
         List<Vehiculo> suggestions = new ArrayList<>();
         try {
-            //Verifica si se selecciono los tipos de vehiculos
 
             pasajerosDisponibles = 0;
-            Document doc = new Document("activo", "si").append("tipovehiculo.idtipovehiculo", tipovehiculo.getIdtipovehiculo()).append("enreparacion", "no");
+            Document doc = new Document("activo", "si").append("tipovehiculo.idtipovehiculo", "BUS").append("enreparacion", "no");
             vehiculoList = vehiculoRepository.findBy(doc);
             if (vehiculoList == null || vehiculoList.isEmpty()) {
                 return vehiculoList;
@@ -1600,10 +1538,11 @@ public class SolicitudController implements Serializable, IController {
             leyoSugerencias = true;
             solicitudGuardadasList = new ArrayList<>();
             solicitudGuardadasList.add(solicitud);
-            if (solicitud.getEstatus().getIdestatus().equals("APROBAOD") || solicitud.getEstatus().getIdestatus().equals("CANCELADO")) {
+            if (solicitud.getEstatus().getIdestatus().equals("APROBAOD") ||solicitud.getEstatus().getIdestatus().equals("CANCELADO") ) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeeditarsolicitudaprobadaocancelada"));
                 return "";
             }
+            
             if (!localValid()) {
                 return "";
             }
@@ -1611,10 +1550,6 @@ public class SolicitudController implements Serializable, IController {
             if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
 
             } else {
-                if (!isValidDisponibles()) {
-                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.listavehiculosnoesvalida"));
-                    return "";
-                }
                 /**
                  * Verifica que el numero de pasajeros no exceda la capacidad
                  * maxima del bus con mayor capacidad , ya que cuando se edita
@@ -1671,7 +1606,7 @@ public class SolicitudController implements Serializable, IController {
             }
 
             /**
-             * Enviar un email al administrativo y al mismo administrador
+             * Enviar un email al docente y al mismo administrador
              */
             sendEmail(" editada(s) ");
 
@@ -1775,7 +1710,7 @@ public class SolicitudController implements Serializable, IController {
         ruta = ruta.trim();
         JmoordbContext.put("solicitud", "golist");
         return "/pages/" + ruta + "/list.xhtml";
-
+//        return "/pages/solicituddocente/list.xhtml";
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="String changeDaysViewAvailable()">
@@ -1787,108 +1722,94 @@ public class SolicitudController implements Serializable, IController {
      */
     public String changeDaysViewAvailable() {
         try {
-            Integer iddisponible = 0;
+
             disponiblesBeansList = new ArrayList<>();
+
+            List<Vehiculo> vehiculoFreeList = new ArrayList<>();
+            varFechaHoraPartida = solicitud.getFechahorapartida();
+            varFechaHoraRegreso = solicitud.getFechahoraregreso();
+            List<Vehiculo> vehiculoList = new ArrayList<>();
+            vehiculoList = busesActivo();
+            if (vehiculoList == null || vehiculoList.isEmpty()) {
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayvehiculosactivosconesascondiciones"));
+                return "";
+
+            }
             rangoAgenda = new ArrayList<>();
             if (!isValidDiasConsecutivos()) {
                 return "";
             }
             solicitud.setRangoagenda(rangoAgenda);
-            List<Vehiculo> vehiculoFreeList = new ArrayList<>();
-            varFechaHoraPartida = solicitud.getFechahorapartida();
-            varFechaHoraRegreso = solicitud.getFechahoraregreso();
-            List<Vehiculo> vehiculoList = new ArrayList<>();
-            if (tipoVehiculoCantidadBeansList == null || tipoVehiculoCantidadBeansList.isEmpty()) {
-                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.seleccionetipodevehiculos"));
-                return "";
-            }
-            if (calcularTotalVehiculo() == 0) {
-                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.indiquelacantidaddevehiculosportipo"));
-                return "";
-            }
-            //Genero para cada fecha y cada tipo
-            for (TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans : tipoVehiculoCantidadBeansList) {
-                if (tipoVehiculoCantidadBeans.getCantidad() > 0) {
-                    vehiculoList = vehiculosActivo(tipoVehiculoCantidadBeans.getTipovehiculo());
-                    if (vehiculoList == null || vehiculoList.isEmpty()) {
-                        JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayvehiculosactivosconesascondiciones"));
-                        return "";
+            Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
+            if (diasconsecutivos) {
+                //
+                Integer numeroBuses = 0;
+                Integer numeroPasajeros = 0;
+                for (Vehiculo v : vehiculoList) {
+
+                    if (isVehiculoActivoDisponible(v, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
+                        //agrega a la lista los vehiculos disponibles
+                        vehiculoFreeList.add(v);
+                        pasajerosDisponibles = 0;
+                        numeroBuses++;
+                        numeroPasajeros += v.getPasajeros();
                     }
-                    vehiculoFreeList = new ArrayList<>();
-                    Integer numeroVehiculosSolicitados = solicitud.getNumerodevehiculos();
-                    if (diasconsecutivos) {
-                        //dias consecutivos
-                        Integer numeroBuses = 0;
-                        Integer numeroPasajeros = 0;
-                        for (Vehiculo v : vehiculoList) {
-
-                            if (isVehiculoActivoDisponible(v, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
-                                //agrega a la lista los vehiculos disponibles
-                                vehiculoFreeList.add(v);
-                                pasajerosDisponibles = 0;
-                                numeroBuses++;
-                                numeroPasajeros += v.getPasajeros();
-                            }
-                        }
+                }
 //ordena la lista de vehiculos
-                        vehiculoFreeList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
-                                .reversed());
+                vehiculoFreeList.sort(Comparator.comparingDouble(Vehiculo::getPasajeros)
+                        .reversed());
 //Almacena los vehiculos disponibles
-                        DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
-                        disponiblesBeans.setIddisponible(iddisponible++);
-                        disponiblesBeans.setFechahorainicio(solicitud.getFechahorapartida());
-                        disponiblesBeans.setFechahorafin(solicitud.getFechahoraregreso());
-                        disponiblesBeans.setNumeroBuses(numeroBuses);
-                        disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
-                        disponiblesBeans.setVehiculo(vehiculoFreeList);
-                        disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
-                        disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
-                        disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
-                        disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
-                        disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
-                        disponiblesBeansList.add(disponiblesBeans);
+                DisponiblesBeans disponiblesBeans = new DisponiblesBeans();
+                disponiblesBeans.setIddisponible(1);
+                disponiblesBeans.setFechahorainicio(solicitud.getFechahorapartida());
+                disponiblesBeans.setFechahorafin(solicitud.getFechahoraregreso());
+                disponiblesBeans.setNumeroBuses(numeroBuses);
+                disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
+                disponiblesBeans.setVehiculo(vehiculoFreeList);
+                disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
+                disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
+                disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, solicitud.getPasajeros()));
+                disponiblesBeans.setNumeroVehiculosSolicitados(1);
+                disponiblesBeansList.add(disponiblesBeans);
 
-                    } else {
+            } else {
 
 
-                        /*
+                /*
                 No son dias consecutivo
                 Se deben descomponer las fechas
                 verificar si son dias validos
                 Descomponener la fecha de inicio
-                         */
-                        DecomposedDate fechaPartidaDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahorapartida());
+                 */
+                DecomposedDate fechaPartidaDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahorapartida());
 
-                        //descomponer la fecha de regreso
-                        DecomposedDate fechaRegresoDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahoraregreso());
+                //descomponer la fecha de regreso
+                DecomposedDate fechaRegresoDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahoraregreso());
 
-                        varAnio = fechaPartidaDescompuesta.getYear();
-                        //Determinar cuantos meses hay
-                        Integer meses = DateUtil.numberOfMonthBetweenDecomposedDate(fechaPartidaDescompuesta, fechaRegresoDescompuesta);
-                        //mismo mes
-                        if (meses == 0) {
-                            foundVehicleSameMonth(fechaPartidaDescompuesta, fechaRegresoDescompuesta, vehiculoList, tipoVehiculoCantidadBeans);
+                varAnio = fechaPartidaDescompuesta.getYear();
+                //Determinar cuantos meses hay
+                Integer meses = DateUtil.numberOfMonthBetweenDecomposedDate(fechaPartidaDescompuesta, fechaRegresoDescompuesta);
+                //mismo mes
+                if (meses == 0) {
+                    foundVehicleSameMonth(fechaPartidaDescompuesta, fechaRegresoDescompuesta, vehiculoList);
 
-                        } else {
-                            // mas de un mes recorrer todos los meses en ese intervalo
-                            if (meses > 0 && meses <= 12) {
+                } else {
+                    // mas de un mes recorrer todos los meses en ese intervalo
+                    if (meses > 0 && meses <= 12) {
 
-                                foundVehicleOtherMonth(fechaPartidaDescompuesta, fechaRegresoDescompuesta, vehiculoList, meses, tipoVehiculoCantidadBeans);
+                        foundVehicleOtherMonth(fechaPartidaDescompuesta, fechaRegresoDescompuesta, vehiculoList, meses);
 
-                            } else {
-                                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.verifiqueestasolicitandomas12meses"));
-                                return "";
-                            }
-                        }
-
-                    }// no son consecutivos
+                    } else {
+                        JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.verifiqueestasolicitandomas12meses"));
+                        return "";
+                    }
                 }
-            }
+
+            }// no son consecutivos
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-
         return "";
     }// </editor-fold>
 
@@ -1940,7 +1861,7 @@ public class SolicitudController implements Serializable, IController {
     private String sendEmail(String msg) {
         try {
             /**
-             * Enviar un email al administrador y al mismo administrador
+             * Enviar un email al docente y al mismo administrador
              */
             Solicitud s0 = solicitudGuardadasList.get(0);
 
@@ -1955,6 +1876,7 @@ public class SolicitudController implements Serializable, IController {
                 varRango = "" + r;
             }
             String header = "\n Detalle de la solicitud:"
+                    + "\n# : " + s0.getIdsolicitud()
                     + "\nObjetivo : " + s0.getObjetivo()
                     + "\nObservaciones: " + s0.getObservaciones()
                     + "\nLugares: " + s0.getLugares()
@@ -1965,19 +1887,14 @@ public class SolicitudController implements Serializable, IController {
                     + "\nRango: " + varRango
                     + "\nEstatus: " + s0.getEstatus().getIdestatus() + "";
 
-
-            String texto = "\n___________________________SOLICITUDES___________________________________";
-            texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Pasajeros", "Vehiculo");
-
+            String texto = "\n____________________SOLICITUDES________________________________"
+                    + "\n|#              |      Partida      |                Regreso |"
+                    + "\n_________________________________________________________________";
             for (Solicitud s : solicitudGuardadasList) {
-
-                texto += "\n" + String.format("%10d %20s %25s %10d %20s",
-                        s.getIdsolicitud(),
-                        DateUtil.dateFormatToString(s.getFechahorapartida(), "dd/MM/yyyy hh:mm a"),
-                        DateUtil.dateFormatToString(s.getFechahoraregreso(), "dd/MM/yyyy hh:mm a"),
-                        s.getPasajeros(),
-                        s.getTipovehiculo().get(0).getIdtipovehiculo());
-                texto += "\n________________________________________________________________________";
+                texto += "\n|" + s.getIdsolicitud()
+                        + " | " + DateUtil.dateFormatToString(s.getFechahorapartida(), "dd/MM/yyyy hh:mm a")
+                        + " | " + DateUtil.dateFormatToString(s.getFechahoraregreso(), "dd/MM/yyyy hh:mm a")
+                        + "\n_________________________________________________________________";
 
             }
 
@@ -2004,7 +1921,7 @@ public class SolicitudController implements Serializable, IController {
 
             } else {
                 JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
-                //enviar al administrativo
+                //enviar al docente
 
                 Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
                 //    Future<String> completableFuture = managerEmail.sendAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
@@ -2068,8 +1985,8 @@ public class SolicitudController implements Serializable, IController {
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Boolean foundVehicleSameMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList,TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans)">
-    private Boolean foundVehicleSameMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList, TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans) {
+    // <editor-fold defaultstate="collapsed" desc="Boolean foundVehicleSameMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList)">
+    private Boolean foundVehicleSameMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList) {
         try {
 
 // Encontrar las fechas en el rango
@@ -2088,7 +2005,7 @@ public class SolicitudController implements Serializable, IController {
                 return false;
             } else {
                 //Recorre las fechas validas
-                insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList, tipoVehiculoCantidadBeans);
+                insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList);
 
             }//isEmpty
 
@@ -2100,8 +2017,8 @@ public class SolicitudController implements Serializable, IController {
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="Boolean foundVehicleOtherMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList,TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans)">
-    private Boolean foundVehicleOtherMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList, Integer meses, TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans) {
+    // <editor-fold defaultstate="collapsed" desc="Boolean foundVehicleOtherMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList)">
+    private Boolean foundVehicleOtherMonth(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<Vehiculo> vehiculoList, Integer meses) {
         try {
             Integer numeroBuses = 0;
             Integer numeroPasajeros = 0;
@@ -2123,7 +2040,7 @@ public class SolicitudController implements Serializable, IController {
                     if (fechasValidasList == null || fechasValidasList.isEmpty()) {
                         JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayfechasvalidas"));
                     } else {
-                        insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList, tipoVehiculoCantidadBeans);
+                        insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList);
 
                     }
 
@@ -2153,7 +2070,7 @@ public class SolicitudController implements Serializable, IController {
                     if (fechasValidasList == null || fechasValidasList.isEmpty()) {
                         JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayfechasvalidas"));
                     } else {
-                        insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList, tipoVehiculoCantidadBeans);
+                        insertIntoDisponiblesList(fechaPartidaDescompuesta, fechaRegresoDescompuesta, fechasValidasList, vehiculoList);
 
                     }
 
@@ -2169,7 +2086,7 @@ public class SolicitudController implements Serializable, IController {
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Boolean insertIntoDisponiblesList(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta,List<FechaDiaUtils> fechasValidasList, List<Vehiculo> vehiculoList ,TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans)">
+    // <editor-fold defaultstate="collapsed" desc="Boolean insertIntoDisponiblesList(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta,List<FechaDiaUtils> fechasValidasList, List<Vehiculo> vehiculoList )">
     /**
      * inserta elementos en disponiblesBeansList y vehiculosList
      *
@@ -2179,7 +2096,7 @@ public class SolicitudController implements Serializable, IController {
      * @param vehiculoList
      * @return
      */
-    private Boolean insertIntoDisponiblesList(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<FechaDiaUtils> fechasValidasList, List<Vehiculo> vehiculoList, TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans) {
+    private Boolean insertIntoDisponiblesList(DecomposedDate fechaPartidaDescompuesta, DecomposedDate fechaRegresoDescompuesta, List<FechaDiaUtils> fechasValidasList, List<Vehiculo> vehiculoList) {
         try {
             Integer contadorDispobibes = 0;
             Integer numeroBuses = 0;
@@ -2216,11 +2133,9 @@ public class SolicitudController implements Serializable, IController {
                         disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
                         disponiblesBeans.setVehiculo(vehiculoFreeList);
 
-                        disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
-                        disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
-                        disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
-                        disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
-                        disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
+                        disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
+                        disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, solicitud.getPasajeros()));
+                        disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, solicitud.getPasajeros()));
                         disponiblesBeansList.add(disponiblesBeans);
                     }
                 }
@@ -2452,7 +2367,7 @@ public class SolicitudController implements Serializable, IController {
             solicitudGuardadasList = new ArrayList<>();
             solicitudGuardadasList.add(solicitud);
             /**
-             * Enviar un email al administrativo y al mismo administrador
+             * Enviar un email al docente y al mismo administrador
              */
             sendEmail(" cancelada(s) ");
 
@@ -2463,74 +2378,6 @@ public class SolicitudController implements Serializable, IController {
         return "";
     }
     // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="onCellEdit(CellEditEvent event)">
-    /**
-     * analiza los cambios en la celda del datatable
-     *
-     * @param event
-     */
-    public void onCellEdit(CellEditEvent event) {
-        Object oldValue = event.getOldValue();
-        Object newValue = event.getNewValue();
-        int alteredRow = event.getRowIndex();
-        //Obtiene el encabezado de la columna que se edita la propiedad headerText
-        UIColumn col = (UIColumn) event.getColumn();
-
-        Integer v = (Integer) newValue;
-        switch (col.getHeaderText().toUpperCase()) {
-            case "VEHICULOS":
-                if (v < 0 || v > tipoVehiculoCantidadBeansList.get(alteredRow).getMaximo()) {
-                    tipoVehiculoCantidadBeansList.get(alteredRow).setCantidad(0);
-                }
-                break;
-            case "PASAJEROS":
-                if (tipoVehiculoCantidadBeansList.get(alteredRow).getPasajeros() < 0) {
-                    tipoVehiculoCantidadBeansList.get(alteredRow).setPasajeros(0);
-                }
-                break;
-        }
-
-        changeDaysViewAvailable();
-        if (newValue != null && !newValue.equals(oldValue)) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed", "Old: " + oldValue + ", New:" + newValue);
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        }
-    }   // </editor-fold>  
-
-    // <editor-fold defaultstate="collapsed" desc="Integer calcularTotalVehiculo() ">
-    public Integer calcularTotalVehiculo() {
-        Integer total = 0;
-
-        try {
-            for (TipoVehiculoCantidadBeans tvc : tipoVehiculoCantidadBeansList) {
-                total += tvc.getCantidad();
-
-            }
-            solicitud.setNumerodevehiculos(total);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return total;
-    }
-
-    // </editor-fold>  
-    // <editor-fold defaultstate="collapsed" desc="Integer calcularTotalPasajeros()">
-    public Integer calcularTotalPasajeros() {
-
-        Integer totalpasajeros = 0;
-        try {
-            for (TipoVehiculoCantidadBeans tvc : tipoVehiculoCantidadBeansList) {
-
-                totalpasajeros += tvc.getPasajeros();
-            }
-            solicitud.setPasajeros(totalpasajeros);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return totalpasajeros;
-    }
-    // </editor-fold>  
 
     // <editor-fold defaultstate="collapsed" desc="Boolean isValidDisponibles()">
     /**
@@ -2543,7 +2390,7 @@ public class SolicitudController implements Serializable, IController {
         Boolean valid = true;
         try {
             for (DisponiblesBeans db : disponiblesBeansList) {
-                if (db.getBusesRecomendados() == 0 || db.getNumeroPasajerosSolicitados() == 0 || db.getNumeroVehiculosSolicitados() == 0) {
+                if (db.getBusesRecomendados() == 0 ) {
                     valid = false;
                 }
             }

@@ -391,6 +391,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 }
 
             }
+            
+            
 
             changeDaysViewAvailable();
             if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
@@ -1889,17 +1891,7 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-        System.out.println("-------DISPONIBLES------");
-        for (DisponiblesBeans d : disponiblesBeansList) {
-            System.out.println("=================(*)============");
-
-            System.out.println("iddisponible" + d.getIddisponible());
-            System.out.println("fecha inicio" + d.getFechahorainicio() + " fecha fin" + d.getFechahorafin());
-            System.out.println("N. Buses" + d.getNumeroBuses() + "No. Pasajeros" + d.getNumeroPasajeros() + "PasajerosPendientes: " + d.getPasajerosPendientes() + " NumeroVehiculosSolicitados  " + d.getNumeroVehiculosSolicitados());
-            for (Vehiculo v : d.getVehiculo()) {
-                System.out.println("........ " + v.getMarca() + " tipo:" + v.getTipovehiculo().getIdtipovehiculo());
-            }
-        }
+    
         return "";
     }// </editor-fold>
 
@@ -1966,25 +1958,31 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
                 varRango = "" + r;
             }
             String header = "\n Detalle de la solicitud:"
-                    + "\n# : " + s0.getIdsolicitud()
+
                     + "\nObjetivo : " + s0.getObjetivo()
                     + "\nObservaciones: " + s0.getObservaciones()
                     + "\nLugares: " + s0.getLugares()
                     + "\nLugar de partida: " + s0.getLugarpartida()
                     + "\nLugar de llegada: " + s0.getLugarllegada()
-                    + "\nFacultad: " + varFacultadName
-                    + "\nCarrera: " + varCarreraName
+//                    + "\nFacultad: " + varFacultadName
+//                    + "\nCarrera: " + varCarreraName
                     + "\nRango: " + varRango
                     + "\nEstatus: " + s0.getEstatus().getIdestatus() + "";
 
-            String texto = "\n____________________SOLICITUDES________________________________"
-                    + "\n|#              |      Partida      |                Regreso |"
-                    + "\n_________________________________________________________________";
+
+            
+             String texto = "\n___________________________SOLICITUDES___________________________________";
+            texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Pasajeros", "Vehiculo");
+
             for (Solicitud s : solicitudGuardadasList) {
-                texto += "\n|" + s.getIdsolicitud()
-                        + " | " + DateUtil.dateFormatToString(s.getFechahorapartida(), "dd/MM/yyyy hh:mm a")
-                        + " | " + DateUtil.dateFormatToString(s.getFechahoraregreso(), "dd/MM/yyyy hh:mm a")
-                        + "\n_________________________________________________________________";
+
+                texto += "\n" + String.format("%10d %20s %25s %10d %20s",
+                        s.getIdsolicitud(),
+                        DateUtil.dateFormatToString(s.getFechahorapartida(), "dd/MM/yyyy hh:mm a"),
+                        DateUtil.dateFormatToString(s.getFechahoraregreso(), "dd/MM/yyyy hh:mm a"),
+                        s.getPasajeros(),
+                        s.getTipovehiculo().get(0).getIdtipovehiculo());
+                texto += "\n________________________________________________________________________";
 
             }
 

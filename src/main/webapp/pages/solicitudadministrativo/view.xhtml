@@ -112,7 +112,7 @@
 
 
 
-                        <p:outputLabel value="#{msg['field.idtipovehiculo']}"/>
+                        <p:outputLabel value="#{msg['field.solicitud']}"/>
                         <p:dataTable id="datatableTipoVehiculo" var="item" value="#{solicitudAdministrativoController.tipoVehiculoCantidadBeansList}" 
                                      editable="true" editMode="cell" widgetVar="cellCars">
                             <f:facet name="header">
@@ -147,14 +147,16 @@
                             </p:column>
                         </p:dataTable>
 
+                            <p:outputLabel value="#{msg['field.totaltipovehiculo']}" />
+                        <p:outputLabel id="totalTipoVehiculoCantidad" value="#{solicitudAdministrativoController.calcularTotalVehiculo()}"/>
+
+                        
                         <p:outputLabel  value="#{msg['field.pasajeros']}" >
                             <i class="pi pi-users"></i>
                         </p:outputLabel>
                         <p:outputLabel value="#{solicitudAdministrativoController.calcularTotalPasajeros()}" id="pasajeros"/>
 
-                        <p:outputLabel value="#{msg['field.totaltipovehiculo']}" />
-                        <p:outputLabel id="totalTipoVehiculoCantidad" value="#{solicitudAdministrativoController.calcularTotalVehiculo()}"/>
-
+                    
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
 
                         <jmoordbjsf:calendar required="true"

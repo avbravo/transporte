@@ -252,27 +252,54 @@
 
                         </p:chips>
 
-                        <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
 
-                        <b:touchSpin disabled="true" col-md="3"  min="1"  max="20"  step="1" value="#{solicitudController.solicitud.numerodevehiculos}" id="numerodevehiculos"  
-                                     onchange="ajax:solicitudController.changeDaysViewAvailable()"
-                                     update=":form:datatableDisponibles"
-                                     process="@this,pasajeros"
-                                     >
+                        <p:outputLabel value="#{msg['field.solicitud']}"/>
+                        <p:dataTable id="datatableTipoVehiculo" var="item" value="#{solicitudController.tipoVehiculoCantidadBeansList}" 
+                                     editable="true" editMode="cell" widgetVar="cellCars">
+                            <f:facet name="header">
 
-                        </b:touchSpin>
+                            </f:facet>
+
+                            <p:ajax event="cellEdit" listener="#{solicitudController.onCellEdit}" 
+                                    update=":form:msg, :form:pasajeros, :form:datatableTipoVehiculo,:form:datatableDisponibles, :form:totalTipoVehiculoCantidad" />
+
+
+                            <p:column headerText="#{msg['field.idtipovehiculo']}">
+
+                                <h:outputText value="#{item.tipovehiculo.idtipovehiculo}" />
+                            </p:column>
+
+                            <p:column  headerText="#{msg['field.vehiculos']}" style="width:150px">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{item.cantidad}" /></f:facet>
+                                    <f:facet name="input"><p:inputText   value="#{item.cantidad}" style="width:96%" label="#{msg['field.buses']}"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="#{msg['field.maximo']}" style="width:150px">
+
+                                <h:outputText value="#{item.maximo}" />
+                            </p:column>
+                            <p:column  headerText="#{msg['field.pasajeros']}" style="width:150px">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{item.pasajeros}" /></f:facet>
+                                    <f:facet name="input"><p:inputText  value="#{item.pasajeros}" style="width:96%" label="#{msg['field.pasajeros']}"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                        </p:dataTable>
+
+
+
+                        <p:outputLabel value="#{msg['field.totaltipovehiculo']}" />
+                        <p:outputLabel id="totalTipoVehiculoCantidad" value="#{solicitudController.calcularTotalVehiculo()}"/>
+
 
                         <p:outputLabel  value="#{msg['field.pasajeros']}" >
                             <i class="pi pi-users"></i>
                         </p:outputLabel>
-                        <b:touchSpin   required="true"
-                                       col-md="3"  min="1"  step="1" value="#{solicitudController.solicitud.pasajeros}" id="pasajeros" max="250" 
-                                       onchange="ajax:solicitudController.changeDaysViewAvailable()"
-                                       update=":form:datatableDisponibles"
-                                       process="@this, pasajeros"
-                                       >
+                        <p:outputLabel value="#{solicitudController.calcularTotalPasajeros()}" id="pasajeros"/>
 
-                        </b:touchSpin>
+
 
 
 
@@ -340,8 +367,6 @@
                         <b:column span="12">
                             <p:dataTable value="#{solicitudController.disponiblesBeansList}" 
                                          id="datatableDisponibles"
-
-
                                          var="item"  >
                                 <f:facet name="header">
                                     <p:outputLabel  value="#{msg['tabletitle.vehiculos']}" />
@@ -349,41 +374,63 @@
                                 <p:columnGroup type="header">
                                     <p:row>
 
-                                        <p:column rowspan="3"  style="width:95px" headerText="#{msg['field.fecha']}" />
-                                        <p:column colspan="4" headerText="#{msg['tabletitle.resultado']}" />
+                                        <p:column rowspan="1" style="width:95px" headerText="#{msg['field.fecha']}" />
+                                        <p:column colspan="1"  style="width:95px" headerText="#{msg['field.tipovehiculo']}" />
+                                        <p:column colspan="5" headerText="#{msg['tabletitle.resultado']}" />
                                     </p:row>
                                     <p:row>
+                                        <p:column headerText="" />
+                                        <p:column headerText="" />
                                         <p:column colspan="2" headerText="#{msg['tabletitle.disponibles']}" />
+                                        <p:column colspan="3" headerText="#{msg['tabletitle.solicitados']}" />
                                         <p:column colspan="1" headerText="#{msg['tabletitle.recomendados']}" />
 
                                     </p:row>
                                     <p:row>
-                                        <p:column headerText="#{msg['field.buses']}" />
+                                        <p:column headerText="" />
+                                        <p:column headerText="" />
+                                        <p:column headerText="#{msg['field.vehiculos']}" />
                                         <p:column headerText="#{msg['field.pasajeros']}" />
-                                        <p:column headerText="#{msg['field.buses']}" />
-                                   
-
-
+                                        <p:column headerText="#{msg['field.vehiculos']}" />
+                                        <p:column headerText="#{msg['field.pasajeros']}" /> 
+                                        <p:column headerText="#{msg['field.recomendados']}" />
 
                                     </p:row>
                                 </p:columnGroup>
+
                                 <p:column style="width:95px">
+
                                     <p:rowToggler />
                                     <h:outputText value="#{solicitudController.showDate(item.fechahorainicio)}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
 
-                                <p:column headerText="#{msg['field.buses']}" style="width:75px">
+                                <p:column headerText="#{msg['field.tipovehiculo']}" style="width:95px">
+                                    <h:outputText value="#{item.vehiculo.get(0).tipovehiculo.idtipovehiculo}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
+                                </p:column>
+
+
+                                <p:column headerText="#{msg['field.disponible']}" style="width:75px">
                                     <p:outputLabel value="#{item.numeroBuses}" style="color: #{solicitudController.columnColorDisponibles(item)}" />
                                 </p:column>
                                 <p:column headerText="#{msg['field.pasajeros']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroPasajeros}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
+                                    <p:outputLabel value="#{item.numeroPasajeros}" style="color: #{solicitudController.columnColorDisponibles(item)}" />
                                 </p:column>
-                                <p:column headerText="#{msg['field.busesRecomendados']}" style="width:75px">
+
+
+
+                                <p:column headerText="#{msg['field.solicitado']}" style="width:75px">
+                                    <p:outputLabel value="#{item.numeroVehiculosSolicitados}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
+                                </p:column>
+                                <p:column headerText="#{msg['field.pasajeros']}" style="width:75px">
+                                    <p:outputLabel value="#{item.numeroPasajerosSolicitados}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
+                                </p:column>
+
+                                <p:column headerText="#{msg['field.vehiculosRecomendados']}" style="width:75px">
                                     <p:outputLabel value="#{item.busesRecomendados}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
-                              
+
                                 <p:rowExpansion>
                                     <p:dataTable value ="#{item.vehiculo}" var="car">
                                         <p:column headerText="#{msg['field.marca']}">
@@ -402,8 +449,7 @@
 
                                 </p:rowExpansion>
 
-
-                            </p:dataTable>                                
+                            </p:dataTable>                                   
 
 
                         </b:column>
