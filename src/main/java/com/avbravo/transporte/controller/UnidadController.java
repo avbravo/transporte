@@ -141,7 +141,7 @@ public class UnidadController implements Serializable, IController {
     public void move(Integer page) {
         try {
  
-              JsfUtil.infoDialog("texto",rf.getAppMessage("info.save"));
+       
             this.page = page;
             unidadDataModel = new UnidadDataModel(unidadList);
             Document doc;

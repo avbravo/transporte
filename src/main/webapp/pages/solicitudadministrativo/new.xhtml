@@ -206,7 +206,7 @@
                                 <jmoordbjsf:calendar required="true"
                                                      pattern="dd/MM/yyyy HH:mm a" value="#{solicitudAdministrativoController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
                                                      listener="#{solicitudAdministrativoController.calendarChangeListener}"
-                                                     update=" :form:datatableDisponibles, :form:horapartida"
+                                                     update=":form:msg :form:datatableDisponibles, :form:horapartida"
                                                      />
                             </b:column>
                             <b:column medium-screen="2">

@@ -121,7 +121,8 @@ public class SolicitudController implements Serializable, IController {
     private static final long serialVersionUID = 1L;
 
     String messages = "";
-
+    Boolean coordinadorvalido = false;
+    Boolean escoordinador = false;
     Integer index = 0;
     Integer pasajerosDisponibles = 0;
     ManagerEmail managerEmail = new ManagerEmail();
@@ -705,15 +706,20 @@ public class SolicitudController implements Serializable, IController {
                 }
             }
 
-            //  Guardar las notificaciones
-            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-            usuarioList = usuarioRepository.filters(filter);
-            if (usuarioList == null || usuarioList.isEmpty()) {
+            usuarioList = usuariosParaNotificar();
+       
+            if (usuarioList  == null || usuarioList .isEmpty()) {
             } else {
-                usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(), "solicituddocente");
+                //Verifica si es un coordinador y le envia la notificacion
+               
+                usuarioList .forEach((u) -> {
+                            saveNotification(u.getUsername(), "solicituddocente");
+                            usuarioList.add(u);
                 });
+
+                //Envia la notificacion.....
                 push.send("Nueva solicitud Docente ");
+
             }
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
             /**
@@ -1089,7 +1095,7 @@ public class SolicitudController implements Serializable, IController {
             if (DateUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
 
 //                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
-                JsfUtil.warningMessage( rf.getMessage("warning.fecharegresomenorquefechapartida"));
+                JsfUtil.warningMessage(rf.getMessage("warning.fecharegresomenorquefechapartida"));
                 return "";
             }
 
@@ -1470,7 +1476,7 @@ public class SolicitudController implements Serializable, IController {
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!solicitudServices.isValidDates(solicitud,true)) {
+                if (!solicitudServices.isValidDates(solicitud, true)) {
                     return;
                 }
                 changeDaysViewAvailable();
@@ -1478,16 +1484,14 @@ public class SolicitudController implements Serializable, IController {
                     // JsfUtil.warningDialog("texto", "Aun no ha seleccionado el rango");
                 } else {
                     if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
-                      // JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
-                        JsfUtil.warningMessage(rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
+                        JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
 
                         return;
                     }
                 }
 
                 if (!solicitudServices.solicitudDisponible(solicitud, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
-//                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yatienesolicitudenesasfechas"));
-                    JsfUtil.warningMessage( rf.getMessage("warning.yatienesolicitudenesasfechas"));
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yatienesolicitudenesasfechas"));
 
                 }
 
@@ -1662,9 +1666,11 @@ public class SolicitudController implements Serializable, IController {
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
 
+            
+             usuarioList = usuariosParaNotificar();
             //  Guardar las notificaciones
-            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-            usuarioList = usuarioRepository.filters(filter);
+//            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
+//            usuarioList = usuarioRepository.filters(filter);
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
@@ -1967,7 +1973,6 @@ public class SolicitudController implements Serializable, IController {
                     + "\nCarrera: " + varCarreraName
                     + "\nRango: " + varRango
                     + "\nEstatus: " + s0.getEstatus().getIdestatus() + "";
-
 
             String texto = "\n___________________________SOLICITUDES___________________________________";
             texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Pasajeros", "Vehiculo");
@@ -2442,9 +2447,11 @@ public class SolicitudController implements Serializable, IController {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.cancelacionsolicitudesfallida"));
             }
 
-            //  Guardar las notificaciones
-            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-            List<Usuario> usuarioList = usuarioRepository.filters(filter);
+            
+             usuarioList = usuariosParaNotificar();
+//            //  Guardar las notificaciones
+//            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
+//            List<Usuario> usuarioList = usuarioRepository.filters(filter);
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
@@ -2555,6 +2562,60 @@ public class SolicitudController implements Serializable, IController {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return valid;
+    }
+    // </editor-fold>  
+
+    // <editor-fold defaultstate="collapsed" desc="List<Usuario> usuariosParaNotificar()">
+    /*
+    Obtiene la lista de usuarios validos
+    */
+    private List<Usuario> usuariosParaNotificar() {
+        List<Usuario> l = new ArrayList<>();
+
+        try {
+
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIO ADMINISTRATIVO"), eq("rol.idrol", "SECRETARIA"), eq("rol.idrol", "COORDINADOR"));
+            List<Usuario> list = new ArrayList<>();
+            list = usuarioRepository.filters(filter);
+            if (list == null || list.isEmpty()) {
+                return l;
+
+            } else {
+
+                //Verifica si es un coordinador y le envia la notificacion
+                coordinadorvalido = false;
+                escoordinador = false;
+
+                for (Usuario u : list) {
+                    escoordinador = false;
+                    coordinadorvalido = false;
+                    for (Rol r : u.getRol()) {
+                        if (r.getIdrol().equals("COODRINADOR")) {
+                            escoordinador = true;
+                            break;
+                        }
+                    }
+                    if (escoordinador) {
+                        //Verifica la facultad del coordinador
+                        //la facultad debe ser el mismo nombre que el de la unidad
+                        for (Facultad f : facultadList) {
+                            if (f.getDescripcion().equals(u.getUnidad().getIdunidad())) {
+                                coordinadorvalido = true;
+                                break;
+                            }
+                        }
+                    }
+                    //agrega el usuario valido
+                    l.add(u);
+
+                }
+
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return l;
     }
     // </editor-fold>  
 }

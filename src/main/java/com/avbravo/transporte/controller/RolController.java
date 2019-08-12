@@ -17,6 +17,7 @@ import com.avbravo.jmoordb.pojos.JmoordbNotifications;
 import com.avbravo.jmoordb.profiles.repository.JmoordbNotificationsRepository;
 import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.transporteejb.datamodel.RolDataModel;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
@@ -162,8 +163,8 @@ public class RolController implements Serializable, IController {
         }
         return false;
     }
-// <editor-fold defaultstate="collapsed" desc="handleSelect">
 
+// <editor-fold defaultstate="collapsed" desc="handleSelect">
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
@@ -230,5 +231,16 @@ public class RolController implements Serializable, IController {
         }
 
     }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean beforeDelete()">
+    @Override
+    public Boolean beforeDelete() {
+        Boolean delete = rolServices.isDeleted(rol);
+        if (!delete) {
+            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getAppMessage("warning.nosepuedeeliminarrol"));
+        }
+        return delete;
+    }
+    // </editor-fold>     
 
 }
