@@ -685,6 +685,14 @@ public class SolicitudController implements Serializable, IController {
             
             //Obtiene la lista de usuarios para notificar
                 usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
+                //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
+                Boolean vistoBuenoAprobado =usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
+              
+                //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
+                if(vistoBuenoAprobado){                    
+                //    usuarioList.remove(jmoordb_user);
+                   usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+                }
                 
             //Guarda la solicitud
             for (DisponiblesBeans db : disponiblesBeansList) {
@@ -696,7 +704,12 @@ public class SolicitudController implements Serializable, IController {
                     solicitud.setFechahorapartida(db.getFechahorainicio());
                     solicitud.setFechahoraregreso(db.getFechahorafin());
                     solicitud.setNumerodevehiculos(1);
-                    solicitud.setVistoBueno(vistoBuenoServices.inicializar());
+                    if(vistoBuenoAprobado){
+                        solicitud.setVistoBueno(vistoBuenoServices.inicializarAprobado(jmoordb_user));
+                    }else{
+                        solicitud.setVistoBueno(vistoBuenoServices.inicializar());
+                    }
+                    
 
                     if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
                         solicitudesGuardadas++;
@@ -1676,8 +1689,17 @@ public class SolicitudController implements Serializable, IController {
 
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
             //  Guardar las notificaciones
-//            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-//            usuarioList = usuarioRepository.filters(filter);
+            
+            //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
+                Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
+              
+              
+                //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
+                if(vistoBuenoAprobado){                    
+//                    usuarioList.remove(jmoordb_user);
+usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+                }
+
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
 
@@ -1742,8 +1764,8 @@ public class SolicitudController implements Serializable, IController {
 
             }
             //  Guardar las notificaciones
-            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-            List<Usuario> usuarioList = usuarioRepository.filters(filter);
+
+            usuarioList = usuarioServices.usuariosParaNotificar();
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
@@ -2457,8 +2479,14 @@ public class SolicitudController implements Serializable, IController {
 
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
 //            //  Guardar las notificaciones
-//            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-//            List<Usuario> usuarioList = usuarioRepository.filters(filter);
+//Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
+                Boolean vistoBuenoAprobado =usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
+               
+                //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
+                if(vistoBuenoAprobado){                    
+//                    usuarioList.remove(jmoordb_user);
+usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+                }
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
