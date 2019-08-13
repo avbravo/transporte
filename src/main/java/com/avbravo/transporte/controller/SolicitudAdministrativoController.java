@@ -22,6 +22,7 @@ import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.repository.Repository;
 import com.avbravo.jmoordb.pojos.JmoordbEmailMaster;
 import com.avbravo.jmoordb.pojos.JmoordbNotifications;
+import com.avbravo.jmoordb.pojos.UserInfo;
 import com.avbravo.jmoordb.profiles.repository.JmoordbEmailMasterRepository;
 import com.avbravo.jmoordb.profiles.repository.JmoordbNotificationsRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
@@ -708,8 +709,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
             //  Guardar las notificaciones
-            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-            usuarioList = usuarioRepository.filters(filter);
+      
+            usuarioList = usuarioServices.usuariosParaNotificar();
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
@@ -1410,8 +1411,10 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
             jmoordbNotifications.setViewed("no");
             jmoordbNotifications.setDate(DateUtil.fechaActual());
             jmoordbNotifications.setType(tiposolicitud);
-//            jmoordbNotifications.setType("solicitudadministrativo");
-            jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
+  List<UserInfo> list = jmoordbNotificationsRepository.generateListUserinfo(username, "create");
+
+            jmoordbNotifications.setUserInfo(list);
+            
             jmoordbNotificationsRepository.save(jmoordbNotifications);
             return true;
         } catch (Exception e) {
@@ -1665,8 +1668,8 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
 
             //  Guardar las notificaciones
-            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-            usuarioList = usuarioRepository.filters(filter);
+            
+            usuarioList = usuarioServices.usuariosParaNotificar();
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
@@ -1730,8 +1733,8 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
 
             }
             //  Guardar las notificaciones
-            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-            List<Usuario> usuarioList = usuarioRepository.filters(filter);
+     
+            List<Usuario> usuarioList = usuarioServices.usuariosParaNotificar();
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
@@ -2447,8 +2450,8 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
             }
 
             //  Guardar las notificaciones
-            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
-            List<Usuario> usuarioList = usuarioRepository.filters(filter);
+            
+            List<Usuario> usuarioList = usuarioServices.usuariosParaNotificar();
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {

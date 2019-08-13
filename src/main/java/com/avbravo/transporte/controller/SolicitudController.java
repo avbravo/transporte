@@ -682,6 +682,10 @@ public class SolicitudController implements Serializable, IController {
             solicitud.setSolicitudpadre(0);
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
+            
+            //Obtiene la lista de usuarios para notificar
+                usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
+                
             //Guarda la solicitud
             for (DisponiblesBeans db : disponiblesBeansList) {
                 for (int i = 0; i < db.getBusesRecomendados(); i++) {
@@ -707,14 +711,14 @@ public class SolicitudController implements Serializable, IController {
                 }
             }
 
-            usuarioList = usuariosParaNotificar();
-       
-            if (usuarioList  == null || usuarioList .isEmpty()) {
+        
+
+            if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 //Verifica si es un coordinador y le envia la notificacion
-               
-                usuarioList .forEach((u) -> {
-                            saveNotification(u.getUsername(), "solicituddocente");
+
+                usuarioList.forEach((u) -> {
+                    saveNotification(u.getUsername(), "solicituddocente");
 
                 });
 
@@ -1415,12 +1419,11 @@ public class SolicitudController implements Serializable, IController {
             jmoordbNotifications.setViewed("no");
             jmoordbNotifications.setDate(DateUtil.fechaActual());
             jmoordbNotifications.setType(tiposolicitud);
-            
-//            jmoordbNotifications.setType("solicitudadministrativo");
-            List<UserInfo> list = jmoordbNotificationsRepository.generateListUserinfo(username,"create");
-            
+
+            List<UserInfo> list = jmoordbNotificationsRepository.generateListUserinfo(username, "create");
+
             jmoordbNotifications.setUserInfo(list);
-            //jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
+            
             jmoordbNotificationsRepository.save(jmoordbNotifications);
             return true;
         } catch (Exception e) {
@@ -1671,14 +1674,13 @@ public class SolicitudController implements Serializable, IController {
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
 
-            
-             usuarioList = usuariosParaNotificar();
+            usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
             //  Guardar las notificaciones
 //            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
 //            usuarioList = usuarioRepository.filters(filter);
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
-                 
+
                 usuarioList.forEach((u) -> {
                     saveNotification(jmoordb_user.getUsername(), "solicituddocente");
                 });
@@ -2453,8 +2455,7 @@ public class SolicitudController implements Serializable, IController {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.cancelacionsolicitudesfallida"));
             }
 
-            
-             usuarioList = usuariosParaNotificar();
+            usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
 //            //  Guardar las notificaciones
 //            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIA"));
 //            List<Usuario> usuarioList = usuarioRepository.filters(filter);
@@ -2571,57 +2572,7 @@ public class SolicitudController implements Serializable, IController {
     }
     // </editor-fold>  
 
-    // <editor-fold defaultstate="collapsed" desc="List<Usuario> usuariosParaNotificar()">
-    /*
-    Obtiene la lista de usuarios validos
-    */
-    private List<Usuario> usuariosParaNotificar() {
-        List<Usuario> l = new ArrayList<>();
-
-        try {
-
-            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            Bson filter = or(eq("rol.idrol", "ADMINISTRADOR"), eq("rol.idrol", "SECRETARIO ADMINISTRATIVO"), eq("rol.idrol", "SECRETARIA"), eq("rol.idrol", "COORDINADOR"));
-            List<Usuario> list = new ArrayList<>();
-            list = usuarioRepository.filters(filter);
-            if (list == null || list.isEmpty()) {
-                return l;
-
-            } else {
-
-                //Verifica si es un coordinador y le envia la notificacion
-                coordinadorvalido = false;
-                escoordinador = false;
-
-                for (Usuario u : list) {
-                    escoordinador = false;
-                    coordinadorvalido = false;
-                    for (Rol r : u.getRol()) {
-                        if (r.getIdrol().equals("COODRINADOR")) {
-                            escoordinador = true;
-                            break;
-                        }
-                    }
-                    if (escoordinador) {
-                        //Verifica la facultad del coordinador
-                        //la facultad debe ser el mismo nombre que el de la unidad
-                        for (Facultad f : facultadList) {
-                            if (f.getDescripcion().equals(u.getUnidad().getIdunidad())) {
-                                coordinadorvalido = true;
-                                break;
-                            }
-                        }
-                    }
-                    //agrega el usuario valido
-                    l.add(u);
-
-                }
-
-            }
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return l;
-    }
-    // </editor-fold>  
+  
+    
+   
 }
