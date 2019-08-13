@@ -22,6 +22,7 @@ import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.repository.Repository;
 import com.avbravo.jmoordb.pojos.JmoordbEmailMaster;
 import com.avbravo.jmoordb.pojos.JmoordbNotifications;
+import com.avbravo.jmoordb.pojos.UserInfo;
 import com.avbravo.jmoordb.profiles.repository.JmoordbEmailMasterRepository;
 import com.avbravo.jmoordb.profiles.repository.JmoordbNotificationsRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
@@ -714,7 +715,7 @@ public class SolicitudController implements Serializable, IController {
                
                 usuarioList .forEach((u) -> {
                             saveNotification(u.getUsername(), "solicituddocente");
-                            usuarioList.add(u);
+
                 });
 
                 //Envia la notificacion.....
@@ -1414,8 +1415,12 @@ public class SolicitudController implements Serializable, IController {
             jmoordbNotifications.setViewed("no");
             jmoordbNotifications.setDate(DateUtil.fechaActual());
             jmoordbNotifications.setType(tiposolicitud);
+            
 //            jmoordbNotifications.setType("solicitudadministrativo");
-            jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
+            List<UserInfo> list = jmoordbNotificationsRepository.generateListUserinfo(username,"create");
+            
+            jmoordbNotifications.setUserInfo(list);
+            //jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
             jmoordbNotificationsRepository.save(jmoordbNotifications);
             return true;
         } catch (Exception e) {
@@ -1673,8 +1678,9 @@ public class SolicitudController implements Serializable, IController {
 //            usuarioList = usuarioRepository.filters(filter);
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
+                 
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(), "solicituddocente");
+                    saveNotification(jmoordb_user.getUsername(), "solicituddocente");
                 });
                 push.send("Edicicion de solicitud docente ");
             }
