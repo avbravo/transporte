@@ -682,18 +682,18 @@ public class CoordinadorController implements Serializable, IController {
             solicitud.setSolicitudpadre(0);
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
-            
+
             //Obtiene la lista de usuarios para notificar
-                usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
-                //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
-                Boolean vistoBuenoAprobado =usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
-              
-                //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
-                if(vistoBuenoAprobado){                    
+            usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
+            //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
+            Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
+
+            //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
+            if (vistoBuenoAprobado) {
                 //    usuarioList.remove(jmoordb_user);
-                   usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
-                }
-                
+                usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+            }
+
             //Guarda la solicitud
             for (DisponiblesBeans db : disponiblesBeansList) {
                 for (int i = 0; i < db.getBusesRecomendados(); i++) {
@@ -704,12 +704,11 @@ public class CoordinadorController implements Serializable, IController {
                     solicitud.setFechahorapartida(db.getFechahorainicio());
                     solicitud.setFechahoraregreso(db.getFechahorafin());
                     solicitud.setNumerodevehiculos(1);
-                    if(vistoBuenoAprobado){
+                    if (vistoBuenoAprobado) {
                         solicitud.setVistoBueno(vistoBuenoServices.inicializarAprobado(jmoordb_user));
-                    }else{
+                    } else {
                         solicitud.setVistoBueno(vistoBuenoServices.inicializar());
                     }
-                    
 
                     if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
                         solicitudesGuardadas++;
@@ -723,8 +722,6 @@ public class CoordinadorController implements Serializable, IController {
                     }
                 }
             }
-
-        
 
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
@@ -1308,9 +1305,21 @@ public class CoordinadorController implements Serializable, IController {
             totalRechazadoCancelado = 0;
             totalViajes = 0;
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            Document doc = new Document("usuario.0.username", jmoordb_user.getUsername());
+            String descripcion = jmoordb_user.getUnidad().getIdunidad();
+              List<Solicitud> list = new ArrayList<>();
+            Document doc = new Document("descripcion", descripcion).append("activo", "si");
+            List<Facultad> facultadList = facultadRepository.findBy(doc);
+            
+            if (facultadList == null || facultadList .isEmpty()) {
 
-            List<Solicitud> list = solicitudRepository.findBy(doc, new Document("idsolicitud", -1));
+            } else {
+                Facultad facultad =facultadList .get(0);
+               Document query=new Document("activo", "si").append("facultad.idfacultad", facultad.getIdfacultad());
+                 list = solicitudRepository.findBy(query, new Document("idsolicitud", -1));
+            }
+         
+
+          
             eventModel = new DefaultScheduleModel();
             if (!list.isEmpty()) {
                 list.forEach((a) -> {
@@ -1436,7 +1445,7 @@ public class CoordinadorController implements Serializable, IController {
             List<UserInfo> list = jmoordbNotificationsRepository.generateListUserinfo(username, "create");
 
             jmoordbNotifications.setUserInfo(list);
-            
+
             jmoordbNotificationsRepository.save(jmoordbNotifications);
             return true;
         } catch (Exception e) {
@@ -1689,16 +1698,15 @@ public class CoordinadorController implements Serializable, IController {
 
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
             //  Guardar las notificaciones
-            
+
             //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
-                Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
-              
-              
-                //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
-                if(vistoBuenoAprobado){                    
+            Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
+
+            //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
+            if (vistoBuenoAprobado) {
 //                    usuarioList.remove(jmoordb_user);
-usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
-                }
+                usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+            }
 
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
@@ -2480,13 +2488,13 @@ usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user)
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
 //            //  Guardar las notificaciones
 //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
-                Boolean vistoBuenoAprobado =usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
-               
-                //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
-                if(vistoBuenoAprobado){                    
+            Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
+
+            //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
+            if (vistoBuenoAprobado) {
 //                    usuarioList.remove(jmoordb_user);
-usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
-                }
+                usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+            }
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
@@ -2600,7 +2608,4 @@ usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user)
     }
     // </editor-fold>  
 
-  
-    
-   
 }

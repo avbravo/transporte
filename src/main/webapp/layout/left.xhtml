@@ -49,31 +49,31 @@ Hint to editors: The menus follow the Chicago style of capitalization. Please ca
                 <b:navLink header="#{msg['application.title']}" />
                 <b:navLink/>
                 <b:navLink header="#{msg['menubar.solicitud']}" iconAwesome="sliders"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, DOCENTE, ADMINISTRATIVO, SECRETARIA')}"/>
-              
+
                 <b:navLink value="#{msg['menu.crearsolicitud']}" rendered="#{p:ifGranted('DOCENTE')}"  outcome="/pages/solicituddocente/new" iconAwesome="fa-pencil-square-o"  />                   
                 <b:navCommandLink value="#{msg['menu.misolicitud']}" action="#{solicitudController.goList('solicituddocente')}" rendered="#{p:ifGranted('DOCENTE')}"  iconAwesome= "fa-book" />                                               
                 <b:navLink value="#{msg['menu.calendariodocente']}" rendered="#{p:ifGranted('DOCENTE')}" outcome="/pages/solicituddocente/calendario" iconAwesome= "fa-calendar-o" />                   
                 <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('DOCENTE')}" outcome="/pages/solicituddocente/notificar" iconAwesome= "fa-phone" />                   
-                
-                
-                  <b:navLink value="#{msg['menu.crearsolicitud']}" rendered="#{p:ifGranted('ADMINISTRATIVO')}"  outcome="/pages/solicitudadministrativo/new" iconAwesome="fa-pencil-square-o"  />                   
+
+
+                <b:navLink value="#{msg['menu.crearsolicitud']}" rendered="#{p:ifGranted('ADMINISTRATIVO')}"  outcome="/pages/solicitudadministrativo/new" iconAwesome="fa-pencil-square-o"  />                   
                 <b:navCommandLink value="#{msg['menu.misolicitud']}" action="#{solicitudController.goList('solicitudadministrativo')}" rendered="#{p:ifGranted('ADMINISTRATIVO')}"  iconAwesome= "fa-book" />                                               
                 <b:navLink value="#{msg['menu.calendariodocente']}" rendered="#{p:ifGranted('ADMINISTRATIVO')}" outcome="/pages/solicitudadministrativo/calendario" iconAwesome= "fa-calendar-o" />                   
                 <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('ADMINISTRATIVO')}" outcome="/pages/solicitudadministrativo/notificar" iconAwesome= "fa-phone" />                   
-                
-                
-                   <b:navLink value="#{msg['menu.crearsolicitud']}" rendered="#{p:ifGranted('COORDINADOR')}"  outcome="/pages/coordinador/new" iconAwesome="fa-pencil-square-o"  />                   
-                        <b:navCommandLink value="#{msg['menu.misolicitud']}" action="#{solicitudController.goList('coordinador')}" rendered="#{p:ifGranted('COORDINADOR')}"  iconAwesome= "fa-book" />                                               
-                        <b:navLink value="#{msg['menu.calendariodocente']}" rendered="#{p:ifGranted('COORDINADOR')}" outcome="/pages/coordinador/calendario" iconAwesome= "fa-calendar-o" />                   
-                   <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('COORDINADOR')}" outcome="/pages/coordinador/notificar" iconAwesome= "fa-phone" />    
-                
+
+
+
+                <b:navCommandLink value="#{msg['menu.solicitudescoordinador']}" action="#{solicitudController.goList('coordinador')}" rendered="#{p:ifGranted('COORDINADOR')}"  iconAwesome= "fa-book" />                                               
+                <b:navLink value="#{msg['menu.calendariodocente']}" rendered="#{p:ifGranted('COORDINADOR')}" outcome="/pages/coordinador/calendario" iconAwesome= "fa-calendar-o" />                   
+                <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('COORDINADOR')}" outcome="/pages/coordinador/notificar" iconAwesome= "fa-phone" />    
+
                 <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{p:ifGranted('ADMINISTRADOR')}" outcome="/pages/solicitudmanualdocente/list" iconAwesome= "fa-calendar-o" />
                 <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{p:ifGranted('ADMINISTRADOR')}"  outcome="/pages/solicitudmanualadministrativo/list" iconAwesome= "fa-calendar-o" />
-                
 
 
-                 <b:navLink></b:navLink>
-              
+
+                <b:navLink></b:navLink>
+
                 <b:dropMenu value="#{msg['menubar.calendario']}" rendered="#{p:ifGranted('ADMINISTRADOR')}">
                     <b:navLink value="#{msg['menu.viajes']}"  outcome="/pages/calendario/viaje" iconAwesome= "fa-calendar-o" />
                     <b:navLink value="#{msg['menu.solicitudes']}"  outcome="/pages/calendario/solicitudes" iconAwesome= "fa-calendar-o" />
@@ -119,8 +119,8 @@ Hint to editors: The menus follow the Chicago style of capitalization. Please ca
                     <b:navLink/>
                     <b:navLink value="#{msg['menu.estatus']}"   outcome="/pages/estatus/list" iconAwesome="fa-address-card " />
                     <b:navLink value="#{msg['menu.estatusviaje']}"   outcome="/pages/estatusviaje/list" iconAwesome="fa-thermometer-half" />
-                                        <b:navLink value="#{msg['menu.lugares']}"   outcome="/pages/lugares/list" iconAwesome=" fa-building" />
-                                           <b:navLink/>
+                    <b:navLink value="#{msg['menu.lugares']}"   outcome="/pages/lugares/list" iconAwesome=" fa-building" />
+                    <b:navLink/>
                     <b:navLink value="#{msg['menu.tipovehiculo']}"  outcome="/pages/tipovehiculo/list" iconAwesome= "fa-calendar-o" />
                     <b:navLink value="#{msg['menu.tiposolicitud']}" outcome="/pages/tiposolicitud/list" iconAwesome= "fa-calendar-o" />
                     <b:navLink value="#{msg['menu.sugerencia']}"  outcome="/pages/sugerencia/list" iconAwesome= "fa-comments-o" />

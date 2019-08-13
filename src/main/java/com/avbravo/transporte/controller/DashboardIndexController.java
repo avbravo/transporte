@@ -6,6 +6,8 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
+import com.avbravo.commonejb.entity.Facultad;
+import com.avbravo.commonejb.repository.FacultadRepository;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.transporte.security.LoginController;
@@ -14,6 +16,7 @@ import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -21,9 +24,7 @@ import javax.inject.Named;
 import org.bson.Document;
 import org.primefaces.model.chart.PieChartModel;
 
-
 // </editor-fold>
-
 /**
  *
  * @author avbravo
@@ -35,14 +36,15 @@ public class DashboardIndexController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
 
-  private PieChartModel pieModelSolicitud;
-  
+    private PieChartModel pieModelSolicitud;
+    @Inject
+    FacultadRepository facultadRepository;
     @Inject
     SolicitudRepository solicitudRepository;
     @Inject
     VehiculoRepository vehiculoRepository;
-   @Inject
-ErrorInfoServices errorServices;
+    @Inject
+    ErrorInfoServices errorServices;
     @Inject
     LoginController loginController;
     @Inject
@@ -67,9 +69,6 @@ ErrorInfoServices errorServices;
         this.pieModelSolicitud = pieModelSolicitud;
     }
 
-  
-    
-    
     public Integer getTotalCancelado() {
         return totalCancelado;
     }
@@ -97,8 +96,6 @@ ErrorInfoServices errorServices;
     public void setTotalVehiculosInActivos(Integer totalVehiculosInActivos) {
         this.totalVehiculosInActivos = totalVehiculosInActivos;
     }
-    
-    
 
     public void setTotalVehiculosActivos(Integer totalVehiculosActivos) {
         this.totalVehiculosActivos = totalVehiculosActivos;
@@ -111,7 +108,7 @@ ErrorInfoServices errorServices;
     public void setTotalVehiculosEnReparacion(Integer totalVehiculosEnReparacion) {
         this.totalVehiculosEnReparacion = totalVehiculosEnReparacion;
     }
-    
+
     public Integer getTotales() {
         return totales;
     }
@@ -144,25 +141,23 @@ ErrorInfoServices errorServices;
         this.totalRechazado = totalRechazado;
     }
 
-
     /**
      * Creates a new instance of DashboardController
      */
     public DashboardIndexController() {
     }
 
-    
     // <editor-fold defaultstate="collapsed" desc="init">
     @PostConstruct
     public void init() {
- 
+
         calcularTotales();
     } // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="calcularTotales()">
     public void calcularTotales() {
         try {
-             pieModelSolicitud= new PieChartModel();
+            pieModelSolicitud = new PieChartModel();
             switch (loginController.getRol().getIdrol()) {
                 case "ADMINISTRADOR":
                 case "SECRETARIA":
@@ -171,6 +166,26 @@ ErrorInfoServices errorServices;
                     totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO"));
                     totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO"));
                     totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO"));
+
+                    break;
+                case "COORDINADOR":
+                    String descripcion = loginController.getUsuario().getUnidad().getIdunidad();
+                    Document doc = new Document("descripcion", descripcion).append("activo", "si");
+                    List<Facultad> list = facultadRepository.findBy(doc);
+                    if (list == null || list.isEmpty()) {
+                        totalSolicitado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "SOLICITADO").append("usuario.username", loginController.getUsuario().getUsername()));
+                        totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO").append("usuario.username", loginController.getUsuario().getUsername()));
+                        totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO").append("usuario.username", loginController.getUsuario().getUsername()));
+                        totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO").append("usuario.username", loginController.getUsuario().getUsername()));
+
+                    } else {
+                        Facultad facultad = list.get(0);
+                        totalSolicitado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "SOLICITADO").append("facultad.idfacultad", facultad.getIdfacultad()));
+                        totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO").append("facultad.idfacultad", facultad.getIdfacultad()));;
+                        totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO").append("facultad.idfacultad", facultad.getIdfacultad()));
+                        totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO").append("facultad.idfacultad", facultad.getIdfacultad()));
+
+                    }
 
                     break;
 
@@ -183,33 +198,29 @@ ErrorInfoServices errorServices;
 
             }
             totales = totalAprobado + totalCancelado + totalRechazado + totalSolicitado;
-            
-             pieModelSolicitud.set("Solicitado", totalSolicitado);
-             pieModelSolicitud.set("Aprobado", totalAprobado);
-             pieModelSolicitud.set("Rechazado", totalRechazado);
-             pieModelSolicitud.set("Cancelado", totalCancelado);
-         
-       
-             pieModelSolicitud.setTitle("Solicitudes");
-     pieModelSolicitud.setLegendPosition("w");
-     pieModelSolicitud.setShowDatatip(true);
-        //    pieModelSolicitud.setFill(false);
-        pieModelSolicitud.setShowDataLabels(true);
-     //  pieModelSolicitud.setDiameter(150);
-        pieModelSolicitud.setShadow(false);
-               
-                
-                
+
+            pieModelSolicitud.set("Solicitado", totalSolicitado);
+            pieModelSolicitud.set("Aprobado", totalAprobado);
+            pieModelSolicitud.set("Rechazado", totalRechazado);
+            pieModelSolicitud.set("Cancelado", totalCancelado);
+
+            pieModelSolicitud.setTitle("Solicitudes");
+            pieModelSolicitud.setLegendPosition("w");
+            pieModelSolicitud.setShowDatatip(true);
+            //    pieModelSolicitud.setFill(false);
+            pieModelSolicitud.setShowDataLabels(true);
+            //  pieModelSolicitud.setDiameter(150);
+            pieModelSolicitud.setShadow(false);
+
             //Vehiculos
             totalVehiculos = vehiculoRepository.findAll().size();
-            totalVehiculosActivos = vehiculoRepository.count(new Document("activo","si"));
-            totalVehiculosInActivos = vehiculoRepository.count(new Document("activo","no"));
-            totalVehiculosEnReparacion = vehiculoRepository.count(new Document("enreparacion","si"));
-            totalVehiculosActivos-= totalVehiculosEnReparacion;
-            
+            totalVehiculosActivos = vehiculoRepository.count(new Document("activo", "si"));
+            totalVehiculosInActivos = vehiculoRepository.count(new Document("activo", "no"));
+            totalVehiculosEnReparacion = vehiculoRepository.count(new Document("enreparacion", "si"));
+            totalVehiculosActivos -= totalVehiculosEnReparacion;
 
         } catch (Exception e) {
-            errorServices.errorMessage(JsfUtil.nameOfClass(),JsfUtil.nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
         }
     }
     // </editor-fold>
