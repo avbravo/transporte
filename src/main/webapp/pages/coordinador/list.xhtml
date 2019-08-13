@@ -104,7 +104,7 @@
 
                    
                    <p:column headerText="" style="width:70px">
-                        <b:commandButton action="#{coordinadorController.aceptarVistoBueno(item,"si")}"
+                        <b:commandButton action="#{coordinadorController.aceptarVistoBueno(item,'si')}"
                                          iconAwesome="fa-check-square-o" 
                                        title="#{msg['button.aprobar']}"
                                        
@@ -114,7 +114,7 @@
 
                     </p:column>
                      <p:column headerText="" style="width:70px">
-                        <b:commandButton action="#{coordinadorController.aceptarVistoBueno(item,"no")}"
+                        <b:commandButton action="#{coordinadorController.aceptarVistoBueno(item,'no')}"
                                          iconAwesome="fa-times" 
                                      
                                      title="#{msg['button.rechazar']}"
