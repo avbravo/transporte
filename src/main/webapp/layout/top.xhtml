@@ -40,7 +40,7 @@
                         
                         
                         
-                        <b:navCommandLink value="#{msg['menu.solicitudescoordinador']}" action="#{solicitudController.goList('coordinador')}" rendered="#{p:ifGranted('COORDINADOR')}"  iconAwesome= "fa-book" />                                               
+                        <b:navCommandLink value="#{msg['menu.vistobueno']}" action="#{coordinadorController.goList('coordinador')}" rendered="#{p:ifGranted('COORDINADOR')}"  iconAwesome= "fa-book" />                                               
                         <b:navLink value="#{msg['menu.calendariodocente']}" rendered="#{p:ifGranted('COORDINADOR')}" outcome="/pages/coordinador/calendario" iconAwesome= "fa-calendar-o" />                   
                         <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('COORDINADOR')}" outcome="/pages/coordinador/notificar" iconAwesome= "fa-phone" />                   
 

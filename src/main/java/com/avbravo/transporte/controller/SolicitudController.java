@@ -318,7 +318,7 @@ public class SolicitudController implements Serializable, IController {
                     .withNameFieldOfRowPage("rowPage")
                     .withTypeKey("primary")
                     .withSearchLowerCase(false)
-                    .withPathReportDetail("/resources/reportes/solicituddocentedetails.jasper")
+                    .withPathReportDetail("/resources/reportes/solicituddocente/details.jasper")
                     .withPathReportAll("/resources/reportes/solicituddocente/all.jasper")
                     .withparameters(parameters)
                     .withResetInSave(false)

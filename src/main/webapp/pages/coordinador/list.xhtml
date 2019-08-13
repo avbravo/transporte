@@ -102,16 +102,27 @@
 
                     </p:column>
 
-                    <p:column style="width:55px" >
+                   
+                   <p:column headerText="" style="width:70px">
+                        <b:commandButton action="#{coordinadorController.aceptarVistoBueno(item,"si")}"
+                                         iconAwesome="fa-check-square-o" 
+                                       title="#{msg['button.aprobar']}"
+                                       
+                                         update=":form:dataTable, :form:msgs"/>
 
-                        <jmoordbjsf:commandbuttondatatableprepareView
-                            rendered="#{(item.estatus.idestatus eq 'SOLICITADO') or ((item.estatus.idestatus eq 'APROBADO'))}"
-                            controller="#{coordinadorController}"
-                            url="/pages/solicituddocente/view.xhtml"
-                            item="#{item}"
-                            />                
+
+
                     </p:column>
-                  
+                     <p:column headerText="" style="width:70px">
+                        <b:commandButton action="#{coordinadorController.aceptarVistoBueno(item,"no")}"
+                                         iconAwesome="fa-times" 
+                                     
+                                     title="#{msg['button.rechazar']}"
+                                         update=":form:dataTable, :form:msgs"/>
+
+
+
+                    </p:column>
                  
 
 
@@ -126,6 +137,13 @@
 
                             <p:outputLabel value="#{msg['field.horaregreso']}" />
                             <p:outputLabel value="#{coordinadorController.showHour(item.fechahoraregreso)}"  />
+                            
+                              <p:outputLabel  value="#{msg['field.solicitadopor']}" />
+                    <p:outputLabel  value="#{item.usuario.get(0).nombre}" id="solicitadopor"   />
+                    
+                    <p:outputLabel  value="#{msg['field.responsable']}" />
+                    <p:outputLabel  value="#{item.usuario.get(1).nombre}" id="responsable"   />
+
 
 
                             <p:outputLabel value="#{msg['field.objetivo']}"  />
