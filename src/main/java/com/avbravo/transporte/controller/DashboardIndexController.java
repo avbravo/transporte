@@ -166,6 +166,7 @@ ErrorInfoServices errorServices;
             switch (loginController.getRol().getIdrol()) {
                 case "ADMINISTRADOR":
                 case "SECRETARIA":
+                case "SECRETARIO ADMINISTRATIVO":
                     totalSolicitado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "SOLICITADO"));
                     totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO"));
                     totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO"));

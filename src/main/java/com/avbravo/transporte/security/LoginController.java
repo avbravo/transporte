@@ -373,20 +373,27 @@ public class LoginController implements Serializable, SecurityInterface {
                     accessInfoRepository.save(accessInfoServices.generateAccessInfo(username, "login", rf.getAppMessage("login.welcome")));
                     loggedIn = true;
                     JsfUtil.successMessage(rf.getAppMessage("login.welcome") + " " + usuario.getNombre());
-                    
+
                     //Notificaciones que tiene
                     Document doc = new Document("username", username).append("viewed", "no");
                     Integer count = jmoordbNotificationsRepository.count(doc);
                     JmoordbContext.put("notification_count", count);
 
-                    validadorRoles.validarRoles(rol.getIdrol());
+                   // validadorRoles.validarRoles(rol.getIdrol());
                     switch (rol.getIdrol()) {
                         case "DOCENTE":
                             return "/faces/pages/solicituddocente/new.xhtml?faces-redirect=true";
                         case "ADMINISTRATIVO":
                             return "/faces/pages/solicitudadministrativo/new.xhtml?faces-redirect=true";
+                        case "COORDINADOR":
+                            return "/faces/pages/coordinador/list.xhtml?faces-redirect=true";
                         case "ADMINISTRADOR":
+                        case "SECRETARIO ADMINISTRATIVO":
+             
+                        case "CHOFER":
                             return "/faces/pages/index.xhtml?faces-redirect=true";
+                        default:
+                           JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.rolnovalidadoenelmenu"));
                     }
 
                 case NOT_DONE:

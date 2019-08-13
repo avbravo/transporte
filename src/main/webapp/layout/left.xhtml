@@ -62,6 +62,11 @@ Hint to editors: The menus follow the Chicago style of capitalization. Please ca
                 <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('ADMINISTRATIVO')}" outcome="/pages/solicitudadministrativo/notificar" iconAwesome= "fa-phone" />                   
                 
                 
+                   <b:navLink value="#{msg['menu.crearsolicitud']}" rendered="#{p:ifGranted('COORDINADOR')}"  outcome="/pages/coordinador/new" iconAwesome="fa-pencil-square-o"  />                   
+                        <b:navCommandLink value="#{msg['menu.misolicitud']}" action="#{solicitudController.goList('coordinador')}" rendered="#{p:ifGranted('COORDINADOR')}"  iconAwesome= "fa-book" />                                               
+                        <b:navLink value="#{msg['menu.calendariodocente']}" rendered="#{p:ifGranted('COORDINADOR')}" outcome="/pages/coordinador/calendario" iconAwesome= "fa-calendar-o" />                   
+                   <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('COORDINADOR')}" outcome="/pages/coordinador/notificar" iconAwesome= "fa-phone" />    
+                
                 <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{p:ifGranted('ADMINISTRADOR')}" outcome="/pages/solicitudmanualdocente/list" iconAwesome= "fa-calendar-o" />
                 <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{p:ifGranted('ADMINISTRADOR')}"  outcome="/pages/solicitudmanualadministrativo/list" iconAwesome= "fa-calendar-o" />
                 

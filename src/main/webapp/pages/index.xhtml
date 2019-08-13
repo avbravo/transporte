@@ -109,7 +109,7 @@
                 </b:row>
             </b:panel>
 
-            <b:panel collapsible="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}">
+            <b:panel collapsible="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA,SECRETARIO ADMINISTRATIVO')}">
                 <f:facet name="heading">
                     <i class="fa fa-car" style="padding-right:20px" />
                     <h:outputText value="#{msg['title.vehiculos']}" />
