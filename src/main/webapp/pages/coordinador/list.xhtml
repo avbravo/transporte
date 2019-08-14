@@ -107,7 +107,7 @@
                         <b:commandButton action="#{coordinadorController.aceptarVistoBueno(item,'si')}"
                                          iconAwesome="fa-check-square-o" 
                                        title="#{msg['button.aprobar']}"
-                                       
+                                       rendered="#{coordinadorController.isSolicitado(item.estatus)}"
                                          update=":form:dataTable, :form:msgs"/>
 
 
@@ -116,7 +116,7 @@
                      <p:column headerText="" style="width:70px">
                         <b:commandButton action="#{coordinadorController.aceptarVistoBueno(item,'no')}"
                                          iconAwesome="fa-times" 
-                                     
+                                     rendered="#{coordinadorController.isSolicitado(item.estatus)}"
                                      title="#{msg['button.rechazar']}"
                                          update=":form:dataTable, :form:msgs"/>
 
