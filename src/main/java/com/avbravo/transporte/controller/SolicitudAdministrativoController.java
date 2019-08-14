@@ -661,10 +661,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             /**
              * Habilitarlo si no deseamos guardar los que estan en rojo
              */
-//            if (!isValidCantidadPasajeros()) {
-//
-//                return "";
-//            }
+
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
             //si cambia el email o celular del responsable actualizar ese usuario
@@ -691,7 +688,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     solicitud.setFechahorapartida(db.getFechahorainicio());
                     solicitud.setFechahoraregreso(db.getFechahorafin());
                     solicitud.setNumerodevehiculos(1);
-                    solicitud.setVistoBueno(vistoBuenoServices.inicializar());
+                    solicitud.setVistoBueno(vistoBuenoServices.inicializarPendiente(jmoordb_user));
 
                     if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
                         solicitudesGuardadas++;
@@ -1552,32 +1549,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="isValidCantidadPasajeros()">
-    private Boolean isValidCantidadPasajeros() {
-
-        try {
-
-            Boolean hayDisponiblesvehiculos = true;
-
-            for (DisponiblesBeans db : disponiblesBeansList) {
-                if (db.getBusesRecomendados() < db.getNumeroBuses()) {
-                    hayDisponiblesvehiculos = false;
-                }
-
-            }
-
-            if (!hayDisponiblesvehiculos) {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeasignarbusesparapasajeros"));
-                return false;
-            }
-
-            return true;
-        } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return false;
-    }
-    // </editor-fold>
+   
 
     // <editor-fold defaultstate="collapsed" desc="String edit()">
     @Override
