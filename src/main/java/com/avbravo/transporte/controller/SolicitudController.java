@@ -59,6 +59,7 @@ import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
+import com.avbravo.transporteejb.services.NotificacionServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TipogiraServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
@@ -67,8 +68,6 @@ import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 import com.avbravo.transporteejb.services.VistoBuenoServices;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.or;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -95,7 +94,6 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.primefaces.component.api.UIColumn;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
@@ -249,6 +247,8 @@ public class SolicitudController implements Serializable, IController {
     VehiculoServices vehiculoServices;
     @Inject
     UsuarioServices usuarioServices;
+    @Inject
+    NotificacionServices notificacionServices;
     @Inject
     JmoordbResourcesFiles rf;
     @Inject
@@ -727,7 +727,8 @@ public class SolicitudController implements Serializable, IController {
                 //Verifica si es un coordinador y le envia la notificacion
 
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(), "solicituddocente");
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicituddocente");
+
 
                 });
 
@@ -1364,30 +1365,7 @@ public class SolicitudController implements Serializable, IController {
    
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
-    private Boolean saveNotification(String username, String tiposolicitud) {
-        try {
-            JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
-
-            jmoordbNotifications.setIdjmoordbnotifications(autoincrementableServices.getContador("jmoordbnNotifications"));
-            jmoordbNotifications.setUsername(username);
-            jmoordbNotifications.setMessage("Nueva solicitud de: " + responsable.getNombre());
-            jmoordbNotifications.setViewed("no");
-            jmoordbNotifications.setDate(DateUtil.fechaActual());
-            jmoordbNotifications.setType(tiposolicitud);
-
-            List<UserInfo> list = jmoordbNotificationsRepository.generateListUserinfo(username, "create");
-
-            jmoordbNotifications.setUserInfo(list);
-            
-            jmoordbNotificationsRepository.save(jmoordbNotifications);
-            return true;
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-
-        }
-        return false;
-    }// </editor-fold>
+    
 
     // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
     public Future<String> sendEmailAsync(String emailreceptor, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
@@ -1621,7 +1599,8 @@ usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user)
             } else {
 
                 usuarioList.forEach((u) -> {
-                    saveNotification(jmoordb_user.getUsername(), "solicituddocente");
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicituddocente");
+
                 });
                 push.send("Edicicion de solicitud docente ");
             }
@@ -2407,7 +2386,8 @@ usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user)
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(), "solicituddocente");
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicituddocente");
+                   
                 });
                 push.send("Se cancelo una solicitud ");
             }

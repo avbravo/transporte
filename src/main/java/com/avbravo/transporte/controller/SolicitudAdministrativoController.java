@@ -59,6 +59,7 @@ import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
+import com.avbravo.transporteejb.services.NotificacionServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TipogiraServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
@@ -248,6 +249,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     VehiculoServices vehiculoServices;
     @Inject
     UsuarioServices usuarioServices;
+       @Inject
+    NotificacionServices notificacionServices;
     @Inject
     JmoordbResourcesFiles rf;
     @Inject
@@ -708,7 +711,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(), "solicitudadministrativo");
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicitudadministrativo");
+                 //   saveNotification(u.getUsername(), "solicitudadministrativo");
                 });
                 push.send("Nueva solicitud Administrativo ");
             }
@@ -1341,7 +1345,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
-    private Boolean saveNotification(String username, String tiposolicitud) {
+    private Boolean saveNotification2(String username, String tiposolicitud) {
         try {
             JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
 
@@ -1585,7 +1589,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(), "solicitudadministrativo");
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicitudadministrativo");
+                   // saveNotification(u.getUsername(), "solicitudadministrativo");
                 });
                 push.send("Edicicion de solicitud administrativo ");
             }
@@ -2363,7 +2368,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotification(u.getUsername(), "solicitudadministrativo");
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicitudadministrativo");
+             //       saveNotification(u.getUsername(), "solicitudadministrativo");
                 });
                 push.send("Se cancelo una solicitud ");
             }
