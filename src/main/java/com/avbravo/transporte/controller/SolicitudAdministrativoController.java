@@ -156,7 +156,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     List<Sugerencia> sugerenciaList = new ArrayList<>();
     List<DisponiblesBeans> disponiblesBeansList = new ArrayList<>();
 
-   DisponiblesBeans disponiblesBeansSelected = new DisponiblesBeans();
+    DisponiblesBeans disponiblesBeansSelected = new DisponiblesBeans();
 
     //Entity
     Solicitud solicitud = new Solicitud();
@@ -366,34 +366,33 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             tipovehiculoList = solicitud.getTipovehiculo();
             disponiblesBeansList = new ArrayList<>();
             // hayBusDisponiblesConFechas();
-            
-              /**
-               * Carga los tipos de vehiculos disponibles con las cantidades seleccionadas,
-               */
+
+            /**
+             * Carga los tipos de vehiculos disponibles con las cantidades
+             * seleccionadas,
+             */
             List<Tipovehiculo> list = tipovehiculoRepository.findBy("activo", "si");
             if (list == null || list.isEmpty()) {
 
             } else {
                 Integer maximo = 0;
-                Integer numerovehiculo=0;
-                Integer numeropasajero=0;
+                Integer numerovehiculo = 0;
+                Integer numeropasajero = 0;
                 for (Tipovehiculo tv : list) {
                     maximo = vehiculoServices.cantidadVehiculosPorTipo(tv);
-                    if(tv.getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())){
-                       numerovehiculo= 1;
-                       numeropasajero= solicitud.getPasajeros();
-                         TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans = new TipoVehiculoCantidadBeans(tv, numerovehiculo, maximo, numeropasajero);
-                    tipoVehiculoCantidadBeansList.add(tipoVehiculoCantidadBeans);
-                    }else{
-                        numerovehiculo=0;
-                        numeropasajero=0;
+                    if (tv.getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())) {
+                        numerovehiculo = 1;
+                        numeropasajero = solicitud.getPasajeros();
+                        TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans = new TipoVehiculoCantidadBeans(tv, numerovehiculo, maximo, numeropasajero);
+                        tipoVehiculoCantidadBeansList.add(tipoVehiculoCantidadBeans);
+                    } else {
+                        numerovehiculo = 0;
+                        numeropasajero = 0;
                     }
-                  
+
                 }
 
             }
-            
-            
 
             changeDaysViewAvailable();
             if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
@@ -643,11 +642,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
                 return "";
             }
-            if(!isValidDisponibles()){
-                  JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.listavehiculosnoesvalida"));
+            if (!isValidDisponibles()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.listavehiculosnoesvalida"));
                 return "";
             }
-            
 
             //Asignar el estatusViaje
             EstatusViaje estatusViaje = new EstatusViaje();
@@ -686,7 +684,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             //Guarda la solicitud
             for (DisponiblesBeans db : disponiblesBeansList) {
                 for (int i = 0; i < db.getBusesRecomendados(); i++) {
-                
+
                     //Aqui revisar la cantidad de pasajeros
                     solicitud.setPasajeros(db.getPasajerosPorViaje().get(0));
 
@@ -709,7 +707,6 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
             //  Guardar las notificaciones
-      
             usuarioList = usuarioServices.usuariosParaNotificar();
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
@@ -736,30 +733,17 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
-    public String columnColor(String estatus) {
-        String color = "";
+    // <editor-fold defaultstate="collapsed" desc="String columnColor(Estatus estatus)">
+    public String columnColor(Estatus estatus) {
+        String color = "black";
         try {
-            switch (estatus) {
-                case "RECHAZADO":
-                    color = "red";
-                case "CANCELADO":
-                    color = "pink";
-                    break;
-                case "APROBADO":
-                    color = "green";
-                    break;
-                case "SOLICITADO":
-                    color = "blue";
-                    break;
-                default:
-                    color = "black";
-            }
+            color = estatusServices.columnColor(estatus);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return color;
-    } // </editor-fold>
+    }
+// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="columnColorDisponibles(DisponiblesBeans disponiblesBeans) ">
 
     public String columnColorDisponibles(DisponiblesBeans disponiblesBeans) {
@@ -814,16 +798,12 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 }
             }
             if (!suggestions.isEmpty()) {
- 
-//                Collections.sort(suggestions,
-//                        (Solicitud a, Solicitud b) -> a.getIdsolicitud().compareTo(b.getIdsolicitud()));
-//                
-                
-suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
-                      .reversed()
-                      .thenComparing(Comparator.comparing(Solicitud::getIdsolicitud)
-                      .reversed())
-);
+
+                suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
+                        .reversed()
+                        .thenComparing(Comparator.comparing(Solicitud::getIdsolicitud)
+                                .reversed())
+                );
             }
 
         } catch (Exception e) {
@@ -1411,10 +1391,10 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
             jmoordbNotifications.setViewed("no");
             jmoordbNotifications.setDate(DateUtil.fechaActual());
             jmoordbNotifications.setType(tiposolicitud);
-  List<UserInfo> list = jmoordbNotificationsRepository.generateListUserinfo(username, "create");
+            List<UserInfo> list = jmoordbNotificationsRepository.generateListUserinfo(username, "create");
 
             jmoordbNotifications.setUserInfo(list);
-            
+
             jmoordbNotificationsRepository.save(jmoordbNotifications);
             return true;
         } catch (Exception e) {
@@ -1475,7 +1455,7 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!solicitudServices.isValidDates(solicitud,true)) {
+                if (!solicitudServices.isValidDates(solicitud, true)) {
                     return;
                 }
                 changeDaysViewAvailable();
@@ -1484,7 +1464,6 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
                 } else {
                     if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
                         JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
-                     
 
                         return;
                     }
@@ -1492,7 +1471,6 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
 
                 if (!solicitudServices.solicitudDisponible(solicitud, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
                     JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yatienesolicitudenesasfechas"));
-
 
                 }
 
@@ -1608,7 +1586,7 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
             leyoSugerencias = true;
             solicitudGuardadasList = new ArrayList<>();
             solicitudGuardadasList.add(solicitud);
-      if (solicitud.getEstatus().getIdestatus().equals("APROBAOD") ||solicitud.getEstatus().getIdestatus().equals("CANCELADO") ) {
+            if (solicitud.getEstatus().getIdestatus().equals("APROBAOD") || solicitud.getEstatus().getIdestatus().equals("CANCELADO")) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepuedeeditarsolicitudaprobadaocancelada"));
                 return "";
             }
@@ -1619,10 +1597,10 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
             if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
 
             } else {
-                  if(!isValidDisponibles()){
-                  JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.listavehiculosnoesvalida"));
-                return "";
-            }
+                if (!isValidDisponibles()) {
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.listavehiculosnoesvalida"));
+                    return "";
+                }
                 /**
                  * Verifica que el numero de pasajeros no exceda la capacidad
                  * maxima del bus con mayor capacidad , ya que cuando se edita
@@ -1668,7 +1646,6 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
 
             //  Guardar las notificaciones
-            
             usuarioList = usuarioServices.usuariosParaNotificar();
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
@@ -1733,7 +1710,7 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
 
             }
             //  Guardar las notificaciones
-     
+
             List<Usuario> usuarioList = usuarioServices.usuariosParaNotificar();
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
@@ -1810,7 +1787,7 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
                 JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.seleccionetipodevehiculos"));
                 return "";
             }
-            if (calcularTotalVehiculo()== 0) {
+            if (calcularTotalVehiculo() == 0) {
                 JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.indiquelacantidaddevehiculosportipo"));
                 return "";
             }
@@ -1896,7 +1873,7 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-    
+
         return "";
     }// </editor-fold>
 
@@ -1963,20 +1940,17 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
                 varRango = "" + r;
             }
             String header = "\n Detalle de la solicitud:"
-
                     + "\nObjetivo : " + s0.getObjetivo()
                     + "\nObservaciones: " + s0.getObservaciones()
                     + "\nLugares: " + s0.getLugares()
                     + "\nLugar de partida: " + s0.getLugarpartida()
                     + "\nLugar de llegada: " + s0.getLugarllegada()
-//                    + "\nFacultad: " + varFacultadName
-//                    + "\nCarrera: " + varCarreraName
+                    //                    + "\nFacultad: " + varFacultadName
+                    //                    + "\nCarrera: " + varCarreraName
                     + "\nRango: " + varRango
                     + "\nEstatus: " + s0.getEstatus().getIdestatus() + "";
 
-
-            
-             String texto = "\n___________________________SOLICITUDES___________________________________";
+            String texto = "\n___________________________SOLICITUDES___________________________________";
             texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Pasajeros", "Vehiculo");
 
             for (Solicitud s : solicitudGuardadasList) {
@@ -2450,7 +2424,6 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
             }
 
             //  Guardar las notificaciones
-            
             List<Usuario> usuarioList = usuarioServices.usuariosParaNotificar();
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
@@ -2486,7 +2459,7 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
         int alteredRow = event.getRowIndex();
         //Obtiene el encabezado de la columna que se edita la propiedad headerText
         UIColumn col = (UIColumn) event.getColumn();
-       
+
         Integer v = (Integer) newValue;
         switch (col.getHeaderText().toUpperCase()) {
             case "VEHICULOS":
@@ -2511,27 +2484,28 @@ suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
     // <editor-fold defaultstate="collapsed" desc="Integer calcularTotalVehiculo() ">
     public Integer calcularTotalVehiculo() {
         Integer total = 0;
-    
+
         try {
             for (TipoVehiculoCantidadBeans tvc : tipoVehiculoCantidadBeansList) {
                 total += tvc.getCantidad();
-            
+
             }
-solicitud.setNumerodevehiculos(total);
+            solicitud.setNumerodevehiculos(total);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return total;
     }
+
     // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="Integer calcularTotalPasajeros()">
-     public Integer calcularTotalPasajeros() {
-     
-        Integer totalpasajeros=0;
+    public Integer calcularTotalPasajeros() {
+
+        Integer totalpasajeros = 0;
         try {
             for (TipoVehiculoCantidadBeans tvc : tipoVehiculoCantidadBeansList) {
-           
-                totalpasajeros+= tvc.getPasajeros();
+
+                totalpasajeros += tvc.getPasajeros();
             }
             solicitud.setPasajeros(totalpasajeros);
         } catch (Exception e) {
@@ -2540,26 +2514,27 @@ solicitud.setNumerodevehiculos(total);
         return totalpasajeros;
     }
     // </editor-fold>  
-     
-     // <editor-fold defaultstate="collapsed" desc="Boolean isValidDisponibles()">
-     /**
-      * Verifica que la lista de disponibles sea valida en base cantidad de pasajeros
-      * buses o recomandados
-      * @return 
-      */
-     private Boolean isValidDisponibles(){
-         Boolean valid=true;
-         try {
-             for(DisponiblesBeans db:disponiblesBeansList ){
-                 if(db.getBusesRecomendados() == 0 || db.getNumeroPasajerosSolicitados() ==0 || db.getNumeroVehiculosSolicitados() ==0){
-                     valid = false;
-                 }
-             }
-             
-         } catch (Exception e) {
-               errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-         }
-         return valid;
-     }
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean isValidDisponibles()">
+    /**
+     * Verifica que la lista de disponibles sea valida en base cantidad de
+     * pasajeros buses o recomandados
+     *
+     * @return
+     */
+    private Boolean isValidDisponibles() {
+        Boolean valid = true;
+        try {
+            for (DisponiblesBeans db : disponiblesBeansList) {
+                if (db.getBusesRecomendados() == 0 || db.getNumeroPasajerosSolicitados() == 0 || db.getNumeroVehiculosSolicitados() == 0) {
+                    valid = false;
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    }
     // </editor-fold>  
 }

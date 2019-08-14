@@ -82,23 +82,23 @@
                         <p:rowToggler />
                     </p:column>
                     <p:column headerText="#{msg['field.idsolicitud']}" style="width:75px">
-                        <h:outputText value="#{item.idsolicitud}" style="color: #{coordinadorController.columnColor(item.estatus.idestatus)}" />
+                        <h:outputText value="#{item.idsolicitud}" style="color: #{coordinadorController.columnColor(item.estatus)}" />
                     </p:column>
 
                     <p:column headerText="#{msg['field.fechapartida']}" style="width:150px">
-                        <h:outputText value="#{coordinadorController.showDate(item.fechahorapartida)} #{coordinadorController.showHour(item.fechahorapartida)}" style="color: #{coordinadorController.columnColor(item.estatus.idestatus)}" />
+                        <h:outputText value="#{coordinadorController.showDate(item.fechahorapartida)} #{coordinadorController.showHour(item.fechahorapartida)}" style="color: #{coordinadorController.columnColor(item.estatus)}" />
                     </p:column>
                     <p:column headerText="#{msg['field.lugarllegada']}"  >
-                        <p:outputLabel value="#{item.lugarllegada}"   style="color: #{coordinadorController.columnColor(item.estatus.idestatus)}" />
+                        <p:outputLabel value="#{item.lugarllegada}"   style="color: #{coordinadorController.columnColor(item.estatus)}" />
                     </p:column>
                     <p:column headerText="#{msg['field.vistobueno']}"  >
-                        <p:outputLabel value="#{item.vistoBueno.aprobado}"   style="color: #{coordinadorController.columnColor(item.estatus.idestatus)}" />
+                        <p:outputLabel value="#{item.vistoBueno.aprobado}"   style="color: #{coordinadorController.columnColor(item.estatus)}" />
                     </p:column>
 
 
                 
                     <p:column headerText="#{msg['field.estatus']}" style="width:100px">
-                        <p:outputLabel  value="#{item.estatus.idestatus}"   style="color: #{coordinadorController.columnColor(item.estatus.idestatus)}"/>
+                        <p:outputLabel  value="#{item.estatus.idestatus}"   style="color: #{coordinadorController.columnColor(item.estatus)}"/>
 
                     </p:column>
 
@@ -147,9 +147,9 @@
 
 
                             <p:outputLabel value="#{msg['field.objetivo']}"  />
-                            <p:outputLabel value="#{item.objetivo}" style="color: #{coordinadorController.columnColor(item.estatus.idestatus)}" />
+                            <p:outputLabel value="#{item.objetivo}" style="color: #{coordinadorController.columnColor(item.estatus)}" />
                             <p:outputLabel value="#{msg['field.lugares']}"/>
-                            <p:outputLabel value="#{item.lugares}"  style="color: #{coordinadorController.columnColor(item.estatus.idestatus)}" />
+                            <p:outputLabel value="#{item.lugares}"  style="color: #{coordinadorController.columnColor(item.estatus)}" />
 
 
 
@@ -188,10 +188,10 @@
 
  <p:outputLabel  value="#{msg['field.vistobueno']}" />
                           
-                                <p:outputLabel value="#{item.vistoBueno.aprobado}"   style="color: #{coordinadorController.columnColor(item.estatus.idestatus)}" />
+                                <p:outputLabel value="#{item.vistoBueno.aprobado}"   style="color: #{coordinadorController.columnColor(item.estatus)}" />
                           
                             <p:outputLabel value="#{msg['field.estatus']}" />
-                            <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{coordinadorController.columnColor(item.estatus.idestatus)}" />
+                            <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{coordinadorController.columnColor(item.estatus)}" />
 
                         </b:panelGrid>
                     </p:rowExpansion>

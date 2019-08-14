@@ -771,29 +771,28 @@ public class CoordinadorController implements Serializable, IController {
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
-    public String columnColor(String estatus) {
-        String color = "";
+    // <editor-fold defaultstate="collapsed" desc="String columnColor(Estatus estatus">
+    public String columnColor(Estatus estatus) {
+        String color = "black";
         try {
-            switch (estatus) {
-                case "RECHAZADO":
-                    color = "red";
-                case "CANCELADO":
-                    color = "pink";
-                    break;
-                case "APROBADO":
-                    color = "green";
-                    break;
-                case "SOLICITADO":
-                    color = "blue";
-                    break;
-                default:
-                    color = "black";
-            }
+           color = estatusServices.columnColor(estatus);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return color;
+    } 
+// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="Boolean columnHabilitadoEstatus(String estatus)">
+    public Boolean isSolicitado(Estatus estatus) {
+        Boolean solicitado= true;
+        try {
+           solicitado = estatusServices.isSolicitado(estatus);
+                   
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return solicitado;
     } // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="columnColorDisponibles(DisponiblesBeans disponiblesBeans) ">
 
@@ -812,7 +811,7 @@ public class CoordinadorController implements Serializable, IController {
         }
         return color;
     } // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="columnColorDisponibles(DisponiblesBeans disponiblesBeans) ">
+    // <editor-fold defaultstate="collapsed" desc="Boolean columnTieneBusesDisponibles(DisponiblesBeans disponiblesBeans)">
 
     /**
      * Indica si los buses disponibles coindicen con los recomendados
