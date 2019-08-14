@@ -1665,7 +1665,8 @@ usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user)
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotificationWithMessages(u.getUsername(), messages);
+                    
+                      notificacionServices.saveNotification(messages,u.getUsername(), "solicituddocente");
                 });
                 push.send("Mensaje de docente ");
             }
@@ -1677,28 +1678,7 @@ usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user)
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
-    private Boolean saveNotificationWithMessages(String username, String mensaje) {
-        try {
-            JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
-
-            jmoordbNotifications.setIdjmoordbnotifications(autoincrementableServices.getContador("jmoordbnNotifications"));
-            jmoordbNotifications.setUsername(username);
-            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            jmoordbNotifications.setMessage(mensaje);
-            jmoordbNotifications.setViewed("no");
-            jmoordbNotifications.setDate(DateUtil.fechaActual());
-            jmoordbNotifications.setType("mensajedocente");
-            jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
-            jmoordbNotificationsRepository.save(jmoordbNotifications);
-
-            return true;
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-
-        }
-        return false;
-    }// </editor-fold>
+   
 
     // <editor-fold defaultstate="collapsed" desc="String goList()">
     /**

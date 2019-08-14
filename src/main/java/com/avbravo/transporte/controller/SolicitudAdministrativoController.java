@@ -712,7 +712,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             } else {
                 usuarioList.forEach((u) -> {
                     notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicitudadministrativo");
-                 //   saveNotification(u.getUsername(), "solicitudadministrativo");
+                 
                 });
                 push.send("Nueva solicitud Administrativo ");
             }
@@ -1344,29 +1344,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
    
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
-    private Boolean saveNotification2(String username, String tiposolicitud) {
-        try {
-            JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
-
-            jmoordbNotifications.setIdjmoordbnotifications(autoincrementableServices.getContador("jmoordbnNotifications"));
-            jmoordbNotifications.setUsername(username);
-            jmoordbNotifications.setMessage("Nueva solicitud de: " + responsable.getNombre());
-            jmoordbNotifications.setViewed("no");
-            jmoordbNotifications.setDate(DateUtil.fechaActual());
-            jmoordbNotifications.setType(tiposolicitud);
-            List<UserInfo> list = jmoordbNotificationsRepository.generateListUserinfo(username, "create");
-
-            jmoordbNotifications.setUserInfo(list);
-
-            jmoordbNotificationsRepository.save(jmoordbNotifications);
-            return true;
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-
-        }
-        return false;
-    }// </editor-fold>
+ 
 
     // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
     public Future<String> sendEmailAsync(String emailreceptor, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
@@ -1590,7 +1568,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             } else {
                 usuarioList.forEach((u) -> {
                     notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicitudadministrativo");
-                   // saveNotification(u.getUsername(), "solicitudadministrativo");
+                   
                 });
                 push.send("Edicicion de solicitud administrativo ");
             }
@@ -1655,7 +1633,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    saveNotificationWithMessages(u.getUsername(), messages);
+                      notificacionServices.saveNotification(messages,u.getUsername(), "solicitudadministrativo");
+                    
                 });
                 push.send("Mensaje de administrativo ");
             }
@@ -1667,28 +1646,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
-    private Boolean saveNotificationWithMessages(String username, String mensaje) {
-        try {
-            JmoordbNotifications jmoordbNotifications = new JmoordbNotifications();
-
-            jmoordbNotifications.setIdjmoordbnotifications(autoincrementableServices.getContador("jmoordbnNotifications"));
-            jmoordbNotifications.setUsername(username);
-            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            jmoordbNotifications.setMessage(mensaje);
-            jmoordbNotifications.setViewed("no");
-            jmoordbNotifications.setDate(DateUtil.fechaActual());
-            jmoordbNotifications.setType("mensajeadministrativo");
-            jmoordbNotifications.setUserInfo(jmoordbNotificationsRepository.generateListUserinfo(username, "create"));
-            jmoordbNotificationsRepository.save(jmoordbNotifications);
-
-            return true;
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-
-        }
-        return false;
-    }// </editor-fold>
+   
 
     // <editor-fold defaultstate="collapsed" desc="String goList()">
     /**
@@ -2369,7 +2327,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             } else {
                 usuarioList.forEach((u) -> {
                     notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicitudadministrativo");
-             //       saveNotification(u.getUsername(), "solicitudadministrativo");
+             
                 });
                 push.send("Se cancelo una solicitud ");
             }
