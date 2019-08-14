@@ -142,6 +142,7 @@ public class CoordinadorController implements Serializable, IController {
     private Integer totalSolicitado = 0;
     private Integer totalRechazadoCancelado = 0;
     private Integer totalViajes = 0;
+    private String vistoBuenoSearch="no";
     /**
      * se usan para obtener los lugares y asignarselo a los atributos lugres de
      * partida y llegada de la solicitud
@@ -250,7 +251,7 @@ public class CoordinadorController implements Serializable, IController {
     VehiculoServices vehiculoServices;
     @Inject
     UsuarioServices usuarioServices;
-       @Inject
+    @Inject
     NotificacionServices notificacionServices;
     @Inject
     JmoordbResourcesFiles rf;
@@ -443,7 +444,7 @@ public class CoordinadorController implements Serializable, IController {
             } else {
                 Facultad facultad = facultadList.get(0);
                 doc = new Document("activo", "si").append("facultad.idfacultad", facultad.getIdfacultad());
-                
+
             }
 
             switch ((String) JmoordbContext.get("searchcoordinador")) {
@@ -467,6 +468,12 @@ public class CoordinadorController implements Serializable, IController {
                     Estatus estatus = new Estatus();
                     estatus = (Estatus) JmoordbContext.get("_fieldsearchcoordinador");
                     doc.append("estatus.idestatus", estatus.getIdestatus());
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
+                    break;
+                case "vistobueno":
+                   String vistoBueno = (String) JmoordbContext.get("_fieldsearchcoordinador");
+                    doc.append("vistoBueno.aprobado", vistoBueno);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
@@ -741,8 +748,7 @@ public class CoordinadorController implements Serializable, IController {
                 //Verifica si es un coordinador y le envia la notificacion
 
                 usuarioList.forEach((u) -> {
-                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicituddocente");
-                    
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
 
                 });
 
@@ -772,20 +778,20 @@ public class CoordinadorController implements Serializable, IController {
     public String columnColor(Estatus estatus) {
         String color = "black";
         try {
-           color = estatusServices.columnColor(estatus);
+            color = estatusServices.columnColor(estatus);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return color;
-    } 
+    }
 // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Boolean columnHabilitadoEstatus(String estatus)">
     public Boolean isSolicitado(Estatus estatus) {
-        Boolean solicitado= true;
+        Boolean solicitado = true;
         try {
-           solicitado = estatusServices.isSolicitado(estatus);
-                   
+            solicitado = estatusServices.isSolicitado(estatus);
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -830,7 +836,7 @@ public class CoordinadorController implements Serializable, IController {
 
     // <editor-fold defaultstate="collapsed" desc="completeSolicitudParaCopiar(String query)">
     public List<Solicitud> completeSolicitudParaCopiar(String query) {
-          return solicitudServices.completeSolicitudParaCopiar(query, "DOCENTE");
+        return solicitudServices.completeSolicitudParaCopiar(query, "DOCENTE");
 
     }
     // </editor-fold>
@@ -1390,17 +1396,17 @@ public class CoordinadorController implements Serializable, IController {
         }
     } // </editor-fold>
 
-   // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
+    // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
     public String showDate(Date date) {
-       return solicitudServices.showDate(date);
+        return solicitudServices.showDate(date);
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String showHour(Date date)">
 
     public String showHour(Date date) {
         return solicitudServices.showHour(date);
-   
+
     }// </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
     public Future<String> sendEmailAsync(String emailreceptor, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
 
@@ -1549,7 +1555,6 @@ public class CoordinadorController implements Serializable, IController {
     }
 
     // </editor-fold>
-  
     // <editor-fold defaultstate="collapsed" desc="String edit()">
     @Override
     public String edit() {
@@ -1615,12 +1620,12 @@ public class CoordinadorController implements Serializable, IController {
             solicitudRepository.update(solicitud);
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
-  //guarda el contenido anterior
-                JmoordbConfiguration jmc = new JmoordbConfiguration();
-                Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
-                RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
-                repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
-                        "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+            //guarda el contenido anterior
+            JmoordbConfiguration jmc = new JmoordbConfiguration();
+            Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
+            RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
+            repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                    "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
             //  Guardar las notificaciones
@@ -1638,8 +1643,8 @@ public class CoordinadorController implements Serializable, IController {
             } else {
 
                 usuarioList.forEach((u) -> {
-                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicituddocente");
-                    
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
+
                 });
                 push.send("Edicicion de solicitud docente ");
             }
@@ -1689,7 +1694,19 @@ public class CoordinadorController implements Serializable, IController {
         }
         return "";
     }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="handleSelect">
+    public String onVistoBuenoChange() {
+        try {
+            JmoordbContext.put("searchcoordinador", "vistobueno");
+            JmoordbContext.put("_fieldsearchcoordinador", vistoBuenoSearch);
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String clear() ">
+
     @Override
     public String clear() {
         try {
@@ -1716,7 +1733,7 @@ public class CoordinadorController implements Serializable, IController {
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-              notificacionServices.saveNotification(messages,u.getUsername(), "solicituddocente");
+                    notificacionServices.saveNotification(messages, u.getUsername(), "solicituddocente");
 
                 });
                 push.send("Mensaje de docente ");
@@ -1728,8 +1745,6 @@ public class CoordinadorController implements Serializable, IController {
         return "";
     }
     // </editor-fold>
-
-   
 
     // <editor-fold defaultstate="collapsed" desc="String goList()">
     /**
@@ -1902,7 +1917,7 @@ public class CoordinadorController implements Serializable, IController {
     }
     // </editor-fold>
 
-// <editor-fold defaultstate="collapsed" desc="sendEmail()">
+// <editor-fold defaultstate="collapsed" desc="String sendEmail(String msg)">
     private String sendEmail(String msg) {
         try {
             /**
@@ -1983,6 +1998,125 @@ public class CoordinadorController implements Serializable, IController {
 //                    usuarioList.forEach((u) -> {
 //                        managerEmail.sendOutlook(u.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
 //                    });
+//Divide para las copias y bcc,cc
+                    Integer size = usuarioList.size();
+                    String[] to; // list of recipient email addresses
+                    String[] cc;
+                    String[] bcc;
+
+                    if (size <= 5) {
+                        to = new String[usuarioList.size()];
+                        cc = new String[0];
+                        bcc = new String[0];
+                    } else {
+                        if (size > 5 && size <= 10) {
+                            to = new String[4];
+                            cc = new String[4];
+                            bcc = new String[0];
+                        } else {
+                            to = new String[4];
+                            cc = new String[4];
+                            bcc = new String[size - 8];
+                        }
+                    }
+                    index = 0;
+                    usuarioList.forEach((u) -> {
+
+                        if (index <= 5) {
+                            to[index] = u.getEmail();
+                        } else {
+                            if (index > 5 && index <= 10) {
+                                cc[index] = u.getEmail();
+                            } else {
+
+                                bcc[index] = u.getEmail();
+
+                            }
+                        }
+                        index++;
+                    });
+
+                    Future<String> completableFutureCC = sendEmailCccBccAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+//                  Future<String> completableFutureCC = managerEmail.sendAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                }
+
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+    // </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="String sendEmail(String msg)">
+    private String sendEmailVistoBueno(Solicitud solicitud, String aprobado) {
+        try {
+            /**
+             * Enviar un email al administrador y al mismo administrador
+             */
+            Solicitud s0 = solicitud;
+
+            String varFacultadName = "";
+            String varCarreraName = "";
+            String varRango = "";
+            varFacultadName = s0.getFacultad().stream().map((f) -> "" + f.getDescripcion()).reduce(varFacultadName, String::concat);
+            for (Carrera c : s0.getCarrera()) {
+                varCarreraName = "" + c.getDescripcion();
+            }
+            for (String r : s0.getRangoagenda()) {
+                varRango = "" + r;
+            }
+            String header = "\n Detalle de la solicitud:"
+                    + "\nObjetivo : " + s0.getObjetivo()
+                    + "\nObservaciones: " + s0.getObservaciones()
+                    + "\nLugares: " + s0.getLugares()
+                    + "\nLugar de partida: " + s0.getLugarpartida()
+                    + "\nLugar de llegada: " + s0.getLugarllegada()
+                    + "\nFacultad: " + varFacultadName
+                    + "\nCarrera: " + varCarreraName
+                    + "\nRango: " + varRango
+                    + "\nEstatus: " + s0.getEstatus().getIdestatus() + "";
+
+            String texto = "\n___________________________SOLICITUDES___________________________________";
+            texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Pasajeros", "Vehiculo");
+
+           
+
+                texto += "\n" + String.format("%10d %20s %25s %10d %20s",
+                        solicitud.getIdsolicitud(),
+                        DateUtil.dateFormatToString(solicitud.getFechahorapartida(), "dd/MM/yyyy hh:mm a"),
+                        DateUtil.dateFormatToString(solicitud.getFechahoraregreso(), "dd/MM/yyyy hh:mm a"),
+                       solicitud.getPasajeros(),
+                       solicitud.getTipovehiculo().get(0).getIdtipovehiculo());
+                texto += "\n________________________________________________________________________";
+
+           String text ="El coordinador ";
+if(aprobado.toLowerCase().equals("si")){
+    text+= " Aprobo  el visto bueno para la solicitud " +solicitud.getIdsolicitud();
+            ;
+}else{
+    text+=" Rechazo el visto bueno para la solicitud " +solicitud.getIdsolicitud();
+}
+            String mensajeAdmin = text+ "   de :" + solicitud.getUsuario().get(0).getNombre()
+                    + "\nemail:" + solicitud.getUsuario().get(0).getEmail()
+                    + "\n" + header
+                    + "\n" + texto
+                    + "\n Por favor ingrese al sistema de transporte para verificarlas.";
+        
+
+            List<JmoordbEmailMaster> jmoordbEmailMasterList = jmoordbEmailMasterRepository.findBy(new Document("activo", "si"));
+            if (jmoordbEmailMasterList == null || jmoordbEmailMasterList.isEmpty()) {
+
+            } else {
+                JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
+                //enviar al administrativo
+
+                Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                
+                //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
+                if (usuarioList == null || usuarioList.isEmpty()) {
+
+                } else {
+
 //Divide para las copias y bcc,cc
                     Integer size = usuarioList.size();
                     String[] to; // list of recipient email addresses
@@ -2395,7 +2529,7 @@ public class CoordinadorController implements Serializable, IController {
 //Remuevo los viajes que tenga asignados
             if (solicitudRepository.update(solicitud)) {
                 JsfUtil.infoDialog("Mensaje", rf.getMessage("info.cancelacionsolicitudes"));
-                 //guarda el contenido anterior
+                //guarda el contenido anterior
                 JmoordbConfiguration jmc = new JmoordbConfiguration();
                 Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
                 RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
@@ -2420,8 +2554,8 @@ public class CoordinadorController implements Serializable, IController {
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicituddocente");
-                    
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
+
                 });
                 push.send("Se cancelo una solicitud ");
             }
@@ -2531,18 +2665,58 @@ public class CoordinadorController implements Serializable, IController {
     }
     // </editor-fold>  
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="String aceptarVistoBueno(Solicitud solicitud, String aprobado) ">
     public String aceptarVistoBueno(Solicitud solicitud, String aprobado) {
         try {
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             solicitud.setVistoBueno(vistoBuenoServices.aprobar(jmoordb_user, aprobado));
-            
+
             solicitudRepository.update(solicitud);
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editado"));
+            //guarda el contenido anterior
+            JmoordbConfiguration jmc = new JmoordbConfiguration();
+            Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
+            RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
+            repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                    "update vistobueno", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+
+            //Obtiene la lista de usuarios para notificar
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
+            //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
+            Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
+
+            //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
+            if (vistoBuenoAprobado) {
+                usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+            }else{
+                //Agrega el docente para que se le envie la notificacion
+                usuarioList.add(solicitud.getUsuario().get(0));
+            }
+            if (usuarioList == null || usuarioList.isEmpty()) {
+            } else {
+                //Verifica si es un coordinador y le envia la notificacion
+               
+//incluir quien la solicito que no sea el administrador
+                usuarioList.forEach((u) -> {
+                    String messages = "";
+                    if (aprobado.toLowerCase().equals("si")) {
+                        messages =  "Se aprobo el visto bueno de la solicitud No, " + solicitud.getIdsolicitud() + " por "+jmoordb_user.getNombre() ;
+                    } else {
+                        messages = "Se rechazo el visto bueno de la solicitud No, " + solicitud.getIdsolicitud() + " por "+jmoordb_user.getNombre() ;
+                    }
+
+                    notificacionServices.saveNotification(messages, u.getUsername(), "vistobuenosolicitud");
+
+                });
+
+                //Envia la notificacion.....
+                push.send("Nueva solicitud Docente ");
+
+          sendEmailVistoBueno(solicitud,aprobado);
+            }
 
         } catch (Exception e) {
-               errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }

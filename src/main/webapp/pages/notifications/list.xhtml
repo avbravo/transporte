@@ -20,7 +20,7 @@
             } 
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, DOCENTE, ADMINISTRATIVO,SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, DOCENTE, ADMINISTRATIVO,SECRETARIA, SECRETARIO ADMINISTRATIVO, COORDINADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
@@ -71,10 +71,10 @@
                         <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
                             <p:outputLabel value="#{app['field.type']}"/>
                             <p:outputLabel value="#{item.type}"/>
-                            <p:outputLabel value="#{msg['field.nombre']}"/>
+<!--                            <p:outputLabel value="#{msg['field.nombre']}"/>
                             <p:outputLabel value="#{jmoordbNotificationsController.generateUsuario(item.username).nombre}"/>
                             <p:outputLabel value="#{app['field.email']}"/>
-                            <p:outputLabel value="#{jmoordbNotificationsController.generateUsuario(item.username).email}"/>
+                            <p:outputLabel value="#{jmoordbNotificationsController.generateUsuario(item.username).email}"/>-->
 
                         </b:panelGrid>
                     </p:rowExpansion>
