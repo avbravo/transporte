@@ -249,7 +249,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     VehiculoServices vehiculoServices;
     @Inject
     UsuarioServices usuarioServices;
-       @Inject
+    @Inject
     NotificacionServices notificacionServices;
     @Inject
     JmoordbResourcesFiles rf;
@@ -341,6 +341,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
             if (action.equals("view")) {
                 view();
+            } else {
+                if (action.equals("list")) {
+                    move(page);
+                }
             }
 
         } catch (Exception e) {
@@ -428,7 +432,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             solicitudDataModel = new SolicitudDataModel(solicitudList);
             Document doc;
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            switch ((String) JmoordbContext.get("searchsolicitud")) {
+            if (JmoordbContext.get("searchsolicitudadministrativo") == null) {
+                JmoordbContext.put("searchsolicitudadministrativo", "_init");
+            }
+            switch ((String) JmoordbContext.get("searchsolicitudadministrativo")) {
                 case "_init":
                 case "_autocomplete":
 
@@ -438,8 +445,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     break;
 
                 case "idsolicitud":
-                    if (JmoordbContext.get("_fieldsearchsolicitud") != null) {
-                        solicitudSearch.setIdsolicitud((Integer) JmoordbContext.get("_fieldsearchsolicitud"));
+                    if (JmoordbContext.get("_fieldsearchsolicitudadministrativo") != null) {
+                        solicitudSearch.setIdsolicitud((Integer) JmoordbContext.get("_fieldsearchsolicitudadministrativo"));
                         doc = new Document("idsolicitud", solicitudSearch.getIdsolicitud()).append("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
                         solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
                     } else {
@@ -450,8 +457,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
                 case "estatus":
                     Estatus estatus = new Estatus();
-                    estatus = (Estatus) JmoordbContext.get("_fieldsearchsolicitud");
-                    doc = new Document("estatus.idestatus", estatus.getIdestatus()).append("activo", "si");
+                    estatus = (Estatus) JmoordbContext.get("_fieldsearchsolicitudadministrativo");
+                    doc = new Document("estatus.idestatus", estatus.getIdestatus()).append("activo", "si").append("usuario.username", jmoordb_user.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
@@ -711,8 +718,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicitudadministrativo");
-                 
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicitudadministrativo");
+
                 });
                 push.send("Nueva solicitud Administrativo ");
             }
@@ -784,7 +791,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
     // <editor-fold defaultstate="collapsed" desc="completeSolicitudParaCopiar(String query)">
     public List<Solicitud> completeSolicitudParaCopiar(String query) {
-          return solicitudServices.completeSolicitudParaCopiar(query, "ADMINISTRATIVO");
+        return solicitudServices.completeSolicitudParaCopiar(query, "ADMINISTRATIVO");
 
     }
     // </editor-fold>
@@ -1335,16 +1342,14 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
     // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
     public String showDate(Date date) {
-       return solicitudServices.showDate(date);
+        return solicitudServices.showDate(date);
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String showHour(Date date)">
 
     public String showHour(Date date) {
         return solicitudServices.showHour(date);
-   
-    }// </editor-fold>
 
- 
+    }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
     public Future<String> sendEmailAsync(String emailreceptor, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
@@ -1494,8 +1499,6 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }
 
     // </editor-fold>
-   
-
     // <editor-fold defaultstate="collapsed" desc="String edit()">
     @Override
     public String edit() {
@@ -1559,12 +1562,12 @@ public class SolicitudAdministrativoController implements Serializable, IControl
              * se creara una solicitud para cada vehiculos solicitado
              */
             solicitudRepository.update(solicitud);
-  //guarda el contenido anterior
-                JmoordbConfiguration jmc = new JmoordbConfiguration();
-                Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
-                RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
-                repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
-                        "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+            //guarda el contenido anterior
+            JmoordbConfiguration jmc = new JmoordbConfiguration();
+            Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
+            RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
+            repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                    "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
 
@@ -1573,8 +1576,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicitudadministrativo");
-                   
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicitudadministrativo");
+
                 });
                 push.send("Edicicion de solicitud administrativo ");
             }
@@ -1616,8 +1619,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     // <editor-fold defaultstate="collapsed" desc="handleSelect">
     public String handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-            JmoordbContext.put("searchsolicitud", "estatus");
-            JmoordbContext.put("_fieldsearchsolicitud", estatusSearch);
+            JmoordbContext.put("searchsolicitudadministrativo", "estatus");
+            JmoordbContext.put("_fieldsearchsolicitudadministrativo", estatusSearch);
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1639,8 +1642,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                      notificacionServices.saveNotification(messages,u.getUsername(), "solicitudadministrativo");
-                    
+                    notificacionServices.saveNotification(messages, u.getUsername(), "solicitudadministrativo");
+
                 });
                 push.send("Mensaje de administrativo ");
             }
@@ -1652,8 +1655,6 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }
     // </editor-fold>
 
-   
-
     // <editor-fold defaultstate="collapsed" desc="String goList()">
     /**
      * se invoca desde los menus
@@ -1663,6 +1664,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     public String goList(String ruta) {
         ruta = ruta.trim();
         JmoordbContext.put("solicitud", "golist");
+        JmoordbContext.put("searchsolicitudadministrativo", "_init");
+        JmoordbContext.put("_fieldsearchadministrativo", "");
         return "/pages/" + ruta + "/list.xhtml";
 //        return "/pages/solicitudadministrativo/list.xhtml";
     }// </editor-fold>
@@ -2316,11 +2319,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             List<Viaje> viajeList = new ArrayList<>();
             solicitud.setViaje(viajeList);
 
-          
 //Remuevo los viajes que tenga asignados
             if (solicitudRepository.update(solicitud)) {
                 JsfUtil.infoDialog("Mensaje", rf.getMessage("info.cancelacionsolicitudes"));
-                 //guarda el contenido anterior
+                //guarda el contenido anterior
                 JmoordbConfiguration jmc = new JmoordbConfiguration();
                 Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
                 RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
@@ -2337,8 +2339,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicitudadministrativo");
-             
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicitudadministrativo");
+
                 });
                 push.send("Se cancelo una solicitud ");
             }
@@ -2447,4 +2449,17 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         return valid;
     }
     // </editor-fold>  
+
+    // <editor-fold defaultstate="collapsed" desc="String clear() ">
+    @Override
+    public String clear() {
+        try {
+            JmoordbContext.put("searchsolicitudadministrativo", "_init");
+            JmoordbContext.put("_fieldsearchadministrativo", "");
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
 }

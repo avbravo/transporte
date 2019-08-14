@@ -426,6 +426,9 @@ public class SolicitudController implements Serializable, IController {
             solicitudDataModel = new SolicitudDataModel(solicitudList);
             Document doc;
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+              if (JmoordbContext.get("searchsolicitud") == null) {
+                JmoordbContext.put("searchsolicitud", "_init");
+            }
             switch ((String) JmoordbContext.get("searchsolicitud")) {
                 case "_init":
                 case "_autocomplete":
@@ -449,7 +452,7 @@ public class SolicitudController implements Serializable, IController {
                 case "estatus":
                     Estatus estatus = new Estatus();
                     estatus = (Estatus) JmoordbContext.get("_fieldsearchsolicitud");
-                    doc = new Document("estatus.idestatus", estatus.getIdestatus()).append("activo", "si");
+                    doc = new Document("estatus.idestatus", estatus.getIdestatus()).append("activo", "si").append("usuario.username", jmoordb_user.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
