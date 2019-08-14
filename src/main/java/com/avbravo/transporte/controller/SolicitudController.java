@@ -679,17 +679,17 @@ public class SolicitudController implements Serializable, IController {
             solicitud.setSolicitudpadre(0);
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
-            
+
             //Obtiene la lista de usuarios para notificar
-                usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
-                //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
-                Boolean vistoBuenoAprobado =usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
-              
-                //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
-                if(vistoBuenoAprobado){                    
-                   usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
-                }
-                
+            usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
+            //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
+            Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
+
+            //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
+            if (vistoBuenoAprobado) {
+                usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+            }
+
             //Guarda la solicitud
             for (DisponiblesBeans db : disponiblesBeansList) {
                 for (int i = 0; i < db.getBusesRecomendados(); i++) {
@@ -700,12 +700,11 @@ public class SolicitudController implements Serializable, IController {
                     solicitud.setFechahorapartida(db.getFechahorainicio());
                     solicitud.setFechahoraregreso(db.getFechahorafin());
                     solicitud.setNumerodevehiculos(1);
-                    if(vistoBuenoAprobado){
+                    if (vistoBuenoAprobado) {
                         solicitud.setVistoBueno(vistoBuenoServices.inicializarAprobado(jmoordb_user));
-                    }else{
+                    } else {
                         solicitud.setVistoBueno(vistoBuenoServices.inicializarPendiente(jmoordb_user));
                     }
-                    
 
                     if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
                         solicitudesGuardadas++;
@@ -720,15 +719,12 @@ public class SolicitudController implements Serializable, IController {
                 }
             }
 
-        
-
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 //Verifica si es un coordinador y le envia la notificacion
 
                 usuarioList.forEach((u) -> {
-                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicituddocente");
-
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
 
                 });
 
@@ -758,12 +754,12 @@ public class SolicitudController implements Serializable, IController {
     public String columnColor(Estatus estatus) {
         String color = "black";
         try {
-           color = estatusServices.columnColor(estatus);
+            color = estatusServices.columnColor(estatus);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return color;
-    } 
+    }
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="columnColorDisponibles(DisponiblesBeans disponiblesBeans) ">
 
@@ -1356,16 +1352,14 @@ public class SolicitudController implements Serializable, IController {
 
     // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
     public String showDate(Date date) {
-       return solicitudServices.showDate(date);
+        return solicitudServices.showDate(date);
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String showHour(Date date)">
 
     public String showHour(Date date) {
         return solicitudServices.showHour(date);
-   
-    }// </editor-fold>
 
-    
+    }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
     public Future<String> sendEmailAsync(String emailreceptor, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
@@ -1515,7 +1509,6 @@ public class SolicitudController implements Serializable, IController {
     }
 
     // </editor-fold>
-    
     // <editor-fold defaultstate="collapsed" desc="String edit()">
     @Override
     public String edit() {
@@ -1579,27 +1572,32 @@ public class SolicitudController implements Serializable, IController {
              * se creara una solicitud para cada vehiculos solicitado
              */
             solicitudRepository.update(solicitud);
+            //guarda el contenido anterior
+            JmoordbConfiguration jmc = new JmoordbConfiguration();
+            Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
+            RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
+            repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                    "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
 
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
             //  Guardar las notificaciones
-            
+
             //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
-                Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
-              
-              
-                //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
-                if(vistoBuenoAprobado){                    
+            Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
+
+            //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
+            if (vistoBuenoAprobado) {
 //                    usuarioList.remove(jmoordb_user);
-usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
-                }
+                usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+            }
 
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
 
                 usuarioList.forEach((u) -> {
-                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicituddocente");
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
 
                 });
                 push.send("Edicicion de solicitud docente ");
@@ -1665,8 +1663,8 @@ usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user)
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    
-                      notificacionServices.saveNotification(messages,u.getUsername(), "solicituddocente");
+
+                    notificacionServices.saveNotification(messages, u.getUsername(), "solicituddocente");
                 });
                 push.send("Mensaje de docente ");
             }
@@ -1677,8 +1675,6 @@ usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user)
         return "";
     }
     // </editor-fold>
-
-   
 
     // <editor-fold defaultstate="collapsed" desc="String goList()">
     /**
@@ -2341,13 +2337,21 @@ usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user)
             }
             List<Viaje> viajeList = new ArrayList<>();
             solicitud.setViaje(viajeList);
+             
 //guarda el historial
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(),
-                    jmoordb_user.getUsername(),
-                    "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+//            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(),
+//                    jmoordb_user.getUsername(),
+//                    "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 //Remuevo los viajes que tenga asignados
             if (solicitudRepository.update(solicitud)) {
                 JsfUtil.infoDialog("Mensaje", rf.getMessage("info.cancelacionsolicitudes"));
+                 //guarda el contenido anterior
+                JmoordbConfiguration jmc = new JmoordbConfiguration();
+                Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
+                RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
+                repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                        "cancel", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+
             } else {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.cancelacionsolicitudesfallida"));
@@ -2356,18 +2360,18 @@ usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user)
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
 //            //  Guardar las notificaciones
 //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
-                Boolean vistoBuenoAprobado =usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
-               
-                //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
-                if(vistoBuenoAprobado){                    
+            Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
+
+            //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
+            if (vistoBuenoAprobado) {
 //                    usuarioList.remove(jmoordb_user);
-usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
-                }
+                usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+            }
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(),u.getUsername(), "solicituddocente");
-                   
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
+
                 });
                 push.send("Se cancelo una solicitud ");
             }
@@ -2477,7 +2481,4 @@ usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user)
     }
     // </editor-fold>  
 
-  
-    
-   
 }

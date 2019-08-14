@@ -1559,6 +1559,12 @@ public class SolicitudAdministrativoController implements Serializable, IControl
              * se creara una solicitud para cada vehiculos solicitado
              */
             solicitudRepository.update(solicitud);
+  //guarda el contenido anterior
+                JmoordbConfiguration jmc = new JmoordbConfiguration();
+                Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
+                RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
+                repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                        "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
 
@@ -2309,13 +2315,18 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
             List<Viaje> viajeList = new ArrayList<>();
             solicitud.setViaje(viajeList);
-//guarda el historial
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(),
-                    jmoordb_user.getUsername(),
-                    "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+
+          
 //Remuevo los viajes que tenga asignados
             if (solicitudRepository.update(solicitud)) {
                 JsfUtil.infoDialog("Mensaje", rf.getMessage("info.cancelacionsolicitudes"));
+                 //guarda el contenido anterior
+                JmoordbConfiguration jmc = new JmoordbConfiguration();
+                Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
+                RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
+                repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                        "cancel", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+
             } else {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.cancelacionsolicitudesfallida"));

@@ -443,22 +443,19 @@ public class CoordinadorController implements Serializable, IController {
             } else {
                 Facultad facultad = facultadList.get(0);
                 doc = new Document("activo", "si").append("facultad.idfacultad", facultad.getIdfacultad());
-                // list = solicitudRepository.findBy(query, new Document("idsolicitud", -1));
+                
             }
 
             switch ((String) JmoordbContext.get("searchcoordinador")) {
                 case "_init":
                 case "_autocomplete":
 
-                    //   doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
 
                 case "idsolicitud":
                     if (JmoordbContext.get("_fieldsearchcoordinador") != null) {
-//                        solicitudSearch.setIdsolicitud((Integer) JmoordbContext.get("_fieldsearchcoordinador"));
-//                        doc = new Document("idsolicitud", solicitudSearch.getIdsolicitud()).append("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
                         solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
                     } else {
                         solicitudList = solicitudRepository.findPagination(doc, page, rowPage);
@@ -1618,6 +1615,12 @@ public class CoordinadorController implements Serializable, IController {
             solicitudRepository.update(solicitud);
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
+  //guarda el contenido anterior
+                JmoordbConfiguration jmc = new JmoordbConfiguration();
+                Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
+                RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
+                repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                        "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
             //  Guardar las notificaciones
@@ -1680,6 +1683,18 @@ public class CoordinadorController implements Serializable, IController {
         try {
             JmoordbContext.put("searchcoordinador", "estatus");
             JmoordbContext.put("_fieldsearchcoordinador", estatusSearch);
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String clear() ">
+    @Override
+    public String clear() {
+        try {
+            JmoordbContext.put("searchcoordinador", "_init");
+            JmoordbContext.put("_fieldsearchcoordinador", "");
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -2377,13 +2392,16 @@ public class CoordinadorController implements Serializable, IController {
             }
             List<Viaje> viajeList = new ArrayList<>();
             solicitud.setViaje(viajeList);
-//guarda el historial
-            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(),
-                    jmoordb_user.getUsername(),
-                    "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 //Remuevo los viajes que tenga asignados
             if (solicitudRepository.update(solicitud)) {
                 JsfUtil.infoDialog("Mensaje", rf.getMessage("info.cancelacionsolicitudes"));
+                 //guarda el contenido anterior
+                JmoordbConfiguration jmc = new JmoordbConfiguration();
+                Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
+                RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
+                repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                        "cancel", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+
             } else {
 
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.cancelacionsolicitudesfallida"));
