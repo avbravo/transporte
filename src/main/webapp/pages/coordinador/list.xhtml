@@ -101,7 +101,7 @@
                         <p:outputLabel value="#{item.lugarllegada}"   style="color: #{coordinadorController.columnColor(item.estatus)}" />
                     </p:column>
                     <p:column headerText="#{msg['field.vistobueno']}"  >
-                        <p:outputLabel value="#{item.vistoBueno.aprobado}"   style="color: #{coordinadorController.columnColor(item.estatus)}" />
+                        <p:outputLabel value="#{coordinadorController.columnVistoBueno(item.vistoBueno)}"   style="color: #{coordinadorController.columnColor(item.estatus)}" />
                     </p:column>
 
 

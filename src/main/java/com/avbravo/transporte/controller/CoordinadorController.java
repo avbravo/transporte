@@ -50,6 +50,7 @@ import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viaje;
+import com.avbravo.transporteejb.entity.VistoBueno;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.EstatusViajeRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
@@ -783,6 +784,27 @@ public class CoordinadorController implements Serializable, IController {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return color;
+    }
+// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String columnColor(Estatus estatus">
+    public String columnVistoBueno(VistoBueno vistoBueno) {
+        String vistobueno= "Pendiente";
+        try {
+           if(vistoBueno.getAprobado().equals("si")){
+               vistobueno="APROBADO";
+           }else{
+               if(vistoBueno.getAprobado().equals("no")){
+               vistobueno="RECHAZADO";
+           }else{
+                   if(vistoBueno.getAprobado().equals("pe")){
+               vistobueno="PENDIENTE";
+           }
+               }
+           }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return vistobueno;
     }
 // </editor-fold>
 
