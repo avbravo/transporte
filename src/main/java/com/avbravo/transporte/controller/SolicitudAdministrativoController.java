@@ -780,34 +780,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
     // <editor-fold defaultstate="collapsed" desc="completeSolicitudParaCopiar(String query)">
     public List<Solicitud> completeSolicitudParaCopiar(String query) {
-        List<Solicitud> suggestions = new ArrayList<>();
-        try {
-            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            List<Solicitud> list = new ArrayList<>();
-            list = solicitudRepository.complete(query);
-            if (!list.isEmpty()) {
-                for (Solicitud s : list) {
-                    if (s.getTiposolicitud().getIdtiposolicitud().equals("ADMINISTRATIVO")
-                            && (s.getUsuario().get(0).getUsername().equals(jmoordb_user.getUsername())
-                            || s.getUsuario().get(1).getUsername().equals(jmoordb_user.getUsername()))) {
-                        suggestions.add(s);
-                    }
-                }
-            }
-            if (!suggestions.isEmpty()) {
+          return solicitudServices.completeSolicitudParaCopiar(query, "ADMINISTRATIVO");
 
-                suggestions.sort(Comparator.comparing(Solicitud::getIdsolicitud)
-                        .reversed()
-                        .thenComparing(Comparator.comparing(Solicitud::getIdsolicitud)
-                                .reversed())
-                );
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-
-        return suggestions;
     }
     // </editor-fold>
 
@@ -1357,24 +1331,13 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
     // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
     public String showDate(Date date) {
-        String h = "";
-        try {
-            h = DateUtil.dateFormatToString(date, "dd/MM/yyyy");
-        } catch (Exception e) {
-            JsfUtil.errorMessage("showDate() " + e.getLocalizedMessage());
-        }
-        return h;
+       return solicitudServices.showDate(date);
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String showHour(Date date)">
 
     public String showHour(Date date) {
-        String h = "";
-        try {
-            h = DateUtil.hourFromDateToString(date);
-        } catch (Exception e) {
-            JsfUtil.errorMessage("showHour() " + e.getLocalizedMessage());
-        }
-        return h;
+        return solicitudServices.showHour(date);
+   
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Boolean saveNotification(String username)">
