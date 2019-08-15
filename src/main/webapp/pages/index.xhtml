@@ -18,7 +18,7 @@
                 border-color: #428BCA;
             }
         </style>
-      
+
 
 
         <b:form id="form" rendered="#{loginController.loggedIn}"  >
@@ -31,11 +31,11 @@
 
 
 
-               
+
 
             <hr/>
             <div id="websocketid"></div>
-           
+
 
 
             <b:panel collapsible="false" >
@@ -45,6 +45,59 @@
                     <b:badge rendered="#{dashboardIndexController.totalSolicitado == 0} " style="margin-left:10px; background-color:#5cb85c" value="#{msg['label.sinsolicitudes']}"  />
                     <b:badge rendered="#{dashboardIndexController.totalSolicitado > 0}" style="margin-left:10px; background-color:#7f0055" value="#{msg['label.pendientes']}"  />
                 </f:facet>
+                <b:row rendered="#{p:ifAnyGranted('COORDINADOR, SECRETARIO ADMINISTRATIVO')}">
+                    <b:column span="12">
+                       <p:outputLabel value="#{msg['label.vistobueno']}"/>
+                    </b:column>
+                </b:row>
+                <b:row rendered="#{p:ifAnyGranted('COORDINADOR, SECRETARIO ADMINISTRATIVO')}">
+
+                    <b:column span="2">
+                        <h5><p:outputLabel value="#{msg['label.pendiente']}"/></h5>
+                        <div class="knob-container  ui-corner-all">
+                            <p:knob value="#{dashboardIndexController.totalVistoBuenoPendiente}" max="#{dashboardIndexController.totalVistoBuenoPendiente}"
+                                    disabled="true" 
+                                    height="70" width="70"
+                                    foregroundColor="red" backgroundColor="#00000"
+                                    />
+                        </div>
+                    </b:column>
+                    <b:column span="2">
+                        <h5><p:outputLabel value="#{msg['label.aprobado']}"/></h5>
+                        <div class="knob-container  ui-corner-all">
+                            <p:knob value="#{dashboardIndexController.totalVistoBuenoAprobado}" max="#{dashboardIndexController.totalVistoBuenoAprobado}"
+                                    disabled="true" 
+                                    height="70" width="70"
+                                    foregroundColor="green" backgroundColor="#00000"
+                                    />
+                        </div>
+                    </b:column>
+                    <b:column span="2">
+                        <h5><p:outputLabel value="#{msg['label.cancelado']}"/></h5>
+                        <div class="knob-container  ui-corner-all">
+                            <p:knob value="#{dashboardIndexController.totalVistoBuenoCancelado}" max="#{dashboardIndexController.totalVistoBuenoCancelado}"
+                                    disabled="true" 
+                                    height="70" width="70"
+                                    foregroundColor="black" backgroundColor="#00000"
+                                    />
+                        </div>
+                    </b:column>
+                </b:row>
+                
+                  <b:row rendered="#{p:ifAnyGranted('COORDINADOR, SECRETARIO ADMINISTRATIVO')}">
+                    <b:column span="6">
+                        <p:chart id="totalporvistobueno" widgetVar="chartTotalVistoBueno"
+                                 type="pie" model="#{dashboardIndexController.pieModelVistoBueno}"  />
+                    </b:column>
+                </b:row>
+                
+                
+                  <b:row >
+                    <b:column span="12">
+                       <p:outputLabel value="#{msg['label.solicitudes']}"/>
+                    </b:column>
+                </b:row>
+                
                 <b:row>
 
                     <b:column span="2">
@@ -103,10 +156,12 @@
                 </b:row>
                 <b:row>
                     <b:column span="6">
-                        <p:chart id="totalportienda" widgetVar="chartTotal"
+                        <p:chart id="totalporsolicitud" widgetVar="chartTotal"
                                  type="pie" model="#{dashboardIndexController.pieModelSolicitud}"  />
                     </b:column>
                 </b:row>
+
+
             </b:panel>
 
             <b:panel collapsible="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA,SECRETARIO ADMINISTRATIVO')}">

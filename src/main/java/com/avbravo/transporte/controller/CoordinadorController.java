@@ -787,24 +787,20 @@ public class CoordinadorController implements Serializable, IController {
     }
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String columnColor(Estatus estatus">
-    public String columnVistoBueno(VistoBueno vistoBueno) {
-        String vistobueno= "Pendiente";
+    public String columnColorVistoBueno(VistoBueno vistoBueno) {
+        String color = "black";
         try {
-           if(vistoBueno.getAprobado().equals("si")){
-               vistobueno="APROBADO";
-           }else{
-               if(vistoBueno.getAprobado().equals("no")){
-               vistobueno="RECHAZADO";
-           }else{
-                   if(vistoBueno.getAprobado().equals("pe")){
-               vistobueno="PENDIENTE";
-           }
-               }
-           }
+            color = vistoBuenoServices.columnColor(vistoBueno);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-        return vistobueno;
+        return color;
+    }
+// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
+    public String columnNameVistoBueno(VistoBueno vistoBueno) {
+       
+        return vistoBuenoServices.columnNameVistoBueno(vistoBueno);
     }
 // </editor-fold>
 

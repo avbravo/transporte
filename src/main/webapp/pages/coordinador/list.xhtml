@@ -91,25 +91,25 @@
                         <p:rowToggler />
                     </p:column>
                     <p:column headerText="#{msg['field.idsolicitud']}" style="width:75px">
-                        <h:outputText value="#{item.idsolicitud}" style="color: #{coordinadorController.columnColor(item.estatus)}" />
+                        <h:outputText value="#{item.idsolicitud}" style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}"/>
                     </p:column>
 
                     <p:column headerText="#{msg['field.fechapartida']}" style="width:150px">
-                        <h:outputText value="#{coordinadorController.showDate(item.fechahorapartida)} #{coordinadorController.showHour(item.fechahorapartida)}" style="color: #{coordinadorController.columnColor(item.estatus)}" />
+                        <h:outputText value="#{coordinadorController.showDate(item.fechahorapartida)} #{coordinadorController.showHour(item.fechahorapartida)}" style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}" />
                     </p:column>
                     <p:column headerText="#{msg['field.lugarllegada']}"  >
                         <p:outputLabel value="#{item.lugarllegada}"   style="color: #{coordinadorController.columnColor(item.estatus)}" />
                     </p:column>
                     <p:column headerText="#{msg['field.vistobueno']}"  >
-                        <p:outputLabel value="#{coordinadorController.columnVistoBueno(item.vistoBueno)}"   style="color: #{coordinadorController.columnColor(item.estatus)}" />
+                        <p:outputLabel value="#{coordinadorController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}" />
                     </p:column>
 
 
 
-                    <p:column headerText="#{msg['field.estatus']}" style="width:100px">
-                        <p:outputLabel  value="#{item.estatus.idestatus}"   style="color: #{coordinadorController.columnColor(item.estatus)}"/>
+<!--                    <p:column headerText="#{msg['field.estatus']}" style="width:100px">
+                        <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}"/>
 
-                    </p:column>
+                    </p:column>-->
 
 
                     <p:column headerText="" style="width:70px">

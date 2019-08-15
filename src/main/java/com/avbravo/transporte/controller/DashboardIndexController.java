@@ -37,6 +37,7 @@ public class DashboardIndexController implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private PieChartModel pieModelSolicitud;
+    private PieChartModel pieModelVistoBueno;
     @Inject
     FacultadRepository facultadRepository;
     @Inject
@@ -59,16 +60,66 @@ public class DashboardIndexController implements Serializable {
     Integer totalVehiculosActivos;
     Integer totalVehiculosInActivos;
     Integer totalVehiculosEnReparacion;
+    
+    Integer totalVistoBuenoPendiente;
+    Integer totalVistoBuenoAprobado;
+    Integer totalVistoBuenoCancelado;
     // </editor-fold>
 
     public PieChartModel getPieModelSolicitud() {
         return pieModelSolicitud;
     }
 
+    
     public void setPieModelSolicitud(PieChartModel pieModelSolicitud) {
         this.pieModelSolicitud = pieModelSolicitud;
     }
 
+    public PieChartModel getPieModelVistoBueno() {
+        return pieModelVistoBueno;
+    }
+
+    public void setPieModelVistoBueno(PieChartModel pieModelVistoBueno) {
+        this.pieModelVistoBueno = pieModelVistoBueno;
+    }
+    
+    
+    
+
+    public VehiculoRepository getVehiculoRepository() {
+        return vehiculoRepository;
+    }
+
+    public void setVehiculoRepository(VehiculoRepository vehiculoRepository) {
+        this.vehiculoRepository = vehiculoRepository;
+    }
+
+    public Integer getTotalVistoBuenoPendiente() {
+        return totalVistoBuenoPendiente;
+    }
+
+    public void setTotalVistoBuenoPendiente(Integer totalVistoBuenoPendiente) {
+        this.totalVistoBuenoPendiente = totalVistoBuenoPendiente;
+    }
+
+    public Integer getTotalVistoBuenoAprobado() {
+        return totalVistoBuenoAprobado;
+    }
+
+    public void setTotalVistoBuenoAprobado(Integer totalVistoBuenoAprobado) {
+        this.totalVistoBuenoAprobado = totalVistoBuenoAprobado;
+    }
+
+    public Integer getTotalVistoBuenoCancelado() {
+        return totalVistoBuenoCancelado;
+    }
+
+    public void setTotalVistoBuenoCancelado(Integer totalVistoBuenoCancelado) {
+        this.totalVistoBuenoCancelado = totalVistoBuenoCancelado;
+    }
+
+    
+    
     public Integer getTotalCancelado() {
         return totalCancelado;
     }
@@ -158,6 +209,7 @@ public class DashboardIndexController implements Serializable {
     public void calcularTotales() {
         try {
             pieModelSolicitud = new PieChartModel();
+            pieModelVistoBueno = new PieChartModel();
             switch (loginController.getRol().getIdrol()) {
                 case "ADMINISTRADOR":
                 case "SECRETARIA":
@@ -177,6 +229,11 @@ public class DashboardIndexController implements Serializable {
                         totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO").append("usuario.username", loginController.getUsuario().getUsername()));
                         totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO").append("usuario.username", loginController.getUsuario().getUsername()));
                         totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO").append("usuario.username", loginController.getUsuario().getUsername()));
+                    //
+                        totalVistoBuenoAprobado = 0;
+                       totalVistoBuenoCancelado = 0;
+                   totalVistoBuenoPendiente = 0;
+                    
 
                     } else {
                         Facultad facultad = list.get(0);
@@ -184,6 +241,10 @@ public class DashboardIndexController implements Serializable {
                         totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO").append("facultad.idfacultad", facultad.getIdfacultad()));;
                         totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO").append("facultad.idfacultad", facultad.getIdfacultad()));
                         totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO").append("facultad.idfacultad", facultad.getIdfacultad()));
+                        //
+                        totalVistoBuenoAprobado = solicitudRepository.count(new Document("activo", "si").append("vistoBueno.aprobado", "si").append("facultad.idfacultad", facultad.getIdfacultad()));;
+                        totalVistoBuenoCancelado = solicitudRepository.count(new Document("activo", "si").append("vistoBueno.aprobado", "no").append("facultad.idfacultad", facultad.getIdfacultad()));
+                        totalVistoBuenoPendiente = solicitudRepository.count(new Document("activo", "si").append("vistoBueno.aprobado", "pe").append("facultad.idfacultad", facultad.getIdfacultad()));
 
                     }
 
@@ -199,6 +260,7 @@ public class DashboardIndexController implements Serializable {
             }
             totales = totalAprobado + totalCancelado + totalRechazado + totalSolicitado;
 
+            //Grafica de solicitudes
             pieModelSolicitud.set("Solicitado", totalSolicitado);
             pieModelSolicitud.set("Aprobado", totalAprobado);
             pieModelSolicitud.set("Rechazado", totalRechazado);
@@ -211,13 +273,31 @@ public class DashboardIndexController implements Serializable {
             pieModelSolicitud.setShowDataLabels(true);
             //  pieModelSolicitud.setDiameter(150);
             pieModelSolicitud.setShadow(false);
+            
+            //Grafica de Visto Bueno
+ pieModelVistoBueno.set("Pendiente", totalVistoBuenoPendiente);
+            pieModelVistoBueno.set("Aprobado", totalVistoBuenoAprobado);
+            pieModelVistoBueno.set("Cancelado", totalVistoBuenoCancelado);
+        
 
+            pieModelVistoBueno.setTitle("Visto Bueno");
+            pieModelVistoBueno.setLegendPosition("w");
+            pieModelVistoBueno.setShowDatatip(true);
+            //    pieModelSolicitud.setFill(false);
+            pieModelVistoBueno.setShowDataLabels(true);
+            //  pieModelSolicitud.setDiameter(150);
+            pieModelVistoBueno.setShadow(false);
+            
             //Vehiculos
             totalVehiculos = vehiculoRepository.findAll().size();
             totalVehiculosActivos = vehiculoRepository.count(new Document("activo", "si"));
             totalVehiculosInActivos = vehiculoRepository.count(new Document("activo", "no"));
             totalVehiculosEnReparacion = vehiculoRepository.count(new Document("enreparacion", "si"));
             totalVehiculosActivos -= totalVehiculosEnReparacion;
+            
+            
+            
+            
 
         } catch (Exception e) {
             errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
