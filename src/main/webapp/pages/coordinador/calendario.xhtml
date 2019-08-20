@@ -104,13 +104,14 @@
                     <p:outputLabel  value="#{msg['field.responsable']}" />
                     <p:outputLabel  value="#{coordinadorController.solicitud.usuario.get(1).nombre}" id="responsable"   />
 
-                    
-                    
-                    <p:outputLabel value="#{msg['field.vistobueno']}" />
-                    <p:outputLabel value="#{coordinadorController.solicitud.vistoBueno.aprobado}" />
-                    
-                    <p:outputLabel value="#{msg['field.idestatus']}" />
+                        <p:outputLabel value="#{msg['field.idestatus']}" />
                     <p:outputLabel value="#{coordinadorController.solicitud.estatus.idestatus}" />
+                    
+                    
+                    
+                               <p:outputLabel value="#{msg['field.vistobueno']}" />
+                      <p:outputLabel value="#{coordinadorController.columnNameVistoBueno()}"  />
+                
 
                     <p:outputLabel  value="#{msg['field.fechapartida']}" />
                     <p:fieldset >

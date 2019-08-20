@@ -803,8 +803,12 @@ public class CoordinadorController implements Serializable, IController {
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
     public String columnNameVistoBueno(VistoBueno vistoBueno) {
-        System.out.println("---> visto bueno "+vistoBueno.getAprobado());
         return vistoBuenoServices.columnNameVistoBueno(vistoBueno);
+    }
+// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno()">
+    public String columnNameVistoBueno() {
+        return vistoBuenoServices.columnNameVistoBueno(solicitud.getVistoBueno());
     }
 // </editor-fold>
 
