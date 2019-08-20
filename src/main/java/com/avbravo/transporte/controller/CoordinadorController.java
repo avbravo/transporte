@@ -142,6 +142,10 @@ public class CoordinadorController implements Serializable, IController {
     private Integer totalAprobado = 0;
     private Integer totalSolicitado = 0;
     private Integer totalRechazadoCancelado = 0;
+    private Integer totalPendienteVistoBueno=0;
+    private Integer totalAprobadoVistoBueno=0;
+    private Integer totalNoAprobadoVistoBueno=0;
+    
     private Integer totalViajes = 0;
     private String vistoBuenoSearch="no";
     /**
@@ -799,7 +803,7 @@ public class CoordinadorController implements Serializable, IController {
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
     public String columnNameVistoBueno(VistoBueno vistoBueno) {
-       
+        System.out.println("---> visto bueno "+vistoBueno.getAprobado());
         return vistoBuenoServices.columnNameVistoBueno(vistoBueno);
     }
 // </editor-fold>
@@ -1312,6 +1316,11 @@ public class CoordinadorController implements Serializable, IController {
             totalSolicitado = 0;
             totalRechazadoCancelado = 0;
             totalViajes = 0;
+            
+           totalPendienteVistoBueno=0;
+  totalAprobadoVistoBueno=0;
+  totalNoAprobadoVistoBueno=0;
+  
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             String descripcion = jmoordb_user.getUnidad().getIdunidad();
             List<Solicitud> list = new ArrayList<>();
@@ -1359,13 +1368,26 @@ public class CoordinadorController implements Serializable, IController {
                             tema = "schedule-red";
                             break;
                     }
+                    
+                     switch (a.getVistoBueno().getAprobado().trim()) {
+                         case "no":
+                             totalNoAprobadoVistoBueno++;
+                             break;
+                         case "si":
+                                 totalAprobadoVistoBueno++;
+                             break;
+                         case "pe":
+                                 totalPendienteVistoBueno++;
+                             break;
+                     }
+                    
                     String texto = nameOfCarrera + " " + viajest;
 //                    eventModel.addEvent(
                     //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
                     //                    );
                     eventModel
                             .addEvent(
-                                    new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ")  " + a.getObjetivo() + " "
+                                    new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ")  " + "  {" + a.getVistoBueno().getAprobado().substring(0, 1).toUpperCase() + "}  " + a.getObjetivo() + " "
                                             + texto,
                                             a.getFechahorapartida(), a.getFechahoraregreso(), tema)
                             //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ") Mision: " + a.getObjetivo()+ " Responsable: " + a.getUsuario().get(1).getNombre() + " "
@@ -1408,6 +1430,7 @@ public class CoordinadorController implements Serializable, IController {
 
             }
 
+            System.out.println("solicitud "+solicitud.getVistoBueno().getAprobado());
         } catch (Exception e) {
 
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());

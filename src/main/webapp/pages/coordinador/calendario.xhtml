@@ -62,6 +62,21 @@
                         </b:column>
 
                     </b:row>
+                    <b:row >
+  <b:column span="3">
+                            <p:outputLabel value="#{msg['label.vistobueno']}" />
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.pendiente']} #{coordinadorController.totalPendienteVistoBueno}" style="color:orange"/>
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.aprobado']} #{coordinadorController.totalAprobadoVistoBueno}" style="color:green"/>
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.noaprobado']} #{coordinadorController.totalNoAprobadoVistoBueno}" style="color:red"/>
+                        </b:column>
+                       
+                    </b:row>
 
 
 
@@ -90,6 +105,9 @@
                     <p:outputLabel  value="#{coordinadorController.solicitud.usuario.get(1).nombre}" id="responsable"   />
 
                     
+                    
+                    <p:outputLabel value="#{msg['field.vistobueno']}" />
+                    <p:outputLabel value="#{coordinadorController.solicitud.vistoBueno.aprobado}" />
                     
                     <p:outputLabel value="#{msg['field.idestatus']}" />
                     <p:outputLabel value="#{coordinadorController.solicitud.estatus.idestatus}" />
