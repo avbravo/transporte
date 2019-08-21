@@ -376,6 +376,10 @@
                         </p:outputLabel>
                         <p:inputTextarea required="true" rows="2" cols="80" value="#{solicitudController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
 
+                        
+                        
+                     
+                           
 
                     </b:panelGrid>
                     <b:row>
@@ -521,6 +525,9 @@
             
 
             </h:panelGroup>
+            
+      
+
         </b:form>
         <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('DOCENTE')}"/>
 

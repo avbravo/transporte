@@ -21,8 +21,6 @@ import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.repository.Repository;
 import com.avbravo.jmoordb.pojos.JmoordbEmailMaster;
-import com.avbravo.jmoordb.pojos.JmoordbNotifications;
-import com.avbravo.jmoordb.pojos.UserInfo;
 import com.avbravo.jmoordb.profiles.repository.JmoordbEmailMasterRepository;
 import com.avbravo.jmoordb.profiles.repository.JmoordbNotificationsRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
@@ -50,6 +48,8 @@ import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viaje;
+import com.avbravo.transporteejb.entity.VistoBueno;
+import com.avbravo.transporteejb.entity.VistoBuenoSecretarioAdministrativo;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.EstatusViajeRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
@@ -67,6 +67,7 @@ import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
+import com.avbravo.transporteejb.services.VistoBuenoSecretarioAdministrativoServices;
 import com.avbravo.transporteejb.services.VistoBuenoServices;
 
 import java.util.ArrayList;
@@ -128,6 +129,9 @@ public class SolicitudController implements Serializable, IController {
     private Boolean writable = false;
     private Boolean leyoSugerencias = false;
     Boolean diasconsecutivos = false;
+
+    private String vistoBuenoSearch = "no";
+    private String vistoBuenoSecretarioAdministrativoSearch = "no";
     //DataModel
     private SolicitudDataModel solicitudDataModel;
     private SugerenciaDataModel sugerenciaDataModel;
@@ -228,6 +232,8 @@ public class SolicitudController implements Serializable, IController {
     EstatusServices estatusServices;
     @Inject
     VistoBuenoServices vistoBuenoServices;
+    @Inject
+    VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
 
     @Inject
     SemestreServices semestreServices;
@@ -426,7 +432,7 @@ public class SolicitudController implements Serializable, IController {
             solicitudDataModel = new SolicitudDataModel(solicitudList);
             Document doc;
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-              if (JmoordbContext.get("searchsolicitud") == null) {
+            if (JmoordbContext.get("searchsolicitud") == null) {
                 JmoordbContext.put("searchsolicitud", "_init");
             }
             switch ((String) JmoordbContext.get("searchsolicitud")) {
@@ -453,6 +459,25 @@ public class SolicitudController implements Serializable, IController {
                     Estatus estatus = new Estatus();
                     estatus = (Estatus) JmoordbContext.get("_fieldsearchsolicitud");
                     doc = new Document("estatus.idestatus", estatus.getIdestatus()).append("activo", "si").append("usuario.username", jmoordb_user.getUsername());
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
+                    break;
+
+                case "vistobuenocoordinador":
+
+                   
+                   String vistoBueno = (String) JmoordbContext.get("_fieldsearchsolicitud");
+                     doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
+                    doc.append("vistoBueno.aprobado", vistoBueno);
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
+                    break;
+                case "vistobuenosecretarioadministrativo":
+
+                   
+                   String vistoBuenoSecretarioAdministrativo = (String) JmoordbContext.get("_fieldsearchsolicitud");
+                     doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
+                    doc.append("vistoBuenoSecretarioAdministrativo.aprobado", vistoBuenoSecretarioAdministrativo);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
@@ -693,6 +718,8 @@ public class SolicitudController implements Serializable, IController {
                 usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
             }
 
+            Boolean vistoBuenoSecretarioAdministrativo = usuarioServices.esElSecretarioAdministrativoQuienSolicita(jmoordb_user);
+
             //Guarda la solicitud
             for (DisponiblesBeans db : disponiblesBeansList) {
                 for (int i = 0; i < db.getBusesRecomendados(); i++) {
@@ -709,6 +736,11 @@ public class SolicitudController implements Serializable, IController {
                         solicitud.setVistoBueno(vistoBuenoServices.inicializarPendiente(jmoordb_user));
                     }
 
+                    if (vistoBuenoSecretarioAdministrativo) {
+                        solicitud.setVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativoServices.inicializarAprobado(jmoordb_user));
+                    } else {
+                        solicitud.setVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativoServices.inicializarPendiente(jmoordb_user));
+                    }
                     if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
                         solicitudesGuardadas++;
 
@@ -2340,7 +2372,7 @@ public class SolicitudController implements Serializable, IController {
             }
             List<Viaje> viajeList = new ArrayList<>();
             solicitud.setViaje(viajeList);
-             
+
 //guarda el historial
 //            revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(),
 //                    jmoordb_user.getUsername(),
@@ -2348,7 +2380,7 @@ public class SolicitudController implements Serializable, IController {
 //Remuevo los viajes que tenga asignados
             if (solicitudRepository.update(solicitud)) {
                 JsfUtil.infoDialog("Mensaje", rf.getMessage("info.cancelacionsolicitudes"));
-                 //guarda el contenido anterior
+                //guarda el contenido anterior
                 JmoordbConfiguration jmc = new JmoordbConfiguration();
                 Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
                 RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
@@ -2483,5 +2515,39 @@ public class SolicitudController implements Serializable, IController {
         return valid;
     }
     // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
+    public String columnNameVistoBueno(VistoBueno vistoBueno) {
+        return vistoBuenoServices.columnNameVistoBueno(vistoBueno);
+    }
+// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
+
+    public String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSecretarioAdministrativo vistoBuenoSecretarioAdministrativo) {
+        return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativo);
+    }
+// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChange()">
+    public String onVistoBuenoChange() {
+        try {
+            JmoordbContext.put("searchsolicitud", "vistobuenocoordinador");
+            JmoordbContext.put("_fieldsearchsolicitud", vistoBuenoSearch);
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSecretarioAdministrativo()">
+    public String onVistoBuenoChangeSecretarioAdministrativo() {
+        try {
+            JmoordbContext.put("searchsolicitud", "vistobuenosecretarioadministrativo");
+            JmoordbContext.put("_fieldsearchsolicitud", vistoBuenoSecretarioAdministrativoSearch);
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
 
 }

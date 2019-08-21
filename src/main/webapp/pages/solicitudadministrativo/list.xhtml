@@ -37,7 +37,7 @@
             <b:growl  id="msgs"/>
 
             <b:panel collapsible="false" title="#{msg['titlelist.solicitudadministrativo']}" id="content"   look="primary"  > 
-                <b:panelGrid colSpans="1,4,1,4,2"  columns="4" size="xs"> 
+                <b:panelGrid colSpans="2,4,2,4"  columns="4" size="xs"> 
                     <p:outputLabel value="#{msg['field.idestatus']}"/>
                     <jmoordbjsf:autocomplete converter="#{estatusConverter}"
                                              dropdown="true"
@@ -50,11 +50,24 @@
                                              field="idestatus"
                                              update=" :form:dataTable"/>
 
-                    <p:outputLabel value="#{msg['field.mensaje']}"/>
+                 
+                    
+                        <p:outputLabel value="#{msg['field.vistobueno']}"/>
+                    <p:selectOneMenu id="country" value="#{solicitudAdministrativoController.vistoBuenoSearch}" style="width:150px">
+                        <p:ajax listener="#{solicitudAdministrativoController.onVistoBuenoChange}" update=":form:dataTable" />
+                        <f:selectItem itemLabel="#{msg['selectitem.seleccione']}" itemValue="" noSelectionOption="true" />
+                        <f:selectItem itemLabel="#{msg['selectitem.pendiente']}" itemValue="pe" />
+                        <f:selectItem itemLabel="#{msg['selectitem.aprobado']}" itemValue="si" />
+                        <f:selectItem itemLabel="#{msg['selectitem.noaprobado']}" itemValue="no" />
+
+                    </p:selectOneMenu>
+                        
+                           <p:outputLabel value="#{msg['field.mensaje']}"/>
                     <p:inputTextarea rows="2" value="#{solicitudAdministrativoController.messages}"/>
                     <p:commandButton value="#{msg['button.send']}" action="#{solicitudAdministrativoController.enviarMensajesDirectos()}"
                                      update=":form:msgs"
                                      />
+                    
                 </b:panelGrid>
 
             </b:panel>
@@ -93,9 +106,10 @@
                     </p:column>
                
                     
+                   
                     
-                      <p:column headerText="#{msg['field.vistobueno']}"  >
-                        <p:outputLabel value="#{item.vistoBueno.aprobado}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
+                     <p:column headerText="#{msg['field.secadministrativo']}"  >
+                        <p:outputLabel value="#{solicitudController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
                     </p:column>
                     <p:column headerText="#{msg['field.estatus']}" style="width:100px">
                         <p:outputLabel  value="#{item.estatus.idestatus}"   style="color: #{solicitudAdministrativoController.columnColor(item.estatus)}"/>
