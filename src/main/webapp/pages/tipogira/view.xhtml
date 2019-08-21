@@ -33,6 +33,10 @@
                      <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{tipogiraController.tipogira.activo}" id="activo"  required="true"/>
 
+                         <p:outputLabel  value="#{msg['field.requiereAprobacion']}" />
+                        <jmoordbjsf:yesno value="#{tipogiraController.tipogira.requiereAprobacion}" id="requiereAprobacion"  required="true"/>
+  
+                        
                     </b:panelGrid>
                    <jmoordbjsf:toolbarview 
                         renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
