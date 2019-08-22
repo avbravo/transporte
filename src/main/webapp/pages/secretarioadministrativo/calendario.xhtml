@@ -24,7 +24,7 @@
         <jmoordbjsf:cssschedule/>  
         <jmoordbjsf:jsschedule/>
 
-        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('COORDINADOR')}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
@@ -188,6 +188,6 @@
             </p:dialog>
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('COORDINADOR')}"/>
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('SECRETARIO ADMINISTRATIVO')}"/>
     </ui:define>
 </ui:composition>

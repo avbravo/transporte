@@ -132,6 +132,9 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     private Boolean writable = false;
     private Boolean leyoSugerencias = false;
     Boolean diasconsecutivos = false;
+    
+     private String vistoBuenoSearch = "no";
+    private String vistoBuenoSecretarioAdministrativoSearch = "no";
     //DataModel
     private SolicitudDataModel solicitudDataModel;
     private SugerenciaDataModel sugerenciaDataModel;
@@ -147,7 +150,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     private Integer totalNoAprobadoVistoBueno=0;
     
     private Integer totalViajes = 0;
-    private String vistoBuenoSearch="no";
+
     /**
      * se usan para obtener los lugares y asignarselo a los atributos lugres de
      * partida y llegada de la solicitud
@@ -327,8 +330,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                     .withNameFieldOfRowPage("rowPage")
                     .withTypeKey("primary")
                     .withSearchLowerCase(false)
-                    .withPathReportDetail("/resources/reportes/coordinador/details.jasper")
-                    .withPathReportAll("/resources/reportes/coordinador/all.jasper")
+                    .withPathReportDetail("/resources/reportes/secretarioadministrativo/details.jasper")
+                    .withPathReportAll("/resources/reportes/secretarioadministrativo/all.jasper")
                     .withparameters(parameters)
                     .withResetInSave(false)
                     .build();
@@ -339,8 +342,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
             cargarSchedule();
 
             String action = "gonew";
-            if (JmoordbContext.get("coordinador") != null) {
-                action = JmoordbContext.get("coordinador").toString();
+            if (JmoordbContext.get("secretarioadministrativo") != null) {
+                action = JmoordbContext.get("secretarioadministrativo").toString();
             }
 
             if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
@@ -432,8 +435,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     @Override
     public void move(Integer page) {
         try {
-            if (JmoordbContext.get("searchcoordinador") == null) {
-                JmoordbContext.put("searchcoordinador", "_init");
+            if (JmoordbContext.get("searchsecretarioadministrativo") == null) {
+                JmoordbContext.put("searchsecretarioadministrativo", "_init");
             }
             this.page = page;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
@@ -441,18 +444,9 @@ public class SecretarioAdministrativoController implements Serializable, IContro
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
             String descripcion = jmoordb_user.getUnidad().getIdunidad();
-            Document doc = new Document("descripcion", descripcion).append("activo", "si");
-            List<Facultad> facultadList = facultadRepository.findBy(doc);
-
-            if (facultadList == null || facultadList.isEmpty()) {
-
-            } else {
-                Facultad facultad = facultadList.get(0);
-                doc = new Document("activo", "si").append("facultad.idfacultad", facultad.getIdfacultad());
-
-            }
-
-            switch ((String) JmoordbContext.get("searchcoordinador")) {
+            Document doc = new Document("activo", "si");
+           
+            switch ((String) JmoordbContext.get("searchsecretarioadministrativo")) {
                 case "_init":
                 case "_autocomplete":
 
@@ -461,7 +455,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                     break;
 
                 case "idsolicitud":
-                    if (JmoordbContext.get("_fieldsearchcoordinador") != null) {
+                    if (JmoordbContext.get("_fieldsearchsecretarioadministrativo") != null) {
                         solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
                     } else {
                         solicitudList = solicitudRepository.findPagination(doc, page, rowPage);
@@ -471,14 +465,26 @@ public class SecretarioAdministrativoController implements Serializable, IContro
 
                 case "estatus":
                     Estatus estatus = new Estatus();
-                    estatus = (Estatus) JmoordbContext.get("_fieldsearchcoordinador");
+                    estatus = (Estatus) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
                     doc.append("estatus.idestatus", estatus.getIdestatus());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
-                case "vistobueno":
-                   String vistoBueno = (String) JmoordbContext.get("_fieldsearchcoordinador");
+                case "vistobuenocoordinador":
+
+                   
+                   String vistoBueno = (String) JmoordbContext.get("_fieldsearchsolicitud");
+                     doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
                     doc.append("vistoBueno.aprobado", vistoBueno);
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
+                    break;
+                case "vistobuenosecretarioadministrativo":
+
+                   
+                   String vistoBuenoSecretarioAdministrativo = (String) JmoordbContext.get("_fieldsearchsolicitud");
+                     doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
+                    doc.append("vistoBuenoSecretarioAdministrativo.aprobado", vistoBuenoSecretarioAdministrativo);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
@@ -1731,32 +1737,22 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     // <editor-fold defaultstate="collapsed" desc="handleSelect">
     public String handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-            JmoordbContext.put("searchcoordinador", "estatus");
-            JmoordbContext.put("_fieldsearchcoordinador", estatusSearch);
+            JmoordbContext.put("searchsecretarioadministrativo", "estatus");
+            JmoordbContext.put("_fieldsearchsecretarioadministrativo", estatusSearch);
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="handleSelect">
-    public String onVistoBuenoChange() {
-        try {
-            JmoordbContext.put("searchcoordinador", "vistobueno");
-            JmoordbContext.put("_fieldsearchcoordinador", vistoBuenoSearch);
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
+   
     // <editor-fold defaultstate="collapsed" desc="String clear() ">
 
     @Override
     public String clear() {
         try {
-            JmoordbContext.put("searchcoordinador", "_init");
-            JmoordbContext.put("_fieldsearchcoordinador", "");
+            JmoordbContext.put("searchsecretarioadministrativo", "_init");
+            JmoordbContext.put("_fieldsearchsecretarioadministrativo", "");
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -2766,4 +2762,28 @@ if(aprobado.toLowerCase().equals("si")){
         return "";
     }
     // </editor-fold>  
+    
+    
+     // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChange()">
+    public String onVistoBuenoChange() {
+        try {
+            JmoordbContext.put("searchsecretarioadministrativo", "vistobuenocoordinador");
+            JmoordbContext.put("_fieldsearchsecretarioadministrativo", vistoBuenoSearch);
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSecretarioAdministrativo()">
+    public String onVistoBuenoChangeSecretarioAdministrativo() {
+        try {
+            JmoordbContext.put("searchsolicitud", "vistobuenosecretarioadministrativo");
+            JmoordbContext.put("_fieldsearchsolicitud", vistoBuenoSecretarioAdministrativoSearch);
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
 }

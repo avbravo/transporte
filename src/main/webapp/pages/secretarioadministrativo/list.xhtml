@@ -28,7 +28,7 @@
         <jmoordbjsf:cssschedule/>  
         <jmoordbjsf:jsschedule/>
 
-        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('COORDINADOR')}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
@@ -39,15 +39,27 @@
             <b:panel collapsible="false" title="#{msg['titlelist.vistobuenosolicitudes']}" id="content"   look="primary"  > 
                 <b:panelGrid colSpans="1,5,1,5"  columns="4" size="xs"> 
                    
-                    <p:outputLabel value="#{msg['field.vistobueno']}"/>
-                    <p:selectOneMenu id="country" value="#{coordinadorController.vistoBuenoSearch}" style="width:150px">
-                        <p:ajax listener="#{coordinadorController.onVistoBuenoChange}" update=":form:dataTable" />
+                    <p:outputLabel value="#{msg['field.secretarioadministrativo']}"/>
+                    <p:selectOneMenu id="secretarioadministrativo" value="#{solicitudController.vistoBuenoSecretarioAdministrativoSearch}" style="width:150px">
+                        <p:ajax listener="#{solicitudController.onVistoBuenoChangeSecretarioAdministrativo}" update=":form:dataTable" />
                         <f:selectItem itemLabel="#{msg['selectitem.seleccione']}" itemValue="" noSelectionOption="true" />
                         <f:selectItem itemLabel="#{msg['selectitem.pendiente']}" itemValue="pe" />
                         <f:selectItem itemLabel="#{msg['selectitem.aprobado']}" itemValue="si" />
                         <f:selectItem itemLabel="#{msg['selectitem.noaprobado']}" itemValue="no" />
 
                     </p:selectOneMenu>
+                    
+                    <p:outputLabel value="#{msg['field.coordinador']}"/>
+                    <p:selectOneMenu id="coordinador" value="#{solicitudController.vistoBuenoSearch}" style="width:150px">
+                        <p:ajax listener="#{solicitudController.onVistoBuenoChange}" update=":form:dataTable" />
+                        <f:selectItem itemLabel="#{msg['selectitem.seleccione']}" itemValue="" noSelectionOption="true" />
+                        <f:selectItem itemLabel="#{msg['selectitem.pendiente']}" itemValue="pe" />
+                        <f:selectItem itemLabel="#{msg['selectitem.aprobado']}" itemValue="si" />
+                        <f:selectItem itemLabel="#{msg['selectitem.noaprobado']}" itemValue="no" />
+
+                    </p:selectOneMenu>
+
+                  
                     
                      <p:outputLabel value="#{msg['field.idestatus']}"/>
                     <jmoordbjsf:autocomplete converter="#{estatusConverter}"
@@ -141,7 +153,7 @@
 
                     <p:rowExpansion>
 
-                        <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('COORDINADOR')}"> 
+                        <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"> 
 
                             <p:outputLabel value="#{msg['field.fecharegreso']}" />
                             <p:outputLabel value="#{coordinadorController.showDate(item.fechahoraregreso)}"  />
@@ -298,6 +310,6 @@
             </p:dialog>
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('COORDINADOR')}"/>
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('SECRETARIO ADMINISTRATIVO')}"/>
     </ui:define>
 </ui:composition>

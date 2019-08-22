@@ -20,7 +20,7 @@
             }
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('COORDINADOR')}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -28,11 +28,11 @@
                 <jmoordbjsf:messages id="msg"/>
 
 
-                <b:panel collapsible="false" title="#{msg['title.solicituddocente']}" look="primary" rendered="#{p:ifGranted('COORDINADOR')}" >
+                <b:panel collapsible="false" title="#{msg['title.solicituddocente']}" look="primary" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" >
 
 
 
-                    <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('COORDINADOR')}"> 
+                    <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"> 
 
                         <p:outputLabel  value="#{msg['field.fecha']}" />
                         <jmoordbjsf:labelDate  value="#{coordinadorController.solicitud.fecha}" id="fecha"   />
@@ -425,9 +425,9 @@
 
                         <b:column span="12">
                             <jmoordbjsf:toolbarview 
-                                renderedDelete="#{p:ifGranted('COORDINADOR')}"
-                                renderedEdit="#{p:ifGranted('COORDINADOR')}"
-                                renderedList="#{p:ifGranted('COORDINADOR')}"                    
+                                renderedDelete="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"
+                                renderedEdit="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"
+                                renderedList="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"                    
                                 renderedPrint="false"                    
                                 controller="#{coordinadorController}"
 
@@ -448,7 +448,7 @@
 
 
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('COORDINADOR')}"/>
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('SECRETARIO ADMINISTRATIVO')}"/>
 
         <br/><br/><br/>
     </ui:define>
