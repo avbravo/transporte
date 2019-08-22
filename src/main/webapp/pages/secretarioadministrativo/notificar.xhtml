@@ -40,8 +40,8 @@
                 <b:panelGrid  colSpans="2,10" size="sm" > 
 
                     <p:outputLabel value="#{msg['field.mensaje']}"/>
-                    <p:inputTextarea  value="#{coordinadorController.messages}"/>
-                    <p:commandButton value="#{msg['button.send']}" action="#{coordinadorController.enviarMensajesDirectos()}"
+                    <p:inputTextarea  value="#{secretarioAdministrativoController.messages}"/>
+                    <p:commandButton value="#{msg['button.send']}" action="#{secretarioAdministrativoController.enviarMensajesDirectos()}"
                                      update=":form:msgs"
                                      />
                 </b:panelGrid>

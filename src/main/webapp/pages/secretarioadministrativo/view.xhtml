@@ -35,19 +35,19 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"> 
 
                         <p:outputLabel  value="#{msg['field.fecha']}" />
-                        <jmoordbjsf:labelDate  value="#{coordinadorController.solicitud.fecha}" id="fecha"   />
+                        <jmoordbjsf:labelDate  value="#{secretarioAdministrativoController.solicitud.fecha}" id="fecha"   />
                         <p:outputLabel  value="#{msg['field.idsolicitud']}" />
-                        <p:outputLabel  value="#{coordinadorController.solicitud.idsolicitud}" id="idsolicitud"   />
+                        <p:outputLabel  value="#{secretarioAdministrativoController.solicitud.idsolicitud}" id="idsolicitud"   />
 
 
                         <p:outputLabel  value="#{msg['field.solicitadopor']}" />
                         <b:column>
                             <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-                                                     completeMethod="#{coordinadorController.usuarioServices.complete}"
+                                                     completeMethod="#{secretarioAdministrativoController.usuarioServices.complete}"
                                                      labeltip1="#{msg['field.username']} #{p.username}"
                                                      labeltip2="#{msg['field.nombre']} #{p.nombre}"  
-                                                     listener="#{coordinadorController.handleSelect}"
-                                                     value="#{coordinadorController.solicita}"
+                                                     listener="#{secretarioAdministrativoController.handleSelect}"
+                                                     value="#{secretarioAdministrativoController.solicita}"
                                                      itemLabel=" #{p.nombre}"
                                                      field="nombre"
                                                      dropdown="true"
@@ -61,11 +61,11 @@
 
                         <p:outputLabel value="#{msg['field.responsable']}"/>
                         <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-                                                 completeMethod="#{coordinadorController.usuarioServices.complete}"
+                                                 completeMethod="#{secretarioAdministrativoController.usuarioServices.complete}"
                                                  labeltip1="#{msg['field.username']} #{p.username}"
                                                  labeltip2="#{msg['field.nombre']} #{p.nombre}"   
-                                                 listener="#{coordinadorController.handleSelect}"
-                                                 value="#{coordinadorController.responsable}"
+                                                 listener="#{secretarioAdministrativoController.handleSelect}"
+                                                 value="#{secretarioAdministrativoController.responsable}"
                                                  itemLabel=" #{p.nombre}"
                                                  field="nombre"
                                                  dropdown="true"
@@ -76,19 +76,19 @@
 
 
                         <p:outputLabel  value="#{msg['field.telefono']}" />
-                        <jmoordbjsf:inputText span="4"  value="#{coordinadorController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
+                        <jmoordbjsf:inputText span="4"  value="#{secretarioAdministrativoController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
 
                         <p:outputLabel  value="#{msg['field.email']}" />
-                        <jmoordbjsf:email required="true" span="8" value="#{coordinadorController.responsable.email}" id="email"  label="#{msg['field.email']}" />
+                        <jmoordbjsf:email required="true" span="8" value="#{secretarioAdministrativoController.responsable.email}" id="email"  label="#{msg['field.email']}" />
 
 
                         <p:outputLabel  value="#{msg['field.semestre']}" />
                         <jmoordbjsf:autocomplete converter="#{semestreConverter}"
-                                                 completeMethod="#{coordinadorController.semestreServices.complete}"
+                                                 completeMethod="#{secretarioAdministrativoController.semestreServices.complete}"
                                                  labeltip1="#{p.idsemestre}"
                                                  labeltip2="#{p.descripcion}"    
-                                                 listener="#{coordinadorController.handleSelect}"
-                                                 value="#{coordinadorController.solicitud.semestre}"
+                                                 listener="#{secretarioAdministrativoController.handleSelect}"
+                                                 value="#{secretarioAdministrativoController.solicitud.semestre}"
                                                  itemLabel="#{p.idsemestre}"
                                                  dropdown="true"
                                                  required="true"
@@ -97,7 +97,7 @@
                                                  />
 
                         <p:outputLabel  value="#{msg['field.periodoacademico']}" />
-                        <jmoordbjsf:inputText  required="true" span="4" value="#{coordinadorController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
+                        <jmoordbjsf:inputText  required="true" span="4" value="#{secretarioAdministrativoController.solicitud.periodoacademico}" id="periodoacademico"  label="#{msg['field.periodoacademico']}" />
 
 
 
@@ -112,8 +112,8 @@
                                         scrollHeight="250"
 
                                         emptyMessage="#{app['info.nohayregistros']}"
-                                        value="#{coordinadorController.facultadList}"
-                                        completeMethod="#{coordinadorController.completeFiltradoFacultad}"
+                                        value="#{secretarioAdministrativoController.facultadList}"
+                                        completeMethod="#{secretarioAdministrativoController.completeFiltradoFacultad}"
                                         var="p"
                                         required="true"
 
@@ -124,9 +124,9 @@
                             <f:attribute name="field" value="descripcion"/>
                             <f:attribute name="fielddropdown" value="false"/>
                             <f:attribute name="fieldquerylenth" value="1"/>
-                            <p:ajax event="itemSelect" listener="#{coordinadorController.handleSelect}"
+                            <p:ajax event="itemSelect" listener="#{secretarioAdministrativoController.handleSelect}"
                                     update="carrera"     />
-                            <p:ajax event="itemUnselect" listener="#{coordinadorController.itemUnselect}"
+                            <p:ajax event="itemUnselect" listener="#{secretarioAdministrativoController.itemUnselect}"
                                     update="carrera"
                                     />
 
@@ -142,8 +142,8 @@
                                         scrollHeight="250"
                                         size="55"
                                         emptyMessage="#{app['info.nohayregistros']}"
-                                        value="#{coordinadorController.carreraList}"
-                                        completeMethod="#{coordinadorController.completeFiltradoCarrera}"
+                                        value="#{secretarioAdministrativoController.carreraList}"
+                                        completeMethod="#{secretarioAdministrativoController.completeFiltradoCarrera}"
                                         var="p"
                                         required="true"
                                         itemLabel="#{p.descripcion}"
@@ -152,10 +152,10 @@
                             <f:attribute name="field" value="descripcion"/>
                             <f:attribute name="fielddropdown" value="false"/>
                             <f:attribute name="fieldquerylenth" value="1"/>
-                            <p:ajax event="itemSelect" listener="#{coordinadorController.handleSelect}"
+                            <p:ajax event="itemSelect" listener="#{secretarioAdministrativoController.handleSelect}"
                                     update=""
                                     />
-                            <p:ajax event="itemUnselect" listener="#{coordinadorController.itemUnselect}"
+                            <p:ajax event="itemUnselect" listener="#{secretarioAdministrativoController.itemUnselect}"
                                     update=""
                                     />
                             <!--                            <f:facet name="itemtip">
@@ -174,7 +174,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.numerogrupos']}" />
-                        <p:chips required="true" id="numerogrupo" value="#{coordinadorController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
+                        <p:chips required="true" id="numerogrupo" value="#{secretarioAdministrativoController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
 
 
                         <p:spacer/>
@@ -182,10 +182,10 @@
 
                         <p:outputLabel value="#{msg['field.idtipogira']}"/>
                         <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
-                                                 completeMethod="#{coordinadorController.tipogiraServices.complete}" 
+                                                 completeMethod="#{secretarioAdministrativoController.tipogiraServices.complete}" 
                                                  labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"  
-                                                 listener="#{coordinadorController.handleSelect}"
-                                                 value="#{coordinadorController.solicitud.tipogira}"
+                                                 listener="#{secretarioAdministrativoController.handleSelect}"
+                                                 value="#{secretarioAdministrativoController.solicitud.tipogira}"
                                                  itemLabel=" #{p.idtipogira}"
                                                  field="idtipogira"
                                                  dropdown="true"
@@ -195,22 +195,22 @@
                                                  update=""/>
 
                         <p:outputLabel  value="#{msg['field.objetivo']}" />
-                        <p:inputTextarea required="true" rows="2" cols="80" value="#{coordinadorController.solicitud.objetivo}" id="objetivo"   />
+                        <p:inputTextarea required="true" rows="2" cols="80" value="#{secretarioAdministrativoController.solicitud.objetivo}" id="objetivo"   />
 
 
 
                         <p:outputLabel  value="#{msg['field.lugares']}" />
-                        <p:chips required="true" value="#{coordinadorController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
+                        <p:chips required="true" value="#{secretarioAdministrativoController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
 
                      
                           <p:outputLabel value="#{msg['field.solicitud']}"/>
-                        <p:dataTable id="datatableTipoVehiculo" var="item" value="#{coordinadorController.tipoVehiculoCantidadBeansList}" 
+                        <p:dataTable id="datatableTipoVehiculo" var="item" value="#{secretarioAdministrativoController.tipoVehiculoCantidadBeansList}" 
                                      editable="true" editMode="cell" widgetVar="cellCars">
                             <f:facet name="header">
 
                             </f:facet>
 
-                            <p:ajax event="cellEdit" listener="#{coordinadorController.onCellEdit}" 
+                            <p:ajax event="cellEdit" listener="#{secretarioAdministrativoController.onCellEdit}" 
                                     update=":form:msg, :form:pasajeros, :form:datatableTipoVehiculo,:form:datatableDisponibles, :form:totalTipoVehiculoCantidad" />
 
 
@@ -241,12 +241,12 @@
 
 
   <p:outputLabel value="#{msg['field.totaltipovehiculo']}" />
-                        <p:outputLabel id="totalTipoVehiculoCantidad" value="#{coordinadorController.calcularTotalVehiculo()}"/>
+                        <p:outputLabel id="totalTipoVehiculoCantidad" value="#{secretarioAdministrativoController.calcularTotalVehiculo()}"/>
 
                         <p:outputLabel  value="#{msg['field.pasajeros']}" >
                             <i class="pi pi-users"></i>
                         </p:outputLabel>
-                        <p:outputLabel value="#{coordinadorController.calcularTotalPasajeros()}" id="pasajeros"/>
+                        <p:outputLabel value="#{secretarioAdministrativoController.calcularTotalPasajeros()}" id="pasajeros"/>
 
                       
 
@@ -256,13 +256,13 @@
                          <b:row>
                             <b:column medium-screen="4">
                         <jmoordbjsf:calendar required="true"
-                                             pattern="dd/MM/yyyy HH:mm a" value="#{coordinadorController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}"
-                                             listener="#{coordinadorController.calendarChangeListener}"
+                                             pattern="dd/MM/yyyy HH:mm a" value="#{secretarioAdministrativoController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}"
+                                             listener="#{secretarioAdministrativoController.calendarChangeListener}"
                                             update=":form:msg  :form:datatableDisponibles, :form:horapartida"
                                              />
                          </b:column>
                             <b:column medium-screen="2">
-                                <p:outputLabel id="horapartida" value="#{coordinadorController.showHour(coordinadorController.solicitud.fechahorapartida)}"  />
+                                <p:outputLabel id="horapartida" value="#{secretarioAdministrativoController.showHour(secretarioAdministrativoController.solicitud.fechahorapartida)}"  />
                             </b:column>
                         </b:row>
 
@@ -271,50 +271,50 @@
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
                              <b:row>
                             <b:column medium-screen="4">
-                        <jmoordbjsf:calendar required="true" pattern="dd/MM/yyyy HH:mm a" value="#{coordinadorController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
-                                             listener="#{coordinadorController.calendarChangeListener}"
+                        <jmoordbjsf:calendar required="true" pattern="dd/MM/yyyy HH:mm a" value="#{secretarioAdministrativoController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                                             listener="#{secretarioAdministrativoController.calendarChangeListener}"
                                            update=":form:msg  :form:datatableDisponibles :form:horaregreso"
 
                                              label="#{msg['field.fechahoraregreso']}" />
                         
                          </b:column>
                             <b:column medium-screen="2">
-                                <p:outputLabel id="horaregreso" value="#{coordinadorController.showHour(coordinadorController.solicitud.fechahoraregreso)}"  />
+                                <p:outputLabel id="horaregreso" value="#{secretarioAdministrativoController.showHour(secretarioAdministrativoController.solicitud.fechahoraregreso)}"  />
                             </b:column>
                         </b:row>
 
                         <p:outputLabel  value="#{msg['field.dias']}" />
-                        <p:selectCheckboxMenu id="multiple" value="#{coordinadorController.diasSelected}" label="#{msg['field.rangoagenda']}" multiple="true"
+                        <p:selectCheckboxMenu id="multiple" value="#{secretarioAdministrativoController.diasSelected}" label="#{msg['field.rangoagenda']}" multiple="true"
                                               required="true" 
                                               disabled="true"
                                               requiredMessage="#{msg['field.rangoagenda']} #{app['info.required']}"
                                               panelStyle="width:250px">
-                            <f:selectItems value="#{coordinadorController.diasList}" />
+                            <f:selectItems value="#{secretarioAdministrativoController.diasList}" />
                             <p:ajax event="change" update=":form:datatableDisponibles"
-                                    listener="#{coordinadorController.changeDaysViewAvailable()}"
+                                    listener="#{secretarioAdministrativoController.changeDaysViewAvailable()}"
                                     process="@this,pasajeros"/>
                         </p:selectCheckboxMenu>
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <jmoordbjsf:inputText required="true" span="8" value="#{coordinadorController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
+                        <jmoordbjsf:inputText required="true" span="8" value="#{secretarioAdministrativoController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
 
 
                         <p:outputLabel  value="#{msg['field.lugarllegada']}" />
-                        <jmoordbjsf:inputText required="true" span="8" value="#{coordinadorController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
+                        <jmoordbjsf:inputText required="true" span="8" value="#{secretarioAdministrativoController.solicitud.lugarllegada}" id="lugarllegada"  label="#{msg['field.lugarllegada']}" />
 
 
                         <p:outputLabel  value="#{msg['field.recursossolicitados']}" />
-                        <p:chips required="true" value="#{coordinadorController.solicitud.recursossolicitados}" id="recursossolicitados" title="#{msg['field.chips']}"   />
+                        <p:chips required="true" value="#{secretarioAdministrativoController.solicitud.recursossolicitados}" id="recursossolicitados" title="#{msg['field.chips']}"   />
 
                         <p:outputLabel  value="#{msg['field.observaciones']}" />
-                        <b:inputTextarea required="true"  rows="2" span="8" value="#{coordinadorController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
+                        <b:inputTextarea required="true"  rows="2" span="8" value="#{secretarioAdministrativoController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
 
 
                     </b:panelGrid>
 
                     <b:row>
                         <b:column span="12">
-                         <p:dataTable value="#{coordinadorController.disponiblesBeansList}" 
+                         <p:dataTable value="#{secretarioAdministrativoController.disponiblesBeansList}" 
                                          id="datatableDisponibles"
                                          var="item"  >
                                 <f:facet name="header">
@@ -350,33 +350,33 @@
                                 <p:column style="width:95px">
 
                                     <p:rowToggler />
-                                    <h:outputText value="#{coordinadorController.showDate(item.fechahorainicio)}" style="color: #{coordinadorController.columnColorDisponibles(item)}"  />
+                                    <h:outputText value="#{secretarioAdministrativoController.showDate(item.fechahorainicio)}" style="color: #{secretarioAdministrativoController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
 
                                 <p:column headerText="#{msg['field.tipovehiculo']}" style="width:95px">
-                                    <h:outputText value="#{item.vehiculo.get(0).tipovehiculo.idtipovehiculo}" style="color: #{coordinadorController.columnColorDisponibles(item)}"  />
+                                    <h:outputText value="#{item.vehiculo.get(0).tipovehiculo.idtipovehiculo}" style="color: #{secretarioAdministrativoController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
 
                                 <p:column headerText="#{msg['field.disponible']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroBuses}" style="color: #{coordinadorController.columnColorDisponibles(item)}" />
+                                    <p:outputLabel value="#{item.numeroBuses}" style="color: #{secretarioAdministrativoController.columnColorDisponibles(item)}" />
                                 </p:column>
                                 <p:column headerText="#{msg['field.pasajeros']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroPasajeros}" style="color: #{coordinadorController.columnColorDisponibles(item)}" />
+                                    <p:outputLabel value="#{item.numeroPasajeros}" style="color: #{secretarioAdministrativoController.columnColorDisponibles(item)}" />
                                 </p:column>
 
 
 
                                 <p:column headerText="#{msg['field.solicitado']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroVehiculosSolicitados}" style="color: #{coordinadorController.columnColorDisponibles(item)}"  />
+                                    <p:outputLabel value="#{item.numeroVehiculosSolicitados}" style="color: #{secretarioAdministrativoController.columnColorDisponibles(item)}"  />
                                 </p:column>
                                 <p:column headerText="#{msg['field.pasajeros']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroPasajerosSolicitados}" style="color: #{coordinadorController.columnColorDisponibles(item)}"  />
+                                    <p:outputLabel value="#{item.numeroPasajerosSolicitados}" style="color: #{secretarioAdministrativoController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
                                 <p:column headerText="#{msg['field.vehiculosRecomendados']}" style="width:75px">
-                                    <p:outputLabel value="#{item.busesRecomendados}" style="color: #{coordinadorController.columnColorDisponibles(item)}"  />
+                                    <p:outputLabel value="#{item.busesRecomendados}" style="color: #{secretarioAdministrativoController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
 
@@ -408,7 +408,7 @@
                     <b:row>
 
                         <b:column span="12">
-                            <p:dataList value="#{coordinadorController.sugerenciaDataModel}" var="item" type="ordered">
+                            <p:dataList value="#{secretarioAdministrativoController.sugerenciaDataModel}" var="item" type="ordered">
                                 <f:facet name="header">
                                     <p:outputLabel value="#{msg['field.sugerencia']}"/>
                                 </f:facet>
@@ -429,7 +429,7 @@
                                 renderedEdit="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"
                                 renderedList="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"                    
                                 renderedPrint="false"                    
-                                controller="#{coordinadorController}"
+                                controller="#{secretarioAdministrativoController}"
 
                                 url  = "/pages/solicituddocente/list.xhtml"
                                 />
