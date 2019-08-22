@@ -428,6 +428,30 @@ public class SecretarioAdministrativoController implements Serializable, IContro
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="handleSelectPorSolicitado(SelectEvent event) ">
+
+    public void handleSelectPorSolicitado(SelectEvent event) {
+         try {
+            JmoordbContext.put("searchsecretarioadministrativo", "porsolicitado");
+            JmoordbContext.put("_fieldsearchsecretarioadministrativo", solicita);
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+      
+    }// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="handleSelectPorResponsable(SelectEvent event)">
+
+    public void handleSelectPorResponsable(SelectEvent event) {
+         try {
+            JmoordbContext.put("searchsecretarioadministrativo", "porresponsable");
+            JmoordbContext.put("_fieldsearchsecretarioadministrativo",responsable);
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+      
+    }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="move(Integer page)">
     @Override
@@ -481,6 +505,22 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                     String vistoBuenoSecretarioAdministrativo = (String) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
                     doc = new Document("activo", "si");
                     doc.append("vistoBuenoSecretarioAdministrativo.aprobado", vistoBuenoSecretarioAdministrativo);
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
+                    break;
+                case "porsolicitado":
+
+                   Usuario solicita  = (Usuario) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
+                    doc = new Document("activo", "si");
+                    doc.append("usuario.0.username", solicita.getUsername());
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
+                    break;
+                case "porresponsable":
+
+                     Usuario responsable  = (Usuario) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
+                    doc = new Document("activo", "si");
+                    doc.append("usuario.1.username", responsable.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
