@@ -99,6 +99,10 @@
                     <p:column headerText="#{msg['field.fechapartida']}" style="width:150px">
                         <h:outputText value="#{coordinadorController.showDate(item.fechahorapartida)} #{coordinadorController.showHour(item.fechahorapartida)}" style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}" />
                     </p:column>
+                    
+                     <p:column headerText="#{msg['field.solicita']}" style="width:150px">
+                        <h:outputText value="#{item.usuario.get(0).nombre}" style="color: #{solicitudController.columnColor(item.estatus)}" />
+                    </p:column>
                     <p:column headerText="#{msg['field.lugarllegada']}"  >
                         <p:outputLabel value="#{item.lugarllegada}"   style="color: #{coordinadorController.columnColor(item.estatus)}" />
                     </p:column>
@@ -199,7 +203,7 @@
 
                             <p:outputLabel  value="#{msg['field.vistobueno']}" />
 
-                            <p:outputLabel value="#{item.vistoBueno.aprobado}"   style="color: #{coordinadorController.columnColor(item.estatus)}" />
+                          <p:outputLabel value="#{coordinadorController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}" />
 
                             <p:outputLabel value="#{msg['field.estatus']}" />
                             <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{coordinadorController.columnColor(item.estatus)}" />

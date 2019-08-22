@@ -195,10 +195,12 @@
                             <p:outputLabel  value="#{msg['field.objetivo']}" />
                             <p:outputLabel  value="#{item.objetivo}" id="objetivo"   />
 
-                            <p:outputLabel  value="#{msg['field.vistobueno']}" />
-
-                            <p:outputLabel value="#{item.vistoBueno.aprobado}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
-
+                 <p:outputLabel value="#{msg['field.coordinador']}" />
+                        <p:outputLabel value="#{solicitudController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
+              
+                   <p:outputLabel value="#{msg['field.secadministrativo']}"  />
+                        <p:outputLabel value="#{solicitudController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
+                   
                             <p:outputLabel value="#{msg['field.estatus']}" />
                             <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{solicitudController.columnColor(item.estatus)}" />
 
