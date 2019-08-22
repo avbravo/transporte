@@ -473,8 +473,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                 case "vistobuenocoordinador":
 
                    
-                   String vistoBueno = (String) JmoordbContext.get("_fieldsearchsolicitud");
-                     doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
+                   String vistoBueno = (String) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
+                     doc = new Document("activo", "si");
                     doc.append("vistoBueno.aprobado", vistoBueno);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
@@ -482,8 +482,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                 case "vistobuenosecretarioadministrativo":
 
                    
-                   String vistoBuenoSecretarioAdministrativo = (String) JmoordbContext.get("_fieldsearchsolicitud");
-                     doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
+                   String vistoBuenoSecretarioAdministrativo = (String) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
+                     doc = new Document("activo", "si");
                     doc.append("vistoBuenoSecretarioAdministrativo.aprobado", vistoBuenoSecretarioAdministrativo);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
@@ -2778,8 +2778,8 @@ if(aprobado.toLowerCase().equals("si")){
     // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSecretarioAdministrativo()">
     public String onVistoBuenoChangeSecretarioAdministrativo() {
         try {
-            JmoordbContext.put("searchsolicitud", "vistobuenosecretarioadministrativo");
-            JmoordbContext.put("_fieldsearchsolicitud", vistoBuenoSecretarioAdministrativoSearch);
+            JmoordbContext.put("searchsecretarioadministrativo", "vistobuenosecretarioadministrativo");
+            JmoordbContext.put("_fieldsearchsecretarioadministrativo", vistoBuenoSecretarioAdministrativoSearch);
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
