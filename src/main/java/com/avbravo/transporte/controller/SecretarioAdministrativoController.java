@@ -129,8 +129,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     private Boolean writable = false;
     private Boolean leyoSugerencias = false;
     Boolean diasconsecutivos = false;
-    
-     private String vistoBuenoSearch = "no";
+
+    private String vistoBuenoSearch = "no";
     private String vistoBuenoSecretarioAdministrativoSearch = "no";
     //DataModel
     private SolicitudDataModel solicitudDataModel;
@@ -142,10 +142,10 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     private Integer totalAprobado = 0;
     private Integer totalSolicitado = 0;
     private Integer totalRechazadoCancelado = 0;
-    private Integer totalPendienteVistoBueno=0;
-    private Integer totalAprobadoVistoBueno=0;
-    private Integer totalNoAprobadoVistoBueno=0;
-    
+    private Integer totalPendienteVistoBueno = 0;
+    private Integer totalAprobadoVistoBueno = 0;
+    private Integer totalNoAprobadoVistoBueno = 0;
+
     private Integer totalViajes = 0;
 
     /**
@@ -237,8 +237,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     EstatusServices estatusServices;
     @Inject
     VistoBuenoServices vistoBuenoServices;
-@Inject
-VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
+    @Inject
+    VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
     @Inject
     SemestreServices semestreServices;
     @Inject
@@ -443,7 +443,7 @@ VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoSer
 
             String descripcion = jmoordb_user.getUnidad().getIdunidad();
             Document doc = new Document("activo", "si");
-           
+
             switch ((String) JmoordbContext.get("searchsecretarioadministrativo")) {
                 case "_init":
                 case "_autocomplete":
@@ -470,18 +470,16 @@ VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoSer
                     break;
                 case "vistobuenocoordinador":
 
-                   
-                   String vistoBueno = (String) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
-                     doc = new Document("activo", "si");
+                    String vistoBueno = (String) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
+                    doc = new Document("activo", "si");
                     doc.append("vistoBueno.aprobado", vistoBueno);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
                 case "vistobuenosecretarioadministrativo":
 
-                   
-                   String vistoBuenoSecretarioAdministrativo = (String) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
-                     doc = new Document("activo", "si");
+                    String vistoBuenoSecretarioAdministrativo = (String) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
+                    doc = new Document("activo", "si");
                     doc.append("vistoBuenoSecretarioAdministrativo.aprobado", vistoBuenoSecretarioAdministrativo);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
@@ -795,6 +793,7 @@ VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoSer
     }
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String columnColor(Estatus estatus">
+
     public String columnColorVistoBueno(VistoBueno vistoBueno) {
         String color = "black";
         try {
@@ -806,29 +805,97 @@ VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoSer
     }
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
+
     public String columnNameVistoBueno(VistoBueno vistoBueno) {
         return vistoBuenoServices.columnNameVistoBueno(vistoBueno);
     }
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno()">
+
     public String columnNameVistoBueno() {
         return vistoBuenoServices.columnNameVistoBueno(solicitud.getVistoBueno());
     }
 // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Boolean columnHabilitadoEstatus(String estatus)">
-    public Boolean isSolicitado(Estatus estatus) {
-        Boolean solicitado = true;
+    // <editor-fold defaultstate="collapsed" desc="Boolean isVistoBuenoCoordinadorYSecretarioAprobadoOPendiente(Estatus estatus, Solicitud solicitud)">
+    public Boolean isVistoBuenoCoordinadorYSecretarioAprobadoOPendiente(Estatus estatus, Solicitud solicitud) {
+        Boolean valid = false;
         try {
-            solicitado = estatusServices.isSolicitado(estatus);
+            Boolean solicitado = estatusServices.isSolicitado(estatus);
+            if (solicitado) {
+                //verifica que tenga visto bueno del coordinador
+                if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
+                    //visto bueno del coordinador
+                    if (solicitud.getVistoBueno().getAprobado().equals("si")) {
+                        //visto bueno  o pendiente del secretario administrativo
+                        if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                            valid = true;
+                        }
+
+                    }
+                } else {
+                    if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                            valid = true;
+                        }
+
+                }
+
+            }
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-        return solicitado;
+        return valid;
     } // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="columnColorDisponibles(DisponiblesBeans disponiblesBeans) ">
 
+    // <editor-fold defaultstate="collapsed" desc="Boolean isSolicitadoConVistoBuenoNoAprobadoOPendienteCoordinador(Estatus estatus, Solicitud solicitud)">
+    public Boolean noVistoBuenoCoordinadorYSecretarioAprobadoOPendiente(Estatus estatus, Solicitud solicitud) {
+       Boolean valid = false;
+        try {
+            Boolean solicitado = estatusServices.isSolicitado(estatus);
+            if (solicitado) {
+                //verifica que tenga visto bueno del coordinador
+                if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
+                    //visto bueno del coordinador
+                    if (solicitud.getVistoBueno().getAprobado().equals("si")) {
+                        //visto bueno  o pendiente del secretario administrativo
+                        if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                            valid = true;
+                        }
+
+                    }
+                } else {
+                    if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                            valid = true;
+                        }
+
+                }
+
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    } // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean isVistoBuenoCoordinador( Solicitud solicitud)">
+    public Boolean isVistoBuenoCoordinador(Solicitud solicitud) {
+        Boolean valid = false;
+        try {
+
+            //verifica que tenga visto bueno del coordinador
+            if (solicitud.getVistoBueno().getAprobado().equals("si")) {
+                valid = true;
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    } // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="columnColorDisponibles(DisponiblesBeans disponiblesBeans) ">
     public String columnColorDisponibles(DisponiblesBeans disponiblesBeans) {
         String color = "black";
         try {
@@ -1324,11 +1391,11 @@ VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoSer
             totalSolicitado = 0;
             totalRechazadoCancelado = 0;
             totalViajes = 0;
-            
-           totalPendienteVistoBueno=0;
-  totalAprobadoVistoBueno=0;
-  totalNoAprobadoVistoBueno=0;
-  
+
+            totalPendienteVistoBueno = 0;
+            totalAprobadoVistoBueno = 0;
+            totalNoAprobadoVistoBueno = 0;
+
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             String descripcion = jmoordb_user.getUnidad().getIdunidad();
             List<Solicitud> list = new ArrayList<>();
@@ -1376,19 +1443,19 @@ VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoSer
                             tema = "schedule-red";
                             break;
                     }
-                    
-                     switch (a.getVistoBueno().getAprobado().trim()) {
-                         case "no":
-                             totalNoAprobadoVistoBueno++;
-                             break;
-                         case "si":
-                                 totalAprobadoVistoBueno++;
-                             break;
-                         case "pe":
-                                 totalPendienteVistoBueno++;
-                             break;
-                     }
-                    
+
+                    switch (a.getVistoBueno().getAprobado().trim()) {
+                        case "no":
+                            totalNoAprobadoVistoBueno++;
+                            break;
+                        case "si":
+                            totalAprobadoVistoBueno++;
+                            break;
+                        case "pe":
+                            totalPendienteVistoBueno++;
+                            break;
+                    }
+
                     String texto = nameOfCarrera + " " + viajest;
 //                    eventModel.addEvent(
                     //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
@@ -1438,7 +1505,7 @@ VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoSer
 
             }
 
-            System.out.println("solicitud "+solicitud.getVistoBueno().getAprobado());
+            System.out.println("solicitud " + solicitud.getVistoBueno().getAprobado());
         } catch (Exception e) {
 
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1743,9 +1810,8 @@ VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoSer
         }
         return "";
     }// </editor-fold>
-   
-    // <editor-fold defaultstate="collapsed" desc="String clear() ">
 
+    // <editor-fold defaultstate="collapsed" desc="String clear() ">
     @Override
     public String clear() {
         try {
@@ -2085,6 +2151,7 @@ VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoSer
         }
         return "";
     }
+
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="String sendEmail(String msg)">
     private String sendEmailVistoBueno(Solicitud solicitud, String aprobado) {
@@ -2118,29 +2185,26 @@ VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoSer
             String texto = "\n___________________________SOLICITUDES___________________________________";
             texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Pasajeros", "Vehiculo");
 
-           
+            texto += "\n" + String.format("%10d %20s %25s %10d %20s",
+                    solicitud.getIdsolicitud(),
+                    DateUtil.dateFormatToString(solicitud.getFechahorapartida(), "dd/MM/yyyy hh:mm a"),
+                    DateUtil.dateFormatToString(solicitud.getFechahoraregreso(), "dd/MM/yyyy hh:mm a"),
+                    solicitud.getPasajeros(),
+                    solicitud.getTipovehiculo().get(0).getIdtipovehiculo());
+            texto += "\n________________________________________________________________________";
 
-                texto += "\n" + String.format("%10d %20s %25s %10d %20s",
-                        solicitud.getIdsolicitud(),
-                        DateUtil.dateFormatToString(solicitud.getFechahorapartida(), "dd/MM/yyyy hh:mm a"),
-                        DateUtil.dateFormatToString(solicitud.getFechahoraregreso(), "dd/MM/yyyy hh:mm a"),
-                       solicitud.getPasajeros(),
-                       solicitud.getTipovehiculo().get(0).getIdtipovehiculo());
-                texto += "\n________________________________________________________________________";
-
-           String text ="El coordinador ";
-if(aprobado.toLowerCase().equals("si")){
-    text+= " Aprobo  el visto bueno para la solicitud " +solicitud.getIdsolicitud();
-            ;
-}else{
-    text+=" Rechazo el visto bueno para la solicitud " +solicitud.getIdsolicitud();
-}
-            String mensajeAdmin = text+ "   de :" + solicitud.getUsuario().get(0).getNombre()
+            String text = "El coordinador ";
+            if (aprobado.toLowerCase().equals("si")) {
+                text += " Aprobo  el visto bueno para la solicitud " + solicitud.getIdsolicitud();
+                ;
+            } else {
+                text += " Rechazo el visto bueno para la solicitud " + solicitud.getIdsolicitud();
+            }
+            String mensajeAdmin = text + "   de :" + solicitud.getUsuario().get(0).getNombre()
                     + "\nemail:" + solicitud.getUsuario().get(0).getEmail()
                     + "\n" + header
                     + "\n" + texto
                     + "\n Por favor ingrese al sistema de transporte para verificarlas.";
-        
 
             List<JmoordbEmailMaster> jmoordbEmailMasterList = jmoordbEmailMasterRepository.findBy(new Document("activo", "si"));
             if (jmoordbEmailMasterList == null || jmoordbEmailMasterList.isEmpty()) {
@@ -2150,7 +2214,7 @@ if(aprobado.toLowerCase().equals("si")){
                 //enviar al administrativo
 
                 Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-                
+
                 //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
                 if (usuarioList == null || usuarioList.isEmpty()) {
 
@@ -2705,10 +2769,11 @@ if(aprobado.toLowerCase().equals("si")){
     // </editor-fold>  
 
     // <editor-fold defaultstate="collapsed" desc="String aceptarVistoBueno(Solicitud solicitud, String aprobado) ">
-    public String aceptarVistoBueno(Solicitud solicitud, String aprobado) {
+    public String aceptarVistoBuenoSecretarioAdministrativo(Solicitud solicitud, String aprobado) {
         try {
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            solicitud.setVistoBueno(vistoBuenoServices.aprobar(jmoordb_user, aprobado));
+
+            solicitud.setVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativoServices.aprobar(jmoordb_user, aprobado));
 
             solicitudRepository.update(solicitud);
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editado"));
@@ -2717,7 +2782,7 @@ if(aprobado.toLowerCase().equals("si")){
             Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
             RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
             repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
-                    "update vistobueno", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+                    "update vistobueno secretario administrativo", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             //Obtiene la lista de usuarios para notificar
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
@@ -2727,21 +2792,21 @@ if(aprobado.toLowerCase().equals("si")){
             //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
             if (vistoBuenoAprobado) {
                 usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
-            }else{
+            } else {
                 //Agrega el docente para que se le envie la notificacion
                 usuarioList.add(solicitud.getUsuario().get(0));
             }
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 //Verifica si es un coordinador y le envia la notificacion
-               
+
 //incluir quien la solicito que no sea el administrador
                 usuarioList.forEach((u) -> {
                     String messages = "";
                     if (aprobado.toLowerCase().equals("si")) {
-                        messages =  "Se aprobo el visto bueno de la solicitud No, " + solicitud.getIdsolicitud() + " por "+jmoordb_user.getNombre() ;
+                        messages = "Se aprobo el visto bueno de la solicitud No, " + solicitud.getIdsolicitud() + " por " + jmoordb_user.getNombre();
                     } else {
-                        messages = "Se rechazo el visto bueno de la solicitud No, " + solicitud.getIdsolicitud() + " por "+jmoordb_user.getNombre() ;
+                        messages = "Se rechazo el visto bueno de la solicitud No, " + solicitud.getIdsolicitud() + " por " + jmoordb_user.getNombre();
                     }
 
                     notificacionServices.saveNotification(messages, u.getUsername(), "vistobuenosolicitud");
@@ -2751,7 +2816,7 @@ if(aprobado.toLowerCase().equals("si")){
                 //Envia la notificacion.....
                 push.send("Nueva solicitud Docente ");
 
-          sendEmailVistoBueno(solicitud,aprobado);
+                sendEmailVistoBueno(solicitud, aprobado);
             }
 
         } catch (Exception e) {
@@ -2760,9 +2825,8 @@ if(aprobado.toLowerCase().equals("si")){
         return "";
     }
     // </editor-fold>  
-    
-    
-     // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChange()">
+
+    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChange()">
     public String onVistoBuenoChange() {
         try {
             JmoordbContext.put("searchsecretarioadministrativo", "vistobuenocoordinador");
@@ -2774,6 +2838,7 @@ if(aprobado.toLowerCase().equals("si")){
         return "";
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSecretarioAdministrativo()">
+
     public String onVistoBuenoChangeSecretarioAdministrativo() {
         try {
             JmoordbContext.put("searchsecretarioadministrativo", "vistobuenosecretarioadministrativo");
@@ -2784,9 +2849,8 @@ if(aprobado.toLowerCase().equals("si")){
         }
         return "";
     }// </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
 
+    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
     public String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSecretarioAdministrativo vistoBuenoSecretarioAdministrativo) {
         return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativo);
     }

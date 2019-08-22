@@ -102,6 +102,8 @@
                                              field="idestatus"
                                              update=" :form:dataTable"/>
 
+                    <p:spacer/>
+                    <p:spacer/>
                     <p:outputLabel value="#{msg['field.mensaje']}"/>
                     <p:inputTextarea rows="2" value="#{secretarioAdministrativoController.messages}"/>
                     <p:commandButton value="#{msg['button.send']}" action="#{secretarioAdministrativoController.enviarMensajesDirectos()}"
@@ -143,50 +145,31 @@
                     <p:column headerText="#{msg['field.solicita']}" style="width:150px">
                         <h:outputText value="#{item.usuario.get(0).nombre}" style="color: #{solicitudController.columnColor(item.estatus)}" />
                     </p:column>
-                    <p:column headerText="#{msg['field.lugarllegada']}"  >
-                        <p:outputLabel value="#{item.lugarllegada}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
+
+
+                    <p:column headerText="#{msg['field.vistobueno']}"  >
+                        <p:outputLabel value="#{secretarioAdministrativoController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}" 
+                                       style="color: #{secretarioAdministrativoController.columnColor(item.estatus)}" />
                     </p:column>
+                  
 
-                    <p:column headerText="#{msg['field.idtiposolicitud']}"  >
-                        <p:outputLabel value="#{item.tiposolicitud.idtiposolicitud}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
-                    </p:column>
-
-                    <p:column headerText="#{msg['field.coordinador']}"  >
-                        <p:outputLabel value="#{solicitudController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
-                    </p:column>
-
-                    <p:column headerText="#{msg['field.secadministrativo']}"  >
-                        <p:outputLabel value="#{solicitudController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
-                    </p:column>
-
-
-
-                    <p:column headerText="#{msg['field.estatus']}" style="width:100px">
-                        <p:outputLabel  value="#{item.estatus.idestatus}"   style="color: #{solicitudController.columnColor(item.estatus)}"/>
-
-                    </p:column>
-
-
-                    <p:column headerText="" style="width:70px">
-                        <b:commandButton action="#{secretarioAdministrativoController.aceptarVistoBueno(item,'si')}"
+                    <p:column headerText="" style="width:70px" >
+                        <b:commandButton action="#{secretarioAdministrativoController.aceptarVistoBuenoSecretarioAdministrativo(item,'si')}"
                                          iconAwesome="fa-check-square-o" 
                                          title="#{msg['button.aprobar']}"
-                                         rendered="#{secretarioAdministrativoController.isSolicitado(item.estatus)}"
+                                         rendered="#{secretarioAdministrativoController.noVistoBuenoCoordinadorYSecretarioAprobadoOPendiente(item.estatus,item)}"
                                          update=":form:dataTable, :form:msgs"/>
-
-
-
-                    </p:column>
-                    <p:column headerText="" style="width:70px">
-                        <b:commandButton action="#{secretarioAdministrativoController.aceptarVistoBueno(item,'no')}"
+                        <b:commandButton action="#{secretarioAdministrativoController.aceptarVistoBuenoSecretarioAdministrativo(item,'no')}"
                                          iconAwesome="fa-times" 
-                                         rendered="#{secretarioAdministrativoController.isSolicitado(item.estatus)}"
+                                         rendered="#{secretarioAdministrativoController.isVistoBuenoCoordinadorYSecretarioAprobadoOPendiente(item.estatus,item)}"
                                          title="#{msg['button.rechazar']}"
                                          update=":form:dataTable, :form:msgs"/>
 
 
-
                     </p:column>
+
+
+
 
 
 
@@ -260,6 +243,9 @@
 
 
 
+                            <p:outputLabel value="#{msg['field.tiposolicitud']}" />
+                            <p:outputLabel  value="#{item.tiposolicitud.idtiposolicitud}"  style="color: #{secretarioAdministrativoController.columnColor(item.estatus)}" />
+                            
                             <p:outputLabel value="#{msg['field.estatus']}" />
                             <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{secretarioAdministrativoController.columnColor(item.estatus)}" />
 
