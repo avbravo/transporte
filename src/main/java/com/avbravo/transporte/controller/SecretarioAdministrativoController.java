@@ -21,8 +21,6 @@ import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.repository.Repository;
 import com.avbravo.jmoordb.pojos.JmoordbEmailMaster;
-import com.avbravo.jmoordb.pojos.JmoordbNotifications;
-import com.avbravo.jmoordb.pojos.UserInfo;
 import com.avbravo.jmoordb.profiles.repository.JmoordbEmailMasterRepository;
 import com.avbravo.jmoordb.profiles.repository.JmoordbNotificationsRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
@@ -51,6 +49,7 @@ import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.VistoBueno;
+import com.avbravo.transporteejb.entity.VistoBuenoSecretarioAdministrativo;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.EstatusViajeRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
@@ -68,9 +67,8 @@ import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
+import com.avbravo.transporteejb.services.VistoBuenoSecretarioAdministrativoServices;
 import com.avbravo.transporteejb.services.VistoBuenoServices;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.or;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -97,7 +95,6 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.primefaces.component.api.UIColumn;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
@@ -240,7 +237,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     EstatusServices estatusServices;
     @Inject
     VistoBuenoServices vistoBuenoServices;
-
+@Inject
+VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
     @Inject
     SemestreServices semestreServices;
     @Inject
@@ -2786,4 +2784,11 @@ if(aprobado.toLowerCase().equals("si")){
         }
         return "";
     }// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
+
+    public String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSecretarioAdministrativo vistoBuenoSecretarioAdministrativo) {
+        return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativo);
+    }
+// </editor-fold>
 }

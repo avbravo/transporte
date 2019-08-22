@@ -38,7 +38,7 @@
 
             <b:panel collapsible="false" title="#{msg['titlelist.vistobuenosolicitudes']}" id="content"   look="primary"  > 
                 <b:panelGrid colSpans="2,4,2,4"  columns="4" size="xs"> 
-                   
+
                     <p:outputLabel value="#{msg['field.secretarioadministrativo']}"/>
                     <p:selectOneMenu id="secretarioadministrativo" value="#{secretarioAdministrativoController.vistoBuenoSecretarioAdministrativoSearch}" style="width:150px">
                         <p:ajax listener="#{secretarioAdministrativoController.onVistoBuenoChangeSecretarioAdministrativo}" update=":form:dataTable" />
@@ -48,7 +48,7 @@
                         <f:selectItem itemLabel="#{msg['selectitem.noaprobado']}" itemValue="no" />
 
                     </p:selectOneMenu>
-                    
+
                     <p:outputLabel value="#{msg['field.coordinador']}"/>
                     <p:selectOneMenu id="coordinador" value="#{secretarioAdministrativoController.vistoBuenoSearch}" style="width:150px">
                         <p:ajax listener="#{secretarioAdministrativoController.onVistoBuenoChange}" update=":form:dataTable" />
@@ -59,24 +59,38 @@
 
                     </p:selectOneMenu>
 
-                     <p:outputLabel value="#{msg['field.responsable']}"/>
-                        <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-                                                 completeMethod="#{secretarioAdministrativoController.usuarioServices.complete}"
-                                                 labeltip1="#{msg['field.username']} #{p.username}"
-                                                 labeltip2="#{msg['field.nombre']} #{p.nombre}"   
-                                                 listener="#{secretarioAdministrativoController.handleSelect}"
-                                                 value="#{secretarioAdministrativoController.responsable}"
-                                                 itemLabel=" #{p.nombre}"
-                                                 field="nombre"
-                                                 dropdown="true"
-                                                 minQueryLength="0"
-                                                 update=":form:dataTable"
-                                                 size="35"
-                                                 />
+                    <p:outputLabel value="#{msg['field.solicitadopor']}"/>
+                    <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                             completeMethod="#{secretarioAdministrativoController.usuarioServices.complete}"
+                                             labeltip1="#{msg['field.username']} #{p.username}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}"   
+                                             listener="#{secretarioAdministrativoController.handleSelect}"
+                                             value="#{secretarioAdministrativoController.solicita}"
+                                             itemLabel=" #{p.nombre}"
+                                             field="nombre"
+                                             dropdown="true"
+                                             minQueryLength="0"
+                                             update=":form:dataTable"
+                                             size="35"
+                                             />
+                    <p:outputLabel value="#{msg['field.responsable']}"/>
+                    <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                             completeMethod="#{secretarioAdministrativoController.usuarioServices.complete}"
+                                             labeltip1="#{msg['field.username']} #{p.username}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}"   
+                                             listener="#{secretarioAdministrativoController.handleSelect}"
+                                             value="#{secretarioAdministrativoController.responsable}"
+                                             itemLabel=" #{p.nombre}"
+                                             field="nombre"
+                                             dropdown="true"
+                                             minQueryLength="0"
+                                             update=":form:dataTable"
+                                             size="35"
+                                             />
 
 
-                    
-                     <p:outputLabel value="#{msg['field.idestatus']}"/>
+
+                    <p:outputLabel value="#{msg['field.idestatus']}"/>
                     <jmoordbjsf:autocomplete converter="#{estatusConverter}"
                                              dropdown="true"
                                              minQueryLength="0"
@@ -113,7 +127,7 @@
 
                 <p:dataTable var="item" value="#{secretarioAdministrativoController.solicitudDataModel}"
                              reflow="true">
-                   <f:facet name="header">
+                    <f:facet name="header">
                         <p:outputLabel value="#{msg['titlelist.solicitudes']}"/>
                     </f:facet>
                     <p:column style="width:16px">
@@ -126,18 +140,21 @@
                     <p:column headerText="#{msg['field.fechapartida']}" style="width:150px">
                         <h:outputText value="#{solicitudController.showDate(item.fechahorapartida)} #{solicitudController.showHour(item.fechahorapartida)}" style="color: #{solicitudController.columnColor(item.estatus)}" />
                     </p:column>
+                    <p:column headerText="#{msg['field.solicita']}" style="width:150px">
+                        <h:outputText value="#{item.usuario.get(0).nombre}" style="color: #{solicitudController.columnColor(item.estatus)}" />
+                    </p:column>
                     <p:column headerText="#{msg['field.lugarllegada']}"  >
                         <p:outputLabel value="#{item.lugarllegada}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
                     </p:column>
-                    
-                      <p:column headerText="#{msg['field.idtiposolicitud']}"  >
+
+                    <p:column headerText="#{msg['field.idtiposolicitud']}"  >
                         <p:outputLabel value="#{item.tiposolicitud.idtiposolicitud}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
                     </p:column>
 
                     <p:column headerText="#{msg['field.coordinador']}"  >
                         <p:outputLabel value="#{solicitudController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
                     </p:column>
-                  
+
                     <p:column headerText="#{msg['field.secadministrativo']}"  >
                         <p:outputLabel value="#{solicitudController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
                     </p:column>
@@ -233,9 +250,15 @@
                             <p:outputLabel  value="#{msg['field.objetivo']}" />
                             <p:outputLabel  value="#{item.objetivo}" id="objetivo"   />
 
-                            <p:outputLabel  value="#{msg['field.vistobueno']}" />
 
-                            <p:outputLabel value="#{item.vistoBueno.aprobado}"   style="color: #{secretarioAdministrativoController.columnColor(item.estatus)}" />
+                            <p:outputLabel  value="#{msg['field.coordinador']}"  />
+                            <p:outputLabel value="#{secretarioAdministrativoController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
+
+
+                            <p:outputLabel  value="#{msg['field.secadministrativo']}" />
+                            <p:outputLabel value="#{secretarioAdministrativoController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
+
+
 
                             <p:outputLabel value="#{msg['field.estatus']}" />
                             <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{secretarioAdministrativoController.columnColor(item.estatus)}" />
@@ -243,7 +266,14 @@
                         </b:panelGrid>
                     </p:rowExpansion>
                 </p:dataTable>
+                <p:contextMenu for="dataTable">
 
+                    <p:menuitem value="#{item.idsolicitud}" url="http://www.primefaces.org" icon="pi pi-home"/>
+
+
+
+
+                </p:contextMenu>
             </b:panel>
 
 
