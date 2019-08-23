@@ -120,6 +120,8 @@ public class SolicitudController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
 
+    Date date14 = new Date();
+    
     String messages = "";
     Boolean coordinadorvalido = false;
     Boolean escoordinador = false;
@@ -1178,6 +1180,7 @@ public class SolicitudController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="Boolean inicializar()">
     private String inicializar() {
         try {
+            date14 =null;
             tipoVehiculoCantidadBeansList = new ArrayList<>();
             Integer id = 0;
             Date idsecond = new Date();

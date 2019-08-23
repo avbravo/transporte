@@ -110,7 +110,22 @@
                                      update=":form:msgs"
                                      />
                 </b:panelGrid>
+ <b:row>
+                    <b:column medium-screen="25" >
 
+              
+
+                <jmoordbjsf:searchBetweenDate 
+                    renderedMove="true"
+                    labelDesde="#{msg['field.fechainicio']}"
+                    valueDesde="#{secretarioAdministrativoController.fechaDesde}"
+                    labelHasta="#{msg['field.fechafin']}"
+                    valueHasta="#{secretarioAdministrativoController.fechaHasta}"
+                    renderedList="true"  
+                    search="#{secretarioAdministrativoController.searchBy('_betweendates',secretarioAdministrativoController.solicitud)}"
+                    />
+                   </b:column>
+                </b:row>
             </b:panel>
 
 

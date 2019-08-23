@@ -59,6 +59,7 @@
             <artifactId>transporteejb</artifactId>
             <version>19.7.7</version>
         </dependency>
+      
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -85,7 +86,7 @@
        <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbjsf</artifactId>
-            <version>0.20.1</version>
+            <version>0.21</version>
         </dependency>
         <!--
                         parche para bootfaces

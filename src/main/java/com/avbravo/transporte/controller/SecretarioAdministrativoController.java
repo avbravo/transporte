@@ -129,6 +129,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     private Boolean writable = false;
     private Boolean leyoSugerencias = false;
     Boolean diasconsecutivos = false;
+    private Date fechaDesde = new Date();
+    private Date fechaHasta = new Date();
 
     private String vistoBuenoSearch = "no";
     private String vistoBuenoSecretarioAdministrativoSearch = "no";
