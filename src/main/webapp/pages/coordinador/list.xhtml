@@ -60,6 +60,36 @@
                                              itemLabel=" #{p.idestatus}"
                                              field="idestatus"
                                              update=" :form:dataTable"/>
+                    
+                    <p:outputLabel value="#{msg['field.solicitadopor']}"/>
+                    <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                             completeMethod="#{coordinadorController.usuarioServices.complete}"
+                                             labeltip1="#{msg['field.username']} #{p.username}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}"   
+                                             listener="#{coordinadorController.handleSelectPorSolicitado}"
+                                             value="#{coordinadorController.solicita}"
+                                             itemLabel=" #{p.nombre}"
+                                             field="nombre"
+                                             dropdown="true"
+                                             minQueryLength="0"
+                                             update=":form:dataTable"
+                                             size="35"
+                                             />
+                    <p:outputLabel value="#{msg['field.responsable']}"/>
+                    <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                             completeMethod="#{coordinadorController.usuarioServices.complete}"
+                                             labeltip1="#{msg['field.username']} #{p.username}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}"   
+                                             listener="#{coordinadorController.handleSelectPorResponsable}"
+                                             value="#{coordinadorController.responsable}"
+                                             itemLabel=" #{p.nombre}"
+                                             field="nombre"
+                                             dropdown="true"
+                                             minQueryLength="0"
+                                             update=":form:dataTable"
+                                             size="35"
+                                             />
+
 
                     <p:outputLabel value="#{msg['field.mensaje']}"/>
                     <p:inputTextarea rows="2" value="#{coordinadorController.messages}"/>

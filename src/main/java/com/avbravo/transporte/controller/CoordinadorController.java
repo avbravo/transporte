@@ -482,6 +482,24 @@ public class CoordinadorController implements Serializable, IController {
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
+                    
+                    
+                     case "porsolicitado":
+
+                   Usuario solicita  = (Usuario) JmoordbContext.get("_fieldsearchcoordinador");
+            
+                    doc.append("usuario.0.username", solicita.getUsername());
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
+                    break;
+                case "porresponsable":
+
+                     Usuario responsable  = (Usuario) JmoordbContext.get("_fieldsearchcoordinador");
+            
+                    doc.append("usuario.1.username", responsable.getUsername());
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
+                    break;
                 default:
 
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
@@ -2766,4 +2784,29 @@ if(aprobado.toLowerCase().equals("si")){
         return "";
     }
     // </editor-fold>  
+    
+    // <editor-fold defaultstate="collapsed" desc="handleSelectPorSolicitado(SelectEvent event) ">
+
+    public void handleSelectPorSolicitado(SelectEvent event) {
+         try {
+            JmoordbContext.put("searchcoordinador", "porsolicitado");
+            JmoordbContext.put("_fieldsearchcoordinador", solicita);
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+      
+    }// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="handleSelectPorResponsable(SelectEvent event)">
+
+    public void handleSelectPorResponsable(SelectEvent event) {
+         try {
+            JmoordbContext.put("searchcoordinador", "porresponsable");
+            JmoordbContext.put("_fieldsearchcoordinador",responsable);
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+      
+    }// </editor-fold>
 }
