@@ -1449,16 +1449,10 @@ public class SecretarioAdministrativoController implements Serializable, IContro
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             String descripcion = jmoordb_user.getUnidad().getIdunidad();
             List<Solicitud> list = new ArrayList<>();
-            Document doc = new Document("descripcion", descripcion).append("activo", "si");
-            List<Facultad> facultadList = facultadRepository.findBy(doc);
 
-            if (facultadList == null || facultadList.isEmpty()) {
-
-            } else {
-                Facultad facultad = facultadList.get(0);
-                Document query = new Document("activo", "si").append("facultad.idfacultad", facultad.getIdfacultad());
-                list = solicitudRepository.findBy(query, new Document("idsolicitud", -1));
-            }
+       
+          //      Document query = new Document("activo", "si");
+                list = solicitudRepository.findBy("activo","si", new Document("idsolicitud", -1));
 
             eventModel = new DefaultScheduleModel();
             if (!list.isEmpty()) {
@@ -2906,18 +2900,5 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     }
 // </editor-fold>
     
-//     @Override
-//    public String searchBy(String string) {
-//        try {
-//
-//            loginController.put("searchpermiso", string);
-//
-//            writable = true;
-//            move();
-//
-//        } catch (Exception e) {
-//            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-//        }
-//        return "";
-//    }// </editor-fold>
+
 }
