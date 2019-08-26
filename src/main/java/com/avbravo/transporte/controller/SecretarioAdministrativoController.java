@@ -494,6 +494,14 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
+                    
+                        case "_betweendates":
+                 
+                  solicitudList = solicitudRepository.filterBetweenDatePaginationWithoutHours("activo", "si", 
+                         "fechahorapartida", fechaDesde, 
+                         "fechahoraregreso",fechaHasta, 
+                         page, rowPage, new Document("idsolicitud", -1));
+                    break;
                 case "vistobuenocoordinador":
 
                     String vistoBueno = (String) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
@@ -2897,4 +2905,19 @@ public class SecretarioAdministrativoController implements Serializable, IContro
         return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativo);
     }
 // </editor-fold>
+    
+//     @Override
+//    public String searchBy(String string) {
+//        try {
+//
+//            loginController.put("searchpermiso", string);
+//
+//            writable = true;
+//            move();
+//
+//        } catch (Exception e) {
+//            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+//        }
+//        return "";
+//    }// </editor-fold>
 }
