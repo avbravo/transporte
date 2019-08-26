@@ -69,6 +69,7 @@ import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 import com.avbravo.transporteejb.services.VistoBuenoServices;
+import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.or;
 
@@ -132,6 +133,8 @@ public class CoordinadorController implements Serializable, IController {
     private Boolean writable = false;
     private Boolean leyoSugerencias = false;
     Boolean diasconsecutivos = false;
+    private Date fechaDesde = new Date();
+    private Date fechaHasta = new Date();
     //DataModel
     private SolicitudDataModel solicitudDataModel;
     private SugerenciaDataModel sugerenciaDataModel;
@@ -142,12 +145,12 @@ public class CoordinadorController implements Serializable, IController {
     private Integer totalAprobado = 0;
     private Integer totalSolicitado = 0;
     private Integer totalRechazadoCancelado = 0;
-    private Integer totalPendienteVistoBueno=0;
-    private Integer totalAprobadoVistoBueno=0;
-    private Integer totalNoAprobadoVistoBueno=0;
-    
+    private Integer totalPendienteVistoBueno = 0;
+    private Integer totalAprobadoVistoBueno = 0;
+    private Integer totalNoAprobadoVistoBueno = 0;
+
     private Integer totalViajes = 0;
-    private String vistoBuenoSearch="no";
+    private String vistoBuenoSearch = "no";
     /**
      * se usan para obtener los lugares y asignarselo a los atributos lugres de
      * partida y llegada de la solicitud
@@ -441,13 +444,14 @@ public class CoordinadorController implements Serializable, IController {
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
             String descripcion = jmoordb_user.getUnidad().getIdunidad();
-            Document doc = new Document("descripcion", descripcion).append("activo", "si");
+          Document doc = new Document("descripcion", descripcion).append("activo", "si");
+         //   Document doc = new Document("activo", "si");
             List<Facultad> facultadList = facultadRepository.findBy(doc);
-
+            Facultad facultad = new Facultad();
             if (facultadList == null || facultadList.isEmpty()) {
 
             } else {
-                Facultad facultad = facultadList.get(0);
+                facultad = facultadList.get(0);
                 doc = new Document("activo", "si").append("facultad.idfacultad", facultad.getIdfacultad());
 
             }
@@ -476,26 +480,43 @@ public class CoordinadorController implements Serializable, IController {
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
+
+                case "_betweendates":
+
+
+                     solicitudList = solicitudRepository.filterBetweenDatePaginationWithoutHours(
+                             "activo","si",
+                             "facultad.idfacultad",
+                             facultad.getIdfacultad(),                            
+                             "fechahorapartida", fechaDesde, 
+                              "fechahoraregreso",fechaHasta, 
+                              page,
+                              rowPage,
+                              new Document("idsolicitud", -1)
+                     );
+                             
+                    
+                             
+                    break;
                 case "vistobueno":
-                   String vistoBueno = (String) JmoordbContext.get("_fieldsearchcoordinador");
+                    String vistoBueno = (String) JmoordbContext.get("_fieldsearchcoordinador");
                     doc.append("vistoBueno.aprobado", vistoBueno);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
-                    
-                    
-                     case "porsolicitado":
 
-                   Usuario solicita  = (Usuario) JmoordbContext.get("_fieldsearchcoordinador");
-            
+                case "porsolicitado":
+
+                    Usuario solicita = (Usuario) JmoordbContext.get("_fieldsearchcoordinador");
+
                     doc.append("usuario.0.username", solicita.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
                 case "porresponsable":
 
-                     Usuario responsable  = (Usuario) JmoordbContext.get("_fieldsearchcoordinador");
-            
+                    Usuario responsable = (Usuario) JmoordbContext.get("_fieldsearchcoordinador");
+
                     doc.append("usuario.1.username", responsable.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
@@ -809,6 +830,7 @@ public class CoordinadorController implements Serializable, IController {
     }
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String columnColor(Estatus estatus">
+
     public String columnColorVistoBueno(VistoBueno vistoBueno) {
         String color = "black";
         try {
@@ -820,11 +842,13 @@ public class CoordinadorController implements Serializable, IController {
     }
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
+
     public String columnNameVistoBueno(VistoBueno vistoBueno) {
         return vistoBuenoServices.columnNameVistoBueno(vistoBueno);
     }
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno()">
+
     public String columnNameVistoBueno() {
         return vistoBuenoServices.columnNameVistoBueno(solicitud.getVistoBueno());
     }
@@ -1338,11 +1362,11 @@ public class CoordinadorController implements Serializable, IController {
             totalSolicitado = 0;
             totalRechazadoCancelado = 0;
             totalViajes = 0;
-            
-           totalPendienteVistoBueno=0;
-  totalAprobadoVistoBueno=0;
-  totalNoAprobadoVistoBueno=0;
-  
+
+            totalPendienteVistoBueno = 0;
+            totalAprobadoVistoBueno = 0;
+            totalNoAprobadoVistoBueno = 0;
+
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             String descripcion = jmoordb_user.getUnidad().getIdunidad();
             List<Solicitud> list = new ArrayList<>();
@@ -1390,19 +1414,19 @@ public class CoordinadorController implements Serializable, IController {
                             tema = "schedule-red";
                             break;
                     }
-                    
-                     switch (a.getVistoBueno().getAprobado().trim()) {
-                         case "no":
-                             totalNoAprobadoVistoBueno++;
-                             break;
-                         case "si":
-                                 totalAprobadoVistoBueno++;
-                             break;
-                         case "pe":
-                                 totalPendienteVistoBueno++;
-                             break;
-                     }
-                    
+
+                    switch (a.getVistoBueno().getAprobado().trim()) {
+                        case "no":
+                            totalNoAprobadoVistoBueno++;
+                            break;
+                        case "si":
+                            totalAprobadoVistoBueno++;
+                            break;
+                        case "pe":
+                            totalPendienteVistoBueno++;
+                            break;
+                    }
+
                     String texto = nameOfCarrera + " " + viajest;
 //                    eventModel.addEvent(
                     //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
@@ -1452,7 +1476,7 @@ public class CoordinadorController implements Serializable, IController {
 
             }
 
-            System.out.println("solicitud "+solicitud.getVistoBueno().getAprobado());
+            System.out.println("solicitud " + solicitud.getVistoBueno().getAprobado());
         } catch (Exception e) {
 
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1758,6 +1782,7 @@ public class CoordinadorController implements Serializable, IController {
         return "";
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="handleSelect">
+
     public String onVistoBuenoChange() {
         try {
             JmoordbContext.put("searchcoordinador", "vistobueno");
@@ -2109,6 +2134,7 @@ public class CoordinadorController implements Serializable, IController {
         }
         return "";
     }
+
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="String sendEmail(String msg)">
     private String sendEmailVistoBueno(Solicitud solicitud, String aprobado) {
@@ -2142,29 +2168,26 @@ public class CoordinadorController implements Serializable, IController {
             String texto = "\n___________________________SOLICITUDES___________________________________";
             texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Pasajeros", "Vehiculo");
 
-           
+            texto += "\n" + String.format("%10d %20s %25s %10d %20s",
+                    solicitud.getIdsolicitud(),
+                    DateUtil.dateFormatToString(solicitud.getFechahorapartida(), "dd/MM/yyyy hh:mm a"),
+                    DateUtil.dateFormatToString(solicitud.getFechahoraregreso(), "dd/MM/yyyy hh:mm a"),
+                    solicitud.getPasajeros(),
+                    solicitud.getTipovehiculo().get(0).getIdtipovehiculo());
+            texto += "\n________________________________________________________________________";
 
-                texto += "\n" + String.format("%10d %20s %25s %10d %20s",
-                        solicitud.getIdsolicitud(),
-                        DateUtil.dateFormatToString(solicitud.getFechahorapartida(), "dd/MM/yyyy hh:mm a"),
-                        DateUtil.dateFormatToString(solicitud.getFechahoraregreso(), "dd/MM/yyyy hh:mm a"),
-                       solicitud.getPasajeros(),
-                       solicitud.getTipovehiculo().get(0).getIdtipovehiculo());
-                texto += "\n________________________________________________________________________";
-
-           String text ="El coordinador ";
-if(aprobado.toLowerCase().equals("si")){
-    text+= " Aprobo  el visto bueno para la solicitud " +solicitud.getIdsolicitud();
-            ;
-}else{
-    text+=" Rechazo el visto bueno para la solicitud " +solicitud.getIdsolicitud();
-}
-            String mensajeAdmin = text+ "   de :" + solicitud.getUsuario().get(0).getNombre()
+            String text = "El coordinador ";
+            if (aprobado.toLowerCase().equals("si")) {
+                text += " Aprobo  el visto bueno para la solicitud " + solicitud.getIdsolicitud();
+                ;
+            } else {
+                text += " Rechazo el visto bueno para la solicitud " + solicitud.getIdsolicitud();
+            }
+            String mensajeAdmin = text + "   de :" + solicitud.getUsuario().get(0).getNombre()
                     + "\nemail:" + solicitud.getUsuario().get(0).getEmail()
                     + "\n" + header
                     + "\n" + texto
                     + "\n Por favor ingrese al sistema de transporte para verificarlas.";
-        
 
             List<JmoordbEmailMaster> jmoordbEmailMasterList = jmoordbEmailMasterRepository.findBy(new Document("activo", "si"));
             if (jmoordbEmailMasterList == null || jmoordbEmailMasterList.isEmpty()) {
@@ -2174,7 +2197,7 @@ if(aprobado.toLowerCase().equals("si")){
                 //enviar al administrativo
 
                 Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-                
+
                 //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
                 if (usuarioList == null || usuarioList.isEmpty()) {
 
@@ -2751,21 +2774,21 @@ if(aprobado.toLowerCase().equals("si")){
             //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
             if (vistoBuenoAprobado) {
                 usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
-            }else{
+            } else {
                 //Agrega el docente para que se le envie la notificacion
                 usuarioList.add(solicitud.getUsuario().get(0));
             }
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 //Verifica si es un coordinador y le envia la notificacion
-               
+
 //incluir quien la solicito que no sea el administrador
                 usuarioList.forEach((u) -> {
                     String messages = "";
                     if (aprobado.toLowerCase().equals("si")) {
-                        messages =  "Se aprobo el visto bueno de la solicitud No, " + solicitud.getIdsolicitud() + " por "+jmoordb_user.getNombre() ;
+                        messages = "Se aprobo el visto bueno de la solicitud No, " + solicitud.getIdsolicitud() + " por " + jmoordb_user.getNombre();
                     } else {
-                        messages = "Se rechazo el visto bueno de la solicitud No, " + solicitud.getIdsolicitud() + " por "+jmoordb_user.getNombre() ;
+                        messages = "Se rechazo el visto bueno de la solicitud No, " + solicitud.getIdsolicitud() + " por " + jmoordb_user.getNombre();
                     }
 
                     notificacionServices.saveNotification(messages, u.getUsername(), "vistobuenosolicitud");
@@ -2775,7 +2798,7 @@ if(aprobado.toLowerCase().equals("si")){
                 //Envia la notificacion.....
                 push.send("Nueva solicitud Docente ");
 
-          sendEmailVistoBueno(solicitud,aprobado);
+                sendEmailVistoBueno(solicitud, aprobado);
             }
 
         } catch (Exception e) {
@@ -2784,29 +2807,28 @@ if(aprobado.toLowerCase().equals("si")){
         return "";
     }
     // </editor-fold>  
-    
-    // <editor-fold defaultstate="collapsed" desc="handleSelectPorSolicitado(SelectEvent event) ">
 
+    // <editor-fold defaultstate="collapsed" desc="handleSelectPorSolicitado(SelectEvent event) ">
     public void handleSelectPorSolicitado(SelectEvent event) {
-         try {
+        try {
             JmoordbContext.put("searchcoordinador", "porsolicitado");
             JmoordbContext.put("_fieldsearchcoordinador", solicita);
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-      
+
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelectPorResponsable(SelectEvent event)">
 
     public void handleSelectPorResponsable(SelectEvent event) {
-         try {
+        try {
             JmoordbContext.put("searchcoordinador", "porresponsable");
-            JmoordbContext.put("_fieldsearchcoordinador",responsable);
+            JmoordbContext.put("_fieldsearchcoordinador", responsable);
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-      
+
     }// </editor-fold>
 }

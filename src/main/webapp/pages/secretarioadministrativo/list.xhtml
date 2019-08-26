@@ -157,6 +157,9 @@
                     <p:column headerText="#{msg['field.fechapartida']}" style="width:150px">
                         <h:outputText value="#{solicitudController.showDate(item.fechahorapartida)} #{solicitudController.showHour(item.fechahorapartida)}" style="color: #{solicitudController.columnColor(item.estatus)}" />
                     </p:column>
+                    <p:column headerText="#{msg['field.fecharegreso']}" style="width:150px">
+                        <h:outputText value="#{solicitudController.showDate(item.fechahoraregreso)} #{solicitudController.showHour(item.fechahoraregreso)}" style="color: #{solicitudController.columnColor(item.estatus)}" />
+                    </p:column>
                     <p:column headerText="#{msg['field.solicita']}" style="width:150px">
                         <h:outputText value="#{item.usuario.get(0).nombre}" style="color: #{solicitudController.columnColor(item.estatus)}" />
                     </p:column>

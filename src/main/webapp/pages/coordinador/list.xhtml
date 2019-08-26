@@ -38,7 +38,7 @@
 
             <b:panel collapsible="false" title="#{msg['titlelist.vistobuenosolicitudes']}" id="content"   look="primary"  > 
                 <b:panelGrid colSpans="1,5,1,5"  columns="4" size="xs"> 
-                   
+
                     <p:outputLabel value="#{msg['field.vistobueno']}"/>
                     <p:selectOneMenu id="country" value="#{coordinadorController.vistoBuenoSearch}" style="width:150px">
                         <p:ajax listener="#{coordinadorController.onVistoBuenoChange}" update=":form:dataTable" />
@@ -48,8 +48,8 @@
                         <f:selectItem itemLabel="#{msg['selectitem.noaprobado']}" itemValue="no" />
 
                     </p:selectOneMenu>
-                    
-                     <p:outputLabel value="#{msg['field.idestatus']}"/>
+
+                    <p:outputLabel value="#{msg['field.idestatus']}"/>
                     <jmoordbjsf:autocomplete converter="#{estatusConverter}"
                                              dropdown="true"
                                              minQueryLength="0"
@@ -60,7 +60,7 @@
                                              itemLabel=" #{p.idestatus}"
                                              field="idestatus"
                                              update=" :form:dataTable"/>
-                    
+
                     <p:outputLabel value="#{msg['field.solicitadopor']}"/>
                     <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
                                              completeMethod="#{coordinadorController.usuarioServices.complete}"
@@ -98,6 +98,22 @@
                                      />
                 </b:panelGrid>
 
+                <b:row>
+                    <b:column medium-screen="25" >
+
+
+
+                        <jmoordbjsf:searchBetweenDate 
+                            renderedMove="true"
+                            labelDesde="#{msg['field.fechainicio']}"
+                            valueDesde="#{coordinadorController.fechaDesde}"
+                            labelHasta="#{msg['field.fechafin']}"
+                            valueHasta="#{coordinadorController.fechaHasta}"
+                            renderedList="true"  
+                            search="#{coordinadorController.searchBy('coordinador','_betweendates',secretarioAdministrativoController.solicitud)}"
+                            />
+                    </b:column>
+                </b:row>
             </b:panel>
 
 
@@ -129,8 +145,11 @@
                     <p:column headerText="#{msg['field.fechapartida']}" style="width:150px">
                         <h:outputText value="#{coordinadorController.showDate(item.fechahorapartida)} #{coordinadorController.showHour(item.fechahorapartida)}" style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}" />
                     </p:column>
-                    
-                     <p:column headerText="#{msg['field.solicita']}" style="width:150px">
+                    <p:column headerText="#{msg['field.fecharegreso']}" style="width:150px">
+                        <h:outputText value="#{coordinadorController.showDate(item.fechahoraregreso)} #{coordinadorController.showHour(item.fechahoraregreso)}" style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}" />
+                    </p:column>
+
+                    <p:column headerText="#{msg['field.solicita']}" style="width:150px">
                         <h:outputText value="#{item.usuario.get(0).nombre}" style="color: #{solicitudController.columnColor(item.estatus)}" />
                     </p:column>
                     <p:column headerText="#{msg['field.lugarllegada']}"  >
@@ -140,9 +159,9 @@
                         <p:outputLabel value="#{coordinadorController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}" />
                     </p:column>
 
-                     
 
-                   <p:column headerText="#{msg['field.estatus']}" style="width:100px">
+
+                    <p:column headerText="#{msg['field.estatus']}" style="width:100px">
                         <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}"/>
 
                     </p:column>
@@ -233,7 +252,7 @@
 
                             <p:outputLabel  value="#{msg['field.vistobueno']}" />
 
-                          <p:outputLabel value="#{coordinadorController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}" />
+                            <p:outputLabel value="#{coordinadorController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}" />
 
                             <p:outputLabel value="#{msg['field.estatus']}" />
                             <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{coordinadorController.columnColor(item.estatus)}" />
