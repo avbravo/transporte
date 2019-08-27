@@ -51,6 +51,7 @@ import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.VistoBueno;
 import com.avbravo.transporteejb.entity.VistoBuenoSecretarioAdministrativo;
+import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.EstatusViajeRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
@@ -123,7 +124,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
-private TimelineModel timelineModel;  
+    private TimelineModel timelineModel;
+    private TimelineModel timelineConductorModel;
     String messages = "";
     Boolean coordinadorvalido = false;
     Boolean escoordinador = false;
@@ -180,13 +182,13 @@ private TimelineModel timelineModel;
 
     //Entity
     Solicitud solicitud = new Solicitud();
-    Viaje viaje = new Viaje(); 
+    Viaje viaje = new Viaje();
     Conductor conductor = new Conductor();
     Vehiculo vehiculo = new Vehiculo();
-   Solicitud solicitudSelected;
-   
+    Solicitud solicitudSelected;
+
     Solicitud solicitudOld = new Solicitud();
-     
+
     Usuario solicita = new Usuario();
     Usuario solicitaOld = new Usuario();
     Usuario responsable = new Usuario();
@@ -222,6 +224,8 @@ private TimelineModel timelineModel;
 
     //Repository
     @Inject
+    ConductorRepository conductorRepository;
+    @Inject
     RevisionHistoryRepository revisionHistoryRepository;
     @Inject
     CarreraRepository carreraRepository;
@@ -247,7 +251,7 @@ private TimelineModel timelineModel;
     RevisionHistoryServices revisionHistoryServices;
     @Inject
     ViajeRepository viajeRepository;
-    
+
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;
@@ -323,9 +327,9 @@ private TimelineModel timelineModel;
             eventModel = new DefaultScheduleModel();
             eventModelViajes = new DefaultScheduleModel();
             timelineModel = new TimelineModel();
-            
-            // eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", DateUtil.fechaHoraActual(), DateUtil.fechaHoraActual()));
+            timelineConductorModel = new TimelineModel();
 
+            // eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", DateUtil.fechaHoraActual(), DateUtil.fechaHoraActual()));
             diasList = new ArrayList<String>();
             diasList.add("Dia/ Dias Consecutivo");
             diasList.add("Lunes");
@@ -365,6 +369,7 @@ private TimelineModel timelineModel;
             loadSchedule();
             loadScheduleViajes();
             loadTimeLine();
+            loadTimeLineConductor();
 
             String action = "gonew";
             if (JmoordbContext.get("secretarioadministrativo") != null) {
@@ -458,26 +463,26 @@ private TimelineModel timelineModel;
 // <editor-fold defaultstate="collapsed" desc="handleSelectPorSolicitado(SelectEvent event) ">
 
     public void handleSelectPorSolicitado(SelectEvent event) {
-         try {
+        try {
             JmoordbContext.put("searchsecretarioadministrativo", "porsolicitado");
             JmoordbContext.put("_fieldsearchsecretarioadministrativo", solicita);
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-      
+
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelectPorResponsable(SelectEvent event)">
 
     public void handleSelectPorResponsable(SelectEvent event) {
-         try {
+        try {
             JmoordbContext.put("searchsecretarioadministrativo", "porresponsable");
-            JmoordbContext.put("_fieldsearchsecretarioadministrativo",responsable);
+            JmoordbContext.put("_fieldsearchsecretarioadministrativo", responsable);
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-      
+
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="move(Integer page)">
@@ -519,13 +524,13 @@ private TimelineModel timelineModel;
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
-                    
-                        case "_betweendates":
-                 
-                  solicitudList = solicitudRepository.filterBetweenDatePaginationWithoutHours("activo", "si", 
-                         "fechahorapartida", fechaDesde, 
-                         "fechahoraregreso",fechaHasta, 
-                         page, rowPage, new Document("idsolicitud", -1));
+
+                case "_betweendates":
+
+                    solicitudList = solicitudRepository.filterBetweenDatePaginationWithoutHours("activo", "si",
+                            "fechahorapartida", fechaDesde,
+                            "fechahoraregreso", fechaHasta,
+                            page, rowPage, new Document("idsolicitud", -1));
                     break;
                 case "vistobuenocoordinador":
 
@@ -545,7 +550,7 @@ private TimelineModel timelineModel;
                     break;
                 case "porsolicitado":
 
-                   Usuario solicita  = (Usuario) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
+                    Usuario solicita = (Usuario) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
                     doc = new Document("activo", "si");
                     doc.append("usuario.0.username", solicita.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
@@ -553,7 +558,7 @@ private TimelineModel timelineModel;
                     break;
                 case "porresponsable":
 
-                     Usuario responsable  = (Usuario) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
+                    Usuario responsable = (Usuario) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
                     doc = new Document("activo", "si");
                     doc.append("usuario.1.username", responsable.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
@@ -910,8 +915,8 @@ private TimelineModel timelineModel;
                     }
                 } else {
                     if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
-                            valid = true;
-                        }
+                        valid = true;
+                    }
 
                 }
 
@@ -925,7 +930,7 @@ private TimelineModel timelineModel;
 
     // <editor-fold defaultstate="collapsed" desc="Boolean isSolicitadoConVistoBuenoNoAprobadoOPendienteCoordinador(Estatus estatus, Solicitud solicitud)">
     public Boolean noVistoBuenoCoordinadorYSecretarioAprobadoOPendiente(Estatus estatus, Solicitud solicitud) {
-       Boolean valid = false;
+        Boolean valid = false;
         try {
             Boolean solicitado = estatusServices.isSolicitado(estatus);
             if (solicitado) {
@@ -941,8 +946,8 @@ private TimelineModel timelineModel;
                     }
                 } else {
                     if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
-                            valid = true;
-                        }
+                        valid = true;
+                    }
 
                 }
 
@@ -1459,67 +1464,85 @@ private TimelineModel timelineModel;
         }
     }// </editor-fold>
 
-    
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
-    public String loadTimeLine(){
+    // <editor-fold defaultstate="collapsed" desc="String loadTimeLine()">
+    public String loadTimeLine() {
         try {
-             timelineModel = new TimelineModel();  
+            timelineModel = new TimelineModel();
             // groups  
-            List<Vehiculo> list = vehiculoRepository.findBy(new Document("activo","si"));
-            
-            
-       
-   
-        // create timeline model  
-       
-   if(list == null || list.isEmpty()){
-       
-   }else{
-       for (Vehiculo v : list) {  
-           fechaDesde = DateUtil.primeraFechaAnio();  
-           fechaHasta = DateUtil.ultimaFechaAnio();  
+            List<Vehiculo> list = vehiculoRepository.findBy(new Document("activo", "si"));
+
+            if (list == null || list.isEmpty()) {
+
+            } else {
+                for (Vehiculo v : list) {
+                    fechaDesde = DateUtil.primeraFechaAnio();
+                    fechaHasta = DateUtil.ultimaFechaAnio();
 //            Date end = new Date(fechaDesde.getTime() - 12 * 60 * 60 * 1000);  
-            Document doc = new Document("activo","si").append("vehiculo.idvehiculo", v.getIdvehiculo());
-            List<Viaje> viajeList = viajeRepository.findBy(doc, new Document("idviaje",-1));
-            if(viajeList == null || viajeList.isEmpty()){
-                
-            }else{
-                for(Viaje vi:viajeList){
-                     String availability = (vi.getRealizado().equals("si") ? "Realizado" : (vi.getRealizado().equals("no") ? "NoRealizado" : "Cancelado"));  
-                     TimelineEvent event = new TimelineEvent(availability, vi.getFechahorainicioreserva(), vi.getFechahorafinreserva(), true,v.getMarca() + " "+ v.getPlaca(), availability.toLowerCase());  
-                timelineModel.add(event);  
+                    Document doc = new Document("activo", "si").append("vehiculo.idvehiculo", v.getIdvehiculo());
+                    List<Viaje> viajeList = viajeRepository.findBy(doc, new Document("idviaje", -1));
+                    if (viajeList == null || viajeList.isEmpty()) {
+
+                    } else {
+                        for (Viaje vi : viajeList) {
+                            String availability = (vi.getRealizado().equals("si") ? "Realizado" : (vi.getRealizado().equals("no") ? "NoRealizado" : "Cancelado"));
+                            TimelineEvent event = new TimelineEvent(availability, vi.getFechahorainicioreserva(), vi.getFechahorafinreserva(), true, v.getMarca() + " " + v.getPlaca(), availability.toLowerCase());
+                            timelineModel.add(event);
+                        }
+                    }
                 }
             }
-//            for (int i = 0; i < 5; i++) {  
-//                Date start = new Date(end.getTime() + Math.round(Math.random() * 5) * 60 * 60 * 1000);  
-//                end = new Date(start.getTime() + Math.round(4 + Math.random() * 5) * 60 * 60 * 1000);  
-//   
-//                long r = Math.round(Math.random() * 2);  
-//                String availability = (r == 0 ? "Unavailable" : (r == 1 ? "Available" : "Maybe"));  
-//   
-//                // create an event with content, start / end dates, editable flag, group name and custom style class  
-//                TimelineEvent event = new TimelineEvent(availability, start, end, true,v.getMarca() + " "+ v.getPlaca(), availability.toLowerCase());  
-//                timelineModel.add(event);  
-//            }  
-        }  
-   }
-        
-     
+
         } catch (Exception e) {
-              errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }
+
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="loadTimeLineConductor()">
+    public String loadTimeLineConductor() {
+        try {
+            timelineConductorModel = new TimelineModel();
+            // groups  
+            List<Conductor> list = conductorRepository.findBy(new Document("activo", "si"));
+
+            if (list == null || list.isEmpty()) {
+
+            } else {
+                for (Conductor c : list) {
+                    fechaDesde = DateUtil.primeraFechaAnio();
+                    fechaHasta = DateUtil.ultimaFechaAnio();
+//            Date end = new Date(fechaDesde.getTime() - 12 * 60 * 60 * 1000);  
+                    Document doc = new Document("activo", "si").append("conductor.idconductor", c.getIdconductor());
+                    List<Viaje> viajeList = viajeRepository.findBy(doc, new Document("idviaje", -1));
+                    if (viajeList == null || viajeList.isEmpty()) {
+
+                    } else {
+                        for (Viaje vi : viajeList) {
+                            String availability = (vi.getRealizado().equals("si") ? "Realizado" : (vi.getRealizado().equals("no") ? "NoRealizado" : "Cancelado"));
+                            TimelineEvent event = new TimelineEvent(availability, vi.getFechahorainicioreserva(), vi.getFechahorafinreserva(), true, c.getNombre() + " " + c.getCedula(), availability.toLowerCase());
+                            timelineConductorModel.add(event);
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+
     // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="loadSchedule(Document...doc)">
-    public void loadSchedule(Document...doc) {
+    public void loadSchedule(Document... doc) {
         try {
-              Document docSearch= new Document();
-                if (doc.length != 0) {
+            Document docSearch = new Document();
+            if (doc.length != 0) {
                 docSearch = doc[0];
 
             } else {
-                docSearch= new Document("activo","si");
+                docSearch = new Document("activo", "si");
             }
             totalAprobado = 0;
             totalSolicitado = 0;
@@ -1534,10 +1557,8 @@ private TimelineModel timelineModel;
             String descripcion = jmoordb_user.getUnidad().getIdunidad();
             List<Solicitud> list = new ArrayList<>();
 
-       
-       
 //                list = solicitudRepository.findBy("activo","si", new Document("idsolicitud", -1));
-                list = solicitudRepository.findBy(docSearch, new Document("idsolicitud", -1));
+            list = solicitudRepository.findBy(docSearch, new Document("idsolicitud", -1));
 
             eventModel = new DefaultScheduleModel();
             if (!list.isEmpty()) {
@@ -1592,7 +1613,6 @@ private TimelineModel timelineModel;
                                     new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ")  " + "  {" + a.getVistoBueno().getAprobado().substring(0, 1).toUpperCase() + "}  " + a.getObjetivo() + " "
                                             + texto,
                                             a.getFechahorapartida(), a.getFechahoraregreso(), tema)
-                            
                             );
                 });
             }
@@ -1602,35 +1622,35 @@ private TimelineModel timelineModel;
         }
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="loadScheduleViajes(Document...doc) ">
-    public void loadScheduleViajes(Document...doc) {
+
+    public void loadScheduleViajes(Document... doc) {
         try {
-              Document docSearch= new Document();
-                if (doc.length != 0) {
+            Document docSearch = new Document();
+            if (doc.length != 0) {
                 docSearch = doc[0];
 
             } else {
-                docSearch= new Document("activo","si");
+                docSearch = new Document("activo", "si");
             }
-           
+
             totalViajes = 0;
             totalViajesCancelados = 0;
             totalViajesNoRealizado = 0;
-            totalViajesRealizados= 0;
-            
+            totalViajesRealizados = 0;
 
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             String descripcion = jmoordb_user.getUnidad().getIdunidad();
             List<Viaje> list = new ArrayList<>();
 
-                list = viajeRepository.findBy(docSearch, new Document("idviaje", -1));
+            list = viajeRepository.findBy(docSearch, new Document("idviaje", -1));
 
             eventModelViajes = new DefaultScheduleModel();
             if (!list.isEmpty()) {
                 list.forEach((a) -> {
                     String nameOfConductor = "";
-                    String nameOfVehiculo = a.getVehiculo().getPlaca() + " "+a.getVehiculo().getMarca() + " "+a.getVehiculo().getModelo();
+                    String nameOfVehiculo = a.getVehiculo().getPlaca() + " " + a.getVehiculo().getMarca() + " " + a.getVehiculo().getModelo();
                     String viajest = "";
-                    nameOfConductor= a.getConductor().getNombre();
+                    nameOfConductor = a.getConductor().getNombre();
                     String tipoVehiculo = "{ ";
                     tipoVehiculo = a.getVehiculo().getTipovehiculo().getIdtipovehiculo();
                     tipoVehiculo += " }";
@@ -1642,21 +1662,21 @@ private TimelineModel timelineModel;
                             break;
                         case "no":
                             totalViajesNoRealizado++;
-                          
+
                             tema = "schedule-green";
                             break;
                         case "ca":
                             totalViajesCancelados++;
                             tema = "schedule-red";
                             break;
-                     
+
                     }
 
-                   totalViajes+= totalViajesCancelados + totalViajesNoRealizado + totalViajesRealizados;
+                    totalViajes += totalViajesCancelados + totalViajesNoRealizado + totalViajesRealizados;
                     String texto = nameOfVehiculo + " " + nameOfConductor;
                     eventModelViajes
                             .addEvent(
-                                    new DefaultScheduleEvent("# " + a.getIdviaje()+ " : (" + a.getRealizado().substring(0, 1) + ")  " + " "
+                                    new DefaultScheduleEvent("# " + a.getIdviaje() + " : (" + a.getRealizado().substring(0, 1) + ")  " + " "
                                             + texto,
                                             a.getFechahorainicioreserva(), a.getFechahorainicioreserva(), tema)
                             );
@@ -1695,13 +1715,13 @@ private TimelineModel timelineModel;
 
             }
 
-        
         } catch (Exception e) {
 
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     } // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="onEventSelect(SelectEvent selectEvent)">
+
     public void onEventSelectViaje(SelectEvent selectEvent) {
         try {
 
@@ -1717,12 +1737,10 @@ private TimelineModel timelineModel;
             viaje.setIdviaje(idviaje);
             Optional<Viaje> optional = viajeRepository.findById(viaje);
             if (optional.isPresent()) {
-                viaje= optional.get();
-
+                viaje = optional.get();
 
             }
 
-         
         } catch (Exception e) {
 
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -2027,66 +2045,73 @@ private TimelineModel timelineModel;
         }
         return "";
     }// </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="String handleAutocompleteEstatusForSchedule(SelectEvent event)">
     /**
      * Actualiza el schedule en base al filtro del autocomplete
+     *
      * @param event
-     * @return 
+     * @return
      */
     public String handleAutocompleteEstatusForSchedule(SelectEvent event) {
         try {
-            Document doc = new Document("activo","si").append("estatus.idestatus", estatusSearch.getIdestatus());
+            Document doc = new Document("activo", "si").append("estatus.idestatus", estatusSearch.getIdestatus());
             loadSchedule(doc);
-            
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String handleAutocompleteTipoSolicitudForSchedule(SelectEvent event)">
+
     /**
      * Actualiza el schedule en base al filtro del autocomplete
+     *
      * @param event
-     * @return 
+     * @return
      */
     public String handleAutocompleteTipoSolicitudForSchedule(SelectEvent event) {
         try {
-            Document doc = new Document("activo","si").append("tiposolicitud.idtiposolicitud", tiposolicitudSearch.getIdtiposolicitud());
-           loadSchedule(doc);
-            
+            Document doc = new Document("activo", "si").append("tiposolicitud.idtiposolicitud", tiposolicitudSearch.getIdtiposolicitud());
+            loadSchedule(doc);
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String handleAutocompleteSolicitaForSchedule(SelectEvent event)">
+
     /**
      * Actualiza el schedule en base al filtro del autocomplete
+     *
      * @param event
-     * @return 
+     * @return
      */
     public String handleAutocompleteSolicitaForSchedule(SelectEvent event) {
         try {
-            Document doc = new Document("activo","si").append("usuario.0.username", solicita.getUsername());
+            Document doc = new Document("activo", "si").append("usuario.0.username", solicita.getUsername());
             loadSchedule(doc);
-            
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String handleAutocompleteSolicitaForSchedule(SelectEvent event)">
+
     /**
      * Actualiza el schedule en base al filtro del autocomplete
+     *
      * @param event
-     * @return 
+     * @return
      */
     public String handleAutocompleteResponsableForSchedule(SelectEvent event) {
         try {
-            Document doc = new Document("activo","si").append("usuario.1.username", responsable.getUsername());
-           loadSchedule(doc);
-            
+            Document doc = new Document("activo", "si").append("usuario.1.username", responsable.getUsername());
+            loadSchedule(doc);
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -3135,7 +3160,7 @@ private TimelineModel timelineModel;
 
     public String onRealizadoCalenadarioViajes() {
         try {
-           Document doc = new Document("activo","si").append("realizado", viajeSecretarioAdministrativoSearch);
+            Document doc = new Document("activo", "si").append("realizado", viajeSecretarioAdministrativoSearch);
             loadScheduleViajes(doc);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -3148,6 +3173,5 @@ private TimelineModel timelineModel;
         return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativo);
     }
 // </editor-fold>
-    
 
 }
