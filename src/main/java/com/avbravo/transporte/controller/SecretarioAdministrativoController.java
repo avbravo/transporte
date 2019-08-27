@@ -136,6 +136,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
 
     private String vistoBuenoSearch = "no";
     private String vistoBuenoSecretarioAdministrativoSearch = "no";
+    private String viajeSecretarioAdministrativoSearch = "no";
     //DataModel
     private SolicitudDataModel solicitudDataModel;
     private SugerenciaDataModel sugerenciaDataModel;
@@ -3069,6 +3070,17 @@ public class SecretarioAdministrativoController implements Serializable, IContro
             JmoordbContext.put("searchsecretarioadministrativo", "vistobuenosecretarioadministrativo");
             JmoordbContext.put("_fieldsearchsecretarioadministrativo", vistoBuenoSecretarioAdministrativoSearch);
             move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSecretarioAdministrativo()">
+
+    public String onRealizadoCalenadarioViajes() {
+        try {
+           Document doc = new Document("activo","si").append("realizado", viajeSecretarioAdministrativoSearch);
+            loadScheduleViajes(doc);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
