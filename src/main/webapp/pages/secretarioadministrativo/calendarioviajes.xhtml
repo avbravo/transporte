@@ -1,0 +1,232 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
+    <ui:define name="content">
+
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            } 
+
+        </style>
+
+        <jmoordbjsf:cssschedule/>  
+        <jmoordbjsf:jsschedule/>
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+
+            <b:growl  id="msgs"/>
+
+            <b:panel collapsible="false" title="#{msg['titlelist.calendarioviajes']}" id="content"   look="primary" > 
+                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
+                <b:row>
+                    <b:column span="1">
+                        <p:outputLabel value="#{msg['field.idestatus']}"/>
+                    </b:column>
+
+                    <b:column span="4">
+
+
+                        <jmoordbjsf:autocomplete converter="#{estatusConverter}"
+                                                 dropdown="true"
+                                                 minQueryLength="0"
+                                                 completeMethod="#{secretarioAdministrativoController.estatusServices.complete}"
+                                                 labeltip1="#{msg['field.estatus']} #{p.idestatus}" 
+                                                 listener="#{secretarioAdministrativoController.handleAutocompleteEstatusForSchedule}"
+                                                 value="#{secretarioAdministrativoController.estatusSearch}"
+                                                 itemLabel=" #{p.idestatus}"
+                                                 field="idestatus"
+                                                 update=" :form:schedule"/>
+
+                    </b:column>
+
+                    <b:column span="1">
+                        <p:outputLabel value="#{msg['field.tipo']}"/>
+
+                    </b:column>
+
+                    <b:column span="4">
+                        <jmoordbjsf:autocomplete converter="#{tiposolicitudConverter}"
+                                                 completeMethod="#{secretarioAdministrativoController.tiposolicitudServices.complete}" 
+                                                 labeltip1="#{msg['field.tiposolicitud']} #{p.idtiposolicitud}"  
+                                                 listener="#{secretarioAdministrativoController.handleAutocompleteTipoSolicitudForSchedule}"
+                                                 value="#{secretarioAdministrativoController.tiposolicitudSearch}"
+                                                 itemLabel=" #{p.idtiposolicitud}"
+                                                 dropdown="true"
+                                                 minQueryLength="0"
+                                                 field="idtiposolicitud"
+                                                 update=" :form:schedule"/>
+                    </b:column>
+
+                    <b:column span="1"> 
+                        <p:commandButton value="#{app['button.print']}" type="button" icon="pi pi-print" style="display:block;margin-bottom: 20px">
+                            <p:printer target="schedule" />
+                        </p:commandButton>
+                    </b:column>
+                </b:row>
+             
+                <b:row>
+                    <b:column span="1"> <p:outputLabel value="#{msg['field.solicitadopor']}"/></b:column>
+
+                    <b:column span="4">
+                    <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                             completeMethod="#{secretarioAdministrativoController.usuarioServices.complete}"
+                                             labeltip1="#{msg['field.username']} #{p.username}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}"   
+                                             listener="#{secretarioAdministrativoController.handleAutocompleteSolicitaForSchedule}"
+                                             value="#{secretarioAdministrativoController.solicita}"
+                                             itemLabel=" #{p.nombre}"
+                                             field="nombre"
+                                             dropdown="true"
+                                             minQueryLength="0"
+                                             update=":form:schedule"
+                                             size="25"
+                                             />
+</b:column>
+                    <b:column span="2"><p:outputLabel value="#{msg['field.responsable']}"/></b:column>
+
+                    <b:column span="4">
+                        <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                                 completeMethod="#{secretarioAdministrativoController.usuarioServices.complete}"
+                                                 labeltip1="#{msg['field.username']} #{p.username}"
+                                                 labeltip2="#{msg['field.nombre']} #{p.nombre}"   
+                                                 listener="#{secretarioAdministrativoController.handleAutocompleteResponsableForSchedule}"
+                                                 value="#{secretarioAdministrativoController.responsable}"
+                                                 itemLabel=" #{p.nombre}"
+                                                 field="nombre"
+                                                 dropdown="true"
+                                                 minQueryLength="0"
+                                                 update=":form:schedule"
+                                                 size="25"
+                                                 />
+                    </b:column>
+
+                </b:row>
+
+                <p:schedule id="schedule"  
+                            rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
+                            value="#{secretarioAdministrativoController.eventModelViajes}"
+                            widgetVar="myschedule" timeZone="GMT-5" locale="es">
+                    <p:ajax  event="eventSelect"  listener="#{secretarioAdministrativoController.onEventSelectViaje}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+
+                </p:schedule>
+
+                <b:panel collapsible="false" id="colores" autoUpdate="true" >
+                    <b:row >
+
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.viajesrealizados']} #{secretarioAdministrativoController.totalViajesRealizados}" style="color:orange"/>
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.viajesnorealizados']} #{secretarioAdministrativoController.totalViajesNoRealizado}" style="color:green"/>
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.viajescancelados']} #{secretarioAdministrativoController.totalViajesCancelados}" style="color:red"/>
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.viaje']} #{secretarioAdministrativoController.totalViajes}" style="color:blue"/>
+
+                        </b:column>
+
+                    </b:row>
+                  
+
+
+
+                </b:panel>
+            </b:panel>
+
+
+
+
+            <p:dialog widgetVar="eventDialog" header="#{msg['dialogo.viajes']}" 
+                      width="650" height="450"
+                      styleClass="customDialog"
+
+                      responsive="true"
+
+                      showEffect="clip" hideEffect="clip">
+                <b:panelGrid id="eventDetails" colSpans="2,10" size="xs" > 
+                    <p:outputLabel  value="#{msg['field.idsolicitud']}" />
+                    <p:outputLabel  value="#{secretarioAdministrativoController.viaje.idviaje}" id="idviaje"   />
+                  
+                    <p:outputLabel  value="#{msg['field.placa']}" />
+                    <p:outputLabel  value="#{secretarioAdministrativoController.viaje.vehiculo.placa}" id="placa"   />
+                    <p:outputLabel  value="#{msg['field.marca']}" />
+                    <p:outputLabel  value="#{secretarioAdministrativoController.viaje.vehiculo.marca}" id="marca"   />
+                    <p:outputLabel  value="#{msg['field.modelo']}" />
+                    <p:outputLabel  value="#{secretarioAdministrativoController.viaje.vehiculo.modelo}" id="modelo"   />
+
+                    <p:outputLabel  value="#{msg['field.conductor']}" />
+                    <p:outputLabel  value="#{secretarioAdministrativoController.viaje.conductor.nombre}" id="nombre"   />
+                    <p:outputLabel  value="#{msg['field.cedula']}" />
+                    <p:outputLabel  value="#{secretarioAdministrativoController.viaje.conductor.cedula}" id="cedula"   />
+
+                 
+
+                    <p:outputLabel  value="#{msg['field.fechapartida']}" />
+                    <p:fieldset >
+                        <p:calendar  disabled="true"  size="8"                                  
+                                     style="background-color: grey;"
+                                     pattern="dd/MM/yyyy" value="#{secretarioAdministrativoController.viaje.fechahorainicioreserva}"  />
+
+                        <p:outputLabel  value="#{msg['field.horapartida']}" />        
+                        <p:calendar  disabled="true"    
+                                     size="8" 
+                                     pattern="HH:mm:ss a" value="#{secretarioAdministrativoController.viaje.fechahorainicioreserva}"  />
+
+
+                    </p:fieldset>
+
+
+                    <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+
+                    <p:outputLabel value="#{secretarioAdministrativoController.viaje.lugarpartida}" id="lugarpartida"   />
+                    <p:outputLabel  value="#{msg['field.lugarllegada']}" />
+
+                    <p:outputLabel value="#{secretarioAdministrativoController.viaje.lugardestino}" id="lugardestino"   />
+
+
+                    <p:outputLabel  value="#{msg['field.fecharegreso']}" />
+                    <p:fieldset >
+
+                        <p:calendar  disabled="true"  size="8"                                  
+                                     style="background-color: grey;"
+                                     pattern="dd/MM/yyyy" value="#{secretarioAdministrativoController.viaje.fechahorafinreserva}"  />
+
+
+
+                        <p:outputLabel  value="#{msg['field.horaregreso']}" />
+                        <p:calendar  disabled="true"    
+                                     size="8" 
+                                     pattern="HH:mm:ss a" value="#{secretarioAdministrativoController.viaje.fechahorafinreserva}"  />
+
+
+                    </p:fieldset>
+
+                  
+                    <p:outputLabel  value="#{msg['field.realizado']}" />
+                    <b:inputTextarea disabled="true" rows="2" span="8"  value="#{secretarioAdministrativoController.viaje.realizado}" id="realizado"   />
+
+
+
+                </b:panelGrid>
+            </p:dialog>
+        </b:form>
+
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('SECRETARIO ADMINISTRATIVO')}"/>
+    </ui:define>
+</ui:composition>

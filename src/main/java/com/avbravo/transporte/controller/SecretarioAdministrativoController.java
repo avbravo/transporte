@@ -36,6 +36,7 @@ import com.avbravo.transporte.beans.DisponiblesBeans;
 import com.avbravo.transporte.beans.TipoVehiculoCantidadBeans;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.datamodel.SugerenciaDataModel;
+import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Estatus;
 import com.avbravo.transporteejb.entity.EstatusViaje;
 import com.avbravo.transporteejb.entity.Lugares;
@@ -58,6 +59,7 @@ import com.avbravo.transporteejb.repository.TipovehiculoRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
+import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.NotificacionServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
@@ -147,6 +149,9 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     private Integer totalPendienteVistoBueno = 0;
     private Integer totalAprobadoVistoBueno = 0;
     private Integer totalNoAprobadoVistoBueno = 0;
+    private Integer totalViajesNoRealizado = 0;
+    private Integer totalViajesRealizados = 0;
+    private Integer totalViajesCancelados = 0;
 
     private Integer totalViajes = 0;
 
@@ -158,7 +163,9 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     Lugares lugaresLlegada = new Lugares();
 
     private ScheduleModel eventModel;
+    private ScheduleModel eventModelViajes;
     private ScheduleEvent event = new DefaultScheduleEvent();
+    private ScheduleEvent eventViajes = new DefaultScheduleEvent();
     Integer page = 1;
     Integer rowPage = 25;
     private String stmpPort = "25";
@@ -170,7 +177,10 @@ public class SecretarioAdministrativoController implements Serializable, IContro
 
     //Entity
     Solicitud solicitud = new Solicitud();
-    Solicitud solicitudSelected;
+    Viaje viaje = new Viaje(); 
+    Conductor conductor = new Conductor();
+    Vehiculo vehiculo = new Vehiculo();
+   Solicitud solicitudSelected;
    
     Solicitud solicitudOld = new Solicitud();
      
@@ -232,6 +242,9 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     UsuarioRepository usuarioRepository;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
+    @Inject
+    ViajeRepository viajeRepository;
+    
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;
@@ -305,6 +318,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
         try {
 
             eventModel = new DefaultScheduleModel();
+            eventModelViajes = new DefaultScheduleModel();
+            
             // eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", DateUtil.fechaHoraActual(), DateUtil.fechaHoraActual()));
 
             diasList = new ArrayList<String>();
@@ -343,7 +358,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
             start();
             sugerenciaList = sugerenciaRepository.findBy("activo", "si");
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
-            cargarSchedule();
+            loadSchedule();
+            loadScheduleViajes();
 
             String action = "gonew";
             if (JmoordbContext.get("secretarioadministrativo") != null) {
@@ -1438,8 +1454,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
         }
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="cargarSchedule()">
-    public void cargarSchedule(Document...doc) {
+    // <editor-fold defaultstate="collapsed" desc="loadSchedule(Document...doc)">
+    public void loadSchedule(Document...doc) {
         try {
               Document docSearch= new Document();
                 if (doc.length != 0) {
@@ -1513,18 +1529,79 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                     }
 
                     String texto = nameOfCarrera + " " + viajest;
-//                    eventModel.addEvent(
-                    //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
-                    //                    );
+
                     eventModel
                             .addEvent(
                                     new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ")  " + "  {" + a.getVistoBueno().getAprobado().substring(0, 1).toUpperCase() + "}  " + a.getObjetivo() + " "
                                             + texto,
                                             a.getFechahorapartida(), a.getFechahoraregreso(), tema)
-                            //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ") Mision: " + a.getObjetivo()+ " Responsable: " + a.getUsuario().get(1).getNombre() + " "
-                            //                                    + texto,
-                            //                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
-                            //                  
+                            
+                            );
+                });
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="loadScheduleViajes(Document...doc) ">
+    public void loadScheduleViajes(Document...doc) {
+        try {
+              Document docSearch= new Document();
+                if (doc.length != 0) {
+                docSearch = doc[0];
+
+            } else {
+                docSearch= new Document("activo","si");
+            }
+           
+            totalViajes = 0;
+            totalViajesCancelados = 0;
+            totalViajesNoRealizado = 0;
+            totalViajesRealizados= 0;
+            
+
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            String descripcion = jmoordb_user.getUnidad().getIdunidad();
+            List<Viaje> list = new ArrayList<>();
+
+                list = viajeRepository.findBy(docSearch, new Document("idviaje", -1));
+
+            eventModelViajes = new DefaultScheduleModel();
+            if (!list.isEmpty()) {
+                list.forEach((a) -> {
+                    String nameOfConductor = "";
+                    String nameOfVehiculo = a.getVehiculo().getPlaca() + " "+a.getVehiculo().getMarca() + " "+a.getVehiculo().getModelo();
+                    String viajest = "";
+                    nameOfConductor= a.getConductor().getNombre();
+                    String tipoVehiculo = "{ ";
+                    tipoVehiculo = a.getVehiculo().getTipovehiculo().getIdtipovehiculo();
+                    tipoVehiculo += " }";
+                    String tema = "schedule-blue";
+                    switch (a.getRealizado()) {
+                        case "si":
+                            totalViajesRealizados++;
+                            tema = "schedule-orange";
+                            break;
+                        case "no":
+                            totalViajesNoRealizado++;
+                          
+                            tema = "schedule-green";
+                            break;
+                        case "ca":
+                            totalViajesCancelados++;
+                            tema = "schedule-red";
+                            break;
+                     
+                    }
+
+                   totalViajes+= totalViajesCancelados + totalViajesNoRealizado + totalViajesRealizados;
+                    String texto = nameOfVehiculo + " " + nameOfConductor;
+                    eventModelViajes
+                            .addEvent(
+                                    new DefaultScheduleEvent("# " + a.getIdviaje()+ " : (" + a.getRealizado().substring(0, 1) + ")  " + " "
+                                            + texto,
+                                            a.getFechahorainicioreserva(), a.getFechahorainicioreserva(), tema)
                             );
                 });
             }
@@ -1561,7 +1638,34 @@ public class SecretarioAdministrativoController implements Serializable, IContro
 
             }
 
-            System.out.println("solicitud " + solicitud.getVistoBueno().getAprobado());
+        
+        } catch (Exception e) {
+
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+    } // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="onEventSelect(SelectEvent selectEvent)">
+    public void onEventSelectViaje(SelectEvent selectEvent) {
+        try {
+
+            eventViajes = (ScheduleEvent) selectEvent.getObject();
+
+            String title = eventViajes.getTitle();
+            Integer i = title.indexOf(":");
+
+            Integer idviaje = 0;
+            if (i != -1) {
+                idviaje = Integer.parseInt(title.substring(1, i).trim());
+            }
+            viaje.setIdviaje(idviaje);
+            Optional<Viaje> optional = viajeRepository.findById(viaje);
+            if (optional.isPresent()) {
+                viaje= optional.get();
+
+
+            }
+
+         
         } catch (Exception e) {
 
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1876,7 +1980,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     public String handleAutocompleteEstatusForSchedule(SelectEvent event) {
         try {
             Document doc = new Document("activo","si").append("estatus.idestatus", estatusSearch.getIdestatus());
-            cargarSchedule(doc);
+            loadSchedule(doc);
             
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1892,7 +1996,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     public String handleAutocompleteTipoSolicitudForSchedule(SelectEvent event) {
         try {
             Document doc = new Document("activo","si").append("tiposolicitud.idtiposolicitud", tiposolicitudSearch.getIdtiposolicitud());
-            cargarSchedule(doc);
+           loadSchedule(doc);
             
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1908,7 +2012,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     public String handleAutocompleteSolicitaForSchedule(SelectEvent event) {
         try {
             Document doc = new Document("activo","si").append("usuario.0.username", solicita.getUsername());
-            cargarSchedule(doc);
+            loadSchedule(doc);
             
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1924,7 +2028,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     public String handleAutocompleteResponsableForSchedule(SelectEvent event) {
         try {
             Document doc = new Document("activo","si").append("usuario.1.username", responsable.getUsername());
-            cargarSchedule(doc);
+           loadSchedule(doc);
             
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
