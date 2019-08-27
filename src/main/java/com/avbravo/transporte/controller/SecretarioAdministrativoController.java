@@ -105,6 +105,8 @@ import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
+import org.primefaces.model.timeline.TimelineEvent;
+import org.primefaces.model.timeline.TimelineModel;
 // </editor-fold>
 
 /**
@@ -121,7 +123,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
-
+private TimelineModel timelineModel;  
     String messages = "";
     Boolean coordinadorvalido = false;
     Boolean escoordinador = false;
@@ -320,6 +322,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
 
             eventModel = new DefaultScheduleModel();
             eventModelViajes = new DefaultScheduleModel();
+            timelineModel = new TimelineModel();
             
             // eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", DateUtil.fechaHoraActual(), DateUtil.fechaHoraActual()));
 
@@ -361,6 +364,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
             loadSchedule();
             loadScheduleViajes();
+            loadTimeLine();
 
             String action = "gonew";
             if (JmoordbContext.get("secretarioadministrativo") != null) {
@@ -1455,6 +1459,58 @@ public class SecretarioAdministrativoController implements Serializable, IContro
         }
     }// </editor-fold>
 
+    
+    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    public String loadTimeLine(){
+        try {
+             timelineModel = new TimelineModel();  
+            // groups  
+            List<Vehiculo> list = vehiculoRepository.findBy(new Document("activo","si"));
+            
+            
+       
+   
+        // create timeline model  
+       
+   if(list == null || list.isEmpty()){
+       
+   }else{
+       for (Vehiculo v : list) {  
+           fechaDesde = DateUtil.primeraFechaAnio();  
+           fechaHasta = DateUtil.ultimaFechaAnio();  
+//            Date end = new Date(fechaDesde.getTime() - 12 * 60 * 60 * 1000);  
+            Document doc = new Document("activo","si").append("vehiculo.idvehiculo", v.getIdvehiculo());
+            List<Viaje> viajeList = viajeRepository.findBy(doc, new Document("idviaje",-1));
+            if(viajeList == null || viajeList.isEmpty()){
+                
+            }else{
+                for(Viaje vi:viajeList){
+                     String availability = (vi.getRealizado().equals("si") ? "Realizado" : (vi.getRealizado().equals("no") ? "NoRealizado" : "Cancelado"));  
+                     TimelineEvent event = new TimelineEvent(availability, vi.getFechahorainicioreserva(), vi.getFechahorafinreserva(), true,v.getMarca() + " "+ v.getPlaca(), availability.toLowerCase());  
+                timelineModel.add(event);  
+                }
+            }
+//            for (int i = 0; i < 5; i++) {  
+//                Date start = new Date(end.getTime() + Math.round(Math.random() * 5) * 60 * 60 * 1000);  
+//                end = new Date(start.getTime() + Math.round(4 + Math.random() * 5) * 60 * 60 * 1000);  
+//   
+//                long r = Math.round(Math.random() * 2);  
+//                String availability = (r == 0 ? "Unavailable" : (r == 1 ? "Available" : "Maybe"));  
+//   
+//                // create an event with content, start / end dates, editable flag, group name and custom style class  
+//                TimelineEvent event = new TimelineEvent(availability, start, end, true,v.getMarca() + " "+ v.getPlaca(), availability.toLowerCase());  
+//                timelineModel.add(event);  
+//            }  
+        }  
+   }
+        
+     
+        } catch (Exception e) {
+              errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+    // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="loadSchedule(Document...doc)">
     public void loadSchedule(Document...doc) {
         try {

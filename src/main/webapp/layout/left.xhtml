@@ -70,9 +70,11 @@ Hint to editors: The menus follow the Chicago style of capitalization. Please ca
                 <b:navCommandLink value="#{msg['menu.vistobueno']}" action="#{secretarioAdministrativoController.goList('secretarioadministrativo')}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"  iconAwesome= "fa-book" />                                               
                 <b:navLink value="#{msg['menu.calendariosolicitud']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/calendario" iconAwesome= "fa-calendar-o" />                   
                 <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-phone" />    
-                <b:navLink value="#{msg['menu.programacionvehicular']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-print" />    
-                <b:navLink rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"/>
                 <b:navLink value="#{msg['menu.calendarioviajes']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/calendarioviajes" iconAwesome= "fa-calendar-o" />    
+                <b:navLink value="#{msg['menu.timeline']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/timeline" iconAwesome= "fa-calendar-o" />    
+                
+                <b:navLink rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"/>
+                  <b:navLink value="#{msg['menu.programacionvehicular']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-print" />  
                 <b:navLink value="#{msg['menu.pendientesviajes']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-car" />    
                 <b:navLink value="#{msg['menu.vehiculosdisponibles']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-car" />    
                 <b:navLink value="#{msg['menu.conductoresdisponibles']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-user-o" />    
