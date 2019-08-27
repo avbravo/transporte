@@ -171,15 +171,19 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     //Entity
     Solicitud solicitud = new Solicitud();
     Solicitud solicitudSelected;
-    Solicitud solicitudSearch = new Solicitud();
+   
     Solicitud solicitudOld = new Solicitud();
-    Estatus estatusSearch = new Estatus();
+     
     Usuario solicita = new Usuario();
     Usuario solicitaOld = new Usuario();
     Usuario responsable = new Usuario();
     Usuario responsableOld = new Usuario();
 
     Solicitud solicitudCopiar = new Solicitud();
+    //
+    Solicitud solicitudSearch = new Solicitud();
+    Estatus estatusSearch = new Estatus();
+    Tiposolicitud tiposolicitudSearch = new Tiposolicitud();
 
     //List
     List<Solicitud> solicitudGuardadasList = new ArrayList<>();
@@ -1435,8 +1439,15 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="cargarSchedule()">
-    public void cargarSchedule() {
+    public void cargarSchedule(Document...doc) {
         try {
+              Document docSearch= new Document();
+                if (doc.length != 0) {
+                docSearch = doc[0];
+
+            } else {
+                docSearch= new Document("activo","si");
+            }
             totalAprobado = 0;
             totalSolicitado = 0;
             totalRechazadoCancelado = 0;
@@ -1451,8 +1462,9 @@ public class SecretarioAdministrativoController implements Serializable, IContro
             List<Solicitud> list = new ArrayList<>();
 
        
-          //      Document query = new Document("activo", "si");
-                list = solicitudRepository.findBy("activo","si", new Document("idsolicitud", -1));
+       
+//                list = solicitudRepository.findBy("activo","si", new Document("idsolicitud", -1));
+                list = solicitudRepository.findBy(docSearch, new Document("idsolicitud", -1));
 
             eventModel = new DefaultScheduleModel();
             if (!list.isEmpty()) {
@@ -1849,6 +1861,71 @@ public class SecretarioAdministrativoController implements Serializable, IContro
             JmoordbContext.put("searchsecretarioadministrativo", "estatus");
             JmoordbContext.put("_fieldsearchsecretarioadministrativo", estatusSearch);
             move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="String handleAutocompleteEstatusForSchedule(SelectEvent event)">
+    /**
+     * Actualiza el schedule en base al filtro del autocomplete
+     * @param event
+     * @return 
+     */
+    public String handleAutocompleteEstatusForSchedule(SelectEvent event) {
+        try {
+            Document doc = new Document("activo","si").append("estatus.idestatus", estatusSearch.getIdestatus());
+            cargarSchedule(doc);
+            
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String handleAutocompleteTipoSolicitudForSchedule(SelectEvent event)">
+    /**
+     * Actualiza el schedule en base al filtro del autocomplete
+     * @param event
+     * @return 
+     */
+    public String handleAutocompleteTipoSolicitudForSchedule(SelectEvent event) {
+        try {
+            Document doc = new Document("activo","si").append("tiposolicitud.idtiposolicitud", tiposolicitudSearch.getIdtiposolicitud());
+            cargarSchedule(doc);
+            
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String handleAutocompleteSolicitaForSchedule(SelectEvent event)">
+    /**
+     * Actualiza el schedule en base al filtro del autocomplete
+     * @param event
+     * @return 
+     */
+    public String handleAutocompleteSolicitaForSchedule(SelectEvent event) {
+        try {
+            Document doc = new Document("activo","si").append("usuario.0.username", solicita.getUsername());
+            cargarSchedule(doc);
+            
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String handleAutocompleteSolicitaForSchedule(SelectEvent event)">
+    /**
+     * Actualiza el schedule en base al filtro del autocomplete
+     * @param event
+     * @return 
+     */
+    public String handleAutocompleteResponsableForSchedule(SelectEvent event) {
+        try {
+            Document doc = new Document("activo","si").append("usuario.1.username", responsable.getUsername());
+            cargarSchedule(doc);
+            
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
