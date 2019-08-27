@@ -60,7 +60,7 @@ public class DashboardIndexController implements Serializable {
     Integer totalVehiculosActivos;
     Integer totalVehiculosInActivos;
     Integer totalVehiculosEnReparacion;
-    
+
     Integer totalVistoBuenoPendiente;
     Integer totalVistoBuenoAprobado;
     Integer totalVistoBuenoCancelado;
@@ -70,7 +70,6 @@ public class DashboardIndexController implements Serializable {
         return pieModelSolicitud;
     }
 
-    
     public void setPieModelSolicitud(PieChartModel pieModelSolicitud) {
         this.pieModelSolicitud = pieModelSolicitud;
     }
@@ -82,9 +81,6 @@ public class DashboardIndexController implements Serializable {
     public void setPieModelVistoBueno(PieChartModel pieModelVistoBueno) {
         this.pieModelVistoBueno = pieModelVistoBueno;
     }
-    
-    
-    
 
     public VehiculoRepository getVehiculoRepository() {
         return vehiculoRepository;
@@ -118,8 +114,6 @@ public class DashboardIndexController implements Serializable {
         this.totalVistoBuenoCancelado = totalVistoBuenoCancelado;
     }
 
-    
-    
     public Integer getTotalCancelado() {
         return totalCancelado;
     }
@@ -213,11 +207,23 @@ public class DashboardIndexController implements Serializable {
             switch (loginController.getRol().getIdrol()) {
                 case "ADMINISTRADOR":
                 case "SECRETARIA":
+                    totalSolicitado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "SOLICITADO"));
+                    totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO"));
+                    totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO"));
+                    totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO"));
+
+                    break;
                 case "SECRETARIO ADMINISTRATIVO":
                     totalSolicitado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "SOLICITADO"));
                     totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO"));
                     totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO"));
                     totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO"));
+                    totalVistoBuenoAprobado = 0;
+                    totalVistoBuenoCancelado = 0;
+                    totalVistoBuenoPendiente = 0;
+                     totalVistoBuenoAprobado = solicitudRepository.count(new Document("activo", "si").append("vistoBuenoSecretarioAdministrativo.aprobado", "si"));;
+                        totalVistoBuenoCancelado = solicitudRepository.count(new Document("activo", "si").append("vistoBuenoSecretarioAdministrativo.aprobado", "no"));
+                        totalVistoBuenoPendiente = solicitudRepository.count(new Document("activo", "si").append("vistoBuenoSecretarioAdministrativo.aprobado", "pe"));
 
                     break;
                 case "COORDINADOR":
@@ -229,11 +235,10 @@ public class DashboardIndexController implements Serializable {
                         totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO").append("usuario.username", loginController.getUsuario().getUsername()));
                         totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO").append("usuario.username", loginController.getUsuario().getUsername()));
                         totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO").append("usuario.username", loginController.getUsuario().getUsername()));
-                    //
+                        //
                         totalVistoBuenoAprobado = 0;
-                       totalVistoBuenoCancelado = 0;
-                   totalVistoBuenoPendiente = 0;
-                    
+                        totalVistoBuenoCancelado = 0;
+                        totalVistoBuenoPendiente = 0;
 
                     } else {
                         Facultad facultad = list.get(0);
@@ -273,12 +278,11 @@ public class DashboardIndexController implements Serializable {
             pieModelSolicitud.setShowDataLabels(true);
             //  pieModelSolicitud.setDiameter(150);
             pieModelSolicitud.setShadow(false);
-            
+
             //Grafica de Visto Bueno
- pieModelVistoBueno.set("Pendiente", totalVistoBuenoPendiente);
+            pieModelVistoBueno.set("Pendiente", totalVistoBuenoPendiente);
             pieModelVistoBueno.set("Aprobado", totalVistoBuenoAprobado);
             pieModelVistoBueno.set("Cancelado", totalVistoBuenoCancelado);
-        
 
             pieModelVistoBueno.setTitle("Visto Bueno");
             pieModelVistoBueno.setLegendPosition("w");
@@ -287,17 +291,13 @@ public class DashboardIndexController implements Serializable {
             pieModelVistoBueno.setShowDataLabels(true);
             //  pieModelSolicitud.setDiameter(150);
             pieModelVistoBueno.setShadow(false);
-            
+
             //Vehiculos
             totalVehiculos = vehiculoRepository.findAll().size();
             totalVehiculosActivos = vehiculoRepository.count(new Document("activo", "si"));
             totalVehiculosInActivos = vehiculoRepository.count(new Document("activo", "no"));
             totalVehiculosEnReparacion = vehiculoRepository.count(new Document("enreparacion", "si"));
             totalVehiculosActivos -= totalVehiculosEnReparacion;
-            
-            
-            
-            
 
         } catch (Exception e) {
             errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
