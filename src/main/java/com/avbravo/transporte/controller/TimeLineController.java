@@ -73,7 +73,7 @@ public class TimeLineController implements Serializable, IError {
     }// </editor-fold>
 
 
-    // <editor-fold defaultstate="collapsed" desc="String loadTimeLine()">
+    // <editor-fold defaultstate="collapsed" desc="String loadTimeLineVehiculo()">
     public String loadTimeLineVehiculo() {
         try {
             timelineModel = new TimelineModel();
@@ -84,9 +84,10 @@ public class TimeLineController implements Serializable, IError {
 
             } else {
                 for (Vehiculo v : list) {
-                    fechaDesde = DateUtil.primeraFechaAnio();
-                    fechaHasta = DateUtil.ultimaFechaAnio();
-//            Date end = new Date(fechaDesde.getTime() - 12 * 60 * 60 * 1000);  
+                   fechaDesde = DateUtil.dateFirtsOfMonth(DateUtil.anioActual(), DateUtil.mesActual());
+             
+                    fechaHasta = DateUtil.dateLastOfMonth(DateUtil.anioActual(), DateUtil.mesActual());
+// 
                     Document doc = new Document("activo", "si").append("vehiculo.idvehiculo", v.getIdvehiculo());
                     List<Viaje> viajeList = viajeRepository.findBy(doc, new Document("idviaje", -1));
                     if (viajeList == null || viajeList.isEmpty()) {
@@ -119,9 +120,10 @@ public class TimeLineController implements Serializable, IError {
 
             } else {
                 for (Conductor c : list) {
-                    fechaDesde = DateUtil.primeraFechaAnio();
-                    fechaHasta = DateUtil.ultimaFechaAnio();
-//            Date end = new Date(fechaDesde.getTime() - 12 * 60 * 60 * 1000);  
+              
+                                   fechaDesde = DateUtil.dateFirtsOfMonth(DateUtil.anioActual(), DateUtil.mesActual());
+            
+                    fechaHasta = DateUtil.dateLastOfMonth(DateUtil.anioActual(), DateUtil.mesActual());
                     Document doc = new Document("activo", "si").append("conductor.idconductor", c.getIdconductor());
                     List<Viaje> viajeList = viajeRepository.findBy(doc, new Document("idviaje", -1));
                     if (viajeList == null || viajeList.isEmpty()) {
