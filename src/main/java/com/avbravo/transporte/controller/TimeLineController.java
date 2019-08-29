@@ -9,6 +9,7 @@ package com.avbravo.transporte.controller;
 import com.avbravo.jmoordb.interfaces.IError;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordbutils.DateUtil;
+import com.avbravo.jmoordbutils.jmoordbjsf.CSSTimeLine;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Estatus;
 import com.avbravo.transporteejb.entity.Solicitud;
@@ -103,22 +104,22 @@ public class TimeLineController implements Serializable, IError {
                     if (viajeList == null || viajeList.isEmpty()) {
 
                     } else {
-//                          div.verde 
-//     div.azul 
-//      div.rojo 
-//     div.celeste
-//    div.naranaja
-//    div.amarillo 
-//    div.morado
-                        String color="naranja";
+                         String color =CSSTimeLine.verde;;
                         for (Viaje vi : viajeList) {
                             String availability = (vi.getRealizado().equals("si") ? "Realizado" : (vi.getRealizado().equals("no") ? "NoRealizado" : "Cancelado"));
                             switch(vi.getRealizado()){
                                 case "si":
                                    availability="Realizado";
-                                   color ="verde";
+                                   color =CSSTimeLine.verde;
                                    break;
-                                
+                                case "no":
+                                     availability="No Realizado";
+                                   color =CSSTimeLine.naranja;
+                                   break;
+                                case "ca":
+                                     availability="Cancelado";
+                                  color =CSSTimeLine.rojo;
+                                   break;
                             }
                             TimelineEvent event = new TimelineEvent(availability, vi.getFechahorainicioreserva(), vi.getFechahorafinreserva(), true, v.getMarca() + " " + v.getPlaca(), availability.toLowerCase());
                             timelineModel.add(event);
