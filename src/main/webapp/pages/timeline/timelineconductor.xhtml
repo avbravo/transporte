@@ -75,18 +75,32 @@
         border-color: #cc8100 !important;     /* orange */  
     }  
     div.norealizado {  
-        background: #F03030 none !important;  /* red */  
-        border-color: #bd2828 !important;     /* red */  
+         background: #FFA500 none !important;  /* orange */  
+        border-color: #cc8100 !important;     /* orange */  
+       
     }  
  
     div.realizado {  
         background: #1AA11A none !important;  /* green */  
         border-color: #136e13 !important;     /* green */  
     }  
+    div.aprobado {  
+        background: #1AA11A none !important;  /* green */  
+        border-color: #136e13 !important;     /* green */  
+    }  
+ 
+    div.pendiente {  
+        background: #e0d68f none !important;  /* amarillo */  
+        border-color: #e0d68f !important;     /* amarillo */  
+    }  
  
     div.cancelado {  
-        background: #FFA500 none !important;  /* orange */  
-        border-color: #cc8100 !important;     /* orange */  
+        background: #F03030 none !important;  /* red */  
+        border-color: #bd2828 !important;     /* red */  
+    }  
+    div.noaprobado {  
+        background: #F03030 none !important;  /* red */  
+        border-color: #bd2828 !important;     /* red */  
     }  
  
     div.timeline-event-selected {  
@@ -106,10 +120,10 @@
             <b:panel collapsible="false" title="#{msg['titlelist.timelineconductor']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                
-                <p:timeline id="timeline" value="#{secretarioAdministrativoController.timelineConductorModel}" 
+                <p:timeline id="timeline" value="#{timeLineController.timelineConductorModel}" 
             editable="true" eventMargin="10" eventMarginAxis="0" 
-            start="#{secretarioAdministrativoController.fechaDesde}" 
-            end="#{secretarioAdministrativoController.fechaHasta}" 
+            start="#{timeLineController.fechaDesde}" 
+            end="#{timeLineController.fechaHasta}" 
             showNavigation="true" showButtonNew="true" 
             axisOnTop="true" stackEvents="false"/>
                 

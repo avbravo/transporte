@@ -106,10 +106,10 @@
             <b:panel collapsible="false" title="#{msg['titlelist.timelinevehiculo']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                
-                <p:timeline id="timeline" value="#{secretarioAdministrativoController.timelineModel}" 
+                <p:timeline id="timeline" value="#{timeLineController.timelineModel}" 
             editable="true" eventMargin="10" eventMarginAxis="0" 
-            start="#{secretarioAdministrativoController.fechaDesde}" 
-            end="#{secretarioAdministrativoController.fechaHasta}" 
+            start="#{timeLineController.fechaDesde}" 
+            end="#{timeLineController.fechaHasta}" 
             showNavigation="true" showButtonNew="true" 
             axisOnTop="true" stackEvents="false"/>
                 
