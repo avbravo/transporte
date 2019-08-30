@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
+                 >
+    <ui:define name="content">
+         
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            } 
+        </style>
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+
+            <b:growl  id="msgs"/>
+
+            <b:panel collapsible="false" title="#{msg['titlelist.programacionvehicular']}" id="content"   look="primary" > 
+                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
+
+
+               
+              
+               
+                <b:row>
+                    <b:column medium-screen="25" >
+
+
+
+                        <jmoordbjsf:searchBetweenDate
+                            renderedMove="true"
+                            labelDesde="#{msg['field.fechainicio']}"
+                            valueDesde="#{programacionVehicularController.lookupServices.fechaDesde}"
+                            labelHasta="#{msg['field.fechafin']}"
+                            valueHasta="#{programacionVehicularController.lookupServices.fechaHasta}"
+                            renderedList="#{applicationMenu.viaje.list}"
+                            search="#{programacionVechicularController.searchBy('_betweendates')}"
+                            />
+                    </b:column>
+                </b:row>
+              
+
+            </b:panel>
+            <b:panel collapsible="false" id="dataTable" look="primary">
+                
+                   <jmoordbjsf:paginator
+                    controller="#{programacionVehicularController}"                        
+                    rowPage="#{programacionVehicularController.rowPage}"                   
+                    page="#{programacionVehicularController.page}"
+                    pages="#{programacionVehicularController.pages}"
+                    skip="ajax:programacionVehicularController.skip()" 
+                    url = "/pages/viaje/new.xhtml"
+                    />
+                
+                <b:dataTable value="#{programacionVehicularController.viajeDataModel}"
+                             var="item"
+                             id="dataTable2"
+                             paginated="false"
+                             onpage="console.log('page');">
+
+                    <b:dataTableColumn value="#{item.idviaje}" label="#{msg['field.idviaje']}"
+                                       style="color: #{programacionVehicularController.columnColor(item.realizado,item.activo)}"/>
+
+
+                    <b:dataTableColumn label="#{msg['field.fechapartida']}"   style="color: #{programacionVehicularController.columnColor(item.realizado,item.activo)}">
+
+                        <p:calendar  disabled="true"  size="8"   
+                                     style="background-color: grey; color: #{programacionVehicularController.columnColor(item.realizado,item.activo)}"
+
+                                     pattern="dd/MM/yyyy" value="#{item.fechahorainicioreserva}"  />
+                        <br />
+                        <p:calendar  disabled="true"    
+                                     style="background-color: grey;  color: #{programacionVehicularController.columnColor(item.realizado,item.activo)}"
+                                     size="8" 
+                                     pattern="HH:mm:ss a" value="#{item.fechahorainicioreserva}"  />
+
+
+
+                    </b:dataTableColumn> 
+
+                    <b:dataTableColumn label="#{msg['field.fecharegreso']}"   style="color: #{programacionVehicularController.columnColor(item.realizado,item.activo)}">
+                        <p:calendar  disabled="true"    
+                                     style="background-color: grey;  color: #{programacionVehicularController.columnColor(item.realizado,item.activo)}"
+                                     size="8" 
+                                     pattern="dd/MM/yyyy" value="#{item.fechahorafinreserva}"  />
+                        <br />
+                        <p:calendar  disabled="true"   
+                                     style="background-color: grey;  color: #{programacionVehicularController.columnColor(item.realizado,item.activo)}"
+                                     size="8" 
+                                     pattern="HH:mm:ss a" value="#{item.fechahorafinreserva}"  />
+
+                    </b:dataTableColumn> 
+
+
+                    <b:dataTableColumn label="#{msg['field.vehiculos']}"  style="color: #{programacionVehicularController.columnColor(item.realizado,item.activo)}">
+
+                        <p:outputLabel value="#{item.vehiculo.marca} #{item.vehiculo.modelo}"/>
+
+                    </b:dataTableColumn>
+                    <b:dataTableColumn label="#{msg['field.conductores']}"  style="color: #{programacionVehicularController.columnColor(item.realizado,item.activo)}">
+
+                        <p:outputLabel value="#{item.conductor.nombre}"/>
+
+                    </b:dataTableColumn>
+
+                    <b:dataTableColumn label="#{msg['field.lugardestino']}" style="color: #{programacionVehicularController.columnColor(item.realizado,item.activo)}">
+                        <p:outputLabel value="#{item.lugardestino}"  />
+
+                    </b:dataTableColumn> 
+
+                    <b:dataTableColumn  label="#{msg['field.r']}" style="color: #{programacionVehicularController.columnColor(item.realizado,item.activo)}" >
+                        <p:outputLabel value="#{item.realizado}"/>
+
+                    </b:dataTableColumn>
+                    <b:dataTableColumn  label="#{msg['field.a']}"  
+                                        style="color: #{programacionVehicularController.columnColor(item.realizado,item.activo)}" >
+
+                        <p:outputLabel value="#{item.activo}"/>
+
+                    </b:dataTableColumn>
+
+                    <b:dataTableColumn label="">
+
+                        <jmoordbjsf:column
+
+                            edit="#{programacionVehicularController.prepare('view',item)}"
+                            delete="#{programacionVehicularController.delete(item,false)}"
+                            rendered="#{applicationMenu.viaje.delete}"
+                            />
+                    </b:dataTableColumn>
+
+
+                </b:dataTable>
+            </b:panel>
+
+        </b:form>
+
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" />
+    </ui:define>
+</ui:composition>
