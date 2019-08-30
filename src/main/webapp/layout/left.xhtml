@@ -84,7 +84,7 @@ Hint to editors: The menus follow the Chicago style of capitalization. Please ca
 
                 <b:navLink rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"/>
                 <b:navLink value="#{msg['menu.disponibles']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/disponibles/disponibles" iconAwesome= "fa-briefcase" />  
-                <b:navLink value="#{msg['menu.disponibles']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/disponibles/newjsf" iconAwesome= "fa-briefcase" />  
+                
                 <b:navLink value="#{msg['menu.programacionvehicular']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-print" />  
                 <b:navLink value="#{msg['menu.pendientesviajes']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-car" />    
                 <b:navLink value="#{msg['menu.vehiculosdisponibles']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-car" />    
