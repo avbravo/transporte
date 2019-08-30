@@ -49,6 +49,7 @@ import org.primefaces.model.timeline.TimelineModel;
 public class TimeLineController implements Serializable, IError {
 
     // <editor-fold defaultstate="collapsed" desc="fields">  
+      private static final long serialVersionUID = 1L;
     private TimelineModel timelineModel;
     private TimelineModel timelineConductorModel;
     private TimelineModel timelineSolicitudModel;
