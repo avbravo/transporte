@@ -13,11 +13,13 @@ import com.avbravo.jmoordbutils.jmoordbjsf.CSSTimeLine;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Estatus;
 import com.avbravo.transporteejb.entity.Solicitud;
+import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
+import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.repository.ViajeRepository;
 import java.io.Serializable;
@@ -50,6 +52,7 @@ public class TimeLineController implements Serializable, IError {
     private TimelineModel timelineModel;
     private TimelineModel timelineConductorModel;
     private TimelineModel timelineSolicitudModel;
+    private TimelineModel timelineUsuarioModel;
     private Date fechaDesde;
     private Date fechaHasta;
     // </editor-fold>  
@@ -61,6 +64,8 @@ public class TimeLineController implements Serializable, IError {
     EstatusRepository estatusRepository;
     @Inject
     SolicitudRepository solicitudRepository;
+    @Inject 
+    UsuarioRepository usuarioRepository;
     @Inject
     VehiculoRepository vehiculoRepository;
     @Inject
@@ -104,9 +109,10 @@ public class TimeLineController implements Serializable, IError {
                     if (viajeList == null || viajeList.isEmpty()) {
 
                     } else {
-                         String color =CSSTimeLine.verde;;
+                         String color =CSSTimeLine.verde;
+                         String availability="No Realizado";
                         for (Viaje vi : viajeList) {
-                            String availability = (vi.getRealizado().equals("si") ? "Realizado" : (vi.getRealizado().equals("no") ? "NoRealizado" : "Cancelado"));
+                          //  String availability = (vi.getRealizado().equals("si") ? "Realizado" : (vi.getRealizado().equals("no") ? "NoRealizado" : "Cancelado"));
                             switch(vi.getRealizado()){
                                 case "si":
                                    availability="Realizado";
@@ -114,14 +120,15 @@ public class TimeLineController implements Serializable, IError {
                                    break;
                                 case "no":
                                      availability="No Realizado";
-                                   color =CSSTimeLine.naranja;
+                                   color =CSSTimeLine.celeste;
                                    break;
                                 case "ca":
                                      availability="Cancelado";
                                   color =CSSTimeLine.rojo;
                                    break;
                             }
-                            TimelineEvent event = new TimelineEvent(availability, vi.getFechahorainicioreserva(), vi.getFechahorafinreserva(), true, v.getMarca() + " " + v.getPlaca(), availability.toLowerCase());
+
+                            TimelineEvent event = new TimelineEvent(availability, vi.getFechahorainicioreserva(), vi.getFechahorafinreserva(), true, v.getMarca() + " " + v.getPlaca(), color.toLowerCase());
                             timelineModel.add(event);
                         }
                     }
@@ -155,9 +162,24 @@ public class TimeLineController implements Serializable, IError {
                     if (viajeList == null || viajeList.isEmpty()) {
 
                     } else {
+                          String color =CSSTimeLine.verde;
+                         String availability="No Realizado";
                         for (Viaje vi : viajeList) {
-                            String availability = (vi.getRealizado().equals("si") ? "Realizado" : (vi.getRealizado().equals("no") ? "NoRealizado" : "Cancelado"));
-                            TimelineEvent event = new TimelineEvent(availability, vi.getFechahorainicioreserva(), vi.getFechahorafinreserva(), true, c.getNombre() + " " + c.getCedula(), availability.toLowerCase());
+                           switch(vi.getRealizado()){
+                                case "si":
+                                   availability="Realizado";
+                                   color =CSSTimeLine.verde;
+                                   break;
+                                case "no":
+                                     availability="No Realizado";
+                                   color =CSSTimeLine.celeste;
+                                   break;
+                                case "ca":
+                                     availability="Cancelado";
+                                  color =CSSTimeLine.rojo;
+                                   break;
+                            }
+                            TimelineEvent event = new TimelineEvent(availability, vi.getFechahorainicioreserva(), vi.getFechahorafinreserva(), true, c.getNombre() + " " + c.getCedula(), color.toLowerCase());
                             timelineConductorModel.add(event);
                         }
                     }
@@ -185,6 +207,7 @@ public class TimeLineController implements Serializable, IError {
             if (list == null || list.isEmpty()) {
 
             } else {
+                   
                 for (Estatus e : list) {
 
                     Document doc = new Document("activo", "si").append("estatus.idestatus", e.getIdestatus());
@@ -192,19 +215,107 @@ public class TimeLineController implements Serializable, IError {
                     if (solicitudList == null || solicitudList.isEmpty()) {
 
                     } else {
+                        String color =CSSTimeLine.verde;
+                         String availability="SOLICITADO";
                         for (Solicitud s : solicitudList) {
-                            String availability = s.getEstatus().getIdestatus();
-                            TimelineEvent event = new TimelineEvent(availability, s.getFechahorapartida(), s.getFechahoraregreso(), true, s.getEstatus().getIdestatus(), availability.toLowerCase());
+                          
+                            switch(s.getEstatus().getIdestatus()){
+                                case "SOLICITADO":
+                                   availability="Solicitado";
+                                   color =CSSTimeLine.azul;
+                                    System.out.println("id= "+s.getIdsolicitud());
+                                   break;
+                                case "APROBADO":
+                                     availability="Aprobado";
+                                   color =CSSTimeLine.verde;
+                                   break;
+                                case "RECHAZADO":
+                                     availability="Rechazado";
+                                  color =CSSTimeLine.rojo;
+                                   break;
+                                case "CANCELADO":
+                                     availability="Cancelado";
+                                  color =CSSTimeLine.naranja;
+                                   break;
+                            }
+                            TimelineEvent event = new TimelineEvent(availability, s.getFechahorapartida(), s.getFechahoraregreso(), true, s.getEstatus().getIdestatus(),  color.toLowerCase());
                             timelineSolicitudModel.add(event);
+                            
                         }
                     }
                 }
             }
+            
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "/pages/timeline/timelinesolicitud.xhtml";
+    }
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="String loadTimeLineUsuarioSolicitud()">
+    /**
+     * Muestra el timelien por usuario
+     * @return 
+     */
+    public String loadTimeLineUsuarioSolicitud() {
+         try {
+            timelineUsuarioModel = new TimelineModel();
+            fechaDesde = DateUtil.dateFirtsOfMonth(DateUtil.anioActual(), DateUtil.mesActual());
+
+            fechaHasta = DateUtil.dateLastOfMonth(DateUtil.anioActual(), DateUtil.mesActual());
+// 
+            // groups  
+            List<Usuario> list = usuarioRepository.findBy(new Document("activo", "si"));
+
+            if (list == null || list.isEmpty()) {
+
+            } else {
+                   
+                for (Usuario u : list) {
+
+                    Document doc = new Document("activo", "si").append("usuario.username", u.getUsername());
+                    List<Solicitud> solicitudList = solicitudRepository.findBy(doc, new Document("idsolicitud", -1));
+                    if (solicitudList == null || solicitudList.isEmpty()) {
+
+                    } else {
+                        String color =CSSTimeLine.verde;
+                         String availability="SOLICITADO";
+                        for (Solicitud s : solicitudList) {
+                          
+                            switch(s.getEstatus().getIdestatus()){
+                                case "SOLICITADO":
+                                   availability="Solicitado";
+                                   color =CSSTimeLine.azul;
+                                    System.out.println("id= "+s.getIdsolicitud());
+                                   break;
+                                case "APROBADO":
+                                     availability="Aprobado";
+                                   color =CSSTimeLine.verde;
+                                   break;
+                                case "RECHAZADO":
+                                     availability="Rechazado";
+                                  color =CSSTimeLine.rojo;
+                                   break;
+                                case "CANCELADO":
+                                     availability="Cancelado";
+                                  color =CSSTimeLine.naranja;
+                                   break;
+                            }
+//                            TimelineEvent event = new TimelineEvent(availability, s.getFechahorapartida(), s.getFechahoraregreso(), true, s.getEstatus().getIdestatus(),  color.toLowerCase());
+                            TimelineEvent event = new TimelineEvent(availability, s.getFechahorapartida(), s.getFechahoraregreso(), true, u.getNombre(),  color.toLowerCase());
+                            timelineUsuarioModel.add(event);
+                            
+                        }
+                    }
+                }
+            }
+            
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "/pages/timeline/timelineusuario.xhtml";
     }
     // </editor-fold>  
 }
