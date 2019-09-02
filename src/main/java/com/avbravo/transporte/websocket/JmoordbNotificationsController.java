@@ -134,7 +134,8 @@ public class JmoordbNotificationsController implements Serializable, IController
                     .withPathReportDetail("/resources/reportes/jmoordbNotifications/details.jasper")
                     .withPathReportAll("/resources/reportes/jmoordbNotifications/all.jasper")
                     .withparameters(parameters)
-                    .withResetInSave(true)
+                    .withResetInSave(true) 
+                    .withAction("jmoordbNotifications")
                     .build();
 
             start();

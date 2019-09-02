@@ -120,7 +120,8 @@ public class JmoordbEmailMasterController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/jmoordbEmailMaster/details.jasper")
                     .withPathReportAll("/resources/reportes/jmoordbEmailMaster/all.jasper")
                     .withparameters(parameters)
-                    .withResetInSave(true)
+                    .withResetInSave(true) 
+                    .withAction("jmoordbEmailMaster")
                     .build();
 
             start();

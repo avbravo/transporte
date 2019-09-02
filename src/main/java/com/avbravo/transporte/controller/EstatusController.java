@@ -131,7 +131,8 @@ public class EstatusController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/estatus/details.jasper")
                     .withPathReportAll("/resources/reportes/estatus/all.jasper")
                     .withparameters(parameters)
-                     .withResetInSave(true)
+                     .withResetInSave(true) 
+                    .withAction("estatus")
                     .build();
 
             start();

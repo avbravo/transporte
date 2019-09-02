@@ -360,7 +360,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                     .withPathReportDetail("/resources/reportes/secretarioadministrativo/details.jasper")
                     .withPathReportAll("/resources/reportes/secretarioadministrativo/all.jasper")
                     .withparameters(parameters)
-                    .withResetInSave(false)
+                    .withResetInSave(false) 
+                    .withAction("secretarioadministrativo")
                     .build();
 
             start();
