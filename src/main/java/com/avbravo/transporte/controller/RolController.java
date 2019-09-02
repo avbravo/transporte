@@ -133,7 +133,7 @@ public class RolController implements Serializable, IController {
                     .withPathReportAll("/resources/reportes/rol/all.jasper")
                     .withparameters(parameters)
                     .withResetInSave(true)
-                    .withAction("rol")
+                    .withAction("golist")
                     .build();
 
             start();
@@ -181,7 +181,8 @@ public class RolController implements Serializable, IController {
             rolDataModel = new RolDataModel(rolList);
             Document doc;
 
-            switch ((String) JmoordbContext.get("searchrol")) {
+//            switch ((String) JmoordbContext.get("searchrol")) {
+            switch (getSearch()) {
                 case "_init":
                     rolList = rolRepository.findPagination(page, rowPage);
                     break;
@@ -189,8 +190,9 @@ public class RolController implements Serializable, IController {
                     break;
 
                 case "idrol":
-                    if (JmoordbContext.get("_fieldsearchrol") != null) {
-                        rolSearch.setIdrol(JmoordbContext.get("_fieldsearchrol").toString());
+//                    if (JmoordbContext.get("_fieldsearchrol") != null) {
+                    if (getValueSearch() != null) {
+                        rolSearch.setIdrol(getValueSearch().toString());
                         doc = new Document("idrol", rolSearch.getIdrol());
                         rolList = rolRepository.findPagination(doc, page, rowPage, new Document("idrol", -1));
                     } else {
@@ -200,8 +202,8 @@ public class RolController implements Serializable, IController {
                     break;
 
                 case "rol":
-                    if (JmoordbContext.get("_fieldsearchrol") != null) {
-                        rolSearch.setRol(JmoordbContext.get("_fieldsearchrol").toString());
+                    if (getValueSearch()!= null) {
+                        rolSearch.setRol(getValueSearch().toString());
                         rolList = rolRepository.findRegexInTextPagination("rol", rolSearch.getRol(), true, page, rowPage, new Document("rol", -1));
 
                     } else {
@@ -210,8 +212,8 @@ public class RolController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchrol") != null) {
-                        rolSearch.setActivo(JmoordbContext.get("_fieldsearchrol").toString());
+                    if (getValueSearch() != null) {
+                        rolSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", rolSearch.getActivo());
                         rolList = rolRepository.findPagination(doc, page, rowPage, new Document("idrol", -1));
                     } else {

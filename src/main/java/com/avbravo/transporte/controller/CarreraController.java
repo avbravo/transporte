@@ -129,7 +129,7 @@ public class CarreraController implements Serializable, IController {
                     .withPathReportAll("/resources/reportes/carrera/all.jasper")
                     .withparameters(parameters)
                     .withResetInSave(true) 
-                    .withAction("carrera")
+                    .withAction("golist")
                     .build();
 
             start();
