@@ -181,7 +181,7 @@ public class RolController implements Serializable, IController {
             rolDataModel = new RolDataModel(rolList);
             Document doc;
 
-//            switch ((String) JmoordbContext.get("searchrol")) {
+
             switch (getSearch()) {
                 case "_init":
                     rolList = rolRepository.findPagination(page, rowPage);

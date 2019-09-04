@@ -373,8 +373,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
             loadTimeLineConductor();
 
             String action = "gonew";
-            if (JmoordbContext.get("secretarioadministrativo") != null) {
-                action = JmoordbContext.get("secretarioadministrativo").toString();
+            if (getAction() != null) {
+                action = getAction();
             }
 
             if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
