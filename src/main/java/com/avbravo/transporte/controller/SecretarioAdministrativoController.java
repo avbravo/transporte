@@ -465,8 +465,9 @@ public class SecretarioAdministrativoController implements Serializable, IContro
 
     public void handleSelectPorSolicitado(SelectEvent event) {
         try {
-            JmoordbContext.put("searchsecretarioadministrativo", "porsolicitado");
-            JmoordbContext.put("_fieldsearchsecretarioadministrativo", solicita);
+
+         setSearchAndValue("porsolicitado", solicita);
+
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -477,8 +478,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
 
     public void handleSelectPorResponsable(SelectEvent event) {
         try {
-            JmoordbContext.put("searchsecretarioadministrativo", "porresponsable");
-            JmoordbContext.put("_fieldsearchsecretarioadministrativo", responsable);
+            setSearchAndValue("porresponsable", responsable);
+
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -490,9 +491,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     @Override
     public void move(Integer page) {
         try {
-            if (JmoordbContext.get("searchsecretarioadministrativo") == null) {
-                JmoordbContext.put("searchsecretarioadministrativo", "_init");
-            }
+
             this.page = page;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
@@ -501,7 +500,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
             String descripcion = jmoordb_user.getUnidad().getIdunidad();
             Document doc = new Document("activo", "si");
 
-            switch ((String) JmoordbContext.get("searchsecretarioadministrativo")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
 
@@ -510,7 +509,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                     break;
 
                 case "idsolicitud":
-                    if (JmoordbContext.get("_fieldsearchsecretarioadministrativo") != null) {
+                    if (getValueSearch() != null) {
                         solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
                     } else {
                         solicitudList = solicitudRepository.findPagination(doc, page, rowPage);
@@ -520,7 +519,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
 
                 case "estatus":
                     Estatus estatus = new Estatus();
-                    estatus = (Estatus) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
+                    estatus = (Estatus) getValueSearch() ;
                     doc.append("estatus.idestatus", estatus.getIdestatus());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
@@ -535,7 +534,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                     break;
                 case "vistobuenocoordinador":
 
-                    String vistoBueno = (String) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
+                    String vistoBueno = (String) getValueSearch() ;
                     doc = new Document("activo", "si");
                     doc.append("vistoBueno.aprobado", vistoBueno);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
@@ -543,7 +542,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                     break;
                 case "vistobuenosecretarioadministrativo":
 
-                    String vistoBuenoSecretarioAdministrativo = (String) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
+                    String vistoBuenoSecretarioAdministrativo = (String) getValueSearch() ;
                     doc = new Document("activo", "si");
                     doc.append("vistoBuenoSecretarioAdministrativo.aprobado", vistoBuenoSecretarioAdministrativo);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
@@ -551,7 +550,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                     break;
                 case "porsolicitado":
 
-                    Usuario solicita = (Usuario) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
+                    Usuario solicita = (Usuario)getValueSearch() ;
                     doc = new Document("activo", "si");
                     doc.append("usuario.0.username", solicita.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
@@ -559,7 +558,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                     break;
                 case "porresponsable":
 
-                    Usuario responsable = (Usuario) JmoordbContext.get("_fieldsearchsecretarioadministrativo");
+                    Usuario responsable = (Usuario) getValueSearch() ;
                     doc = new Document("activo", "si");
                     doc.append("usuario.1.username", responsable.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
@@ -2035,11 +2034,12 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="handleSelect">
-    public String handleAutocompleteOfListXhtml(SelectEvent event) {
+    // <editor-fold defaultstate="collapsed" desc="hString handleAutocompleteEstatus(SelectEvent event)">
+    
+    public String handleAutocompleteEstatus(SelectEvent event) {
         try {
-            JmoordbContext.put("searchsecretarioadministrativo", "estatus");
-            JmoordbContext.put("_fieldsearchsecretarioadministrativo", estatusSearch);
+          setSearchAndValue("estatus",estatusSearch);
+
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -2123,6 +2123,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     @Override
     public String clear() {
         try {
+            setSearchAndValue("_init", "");
             JmoordbContext.put("searchsecretarioadministrativo", "_init");
             JmoordbContext.put("_fieldsearchsecretarioadministrativo", "");
             move(page);

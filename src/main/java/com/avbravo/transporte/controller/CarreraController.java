@@ -11,8 +11,7 @@ import com.avbravo.commonejb.datamodel.CarreraDataModel;
 import com.avbravo.commonejb.entity.Carrera;
 import com.avbravo.commonejb.repository.CarreraRepository;
 import com.avbravo.commonejb.repository.FacultadRepository;
- 
- 
+
 import com.avbravo.commonejb.services.CarreraServices;
 import com.avbravo.commonejb.services.FacultadServices;
 import com.avbravo.jmoordb.configuration.JmoordbContext;
@@ -68,18 +67,18 @@ public class CarreraController implements Serializable, IController {
     List<Carrera> carreraList = new ArrayList<>();
 
     //Repository
-      @Inject
+    @Inject
     AutoincrementablebRepository autoincrementablebRepository;
     @Inject
     CarreraRepository carreraRepository;
     @Inject
     FacultadRepository facultadRepository;
-   
+
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;
-   @Inject
-   FacultadServices facultadServices;
+    @Inject
+    FacultadServices facultadServices;
     @Inject
     ErrorInfoServices errorServices;
     @Inject
@@ -128,7 +127,7 @@ public class CarreraController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/carrera/details.jasper")
                     .withPathReportAll("/resources/reportes/carrera/all.jasper")
                     .withparameters(parameters)
-                    .withResetInSave(true) 
+                    .withResetInSave(true)
                     .withAction("golist")
                     .build();
 
@@ -155,15 +154,15 @@ public class CarreraController implements Serializable, IController {
             carreraDataModel = new CarreraDataModel(carreraList);
             Document doc;
 
-            switch ((String) JmoordbContext.get("searchcarrera")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     carreraList = carreraRepository.findPagination(page, rowPage);
                     break;
 
                 case "idcarrera":
-                    if (JmoordbContext.get("_fieldsearchcarrera") != null) {
-                        carreraSearch.setIdcarrera((Integer) JmoordbContext.get("_fieldsearchcarrera"));
+                    if (getValueSearch() != null) {
+                        carreraSearch.setIdcarrera((Integer) getValueSearch());
                         doc = new Document("idcarrera", carreraSearch.getIdcarrera());
                         carreraList = carreraRepository.findPagination(doc, page, rowPage, new Document("idcarrera", -1));
                     } else {
@@ -173,8 +172,8 @@ public class CarreraController implements Serializable, IController {
                     break;
 
                 case "descripcion":
-                    if (JmoordbContext.get("_fieldsearchcarrera") != null) {
-                        carreraSearch.setDescripcion(JmoordbContext.get("_fieldsearchcarrera").toString());
+                    if (getValueSearch() != null) {
+                        carreraSearch.setDescripcion(getValueSearch().toString());
                         //  doc = new Document("descripcion", carreraSearch.getDescripcion());
                         carreraList = carreraRepository.findRegexInTextPagination("descripcion", carreraSearch.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
 
@@ -184,8 +183,8 @@ public class CarreraController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchcarrera") != null) {
-                        carreraSearch.setActivo(JmoordbContext.get("_fieldsearchcarrera").toString());
+                    if (getValueSearch() != null) {
+                        carreraSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", carreraSearch.getActivo());
                         carreraList = carreraRepository.findPagination(doc, page, rowPage, new Document("idcarrera", -1));
                     } else {
@@ -218,7 +217,6 @@ public class CarreraController implements Serializable, IController {
         return false;
     }
     // </editor-fold>
-    
-    
+
    
 }

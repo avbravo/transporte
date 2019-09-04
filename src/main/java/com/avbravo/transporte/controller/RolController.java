@@ -190,7 +190,6 @@ public class RolController implements Serializable, IController {
                     break;
 
                 case "idrol":
-//                    if (JmoordbContext.get("_fieldsearchrol") != null) {
                     if (getValueSearch() != null) {
                         rolSearch.setIdrol(getValueSearch().toString());
                         doc = new Document("idrol", rolSearch.getIdrol());
