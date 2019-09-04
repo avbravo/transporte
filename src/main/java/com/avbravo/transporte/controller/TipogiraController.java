@@ -62,10 +62,14 @@ public class TipogiraController implements Serializable, IController {
 
     //List
     List<Tipogira> tipogiraList = new ArrayList<>();
+// </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
 
     //Repository
     @Inject
     TipogiraRepository tipogiraRepository;
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;

@@ -221,6 +221,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     List<Carrera> suggestionsCarrera = new ArrayList<>();
     List<Unidad> suggestionsUnidad = new ArrayList<>();
     List<Tiposolicitud> suggestionsTiposolicitud = new ArrayList<>();
+// </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
 
     //Repository
     @Inject
@@ -251,7 +253,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     RevisionHistoryServices revisionHistoryServices;
     @Inject
     ViajeRepository viajeRepository;
-
+// </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;

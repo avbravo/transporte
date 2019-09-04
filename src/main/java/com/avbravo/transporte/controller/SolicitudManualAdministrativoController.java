@@ -115,6 +115,9 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
     List<Unidad> suggestionsUnidad = new ArrayList<>();
     List<Tiposolicitud> suggestionsTiposolicitud = new ArrayList<>();
 
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
+
     //Repository
     @Inject
     FacultadRepository facultadRepository;
@@ -133,6 +136,8 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
     @Inject
     UsuarioRepository usuarioRepository;
 
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
     //Atributos para busquedas
     @Inject

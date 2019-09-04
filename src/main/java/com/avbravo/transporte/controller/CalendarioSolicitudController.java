@@ -144,6 +144,8 @@ public class CalendarioSolicitudController implements Serializable, IControllerO
     List<Facultad> suggestionsFacultad = new ArrayList<>();
     List<Carrera> suggestionsCarrera = new ArrayList<>();
     List<Unidad> suggestionsUnidad = new ArrayList<>();
+// </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
 
     //Repository
     @Inject
@@ -166,6 +168,8 @@ public class CalendarioSolicitudController implements Serializable, IControllerO
     @Inject
     ConductorRepository conductorRepository;
 
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
     //Atributos para busquedas
     @Inject

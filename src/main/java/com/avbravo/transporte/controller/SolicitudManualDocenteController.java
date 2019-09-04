@@ -114,6 +114,8 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     List<Carrera> suggestionsCarrera = new ArrayList<>();
     List<Unidad> suggestionsUnidad = new ArrayList<>();
     List<Tiposolicitud> suggestionsTiposolicitud = new ArrayList<>();
+// </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
 
     //Repository
     @Inject
@@ -133,6 +135,8 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     @Inject
     UsuarioRepository usuarioRepository;
 
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
     //Atributos para busquedas
     @Inject

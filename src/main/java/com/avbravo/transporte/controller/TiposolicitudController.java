@@ -62,10 +62,14 @@ public class TiposolicitudController implements Serializable, IController {
 
     //List
     List<Tiposolicitud> tiposolicitudList = new ArrayList<>();
+// </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
 
     //Repository
     @Inject
     TiposolicitudRepository tiposolicitudRepository;
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;

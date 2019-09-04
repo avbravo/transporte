@@ -66,6 +66,9 @@ public class CarreraController implements Serializable, IController {
     //List
     List<Carrera> carreraList = new ArrayList<>();
 
+    // </editor-fold>  
+    
+    // <editor-fold defaultstate="collapsed" desc="repository">
     //Repository
     @Inject
     AutoincrementablebRepository autoincrementablebRepository;
@@ -73,8 +76,11 @@ public class CarreraController implements Serializable, IController {
     CarreraRepository carreraRepository;
     @Inject
     FacultadRepository facultadRepository;
-
+      // </editor-fold>  
+    
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
+    
     @Inject
     AutoincrementableServices autoincrementableServices;
     @Inject
@@ -207,6 +213,7 @@ public class CarreraController implements Serializable, IController {
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="beforeSave()">
+    @Override
     public Boolean beforeSave() {
         try {
             carrera.setIdcarrera(autoincrementableServices.getContador("carrera"));

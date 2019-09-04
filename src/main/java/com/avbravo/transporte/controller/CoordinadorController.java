@@ -203,6 +203,8 @@ public class CoordinadorController implements Serializable, IController {
     List<Carrera> suggestionsCarrera = new ArrayList<>();
     List<Unidad> suggestionsUnidad = new ArrayList<>();
     List<Tiposolicitud> suggestionsTiposolicitud = new ArrayList<>();
+// </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
 
     //Repository
     @Inject
@@ -227,9 +229,12 @@ public class CoordinadorController implements Serializable, IController {
     VehiculoRepository vehiculoRepository;
     @Inject
     UsuarioRepository usuarioRepository;
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
+       //Services
     @Inject
     RevisionHistoryServices revisionHistoryServices;
-    //Services
+ 
     @Inject
     AutoincrementableServices autoincrementableServices;
     @Inject

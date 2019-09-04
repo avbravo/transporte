@@ -109,6 +109,9 @@ public class ViajeController implements Serializable, IController {
 //    private ScheduleModel lazyEventModel;
 //
 //    private ScheduleEvent event = new DefaultScheduleEvent();
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
+
     //Repository
     @Inject
     ViajeRepository viajeRepository;
@@ -120,6 +123,9 @@ public class ViajeController implements Serializable, IController {
     SolicitudRepository solicitudRepository;
     @Inject
     VehiculoRepository vehiculoRepository;
+    
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
     @Inject
     ErrorInfoServices errorServices;

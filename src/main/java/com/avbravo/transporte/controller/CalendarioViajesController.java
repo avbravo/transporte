@@ -130,6 +130,8 @@ public class CalendarioViajesController implements Serializable, IControllerOld 
     List<Facultad> facultadList = new ArrayList<>();
     List<Carrera> carreraList = new ArrayList<>();
     List<Usuario> usuarioList = new ArrayList<>();
+// </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
 
     //Repository
     @Inject
@@ -145,6 +147,8 @@ public class CalendarioViajesController implements Serializable, IControllerOld 
     @Inject
     UsuarioRepository usuarioRepository;
 
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
     //Atributos para busquedas
     @Inject

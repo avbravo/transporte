@@ -198,6 +198,9 @@ public class SolicitudController implements Serializable, IController {
     List<Unidad> suggestionsUnidad = new ArrayList<>();
     List<Tiposolicitud> suggestionsTiposolicitud = new ArrayList<>();
 
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
+
     //Repository
     @Inject
     RevisionHistoryRepository revisionHistoryRepository;
@@ -221,9 +224,13 @@ public class SolicitudController implements Serializable, IController {
     VehiculoRepository vehiculoRepository;
     @Inject
     UsuarioRepository usuarioRepository;
-    @Inject
-    RevisionHistoryServices revisionHistoryServices;
+   
+    
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
+     @Inject
+    RevisionHistoryServices revisionHistoryServices;
     @Inject
     AutoincrementableServices autoincrementableServices;
     @Inject

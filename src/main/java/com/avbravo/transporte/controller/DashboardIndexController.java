@@ -35,9 +35,24 @@ public class DashboardIndexController implements Serializable {
 
     // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
+ Integer totalSolicitado;
+    Integer totalAprobado;
+    Integer totalRechazado;
+    Integer totalCancelado;
+    Integer totales;
+    Integer totalVehiculos;
+    Integer totalVehiculosActivos;
+    Integer totalVehiculosInActivos;
+    Integer totalVehiculosEnReparacion;
 
+    Integer totalVistoBuenoPendiente;
+    Integer totalVistoBuenoAprobado;
+    Integer totalVistoBuenoCancelado;
     private PieChartModel pieModelSolicitud;
     private PieChartModel pieModelVistoBueno;
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
+    
     @Inject
     FacultadRepository facultadRepository;
     @Inject
@@ -51,19 +66,7 @@ public class DashboardIndexController implements Serializable {
     @Inject
     JmoordbResourcesFiles rf;
 
-    Integer totalSolicitado;
-    Integer totalAprobado;
-    Integer totalRechazado;
-    Integer totalCancelado;
-    Integer totales;
-    Integer totalVehiculos;
-    Integer totalVehiculosActivos;
-    Integer totalVehiculosInActivos;
-    Integer totalVehiculosEnReparacion;
-
-    Integer totalVistoBuenoPendiente;
-    Integer totalVistoBuenoAprobado;
-    Integer totalVistoBuenoCancelado;
+   
     // </editor-fold>
 
     public PieChartModel getPieModelSolicitud() {

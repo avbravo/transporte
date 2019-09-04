@@ -151,6 +151,8 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     List<Facultad> suggestionsFacultad = new ArrayList<>();
     List<Carrera> suggestionsCarrera = new ArrayList<>();
     List<Unidad> suggestionsUnidad = new ArrayList<>();
+// </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
 
     //Repository
     @Inject
@@ -172,7 +174,8 @@ public class CalendarioSolicitudViajesController implements Serializable, IContr
     ConductorRepository conductorRepository;
     @Inject
     VehiculoRepository vehiculoRepository;
-
+// </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
     //Atributos para busquedas
     @Inject

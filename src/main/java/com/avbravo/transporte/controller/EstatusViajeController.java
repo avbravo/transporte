@@ -76,10 +76,15 @@ public class EstatusViajeController implements Serializable, IController {
 
     //List
     List<EstatusViaje> estatusViajeList = new ArrayList<>();
+// </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
 
     //Repository
     @Inject
     EstatusViajeRepository estatusViajeRepository;
+    
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;

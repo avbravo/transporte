@@ -78,12 +78,16 @@ public class ConductorController implements Serializable, IController {
 
     //List
     List<Conductor> conductorList = new ArrayList<>();
+// </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
 
     //Repository
     @Inject
     ConductorRepository conductorRepository;
     @Inject
     RevisionHistoryRepository revisionHistoryRepository;
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;

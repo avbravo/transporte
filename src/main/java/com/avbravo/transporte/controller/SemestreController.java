@@ -63,10 +63,14 @@ public class SemestreController implements Serializable, IController {
 
     //List
     List<Semestre> semestreList = new ArrayList<>();
+// </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
 
     //Repository
     @Inject
     SemestreRepository semestreRepository;
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
      @Inject
     AutoincrementableServices autoincrementableServices;

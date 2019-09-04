@@ -197,6 +197,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     List<Carrera> suggestionsCarrera = new ArrayList<>();
     List<Unidad> suggestionsUnidad = new ArrayList<>();
     List<Tiposolicitud> suggestionsTiposolicitud = new ArrayList<>();
+// </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="repository">
 
     //Repository
     @Inject
@@ -223,6 +225,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     UsuarioRepository usuarioRepository;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
+    // </editor-fold>  
+// <editor-fold defaultstate="collapsed" desc="services">
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;
