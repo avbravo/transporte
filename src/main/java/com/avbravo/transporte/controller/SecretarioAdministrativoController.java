@@ -2119,19 +2119,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
         return "";
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="String clear() ">
-    @Override
-    public String clear() {
-        try {
-            setSearchAndValue("_init", "");
-            JmoordbContext.put("searchsecretarioadministrativo", "_init");
-            JmoordbContext.put("_fieldsearchsecretarioadministrativo", "");
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
+  
 
     // <editor-fold defaultstate="collapsed" desc="enviarMensajesDirectos()">
     public String enviarMensajesDirectos() {
@@ -3138,8 +3126,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
     // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChange()">
     public String onVistoBuenoChange() {
         try {
-            JmoordbContext.put("searchsecretarioadministrativo", "vistobuenocoordinador");
-            JmoordbContext.put("_fieldsearchsecretarioadministrativo", vistoBuenoSearch);
+             setSearchAndValue("vistobuenocoordinador", vistoBuenoSearch);
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -3150,8 +3137,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
 
     public String onVistoBuenoChangeSecretarioAdministrativo() {
         try {
-            JmoordbContext.put("searchsecretarioadministrativo", "vistobuenosecretarioadministrativo");
-            JmoordbContext.put("_fieldsearchsecretarioadministrativo", vistoBuenoSecretarioAdministrativoSearch);
+            setSearchAndValue("vistobuenosecretarioadministrativo", vistoBuenoSecretarioAdministrativoSearch);
+           
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
