@@ -132,7 +132,7 @@ public class EstatusViajeController implements Serializable, IController {
                     .withPathReportAll("/resources/reportes/estatusviaje/all.jasper")
                     .withparameters(parameters)
                      .withResetInSave(true) 
-                    .withAction("estatusViaje")
+                     .withAction("golist")
                     .build();
 
             start();

@@ -132,7 +132,7 @@ public class EstatusController implements Serializable, IController {
                     .withPathReportAll("/resources/reportes/estatus/all.jasper")
                     .withparameters(parameters)
                      .withResetInSave(true) 
-                    .withAction("estatus")
+                  .withAction("golist")
                     .build();
 
             start();

@@ -141,7 +141,7 @@ public class VehiculoController implements Serializable, IController {
                     .withPathReportAll("/resources/reportes/vehiculo/all.jasper")
                     .withparameters(parameters)
                      .withResetInSave(true) 
-                    .withAction("vehiculo")
+                    .withAction("golist")
                     .build();
 
             start();

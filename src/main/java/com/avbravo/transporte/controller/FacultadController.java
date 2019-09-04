@@ -122,7 +122,7 @@ public class FacultadController implements Serializable, IController {
                     .withPathReportAll("/resources/reportes/facultad/all.jasper")
                     .withparameters(parameters)
                      .withResetInSave(true) 
-                    .withAction("facultad")
+                     .withAction("golist")
                     .build();
 
             start();

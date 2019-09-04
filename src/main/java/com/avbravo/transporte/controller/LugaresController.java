@@ -132,7 +132,7 @@ public class LugaresController implements Serializable, IController {
                     .withPathReportAll("/resources/reportes/lugares/all.jasper")
                     .withparameters(parameters)
                      .withResetInSave(true) 
-                    .withAction("lugares")
+                    .withAction("golist")
                     .build();
 
             start();

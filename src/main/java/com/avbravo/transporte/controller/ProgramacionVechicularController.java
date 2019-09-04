@@ -130,7 +130,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
                     .withPathReportAll("/resources/reportes/viaje/all.jasper")
                     .withparameters(parameters)
                      .withResetInSave(true) 
-                    .withAction("programacionvehicular")
+               .withAction("golist")
                     .build();
 
             start();

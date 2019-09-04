@@ -330,7 +330,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     .withPathReportAll("/resources/reportes/solicitudadministrativo/all.jasper")
                     .withparameters(parameters)
                     .withResetInSave(false)  
-                    .withAction("solicitudadministrativo")
+                   .withAction("golist")
                     .build();
 
             start();

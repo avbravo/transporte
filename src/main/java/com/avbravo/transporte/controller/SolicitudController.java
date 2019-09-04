@@ -330,7 +330,7 @@ public class SolicitudController implements Serializable, IController {
                     .withPathReportAll("/resources/reportes/solicituddocente/all.jasper")
                     .withparameters(parameters)
                     .withResetInSave(false) 
-                    .withAction("solicitud")
+                  .withAction("golist")
                     .build();
 
             start();

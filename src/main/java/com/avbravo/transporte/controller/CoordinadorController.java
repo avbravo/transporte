@@ -334,7 +334,7 @@ public class CoordinadorController implements Serializable, IController {
                     .withPathReportAll("/resources/reportes/coordinador/all.jasper")
                     .withparameters(parameters)
                     .withResetInSave(false) 
-                    .withAction("coordinador")
+             .withAction("golist")
                     .build();
 
             start();
