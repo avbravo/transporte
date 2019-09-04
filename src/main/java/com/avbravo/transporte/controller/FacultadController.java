@@ -153,15 +153,15 @@ public class FacultadController implements Serializable, IController {
             facultadDataModel = new FacultadDataModel(facultadList);
             Document doc;
 
-            switch ((String) JmoordbContext.get("searchfacultad")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     facultadList = facultadRepository.findPagination(page, rowPage);
                     break;
 
                 case "idfacultad":
-                    if (JmoordbContext.get("_fieldsearchfacultad") != null) {
-                        facultadSearch.setIdfacultad((Integer) JmoordbContext.get("_fieldsearchfacultad"));
+                    if (getValueSearch() != null) {
+                        facultadSearch.setIdfacultad((Integer) getValueSearch());
                         doc = new Document("idfacultad", facultadSearch.getIdfacultad());
                         facultadList = facultadRepository.findPagination(doc, page, rowPage, new Document("idfacultad", -1));
                     } else {
@@ -171,8 +171,8 @@ public class FacultadController implements Serializable, IController {
                     break;
 
                 case "descripcion":
-                    if (JmoordbContext.get("_fieldsearchfacultad") != null) {
-                        facultadSearch.setDescripcion(JmoordbContext.get("_fieldsearchfacultad").toString());
+                    if (getValueSearch() != null) {
+                        facultadSearch.setDescripcion(getValueSearch().toString());
                         facultadList = facultadRepository.findRegexInTextPagination("descripcion", facultadSearch.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
 
                     } else {
@@ -181,8 +181,8 @@ public class FacultadController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchfacultad") != null) {
-                        facultadSearch.setActivo(JmoordbContext.get("_fieldsearchfacultad").toString());
+                    if (getValueSearch() != null) {
+                        facultadSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", facultadSearch.getActivo());
                         facultadList = facultadRepository.findPagination(doc, page, rowPage, new Document("idfacultad", -1));
                     } else {

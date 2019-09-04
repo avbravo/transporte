@@ -162,15 +162,15 @@ public class EstatusController implements Serializable, IController {
             estatusDataModel = new EstatusDataModel(estatusList);
             Document doc;
 
-            switch ((String) JmoordbContext.get("searchestatus")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     estatusList = estatusRepository.findPagination(page, rowPage);
                     break;
 
                 case "idestatus":
-                    if (JmoordbContext.get("_fieldsearchestatus") != null) {
-                        estatusSearch.setIdestatus(JmoordbContext.get("_fieldsearchestatus").toString());
+                    if (getValueSearch() != null) {
+                        estatusSearch.setIdestatus(getValueSearch().toString());
                         doc = new Document("idestatus", estatusSearch.getIdestatus());
                         estatusList = estatusRepository.findPagination(doc, page, rowPage, new Document("idestatus", -1));
                     } else {
@@ -179,8 +179,8 @@ public class EstatusController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchestatus") != null) {
-                        estatusSearch.setActivo(JmoordbContext.get("_fieldsearchestatus").toString());
+                    if (getValueSearch() != null) {
+                        estatusSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", estatusSearch.getActivo());
                         estatusList = estatusRepository.findPagination(doc, page, rowPage, new Document("idestatus", -1));
                     } else {

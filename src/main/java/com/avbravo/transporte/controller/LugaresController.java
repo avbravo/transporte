@@ -162,15 +162,15 @@ public class LugaresController implements Serializable, IController {
             lugaresDataModel = new LugaresDataModel(lugaresList);
             Document doc;
 
-            switch ((String) JmoordbContext.get("searchlugares")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     lugaresList = lugaresRepository.findPagination(page, rowPage);
                     break;
 
                 case "idlugares":
-                    if (JmoordbContext.get("_fieldsearchlugares") != null) {
-                        lugaresSearch.setIdlugares(JmoordbContext.get("_fieldsearchlugares").toString());
+                    if (getValueSearch() != null) {
+                        lugaresSearch.setIdlugares(getValueSearch().toString());
                         doc = new Document("idlugares", lugaresSearch.getIdlugares());
                         lugaresList = lugaresRepository.findPagination(doc, page, rowPage, new Document("idlugares", -1));
                     } else {
@@ -179,8 +179,8 @@ public class LugaresController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchlugares") != null) {
-                        lugaresSearch.setActivo(JmoordbContext.get("_fieldsearchlugares").toString());
+                    if (getValueSearch() != null) {
+                        lugaresSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", lugaresSearch.getActivo());
                         lugaresList = lugaresRepository.findPagination(doc, page, rowPage, new Document("idlugares", -1));
                     } else {

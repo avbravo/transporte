@@ -170,8 +170,8 @@ public class EstatusViajeController implements Serializable, IController {
                     break;
 
                 case "idestatusviaje":
-                    if (JmoordbContext.get("_fieldsearchestatusViaje") != null) {
-                        estatusViajeSearch.setIdestatusviaje(JmoordbContext.get("_fieldsearchestatusViaje").toString());
+                    if (getValueSearch() != null) {
+                        estatusViajeSearch.setIdestatusviaje(getValueSearch().toString());
                         doc = new Document("idestatusviaje", estatusViajeSearch.getIdestatusviaje());
                         estatusViajeList = estatusViajeRepository.findPagination(doc, page, rowPage, new Document("idestatusviaje", -1));
                     } else {
@@ -180,8 +180,8 @@ public class EstatusViajeController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchestatusViaje") != null) {
-                        estatusViajeSearch.setActivo(JmoordbContext.get("_fieldsearchestatusViaje").toString());
+                    if (getValueSearch() != null) {
+                        estatusViajeSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", estatusViajeSearch.getActivo());
                         estatusViajeList = estatusViajeRepository.findPagination(doc, page, rowPage, new Document("idestatusviaje", -1));
                     } else {

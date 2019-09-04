@@ -164,15 +164,15 @@ public class SugerenciaController implements Serializable, IController {
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
             Document doc;
 
-            switch ((String) JmoordbContext.get("searchsugerencia")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     sugerenciaList = sugerenciaRepository.findPagination(page, rowPage);
                     break;
 
                 case "idsugerencia":
-                    if (JmoordbContext.get("_fieldsearchsugerencia") != null) {
-                        sugerenciaSearch.setIdsugerencia(JmoordbContext.get("_fieldsearchsugerencia").toString());
+                    if (getValueSearch()!= null) {
+                        sugerenciaSearch.setIdsugerencia(getValueSearch().toString());
                         doc = new Document("idsugerencia", sugerenciaSearch.getIdsugerencia());
                         sugerenciaList = sugerenciaRepository.findPagination(doc, page, rowPage, new Document("idsugerencia", -1));
                     } else {
@@ -182,8 +182,8 @@ public class SugerenciaController implements Serializable, IController {
                     break;
                     
                       case "descripcion":
-                    if (JmoordbContext.get("_fieldsearchsugerencia") != null) {
-                        sugerenciaSearch.setDescripcion(JmoordbContext.get("_fieldsearchsugerencia").toString());
+                    if (getValueSearch() != null) {
+                        sugerenciaSearch.setDescripcion(getValueSearch().toString());
                         sugerenciaList = sugerenciaRepository.findRegexInTextPagination("descripcion", sugerenciaSearch.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
 
                     } else {
@@ -192,8 +192,8 @@ public class SugerenciaController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchsugerencia") != null) {
-                        sugerenciaSearch.setActivo(JmoordbContext.get("_fieldsearchsugerencia").toString());
+                    if (getValueSearch() != null) {
+                        sugerenciaSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", sugerenciaSearch.getActivo());
                         sugerenciaList = sugerenciaRepository.findPagination(doc, page, rowPage, new Document("idsugerencia", -1));
                     } else {
