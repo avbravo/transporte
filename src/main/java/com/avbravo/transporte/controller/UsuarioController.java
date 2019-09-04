@@ -70,11 +70,16 @@ public class UsuarioController implements Serializable, IController {
     //Para multiples roles
     List<Rol> rolList = new ArrayList();
 
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="repository">
     //Repository
     @Inject
     RolRepository rolRepository;
     @Inject
     UsuarioRepository usuarioRepository;
+
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="services">
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;
@@ -130,16 +135,16 @@ public class UsuarioController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/usuario/details.jasper")
                     .withPathReportAll("/resources/reportes/usuario/all.jasper")
                     .withparameters(parameters)
-                     .withResetInSave(true) 
+                    .withResetInSave(true)
                     .withAction("golist")
                     .build();
 
             start();
             //En este caso desencriptamos el password
-            String action = (String) JmoordbContext.get("usuario");
+            String action = getAction();
             if (action.equals("view")) {
                 usuario.setPassword(JsfUtil.desencriptar(usuario.getPassword()));
-                   rolList = usuario.getRol();
+                rolList = usuario.getRol();
                 usuarioSelected = usuario;
             }
 
@@ -164,15 +169,15 @@ public class UsuarioController implements Serializable, IController {
             usuarioDataModel = new UsuarioDataModel(usuarioList);
             Document doc;
 
-            switch ((String) JmoordbContext.get("searchusuario")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     usuarioList = usuarioRepository.findPagination(page, rowPage);
                     break;
 
                 case "username":
-                    if (JmoordbContext.get("_fieldsearchusuario") != null) {
-                        usuarioSearch.setUsername(JmoordbContext.get("_fieldsearchusuario").toString());
+                    if (getValueSearch() != null) {
+                        usuarioSearch.setUsername(getValueSearch().toString());
                         doc = new Document("username", usuarioSearch.getUsername());
                         usuarioList = usuarioRepository.findPagination(doc, page, rowPage, new Document("idusuario", -1));
                     } else {
@@ -181,8 +186,8 @@ public class UsuarioController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchusuario") != null) {
-                        usuarioSearch.setActivo(JmoordbContext.get("_fieldsearchusuario").toString());
+                    if (getValueSearch() != null) {
+                        usuarioSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", usuarioSearch.getActivo());
                         usuarioList = usuarioRepository.findPagination(doc, page, rowPage, new Document("idusuario", -1));
                     } else {
@@ -204,7 +209,6 @@ public class UsuarioController implements Serializable, IController {
 
     }// </editor-fold>
 
-  
     // <editor-fold defaultstate="collapsed" desc="Boolean beforeSave()">
     public Boolean beforeSave() {
         try {

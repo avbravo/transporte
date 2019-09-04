@@ -63,9 +63,14 @@ public class TipovehiculoController implements Serializable, IController {
     //List
     List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
 
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="repository">
     //Repository
     @Inject
     TipovehiculoRepository tipovehiculoRepository;
+ 
+    // </editor-fold>  
+       // <editor-fold defaultstate="collapsed" desc="services">
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;
@@ -144,15 +149,15 @@ public class TipovehiculoController implements Serializable, IController {
             tipovehiculoDataModel = new TipovehiculoDataModel(tipovehiculoList);
             Document doc;
 
-            switch ((String) JmoordbContext.get("searchtipovehiculo")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     tipovehiculoList = tipovehiculoRepository.findPagination(page, rowPage);
                     break;
 
                 case "idtipovehiculo":
-                    if (JmoordbContext.get("_fieldsearchtipovehiculo") != null) {
-                        tipovehiculoSearch.setIdtipovehiculo(JmoordbContext.get("_fieldsearchtipovehiculo").toString());
+                    if (getValueSearch() != null) {
+                        tipovehiculoSearch.setIdtipovehiculo(getValueSearch().toString());
                         doc = new Document("idtipovehiculo", tipovehiculoSearch.getIdtipovehiculo());
                         tipovehiculoList = tipovehiculoRepository.findPagination(doc, page, rowPage, new Document("idtipovehiculo", -1));
                     } else {
@@ -161,8 +166,8 @@ public class TipovehiculoController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchtipovehiculo") != null) {
-                        tipovehiculoSearch.setActivo(JmoordbContext.get("_fieldsearchtipovehiculo").toString());
+                    if (getValueSearch() != null) {
+                        tipovehiculoSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", tipovehiculoSearch.getActivo());
                         tipovehiculoList = tipovehiculoRepository.findPagination(doc, page, rowPage, new Document("idtipovehiculo", -1));
                     } else {

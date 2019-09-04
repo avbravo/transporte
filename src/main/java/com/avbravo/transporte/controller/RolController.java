@@ -69,6 +69,8 @@ public class RolController implements Serializable, IController {
     //List
     List<Rol> rolList = new ArrayList<>();
 
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="reposisitory">
     //Repository
     @Inject
     RolRepository rolRepository;
@@ -83,7 +85,9 @@ public class RolController implements Serializable, IController {
     JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
-
+   // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="services">
+ 
     //Notification
     @Inject
     UsuarioServices usuarioServices;
@@ -143,6 +147,9 @@ public class RolController implements Serializable, IController {
         }
     }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="Boolean afterSave(Boolean saved)">
+ 
+    @Override
     public Boolean afterSave(Boolean saved) {
         try {
 
@@ -163,7 +170,7 @@ public class RolController implements Serializable, IController {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
-    }
+    }    // </editor-fold> 
 
 // <editor-fold defaultstate="collapsed" desc="handleSelect">
     public void handleSelect(SelectEvent event) {

@@ -63,10 +63,15 @@ public class UnidadController implements Serializable, IController {
 
     //List
     List<Unidad> unidadList = new ArrayList<>();
-
+      // </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="repository">
+    
     //Repository
     @Inject
     UnidadRepository unidadRepository;
+      // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="services">
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;
@@ -147,15 +152,15 @@ public class UnidadController implements Serializable, IController {
             unidadDataModel = new UnidadDataModel(unidadList);
             Document doc;
 
-            switch ((String) JmoordbContext.get("searchunidad")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     unidadList = unidadRepository.findPagination(page, rowPage);
                     break;
 
                 case "idunidad":
-                    if (JmoordbContext.get("_fieldsearchunidad") != null) {
-                        unidadSearch.setIdunidad(JmoordbContext.get("_fieldsearchunidad").toString());
+                    if (getValueSearch() != null) {
+                        unidadSearch.setIdunidad(getValueSearch().toString());
                         doc = new Document("idunidad", unidadSearch.getIdunidad());
                         unidadList = unidadRepository.findPagination(doc, page, rowPage, new Document("idunidad", -1));
                     } else {
@@ -164,8 +169,8 @@ public class UnidadController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchunidad") != null) {
-                        unidadSearch.setActivo(JmoordbContext.get("_fieldsearchunidad").toString());
+                    if (getValueSearch() != null) {
+                        unidadSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", unidadSearch.getActivo());
                         unidadList = unidadRepository.findPagination(doc, page, rowPage, new Document("idunidad", -1));
                     } else {
