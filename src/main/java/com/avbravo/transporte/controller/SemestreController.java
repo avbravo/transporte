@@ -151,15 +151,15 @@ public class SemestreController implements Serializable, IController {
             semestreDataModel = new SemestreDataModel(semestreList);
             Document doc;
 
-            switch ((String) JmoordbContext.get("searchsemestre")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     semestreList = semestreRepository.findPagination(page, rowPage);
                     break;
 
                 case "idsemestre":
-                    if (JmoordbContext.get("_fieldsearchsemestre") != null) {
-                        semestreSearch.setIdsemestre(JmoordbContext.get("_fieldsearchsemestre").toString());
+                    if (getValueSearch() != null) {
+                        semestreSearch.setIdsemestre(getValueSearch().toString());
                         doc = new Document("idsemestre",semestreSearch.getIdsemestre());
                         semestreList = semestreRepository.findPagination(doc, page, rowPage, new Document("idsemestre", -1));
                     } else {
@@ -169,8 +169,8 @@ public class SemestreController implements Serializable, IController {
                     break;
                     
                 case "descripcion":
-                    if (JmoordbContext.get("_fieldsearchsemestre") != null) {
-                        semestreSearch.setIdsemestre(JmoordbContext.get("_fieldsearchsemestre").toString());
+                    if (getValueSearch() != null) {
+                        semestreSearch.setIdsemestre(getValueSearch().toString());
                         doc = new Document("descripcion",semestreSearch.getDescripcion());
                         semestreList = semestreRepository.findPagination(doc, page, rowPage, new Document("descripcion", -1));
                     } else {
@@ -178,17 +178,6 @@ public class SemestreController implements Serializable, IController {
                     }
 
                     break;
-//                    
-//                          case "descripcion":
-//                    if (JmoordbContext.get("_fieldsearchsemestre") != null) {
-//                        semestreSearch.setDescripcion(JmoordbContext.get("_fieldsearchsemestre").toString());
-//                        semestreList = semestreRepository.findRegexInTextPagination("descripcion", semestreSearch.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
-//
-//                    } else {
-//                        semestreList = semestreRepository.findPagination(page, rowPage);
-//                    }
-//
-//                    break;
               
                 default:
                     semestreList = semestreRepository.findPagination(page, rowPage);
