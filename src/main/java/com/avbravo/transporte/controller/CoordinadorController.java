@@ -231,10 +231,10 @@ public class CoordinadorController implements Serializable, IController {
     UsuarioRepository usuarioRepository;
     // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="services">
-       //Services
+    //Services
     @Inject
     RevisionHistoryServices revisionHistoryServices;
- 
+
     @Inject
     AutoincrementableServices autoincrementableServices;
     @Inject
@@ -338,8 +338,8 @@ public class CoordinadorController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/coordinador/details.jasper")
                     .withPathReportAll("/resources/reportes/coordinador/all.jasper")
                     .withparameters(parameters)
-                    .withResetInSave(false) 
-             .withAction("golist")
+                    .withResetInSave(false)
+                    .withAction("golist")
                     .build();
 
             start();
@@ -348,8 +348,8 @@ public class CoordinadorController implements Serializable, IController {
             cargarSchedule();
 
             String action = "gonew";
-            if (JmoordbContext.get("coordinador") != null) {
-                action = JmoordbContext.get("coordinador").toString();
+            if (getAction() != null) {
+                action = getAction();
             }
 
             if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
@@ -441,17 +441,15 @@ public class CoordinadorController implements Serializable, IController {
     @Override
     public void move(Integer page) {
         try {
-            if (JmoordbContext.get("searchcoordinador") == null) {
-                JmoordbContext.put("searchcoordinador", "_init");
-            }
+
             this.page = page;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
             String descripcion = jmoordb_user.getUnidad().getIdunidad();
-          Document doc = new Document("descripcion", descripcion).append("activo", "si");
-         //   Document doc = new Document("activo", "si");
+            Document doc = new Document("descripcion", descripcion).append("activo", "si");
+            //   Document doc = new Document("activo", "si");
             List<Facultad> facultadList = facultadRepository.findBy(doc);
             Facultad facultad = new Facultad();
             if (facultadList == null || facultadList.isEmpty()) {
@@ -462,7 +460,7 @@ public class CoordinadorController implements Serializable, IController {
 
             }
 
-            switch ((String) JmoordbContext.get("searchcoordinador")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
 
@@ -471,7 +469,7 @@ public class CoordinadorController implements Serializable, IController {
                     break;
 
                 case "idsolicitud":
-                    if (JmoordbContext.get("_fieldsearchcoordinador") != null) {
+                    if (getValueSearch() != null) {
                         solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
                     } else {
                         solicitudList = solicitudRepository.findPagination(doc, page, rowPage);
@@ -481,7 +479,7 @@ public class CoordinadorController implements Serializable, IController {
 
                 case "estatus":
                     Estatus estatus = new Estatus();
-                    estatus = (Estatus) JmoordbContext.get("_fieldsearchcoordinador");
+                    estatus = (Estatus) getValueSearch();
                     doc.append("estatus.idestatus", estatus.getIdestatus());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
@@ -489,23 +487,20 @@ public class CoordinadorController implements Serializable, IController {
 
                 case "_betweendates":
 
+                    solicitudList = solicitudRepository.filterBetweenDatePaginationWithoutHours(
+                            "activo", "si",
+                            "facultad.idfacultad",
+                            facultad.getIdfacultad(),
+                            "fechahorapartida", fechaDesde,
+                            "fechahoraregreso", fechaHasta,
+                            page,
+                            rowPage,
+                            new Document("idsolicitud", -1)
+                    );
 
-                     solicitudList = solicitudRepository.filterBetweenDatePaginationWithoutHours(
-                             "activo","si",
-                             "facultad.idfacultad",
-                             facultad.getIdfacultad(),                            
-                             "fechahorapartida", fechaDesde, 
-                              "fechahoraregreso",fechaHasta, 
-                              page,
-                              rowPage,
-                              new Document("idsolicitud", -1)
-                     );
-                             
-                    
-                             
                     break;
                 case "vistobueno":
-                    String vistoBueno = (String) JmoordbContext.get("_fieldsearchcoordinador");
+                    String vistoBueno = (String) getValueSearch();
                     doc.append("vistoBueno.aprobado", vistoBueno);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
@@ -513,7 +508,7 @@ public class CoordinadorController implements Serializable, IController {
 
                 case "porsolicitado":
 
-                    Usuario solicita = (Usuario) JmoordbContext.get("_fieldsearchcoordinador");
+                    Usuario solicita = (Usuario) getValueSearch();
 
                     doc.append("usuario.0.username", solicita.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
@@ -521,7 +516,7 @@ public class CoordinadorController implements Serializable, IController {
                     break;
                 case "porresponsable":
 
-                    Usuario responsable = (Usuario) JmoordbContext.get("_fieldsearchcoordinador");
+                    Usuario responsable = (Usuario) getValueSearch();
 
                     doc.append("usuario.1.username", responsable.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
@@ -1779,8 +1774,8 @@ public class CoordinadorController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="handleSelect">
     public String handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-            JmoordbContext.put("searchcoordinador", "estatus");
-            JmoordbContext.put("_fieldsearchcoordinador", estatusSearch);
+            setSearchAndValue("estatus", estatusSearch);
+
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1791,8 +1786,8 @@ public class CoordinadorController implements Serializable, IController {
 
     public String onVistoBuenoChange() {
         try {
-            JmoordbContext.put("searchcoordinador", "vistobueno");
-            JmoordbContext.put("_fieldsearchcoordinador", vistoBuenoSearch);
+            setSearchAndValue("vistobueno", vistoBuenoSearch);
+
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1804,8 +1799,8 @@ public class CoordinadorController implements Serializable, IController {
     @Override
     public String clear() {
         try {
-            JmoordbContext.put("searchcoordinador", "_init");
-            JmoordbContext.put("_fieldsearchcoordinador", "");
+            setSearchAndValue("searchCoordinadorController", "_init");
+
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1848,7 +1843,8 @@ public class CoordinadorController implements Serializable, IController {
      */
     public String goList(String ruta) {
         ruta = ruta.trim();
-        JmoordbContext.put("coordinador", "golist");
+        setAction("golist");
+
         return "/pages/" + ruta + "/list.xhtml";
 
     }// </editor-fold>
@@ -2496,8 +2492,6 @@ public class CoordinadorController implements Serializable, IController {
     }
 
     // </editor-fold>
-   
-
     // <editor-fold defaultstate="collapsed" desc="String  cancel()">
     public String cancel() {
         try {
@@ -2758,8 +2752,9 @@ public class CoordinadorController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="handleSelectPorSolicitado(SelectEvent event) ">
     public void handleSelectPorSolicitado(SelectEvent event) {
         try {
-            JmoordbContext.put("searchcoordinador", "porsolicitado");
-            JmoordbContext.put("_fieldsearchcoordinador", solicita);
+
+            setSearchAndValue("porsolicitado", solicita);
+
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -2770,8 +2765,8 @@ public class CoordinadorController implements Serializable, IController {
 
     public void handleSelectPorResponsable(SelectEvent event) {
         try {
-            JmoordbContext.put("searchcoordinador", "porresponsable");
-            JmoordbContext.put("_fieldsearchcoordinador", responsable);
+            setSearchAndValue("porresponsable", responsable);
+
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());

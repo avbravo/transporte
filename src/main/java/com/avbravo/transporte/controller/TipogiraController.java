@@ -148,15 +148,15 @@ public class TipogiraController implements Serializable, IController {
             tipogiraDataModel = new TipogiraDataModel(tipogiraList);
             Document doc;
 
-            switch ((String) JmoordbContext.get("searchtipogira")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     tipogiraList = tipogiraRepository.findPagination(page, rowPage);
                     break;
 
                 case "idtipogira":
-                    if (JmoordbContext.get("_fieldsearchtipogira") != null) {
-                        tipogiraSearch.setIdtipogira(JmoordbContext.get("_fieldsearchtipogira").toString());
+                    if (getValueSearch() != null) {
+                        tipogiraSearch.setIdtipogira(getValueSearch().toString());
                         doc = new Document("idtipogira", tipogiraSearch.getIdtipogira());
                         tipogiraList = tipogiraRepository.findPagination(doc, page, rowPage, new Document("idtipogira", -1));
                     } else {
@@ -165,8 +165,8 @@ public class TipogiraController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchtipogira") != null) {
-                        tipogiraSearch.setActivo(JmoordbContext.get("_fieldsearchtipogira").toString());
+                    if (getValueSearch()  != null) {
+                        tipogiraSearch.setActivo(getValueSearch() .toString());
                         doc = new Document("activo", tipogiraSearch.getActivo());
                         tipogiraList = tipogiraRepository.findPagination(doc, page, rowPage, new Document("idtipogira", -1));
                     } else {

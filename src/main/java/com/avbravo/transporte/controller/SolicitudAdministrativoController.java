@@ -443,10 +443,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             solicitudDataModel = new SolicitudDataModel(solicitudList);
             Document doc;
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            if (JmoordbContext.get("searchsolicitudadministrativo") == null) {
-                JmoordbContext.put("searchsolicitudadministrativo", "_init");
-            }
-            switch ((String) JmoordbContext.get("searchsolicitudadministrativo")) {
+           
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
 
@@ -456,8 +454,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     break;
 
                 case "idsolicitud":
-                    if (JmoordbContext.get("_fieldsearchsolicitudadministrativo") != null) {
-                        solicitudSearch.setIdsolicitud((Integer) JmoordbContext.get("_fieldsearchsolicitudadministrativo"));
+                    if (getValueSearch() != null) {
+                        solicitudSearch.setIdsolicitud((Integer) getValueSearch());
                         doc = new Document("idsolicitud", solicitudSearch.getIdsolicitud()).append("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
                         solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
                     } else {
@@ -468,14 +466,14 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
                 case "estatus":
                     Estatus estatus = new Estatus();
-                    estatus = (Estatus) JmoordbContext.get("_fieldsearchsolicitudadministrativo");
+                    estatus = (Estatus) getValueSearch();
                     doc = new Document("estatus.idestatus", estatus.getIdestatus()).append("activo", "si").append("usuario.username", jmoordb_user.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
                     
                       case "vistobueno":
-                   String vistoBueno = (String) JmoordbContext.get("_fieldsearchsolicitudadministrativo");
+                   String vistoBueno = (String) getValueSearch();
                      doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
                     doc.append("vistoBuenoSecretarioAdministrativo.aprobado", vistoBueno);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
@@ -1644,8 +1642,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     // <editor-fold defaultstate="collapsed" desc="handleSelect">
     public String handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-            JmoordbContext.put("searchsolicitudadministrativo", "estatus");
-            JmoordbContext.put("_fieldsearchsolicitudadministrativo", estatusSearch);
+            setSearchAndValue("estatus", estatusSearch);
+         
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1688,9 +1686,9 @@ public class SolicitudAdministrativoController implements Serializable, IControl
      */
     public String goList(String ruta) {
         ruta = ruta.trim();
-        JmoordbContext.put("solicitud", "golist");
-        JmoordbContext.put("searchsolicitudadministrativo", "_init");
-        JmoordbContext.put("_fieldsearchadministrativo", "");
+
+                setAction("golist");
+      
         return "/pages/" + ruta + "/list.xhtml";
 //        return "/pages/solicitudadministrativo/list.xhtml";
     }// </editor-fold>
@@ -2420,8 +2418,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     @Override
     public String clear() {
         try {
-            JmoordbContext.put("searchsolicitudadministrativo", "_init");
-            JmoordbContext.put("_fieldsearchadministrativo", "");
+            setSearchAndValue("searchSolicitudController", "_init");
+           
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -2444,8 +2442,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     // <editor-fold defaultstate="collapsed" desc="handleSelect">
     public String onVistoBuenoChange() {
         try {
-            JmoordbContext.put("searchsolicitudadministrativo", "vistobueno");
-            JmoordbContext.put("_fieldsearchsolicitudadministrativo", vistoBuenoSearch);
+            setSearchAndValue("vistobueno", vistoBuenoSearch);
+            
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());

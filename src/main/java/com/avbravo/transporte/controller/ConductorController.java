@@ -170,15 +170,15 @@ public class ConductorController implements Serializable, IController {
             Document doc;
 
         
-            switch ((String) JmoordbContext.get("searchconductor")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     conductorList = conductorRepository.findPagination(page, rowPage);
                     break;
 
                 case "idconductor":
-                    if (JmoordbContext.get("_fieldsearchconductor") != null) {
-                        conductorSearch.setIdconductor(Integer.parseInt(JmoordbContext.get("_fieldsearchconductor").toString()));
+                    if (getValueSearch() != null) {
+                        conductorSearch.setIdconductor(Integer.parseInt(getValueSearch().toString()));
                         doc = new Document("idconductor", conductorSearch.getIdconductor());
                         conductorList = conductorRepository.findPagination(doc, page, rowPage, new Document("cedula", -1));
                     } else {
@@ -187,8 +187,8 @@ public class ConductorController implements Serializable, IController {
 
                     break;
                 case "cedula":
-                    if (JmoordbContext.get("_fieldsearchconductor") != null) {
-                        conductorSearch.setCedula(JmoordbContext.get("_fieldsearchconductor").toString());
+                    if (getValueSearch() != null) {
+                        conductorSearch.setCedula(getValueSearch().toString());
                         doc = new Document("cedula", conductorSearch.getCedula());
                         conductorList = conductorRepository.findPagination(doc, page, rowPage, new Document("cedula", -1));
                     } else {
@@ -198,8 +198,8 @@ public class ConductorController implements Serializable, IController {
                     break;
              
                 case "nombre":
-                    if (JmoordbContext.get("_fieldsearchconductor") != null) {
-                        conductorSearch.setNombre(JmoordbContext.get("_fieldsearchconductor").toString());
+                    if (getValueSearch() != null) {
+                        conductorSearch.setNombre(getValueSearch().toString());
                         conductorList = conductorRepository.findRegexInTextPagination("nombre", conductorSearch.getNombre(), true, page, rowPage, new Document("nombre", -1));
 
                     } else {
@@ -208,8 +208,8 @@ public class ConductorController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchconductor") != null) {
-                        conductorSearch.setActivo(JmoordbContext.get("_fieldsearchconductor").toString());
+                    if (getValueSearch() != null) {
+                        conductorSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", conductorSearch.getActivo());
                         conductorList = conductorRepository.findPagination(doc, page, rowPage, new Document("cedula", -1));
                     } else {

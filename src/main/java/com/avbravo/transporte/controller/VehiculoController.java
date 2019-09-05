@@ -168,15 +168,15 @@ public class VehiculoController implements Serializable, IController {
             Document doc;
 
         
-            switch ((String) JmoordbContext.get("searchvehiculo")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     vehiculoList = vehiculoRepository.findPagination(page, rowPage);
                     break;
 
                 case "idvehiculo":
-                    if (JmoordbContext.get("_fieldsearchvehiculo") != null) {
-                        vehiculoSearch.setIdvehiculo(Integer.parseInt(JmoordbContext.get("_fieldsearchvehiculo").toString()));
+                    if (getValueSearch() != null) {
+                        vehiculoSearch.setIdvehiculo(Integer.parseInt(getValueSearch().toString()));
                         doc = new Document("idvehiculo", vehiculoSearch.getIdvehiculo());
                         vehiculoList = vehiculoRepository.findPagination(doc, page, rowPage, new Document("placa", -1));
                     } else {
@@ -185,8 +185,8 @@ public class VehiculoController implements Serializable, IController {
 
                     break;
                 case "placa":
-                    if (JmoordbContext.get("_fieldsearchvehiculo") != null) {
-                        vehiculoSearch.setPlaca(JmoordbContext.get("_fieldsearchvehiculo").toString());
+                    if (getValueSearch() != null) {
+                        vehiculoSearch.setPlaca(getValueSearch().toString());
                         doc = new Document("placa", vehiculoSearch.getPlaca());
                         vehiculoList = vehiculoRepository.findPagination(doc, page, rowPage, new Document("placa", -1));
                     } else {
@@ -196,8 +196,8 @@ public class VehiculoController implements Serializable, IController {
                     break;
              
                 case "marca":
-                    if (JmoordbContext.get("_fieldsearchvehiculo") != null) {
-                        vehiculoSearch.setMarca(JmoordbContext.get("_fieldsearchvehiculo").toString());
+                    if (getValueSearch() != null) {
+                        vehiculoSearch.setMarca(getValueSearch().toString());
                         vehiculoList = vehiculoRepository.findRegexInTextPagination("marca", vehiculoSearch.getMarca(), true, page, rowPage, new Document("marca", -1));
 
                     } else {
@@ -206,8 +206,8 @@ public class VehiculoController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchvehiculo") != null) {
-                        vehiculoSearch.setActivo(JmoordbContext.get("_fieldsearchvehiculo").toString());
+                    if (getValueSearch()!= null) {
+                        vehiculoSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", vehiculoSearch.getActivo());
                         vehiculoList = vehiculoRepository.findPagination(doc, page, rowPage, new Document("placa", -1));
                     } else {
