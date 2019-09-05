@@ -153,15 +153,15 @@ public class JmoordbEmailMasterController implements Serializable, IController {
             jmoordbEmailMasterDataModel = new JmoordbEmailMasterDataModel(jmoordbEmailMasterList);
             Document doc;
 
-            switch ((String) JmoordbContext.get("searchjmoordbEmailMaster")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     jmoordbEmailMasterList = jmoordbEmailMasterRepository.findPagination(page, rowPage);
                     break;
 
                 case "email":
-                    if (JmoordbContext.get("_fieldsearchjmoordbEmailMaster") != null) {
-                        jmoordbEmailMasterSearch.setEmail(JmoordbContext.get("_fieldsearchjmoordbEmailMaster").toString());
+                    if (getValueSearch() != null) {
+                        jmoordbEmailMasterSearch.setEmail(getValueSearch().toString());
                         doc = new Document("email", jmoordbEmailMasterSearch.getEmail());
                         jmoordbEmailMasterList = jmoordbEmailMasterRepository.findPagination(doc, page, rowPage, new Document("email", -1));
                     } else {
