@@ -148,15 +148,15 @@ public class TiposolicitudController implements Serializable, IController {
             tiposolicitudDataModel = new TiposolicitudDataModel(tiposolicitudList);
             Document doc;
 
-            switch ((String) JmoordbContext.get("searchtiposolicitud")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     tiposolicitudList = tiposolicitudRepository.findPagination(page, rowPage);
                     break;
 
                 case "idtiposolicitud":
-                    if (JmoordbContext.get("_fieldsearchtiposolicitud") != null) {
-                        tiposolicitudSearch.setIdtiposolicitud(JmoordbContext.get("_fieldsearchtiposolicitud").toString());
+                    if (getValueSearch()!= null) {
+                        tiposolicitudSearch.setIdtiposolicitud(getValueSearch().toString());
                         doc = new Document("idtiposolicitud", tiposolicitudSearch.getIdtiposolicitud());
                         tiposolicitudList = tiposolicitudRepository.findPagination(doc, page, rowPage, new Document("idtiposolicitud", -1));
                     } else {
@@ -165,8 +165,8 @@ public class TiposolicitudController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchtiposolicitud") != null) {
-                        tiposolicitudSearch.setActivo(JmoordbContext.get("_fieldsearchtiposolicitud").toString());
+                    if (getValueSearch() != null) {
+                        tiposolicitudSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", tiposolicitudSearch.getActivo());
                         tiposolicitudList = tiposolicitudRepository.findPagination(doc, page, rowPage, new Document("idtiposolicitud", -1));
                     } else {
