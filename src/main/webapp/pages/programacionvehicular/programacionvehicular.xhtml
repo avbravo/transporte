@@ -70,7 +70,7 @@
                     url = "/pages/viaje/new.xhtml"
                     />
 
-                <b:dataTable value="#{programacionVechicularController.viajeDataModel}"
+                <b:dataTable value="#{programacionVechicularController.programacionVehicular}"
                              var="item"
                              id="dataTable2"
                              paginated="false"
@@ -80,41 +80,52 @@
                                        style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}"/>
 
 
-                   
-                    
-                   <b:dataTableColumn  label="#{msg['field.fechapartida']}" style="width:150px">
-                        <h:outputText value="#{programacionVechicularController.showDate(item.fechahorainicioreserva)} #{programacionVechicularController.showHour(item.fechahorainicioreserva)}" style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}" />
-                      </b:dataTableColumn>
-                  <b:dataTableColumn  label="#{msg['field.fecharegreso']}" style="width:150px">
-                        <h:outputText value="#{programacionVechicularController.showDate(item.fechahorafinreserva)} #{programacionVechicularController.showHour(item.fechahorafinreserva)}" style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}" />
-                      </b:dataTableColumn>
 
+
+                    <b:dataTableColumn  label="#{msg['field.fechapartida']}" style="width:150px">
+                        <h:outputText value="#{programacionVechicularController.showDate(item.fechahorasalida)} #{programacionVechicularController.showHour(item.fechahorasalida)}" style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}" />
+                    </b:dataTableColumn>
+                     <b:dataTableColumn label="#{msg['field.dia']}"  style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}">
+
+                        <p:outputLabel value="#{item.nombredia}"/>
+
+                    </b:dataTableColumn>
                   
 
 
-                    <b:dataTableColumn label="#{msg['field.vehiculos']}"  style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}">
+                    <b:dataTableColumn label="#{msg['field.unidad']}"  style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}">
 
-                        <p:outputLabel value="#{item.vehiculo.marca} #{item.vehiculo.modelo}  #{msg['field.placa']} #{item.vehiculo.placa}"/>
-
-                    </b:dataTableColumn>
-                    <b:dataTableColumn label="#{msg['field.conductores']}"  style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}">
-
-                        <p:outputLabel value="#{item.conductor.nombre}"/>
+                        <p:outputLabel value="#{item.unidad}"/>
 
                     </b:dataTableColumn>
-
-                    <b:dataTableColumn label="#{msg['field.lugardestino']}" style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}">
-                        <p:outputLabel value="#{item.lugardestino}"  />
+                     <b:dataTableColumn  label="#{msg['field.fechasolicitud']}" style="width:150px">
+                        <h:outputText value="#{programacionVechicularController.showDate(item.fechasolicitud)} #{programacionVechicularController.showHour(item.fechasolicitud)}" style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}" />
+                    </b:dataTableColumn>
+                       <b:dataTableColumn label="#{msg['field.mision']}" style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}">
+                        <p:outputLabel value="#{item.mision}"  />
 
                     </b:dataTableColumn> 
 
-                    <b:dataTableColumn  label="#{msg['field.r']}" style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}" >
-                        <p:outputLabel value="#{item.realizado}"/>
+                      <b:dataTableColumn  label="#{msg['field.fecharegreso']}" style="width:150px">
+                        <h:outputText value="#{programacionVechicularController.showDate(item.fechahoraregreso)} #{programacionVechicularController.showHour(item.fechahoraregreso)}" style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}" />
+                    </b:dataTableColumn>
+                    <b:dataTableColumn label="#{msg['field.vehiculo']}"  style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}">
+
+                        <p:outputLabel value="#{item.marca} #{item.modelo}  #{msg['field.placa']} #{item.placa}"/>
 
                     </b:dataTableColumn>
-                   
+                    <b:dataTableColumn label="#{msg['field.conductor']}"  style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}">
 
-                 
+                        <p:outputLabel value="#{item.conductor}"/>
+
+                    </b:dataTableColumn>
+
+               
+
+
+
+
+
 
 
                 </b:dataTable>

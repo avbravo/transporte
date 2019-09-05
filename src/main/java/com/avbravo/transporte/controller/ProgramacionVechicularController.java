@@ -12,13 +12,16 @@ import com.avbravo.jmoordb.interfaces.IController;
 import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
- 
+import com.avbravo.jmoordbutils.DateUtil;
+
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
-import com.avbravo.jmoordbutils.JsfUtil;
+import com.avbravo.transporte.beans.ProgramacionVehicular;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
-import com.avbravo.transporteejb.entity.Estatus;
+import com.avbravo.transporteejb.entity.Solicitud;
+import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.Usuario;
+import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.ViajeServices;
@@ -68,16 +71,18 @@ public class ProgramacionVechicularController implements Serializable, IControll
 
     //List
     List<Viaje> viajeList = new ArrayList<>();
-  // </editor-fold>
+    List<ProgramacionVehicular> programacionVehicular = new ArrayList<>();
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="repository">
-  
+
     //Repository
     @Inject
+    SolicitudRepository solicitudRepository;
+    @Inject
     ViajeRepository viajeRepository;
-    
-      // </editor-fold>  
-    // <editor-fold defaultstate="collapsed" desc="services">
 
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="services">
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;
@@ -109,7 +114,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
 // <editor-fold defaultstate="collapsed" desc="init">
     @PostConstruct
     public void init() {
-        try { 
+        try {
             /*
             configurar el ambiente del controller
              */
@@ -129,19 +134,19 @@ public class ProgramacionVechicularController implements Serializable, IControll
                     .withPathReportDetail("/resources/reportes/viaje/details.jasper")
                     .withPathReportAll("/resources/reportes/viaje/all.jasper")
                     .withparameters(parameters)
-                     .withResetInSave(true) 
-               .withAction("golist")
+                    .withResetInSave(true)
+                    .withAction("golist")
                     .build();
 
             start();
-            
-             String action = "gonew";
-            if (JmoordbContext.get("programacionvehicular") != null) {
-                action = JmoordbContext.get("programacionvehicular").toString();
+
+            String action = "gonew";
+            if (getAction() != null) {
+                action = getAction();
             }
 
             if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
-               //inicializar
+                //inicializar
 
             }
             if (action.equals("view")) {
@@ -165,8 +170,8 @@ public class ProgramacionVechicularController implements Serializable, IControll
     @Override
     public void move(Integer page) {
         try {
- 
-        
+            programacionVehicular = new ArrayList<>();
+
             this.page = page;
             viajeDataModel = new ViajeDataModel(viajeList);
             Document doc;
@@ -177,7 +182,6 @@ public class ProgramacionVechicularController implements Serializable, IControll
                     viajeList = viajeRepository.findPagination(page, rowPage);
                     break;
 
-
                 case "activo":
                     if (getValueSearch() != null) {
                         viajeSearch.setActivo(getValueSearch().toString());
@@ -187,20 +191,75 @@ public class ProgramacionVechicularController implements Serializable, IControll
                         viajeList = viajeRepository.findPagination(page, rowPage);
                     }
                     break;
-                    
-                 case "_betweendates":
+
+                case "_betweendates":
 
                     viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("activo", "si",
                             "fechahorainicioreserva", fechaDesde,
                             "fechahorafinreserva", fechaHasta,
                             page, rowPage, new Document("idviaje", -1));
-                    break;    
+                    break;
 
                 default:
                     viajeList = viajeRepository.findPagination(page, rowPage);
                     break;
             }
+            if (viajeList == null || viajeList.isEmpty()) {
 
+            } else {
+                for (Viaje v : viajeList) {
+                    ProgramacionVehicular pv = new ProgramacionVehicular();
+                    pv.setConductor(v.getConductor().getNombre());
+                    pv.setFechahoraregreso(v.getFechahorainicioreserva());
+                    pv.setFechahorasalida(v.getFechahorainicioreserva());
+                    pv.setIdviaje(v.getIdviaje());
+                    pv.setMarca(v.getVehiculo().getMarca());
+                    pv.setModelo(v.getVehiculo().getModelo());
+                    pv.setPlaca(v.getVehiculo().getPlaca());
+                    pv.setNombredia(DateUtil.nameOfDay(pv.getFechahorasalida()));
+                    pv.setResponsable(v.getRealizado());
+                    pv.setActivo(v.getActivo());
+                      pv.setMision(v.getComentarios());
+                    //Datos de la solicitud
+                    pv.setFechasolicitud(v.getFechahorainicioreserva());
+                    pv.setNumerosolicitudes("");
+                  
+                    pv.setUnidad("");
+                    pv.setResponsable("");
+                    pv.setSolicita("");
+                    Solicitud solicitud = new Solicitud();
+
+                    Document search = new Document("viaje.idviaje", v.getIdviaje());
+                    List<Solicitud> list = solicitudRepository.findBy(search);
+                    if (list == null || list.isEmpty()) {
+
+                    } else {
+                        String unidad = "";
+        
+                        String numeroSolicitudes = "";
+                        String responsable = "";
+                        String solicita = "";
+                        //Se recorren todas las solicitudes que tengan ese viaje asignado.
+                        for (Solicitud s : list) {
+                            pv.setFechasolicitud(s.getFecha());
+                            for (Unidad u : s.getUnidad()) {
+                                unidad += " " + u.getIdunidad();
+                            }
+                          
+                            numeroSolicitudes += " " + String.valueOf(s.getIdsolicitud());
+                            solicita += " " + s.getUsuario().get(0).getNombre();
+                            responsable += " " + s.getUsuario().get(1).getNombre();
+                        }
+                        pv.setUnidad(unidad.trim());
+                        pv.setMision(mision.trim());
+                        pv.setNumerosolicitudes(numeroSolicitudes.trim());
+                        pv.setResponsable(responsable.trim());
+                        pv.setSolicita(solicita.trim());
+                       
+                    }
+ programacionVehicular.add(pv);
+                }
+            }
             viajeDataModel = new ViajeDataModel(viajeList);
 
         } catch (Exception e) {
@@ -209,8 +268,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
         }
 
     }// </editor-fold>
-    
-    
+
     // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
     public String showDate(Date date) {
         return viajeServices.showDate(date);
@@ -221,8 +279,8 @@ public class ProgramacionVechicularController implements Serializable, IControll
         return viajeServices.showHour(date);
 
     }// </editor-fold>
-     
-     public String columnColor(String realizado, String activo) {
-         return viajeServices.columnColor(realizado, activo);
-     }
+
+    public String columnColor(String realizado, String activo) {
+        return viajeServices.columnColor(realizado, activo);
+    }
 }

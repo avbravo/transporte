@@ -11,37 +11,102 @@ import java.util.Date;
  *
  * @author avbravo
  */
-public class ProgramcionVehicular {
+public class ProgramacionVehicular {
     
     private Integer idviaje;
     private Date fechahorasalida;
     private Date fechahoraregreso;
     private Date fechasolicitud;
-    private Integer idsolicitud;
+    private String numerosolicitudes;
     private String mision;
     private String nombredia;
     private String conductor;
     private String marca;
     private String modelo;
     private String placa;
+    private String unidad;
+    private String responsable;
+    private String solicita;
+    private String activo;
+    private String realizado;
 
-    public ProgramcionVehicular() {
+    public ProgramacionVehicular() {
     }
 
-    public ProgramcionVehicular(Integer idviaje, Date fechahorasalida, Date fechahoraregreso, Date fechasolicitud, Integer idsolicitud, String mision, String nombredia, String conductor, String marca, String modelo, String placa) {
+    public String getActivo() {
+        return activo;
+    }
+
+    public void setActivo(String activo) {
+        this.activo = activo;
+    }
+
+    public String getRealizado() {
+        return realizado;
+    }
+
+    public void setRealizado(String realizado) {
+        this.realizado = realizado;
+    }
+
+    public ProgramacionVehicular(Integer idviaje, Date fechahorasalida, Date fechahoraregreso, Date fechasolicitud, String numerosolicitudes, String mision, String nombredia, String conductor, String marca, String modelo, String placa, String unidad, String responsable, String solicita, String activo, String realizado) {
         this.idviaje = idviaje;
         this.fechahorasalida = fechahorasalida;
         this.fechahoraregreso = fechahoraregreso;
         this.fechasolicitud = fechasolicitud;
-        this.idsolicitud = idsolicitud;
+        this.numerosolicitudes = numerosolicitudes;
         this.mision = mision;
         this.nombredia = nombredia;
         this.conductor = conductor;
         this.marca = marca;
         this.modelo = modelo;
         this.placa = placa;
+        this.unidad = unidad;
+        this.responsable = responsable;
+        this.solicita = solicita;
+        this.activo = activo;
+        this.realizado = realizado;
     }
 
+    
+    
+   
+
+   
+    
+    
+    
+    
+
+    public String getResponsable() {
+        return responsable;
+    }
+
+    public void setResponsable(String responsable) {
+        this.responsable = responsable;
+    }
+
+    public String getSolicita() {
+        return solicita;
+    }
+
+    public void setSolicita(String solicita) {
+        this.solicita = solicita;
+    }
+
+    
+    
+    
+    
+    public String getUnidad() {
+        return unidad;
+    }
+
+    public void setUnidad(String unidad) {
+        this.unidad = unidad;
+    }
+
+   
     
     
     
@@ -77,14 +142,15 @@ public class ProgramcionVehicular {
         this.fechasolicitud = fechasolicitud;
     }
 
-    public Integer getIdsolicitud() {
-        return idsolicitud;
+    public String getNumerosolicitudes() {
+        return numerosolicitudes;
     }
 
-    public void setIdsolicitud(Integer idsolicitud) {
-        this.idsolicitud = idsolicitud;
+    public void setNumerosolicitudes(String numerosolicitudes) {
+        this.numerosolicitudes = numerosolicitudes;
     }
 
+    
     public String getMision() {
         return mision;
     }
