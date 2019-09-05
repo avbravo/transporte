@@ -9,9 +9,9 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
-                 >
+                >
     <ui:define name="content">
-         
+
 
         <style>
             .thumbnail { max-width: 100%; }
@@ -146,8 +146,8 @@
 
             </b:panel>
             <b:panel collapsible="false" id="dataTable" look="primary">
-                
-                   <jmoordbjsf:paginator
+
+                <jmoordbjsf:paginator
                     controller="#{viajeController}"                        
                     rowPage="#{viajeController.rowPage}"                   
                     page="#{viajeController.page}"
@@ -155,7 +155,7 @@
                     skip="ajax:viajeController.skip()" 
                     url = "/pages/viaje/new.xhtml"
                     />
-                
+
                 <b:dataTable value="#{viajeController.viajeDataModel}"
                              var="item"
                              id="dataTable2"
@@ -165,45 +165,22 @@
                     <b:dataTableColumn value="#{item.idviaje}" label="#{msg['field.idviaje']}"
                                        style="color: #{viajeController.columnColor(item.realizado,item.activo)}"/>
 
-                    
-                        <b:dataTableColumn  label="#{msg['field.fechapartida']}" style="width:150px">
+
+                    <b:dataTableColumn  label="#{msg['field.fechapartida']}" style="width:150px">
                         <h:outputText value="#{viajeController.showDate(item.fechahorainicioreserva)} #{viajeController.showHour(item.fechahorainicioreserva)}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" />
-                      </b:dataTableColumn>
-                  <b:dataTableColumn  label="#{msg['field.fecharegreso']}" style="width:150px">
+                    </b:dataTableColumn>
+                    <b:dataTableColumn  label="#{msg['field.fecharegreso']}" style="width:150px">
                         <h:outputText value="#{viajeController.showDate(item.fechahorafinreserva)} #{viajeController.showHour(item.fechahorafinreserva)}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" />
-                      </b:dataTableColumn>
-                    
-
-                    <b:dataTableColumn label="#{msg['field.fechapartida']}"   style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
-
-                        <p:calendar  disabled="true"  size="8"   
-                                     style="background-color: grey; color: #{viajeController.columnColor(item.realizado,item.activo)}"
-
-                                     pattern="dd/MM/yyyy" value="#{item.fechahorainicioreserva}"  />
-                        <br />
-                        <p:calendar  disabled="true"    
-                                     style="background-color: grey;  color: #{viajeController.columnColor(item.realizado,item.activo)}"
-                                     size="8" 
-                                     pattern="HH:mm:ss a" value="#{item.fechahorainicioreserva}"  />
+                    </b:dataTableColumn>
 
 
+                   
 
-                    </b:dataTableColumn> 
+                    <b:dataTableColumn label="#{msg['field.mision']}"  style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
 
-                    <b:dataTableColumn label="#{msg['field.fecharegreso']}"   style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
-                        <p:calendar  disabled="true"    
-                                     style="background-color: grey;  color: #{viajeController.columnColor(item.realizado,item.activo)}"
-                                     size="8" 
-                                     pattern="dd/MM/yyyy" value="#{item.fechahorafinreserva}"  />
-                        <br />
-                        <p:calendar  disabled="true"   
-                                     style="background-color: grey;  color: #{viajeController.columnColor(item.realizado,item.activo)}"
-                                     size="8" 
-                                     pattern="HH:mm:ss a" value="#{item.fechahorafinreserva}"  />
+                        <p:outputLabel value="#{item.vehiculo.mision}"/>
 
-                    </b:dataTableColumn> 
-
-
+                    </b:dataTableColumn>
                     <b:dataTableColumn label="#{msg['field.vehiculos']}"  style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
 
                         <p:outputLabel value="#{item.vehiculo.marca} #{item.vehiculo.modelo}"/>

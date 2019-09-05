@@ -219,7 +219,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
                     pv.setNombredia(DateUtil.nameOfDay(pv.getFechahorasalida()));
                     pv.setResponsable(v.getRealizado());
                     pv.setActivo(v.getActivo());
-                      pv.setMision(v.getComentarios());
+                      pv.setMision(v.getMision());
                     //Datos de la solicitud
                     pv.setFechasolicitud(v.getFechahorainicioreserva());
                     pv.setNumerosolicitudes("");
@@ -251,7 +251,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
                             responsable += " " + s.getUsuario().get(1).getNombre();
                         }
                         pv.setUnidad(unidad.trim());
-                        pv.setMision(mision.trim());
+              
                         pv.setNumerosolicitudes(numeroSolicitudes.trim());
                         pv.setResponsable(responsable.trim());
                         pv.setSolicita(solicita.trim());
