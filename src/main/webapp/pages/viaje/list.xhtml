@@ -165,6 +165,14 @@
                     <b:dataTableColumn value="#{item.idviaje}" label="#{msg['field.idviaje']}"
                                        style="color: #{viajeController.columnColor(item.realizado,item.activo)}"/>
 
+                    
+                        <b:dataTableColumn  label="#{msg['field.fechapartida']}" style="width:150px">
+                        <h:outputText value="#{viajeController.showDate(item.fechahorainicioreserva)} #{viajeController.showHour(item.fechahorainicioreserva)}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" />
+                      </b:dataTableColumn>
+                  <b:dataTableColumn  label="#{msg['field.fecharegreso']}" style="width:150px">
+                        <h:outputText value="#{viajeController.showDate(item.fechahorafinreserva)} #{viajeController.showHour(item.fechahorafinreserva)}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" />
+                      </b:dataTableColumn>
+                    
 
                     <b:dataTableColumn label="#{msg['field.fechapartida']}"   style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
 

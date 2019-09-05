@@ -166,32 +166,21 @@ public class ProgramacionVechicularController implements Serializable, IControll
     public void move(Integer page) {
         try {
  
-         if (JmoordbContext.get("searchprogramacionvehicular") == null) {
-                JmoordbContext.put("searchprogramacionvehicular", "_init");
-            }
+        
             this.page = page;
             viajeDataModel = new ViajeDataModel(viajeList);
             Document doc;
 
-            switch ((String) JmoordbContext.get("searchprogramacionvehicular")) {
+            switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
                     viajeList = viajeRepository.findPagination(page, rowPage);
                     break;
 
-//                case "idviaje":
-//                    if (JmoordbContext.get("_fieldsearchviaje") != null) {
-//                        viajeSearch.setIdviaje(JmoordbContext.get("_fieldsearchviaje").toString());
-//                        doc = new Document("idviaje", viajeSearch.getIdviaje());
-//                        viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
-//                    } else {
-//                        viajeList = viajeRepository.findPagination(page, rowPage);
-//                    }
-//
-//                    break;
+
                 case "activo":
-                    if (JmoordbContext.get("_fieldsearchprogramacionvehicular") != null) {
-                        viajeSearch.setActivo(JmoordbContext.get("_fieldsearchprogramacionvehicular").toString());
+                    if (getValueSearch() != null) {
+                        viajeSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", viajeSearch.getActivo());
                         viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
                     } else {
@@ -222,16 +211,18 @@ public class ProgramacionVechicularController implements Serializable, IControll
     }// </editor-fold>
     
     
-      // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )"> 
-    public String columnColor(String realizado, String activo) {
-        String color = "";
-        try {
-           color = viajeServices.columnColor(realizado, activo);
-        } catch (Exception e) {
-                JsfUtil.errorMessage("findById() " + e.getLocalizedMessage());
-        }
-        return color;
-    }
-// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
+    public String showDate(Date date) {
+        return viajeServices.showDate(date);
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String showHour(Date date)">
+
+    public String showHour(Date date) {
+        return viajeServices.showHour(date);
+
+    }// </editor-fold>
      
+     public String columnColor(String realizado, String activo) {
+         return viajeServices.columnColor(realizado, activo);
+     }
 }

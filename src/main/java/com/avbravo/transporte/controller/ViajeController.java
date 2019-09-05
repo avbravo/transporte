@@ -1273,25 +1273,8 @@ public class ViajeController implements Serializable, IController {
 
     // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )"> 
     public String columnColor(String realizado, String activo) {
-        String color = "";
-        try {
-            switch (realizado.toLowerCase()) {
-                case "si":
-                    color = "green";
-                    break;
-                case "no":
-                    color = "black";
-                    break;
-                default:
-                    color = "blue";
-            }
-            if (activo.equals("no")) {
-                color = "red";
-            }
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return color;
+       return viajeServices.columnColor(realizado, activo);
+
     }
 // </editor-fold>
 
@@ -1469,4 +1452,15 @@ public class ViajeController implements Serializable, IController {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    
+      // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
+    public String showDate(Date date) {
+        return viajeServices.showDate(date);
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String showHour(Date date)">
+
+    public String showHour(Date date) {
+        return viajeServices.showHour(date);
+
+    }// </editor-fold>
 }

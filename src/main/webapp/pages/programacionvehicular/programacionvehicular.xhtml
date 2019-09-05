@@ -48,6 +48,13 @@
                             search="#{programacionVechicularController.searchBy('programacionvehicular','_betweendates',programacionVechicularController.viaje)}"
                             />
                     </b:column>
+                    <b:column medium-screen="25" >
+
+
+                        <p:commandButton value="Print" type="button" icon="pi pi-print" style="display:block;margin-bottom: 20px">
+                            <p:printer target="dataTable2" />
+                        </p:commandButton>
+                    </b:column>
                 </b:row>
 
 
@@ -73,39 +80,21 @@
                                        style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}"/>
 
 
-                    <b:dataTableColumn label="#{msg['field.fechapartida']}"   style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}">
+                   
+                    
+                   <b:dataTableColumn  label="#{msg['field.fechapartida']}" style="width:150px">
+                        <h:outputText value="#{programacionVechicularController.showDate(item.fechahorainicioreserva)} #{programacionVechicularController.showHour(item.fechahorainicioreserva)}" style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}" />
+                      </b:dataTableColumn>
+                  <b:dataTableColumn  label="#{msg['field.fecharegreso']}" style="width:150px">
+                        <h:outputText value="#{programacionVechicularController.showDate(item.fechahorafinreserva)} #{programacionVechicularController.showHour(item.fechahorafinreserva)}" style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}" />
+                      </b:dataTableColumn>
 
-                        <p:calendar  disabled="true"  size="8"   
-                                     style="background-color: grey; color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}"
-
-                                     pattern="dd/MM/yyyy" value="#{item.fechahorainicioreserva}"  />
-                        <br />
-                        <p:calendar  disabled="true"    
-                                     style="background-color: grey;  color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}"
-                                     size="8" 
-                                     pattern="HH:mm:ss a" value="#{item.fechahorainicioreserva}"  />
-
-
-
-                    </b:dataTableColumn> 
-
-                    <b:dataTableColumn label="#{msg['field.fecharegreso']}"   style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}">
-                        <p:calendar  disabled="true"    
-                                     style="background-color: grey;  color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}"
-                                     size="8" 
-                                     pattern="dd/MM/yyyy" value="#{item.fechahorafinreserva}"  />
-                        <br />
-                        <p:calendar  disabled="true"   
-                                     style="background-color: grey;  color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}"
-                                     size="8" 
-                                     pattern="HH:mm:ss a" value="#{item.fechahorafinreserva}"  />
-
-                    </b:dataTableColumn> 
+                  
 
 
                     <b:dataTableColumn label="#{msg['field.vehiculos']}"  style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}">
 
-                        <p:outputLabel value="#{item.vehiculo.marca} #{item.vehiculo.modelo}"/>
+                        <p:outputLabel value="#{item.vehiculo.marca} #{item.vehiculo.modelo}  #{msg['field.placa']} #{item.vehiculo.placa}"/>
 
                     </b:dataTableColumn>
                     <b:dataTableColumn label="#{msg['field.conductores']}"  style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}">
@@ -123,22 +112,9 @@
                         <p:outputLabel value="#{item.realizado}"/>
 
                     </b:dataTableColumn>
-                    <b:dataTableColumn  label="#{msg['field.a']}"  
-                                        style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}" >
+                   
 
-                        <p:outputLabel value="#{item.activo}"/>
-
-                    </b:dataTableColumn>
-
-                    <b:dataTableColumn label="">
-
-                        <jmoordbjsf:column
-
-                            edit="#{programacionVechicularController.prepare('view',item)}"
-                            delete="#{programacionVechicularController.delete(item,false)}"
-                            rendered="#{applicationMenu.viaje.delete}"
-                            />
-                    </b:dataTableColumn>
+                 
 
 
                 </b:dataTable>
