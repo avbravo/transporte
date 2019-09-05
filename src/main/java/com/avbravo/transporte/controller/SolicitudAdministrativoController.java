@@ -1760,7 +1760,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                         disponiblesBeans.setVehiculo(vehiculoFreeList);
                         disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
                         disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
-                        disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
+                        disponiblesBeans.setPasajerosPorViaje(vehiculoServices.generarPasajerosPorViajes(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
                         disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
                         disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
                         disponiblesBeansList.add(disponiblesBeans);
@@ -2134,7 +2134,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
                         disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
                         disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
-                        disponiblesBeans.setPasajerosPorViaje(generarPasajerosPorViajes(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
+                        disponiblesBeans.setPasajerosPorViaje(vehiculoServices.generarPasajerosPorViajes(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
                         disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
                         disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
                         disponiblesBeansList.add(disponiblesBeans);
@@ -2221,66 +2221,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="List<Integer> listPasajerosRecomendados(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros)">
-    /**
-     * Devuelve la lista de pasajeros recomendados para cada viaje
-     *
-     * @param vehiculoDisponiblesList
-     * @return
-     */
-    private List<Integer> generarPasajerosPorViajes(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros) {
-
-        List<Integer> pasajerosRecomendadosList = new ArrayList<>();
-        try {
-            Integer mayorCapacidad = vehiculoDisponiblesList.get(0).getPasajeros();
-            Integer pasajerosPendientes = pasajeros;
-
-            if (pasajeros <= mayorCapacidad) {
-                //Si es igual o menor que la capacidad del bus con mayor capacidad
-                pasajerosRecomendadosList.add(pasajeros);
-            } else {
-                for (Vehiculo v : vehiculoDisponiblesList) {
-                    if (pasajerosPendientes > 0) {
-                        if (pasajerosPendientes >= v.getPasajeros()) {
-                            pasajerosPendientes -= v.getPasajeros();
-                            pasajerosRecomendadosList.add(v.getPasajeros());
-                        } else {
-
-                            pasajerosRecomendadosList.add(pasajerosPendientes);
-                            pasajerosPendientes = 0;
-                        }
-
-                    }
-
-                }
-                // revisa los pendientes
-
-                if (pasajerosPendientes <= mayorCapacidad) {
-                    pasajerosRecomendadosList.add(pasajerosPendientes);
-                } else {
-                    Integer residuo = pasajerosPendientes % mayorCapacidad;
-                    Integer divisor = pasajerosPendientes / mayorCapacidad;
-
-                    if (residuo > 0) {
-                        divisor++;
-                    }
-
-                    for (Integer i = 1; i <= divisor; i++) {
-                        if (i < divisor) {
-                            pasajerosRecomendadosList.add(mayorCapacidad);
-                        } else {
-                            pasajerosRecomendadosList.add(residuo);
-                        }
-                    }
-
-                }
-            }
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return pasajerosRecomendadosList;
-    }
-    // </editor-fold>
+   
 
     // <editor-fold defaultstate="collapsed" desc="String  cancel()">
     public String cancel() {
