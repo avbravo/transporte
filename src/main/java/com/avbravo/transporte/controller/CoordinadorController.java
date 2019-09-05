@@ -1880,8 +1880,8 @@ public class CoordinadorController implements Serializable, IController {
                         disponiblesBeans.setNumeroBuses(numeroBuses);
                         disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
                         disponiblesBeans.setVehiculo(vehiculoFreeList);
-                        disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
-                        disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
+                        disponiblesBeans.setBusesRecomendados(vehiculoServices.vehiculosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
+                        disponiblesBeans.setPasajerosPendientes(vehiculoServices.pasajerosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
                         disponiblesBeans.setPasajerosPorViaje(vehiculoServices.generarPasajerosPorViajes(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
                         disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
                         disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
@@ -2371,8 +2371,8 @@ public class CoordinadorController implements Serializable, IController {
                         disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
                         disponiblesBeans.setVehiculo(vehiculoFreeList);
 
-                        disponiblesBeans.setBusesRecomendados(vehiculosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
-                        disponiblesBeans.setPasajerosPendientes(pasajerosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
+                        disponiblesBeans.setBusesRecomendados(vehiculoServices.vehiculosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
+                        disponiblesBeans.setPasajerosPendientes(vehiculoServices.pasajerosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
                         disponiblesBeans.setPasajerosPorViaje(vehiculoServices.generarPasajerosPorViajes(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
                         disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
                         disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
@@ -2389,77 +2389,8 @@ public class CoordinadorController implements Serializable, IController {
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="vehiculosRecomendados(List<Vehiculo> vehiculoDisponiblesList)">
-    /**
-     * Devuelve la cantidad de vehiculos recomendados en base a los disponibles
-     *
-     * @param vehiculoDisponiblesList
-     * @return
-     */
-    private Integer vehiculosRecomendados(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros) {
-        Integer totalVehiculos = 0;
-        try {
-            Integer mayorCapacidad = vehiculoDisponiblesList.get(0).getPasajeros();
-            Integer pasajerosPendientes = pasajeros;
-            for (Vehiculo v : vehiculoDisponiblesList) {
-
-                if (pasajerosPendientes > 0) {
-                    totalVehiculos++;
-                    pasajerosPendientes -= v.getPasajeros();
-                    if (pasajerosPendientes < 0) {
-                        pasajerosPendientes = 0;
-                    }
-                }
-            }
-            if (pasajerosPendientes > 0) {
-                if (pasajerosPendientes <= mayorCapacidad) {
-                    totalVehiculos++;
-                } else {
-                    Integer residuo = pasajerosPendientes % mayorCapacidad;
-                    Integer divisor = pasajerosPendientes / mayorCapacidad;
-                    if (residuo > 0) {
-                        divisor++;
-                    }
-                    totalVehiculos += divisor;
-                }
-
-            }
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return totalVehiculos;
-    }
-
-    // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="Integer pasajerosRecomendados(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros)">
-    /**
-     * Devuelve la cantidad de pasajeros que quedan pendientes
-     *
-     * @param vehiculoDisponiblesList
-     * @return
-     */
-    private Integer pasajerosRecomendados(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros) {
-        Integer pasajerosPendientes = pasajeros;
-        try {
-            Integer mayorCapacidad = vehiculoDisponiblesList.get(0).getPasajeros();
-            for (Vehiculo v : vehiculoDisponiblesList) {
-
-                if (pasajerosPendientes > 0) {
-                    pasajerosPendientes -= v.getPasajeros();
-                    if (pasajerosPendientes < 0) {
-                        pasajerosPendientes = 0;
-                    }
-
-                }
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return pasajerosPendientes;
-    }
-
-    // </editor-fold>
+   
+   
     // <editor-fold defaultstate="collapsed" desc="String  cancel()">
     public String cancel() {
         try {
