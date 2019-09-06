@@ -115,6 +115,8 @@ public class ProgramacionVechicularController implements Serializable, IControll
     @PostConstruct
     public void init() {
         try {
+            fechaDesde = DateUtil.primerDiaDelMesEnFecha(DateUtil.anioActual(),DateUtil.mesActual());
+            fechaHasta= DateUtil.ultimoDiaDelMesEnFecha(DateUtil.anioActual(),DateUtil.mesActual());
             /*
             configurar el ambiente del controller
              */
@@ -140,19 +142,19 @@ public class ProgramacionVechicularController implements Serializable, IControll
 
             start();
 
-            String action = "gonew";
-            if (getAction() != null) {
-                action = getAction();
-            }
-
-            if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
-                //inicializar
-
-            }
-            if (action.equals("view")) {
-                //view
-            }
-
+//            String action = "gonew";
+//            if (getAction() != null) {
+//                action = getAction();
+//            }
+//
+//            if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
+//                //inicializar
+//
+//            }
+//            if (action.equals("view")) {
+//                //view
+//            }
+            setSearchAndValue("searchProgramacionVehicularController", "_betweendates");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
