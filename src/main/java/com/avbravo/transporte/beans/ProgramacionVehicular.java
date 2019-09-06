@@ -12,7 +12,7 @@ import java.util.Date;
  * @author avbravo
  */
 public class ProgramacionVehicular {
-    
+
     private Integer idviaje;
     private Date fechahorasalida;
     private Date fechahoraregreso;
@@ -29,10 +29,32 @@ public class ProgramacionVehicular {
     private String solicita;
     private String activo;
     private String realizado;
+    private String lugarpartida;
+    private String lugardestino;
 
     public ProgramacionVehicular() {
     }
 
+    public String getLugarpartida() {
+        return lugarpartida;
+    }
+
+    public void setLugarpartida(String lugarpartida) {
+        this.lugarpartida = lugarpartida;
+    }
+
+    public String getLugardestino() {
+        return lugardestino;
+    }
+
+    public void setLugardestino(String lugardestino) {
+        this.lugardestino = lugardestino;
+    }
+
+  
+    
+    
+    
     public String getActivo() {
         return activo;
     }

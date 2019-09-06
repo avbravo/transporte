@@ -25,16 +25,35 @@ import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.ViajeServices;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.PageSize;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
@@ -61,7 +80,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
     private ViajeDataModel viajeDataModel;
 
     Integer page = 1;
-    Integer rowPage = 25;
+    Integer rowPage = 35;
     List<Integer> pages = new ArrayList<>();
 
     //Entity
@@ -115,8 +134,8 @@ public class ProgramacionVechicularController implements Serializable, IControll
     @PostConstruct
     public void init() {
         try {
-            fechaDesde = DateUtil.primerDiaDelMesEnFecha(DateUtil.anioActual(),DateUtil.mesActual());
-            fechaHasta= DateUtil.ultimoDiaDelMesEnFecha(DateUtil.anioActual(),DateUtil.mesActual());
+            fechaDesde = DateUtil.primerDiaDelMesEnFecha(DateUtil.anioActual(), DateUtil.mesActual());
+            fechaHasta = DateUtil.ultimoDiaDelMesEnFecha(DateUtil.anioActual(), DateUtil.mesActual());
             /*
             configurar el ambiente del controller
              */
@@ -133,8 +152,8 @@ public class ProgramacionVechicularController implements Serializable, IControll
                     .withNameFieldOfRowPage("rowPage")
                     .withTypeKey("primary")
                     .withSearchLowerCase(false)
-                    .withPathReportDetail("/resources/reportes/viaje/details.jasper")
-                    .withPathReportAll("/resources/reportes/viaje/all.jasper")
+                    .withPathReportDetail("/resources/reportes/programacionvehicular/details.jasper")
+                    .withPathReportAll("/resources/reportes/programacionvehicular/all.jasper")
                     .withparameters(parameters)
                     .withResetInSave(true)
                     .withAction("golist")
@@ -221,11 +240,13 @@ public class ProgramacionVechicularController implements Serializable, IControll
                     pv.setNombredia(DateUtil.nameOfDay(pv.getFechahorasalida()));
                     pv.setResponsable(v.getRealizado());
                     pv.setActivo(v.getActivo());
-                      pv.setMision(v.getMision());
+                    pv.setLugardestino(v.getLugardestino());
+                    pv.setLugarpartida(v.getLugarpartida());
+                    pv.setMision(v.getMision());
                     //Datos de la solicitud
                     pv.setFechasolicitud(v.getFechahorainicioreserva());
                     pv.setNumerosolicitudes("");
-                  
+
                     pv.setUnidad("");
                     pv.setResponsable("");
                     pv.setSolicita("");
@@ -237,7 +258,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
 
                     } else {
                         String unidad = "";
-        
+
                         String numeroSolicitudes = "";
                         String responsable = "";
                         String solicita = "";
@@ -247,19 +268,19 @@ public class ProgramacionVechicularController implements Serializable, IControll
                             for (Unidad u : s.getUnidad()) {
                                 unidad += " " + u.getIdunidad();
                             }
-                          
+
                             numeroSolicitudes += " " + String.valueOf(s.getIdsolicitud());
                             solicita += " " + s.getUsuario().get(0).getNombre();
                             responsable += " " + s.getUsuario().get(1).getNombre();
                         }
                         pv.setUnidad(unidad.trim());
-              
+
                         pv.setNumerosolicitudes(numeroSolicitudes.trim());
                         pv.setResponsable(responsable.trim());
                         pv.setSolicita(solicita.trim());
-                       
+
                     }
- programacionVehicular.add(pv);
+                    programacionVehicular.add(pv);
                 }
             }
             viajeDataModel = new ViajeDataModel(viajeList);
@@ -284,5 +305,92 @@ public class ProgramacionVechicularController implements Serializable, IControll
 
     public String columnColor(String realizado, String activo) {
         return viajeServices.columnColor(realizado, activo);
+    }
+
+    public void imprimir() {
+
+//        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.LETTER);
+        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4.rotate());
+        
+              
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            PdfWriter.getInstance(document, baos);
+            //METADATA
+
+            document.open();
+
+            document.add(new Paragraph(" PROGRAMACION DE FLOTA VEHICULAR \n"));
+
+            DateFormat formatter = new SimpleDateFormat("dd/MM/yy '-' hh:mm:ss:");
+            Date currentDate = new Date();
+            String date = formatter.format(currentDate);
+            document.add(new Paragraph("Fecha Generado: " + date));
+            document.add(new Paragraph("\n"));
+
+            PdfPTable table = new PdfPTable(7);
+
+//                  table.setTotalWidth(new float[]{ 20,72, 110, 95, 170, 72 });
+            table.setTotalWidth(new float[]{20, 100,85,85,225, 72, 110});
+            table.setLockedWidth(true);
+
+            PdfPCell cell = new PdfPCell(new Paragraph("id",
+                    FontFactory.getFont("arial", // fuente
+                            12, // tamaño
+                            Font.BOLD)));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+            cell.setColspan(1);
+            table.addCell(cell);
+
+          //  cell = new PdfPCell(new Paragraph("ID", FontFactory.getFont("arial", 8, Font.BOLD)));
+
+            table.addCell("fechapartida");
+            table.addCell("dia");
+            table.addCell("unidad");
+            table.addCell("mision");
+            
+            table.addCell("conductor");
+
+            table.addCell("placa");
+
+            for (ProgramacionVehicular pv : programacionVehicular) {
+                String fechaPartida= formatter.format(pv.getFechahorasalida());
+  PdfPCell cellId = new PdfPCell(new Paragraph(pv.getIdviaje().toString(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellId);
+                PdfPCell cellFechaPartida = new PdfPCell(new Paragraph(fechaPartida, FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellFechaPartida);
+                table.addCell(pv.getNombredia());
+                table.addCell(pv.getUnidad());
+               PdfPCell cellMision = new PdfPCell(new Paragraph(pv.getMision(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+
+                table.addCell(cellMision );
+//                table.addCell(pv.getMision());
+                table.addCell(pv.getConductor());
+                table.addCell(pv.getPlaca());
+
+            }
+            document.add(table);
+        } catch (Exception ex) {
+            System.out.println("Error " + ex.getMessage());
+        }
+        document.close();
+        FacesContext context = FacesContext.getCurrentInstance();
+        Object response = context.getExternalContext().getResponse();
+        if (response instanceof HttpServletResponse) {
+            HttpServletResponse hsr = (HttpServletResponse) response;
+            hsr.setContentType("application/pdf");
+            hsr.setHeader("Contentdisposition", "attachment;filename=report.pdf");
+            //        hsr.setHeader("Content-disposition", "attachment");
+            hsr.setContentLength(baos.size());
+            try {
+                ServletOutputStream out = hsr.getOutputStream();
+                baos.writeTo(out);
+                out.flush();
+            } catch (IOException ex) {
+                System.out.println("Error:  " + ex.getMessage());
+            }
+            context.responseComplete();
+        }
     }
 }
