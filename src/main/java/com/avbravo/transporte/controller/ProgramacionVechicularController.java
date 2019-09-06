@@ -360,14 +360,22 @@ public class ProgramacionVechicularController implements Serializable, IControll
                 table.addCell(cellId);
                 PdfPCell cellFechaPartida = new PdfPCell(new Paragraph(fechaPartida, FontFactory.getFont("arial", 9, Font.NORMAL)));
                 table.addCell(cellFechaPartida);
-                table.addCell(pv.getNombredia());
-                table.addCell(pv.getUnidad());
+                
+                 PdfPCell cellNombredia= new PdfPCell(new Paragraph(pv.getNombredia(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellNombredia);
+                
+                 PdfPCell cellUnidad= new PdfPCell(new Paragraph(pv.getUnidad(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellUnidad);
                PdfPCell cellMision = new PdfPCell(new Paragraph(pv.getMision(), FontFactory.getFont("arial", 9, Font.NORMAL)));
 
                 table.addCell(cellMision );
 //                table.addCell(pv.getMision());
-                table.addCell(pv.getConductor());
-                table.addCell(pv.getPlaca());
+
+PdfPCell cellConductor= new PdfPCell(new Paragraph(pv.getConductor(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellConductor);
+                
+                PdfPCell cellPlaca= new PdfPCell(new Paragraph(pv.getPlaca(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellPlaca);
 
             }
             document.add(table);
@@ -393,4 +401,6 @@ public class ProgramacionVechicularController implements Serializable, IControll
             context.responseComplete();
         }
     }
+    
+   
 }
