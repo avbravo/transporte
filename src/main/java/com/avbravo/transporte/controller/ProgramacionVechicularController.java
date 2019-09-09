@@ -324,15 +324,16 @@ public class ProgramacionVechicularController implements Serializable, IControll
             document.add(ReportUtils.paragraph("PROGRAMACION DE FLOTA VEHICULAR", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
 
             Date currentDate = new Date();
-            String date = showDate(currentDate) + " " + showHour(currentDate);
+            String date = DateUtil.showDate(currentDate) + " " + DateUtil.showHour(currentDate);
 
             document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 10, Font.BOLD), Element.ALIGN_RIGHT));
             document.add(new Paragraph("\n"));
 
+            //Numero de columnas
             PdfPTable table = new PdfPTable(8);
 
-//            table.setTotalWidth(new float[]{90, 75, 90, 85, 225, 72, 110});
-            table.setTotalWidth(new float[]{85, 65, 85, 80, 85, 220, 72, 105});
+//Aqui indicamos el tamaño de cada columna
+            table.setTotalWidth(new float[]{84, 62, 84, 80, 84, 218, 72, 105});
 
             table.setLockedWidth(true);
 
@@ -347,32 +348,19 @@ public class ProgramacionVechicularController implements Serializable, IControll
 
             for (ProgramacionVehicular pv : programacionVehicular) {
 
-                String fechaPartida = showDate(pv.getFechahorasalida()) + " " + showHour(pv.getFechahorasalida());
-                String fechaRegreso = showDate(pv.getFechahoraregreso()) + " " + showHour(pv.getFechahoraregreso());
-                String fechaSolicitado = showDate(pv.getFechasolicitud()) + " " + showHour(pv.getFechasolicitud());
+                String fechaPartida = DateUtil.showDate(pv.getFechahorasalida()) + "             " + DateUtil.showHour(pv.getFechahorasalida());
+                String fechaRegreso = DateUtil.showDate(pv.getFechahoraregreso()) + "             " + DateUtil.showHour(pv.getFechahoraregreso());
+                String fechaSolicitado = DateUtil.showDate(pv.getFechasolicitud()) + "             " + DateUtil.showHour(pv.getFechasolicitud());
 
-                PdfPCell cellFechaPartida = new PdfPCell(new Paragraph(fechaPartida, FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellFechaPartida);
+                table.addCell(ReportUtils.PdfCell(fechaPartida, FontFactory.getFont("arial", 10, Font.NORMAL)));
 
-                PdfPCell cellNombredia = new PdfPCell(new Paragraph(pv.getNombredia(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellNombredia);
-
-                PdfPCell cellFechaRegreso = new PdfPCell(new Paragraph(fechaRegreso, FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellFechaRegreso);
-
-                PdfPCell cellUnidad = new PdfPCell(new Paragraph(pv.getUnidad(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellUnidad);
-                PdfPCell cellSolicitado = new PdfPCell(new Paragraph(fechaSolicitado, FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellSolicitado);
-
-                PdfPCell cellMision = new PdfPCell(new Paragraph(pv.getMision(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellMision);
-
-                PdfPCell cellConductor = new PdfPCell(new Paragraph(pv.getConductor(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellConductor);
-
-                PdfPCell cellVehiculo = new PdfPCell(new Paragraph(pv.getMarca() + " " + pv.getModelo() + " PLACA:" + pv.getPlaca(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellVehiculo);
+                table.addCell(ReportUtils.PdfCell(pv.getNombredia(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(ReportUtils.PdfCell(fechaRegreso, FontFactory.getFont("arial", 10, Font.NORMAL)));
+                table.addCell(ReportUtils.PdfCell(pv.getUnidad(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(ReportUtils.PdfCell(fechaSolicitado, FontFactory.getFont("arial", 10, Font.NORMAL)));
+                table.addCell(ReportUtils.PdfCell(pv.getMision(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(ReportUtils.PdfCell(pv.getConductor(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(ReportUtils.PdfCell(pv.getMarca() + " " + pv.getModelo() + " PLACA:" + pv.getPlaca(), FontFactory.getFont("arial", 9, Font.NORMAL)));
 
             }
             document.add(table);
@@ -382,23 +370,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
         document.close();
 
         ReportUtils.printPDF(baos);
-//        FacesContext context = FacesContext.getCurrentInstance();
-//        Object response = context.getExternalContext().getResponse();
-//        if (response instanceof HttpServletResponse) {
-//            HttpServletResponse hsr = (HttpServletResponse) response;
-//            hsr.setContentType("application/pdf");
-//            hsr.setHeader("Contentdisposition", "attachment;filename=report.pdf");
-//            //        hsr.setHeader("Content-disposition", "attachment");
-//            hsr.setContentLength(baos.size());
-//            try {
-//                ServletOutputStream out = hsr.getOutputStream();
-//                baos.writeTo(out);
-//                out.flush();
-//            } catch (IOException ex) {
-//                System.out.println("Error:  " + ex.getMessage());
-//            }
-//            context.responseComplete();
-//        }
+
     }
     // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="void imprimir() ">
