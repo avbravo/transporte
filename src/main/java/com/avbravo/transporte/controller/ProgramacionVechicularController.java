@@ -15,6 +15,7 @@ import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordbutils.DateUtil;
 
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import com.avbravo.jmoordbutils.ReportUtils;
 import com.avbravo.transporte.beans.ProgramacionVehicular;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
 import com.avbravo.transporteejb.entity.Solicitud;
@@ -304,15 +305,111 @@ public class ProgramacionVechicularController implements Serializable, IControll
 
     }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="String columnColor(String realizado, String activo)">
     public String columnColor(String realizado, String activo) {
         return viajeServices.columnColor(realizado, activo);
     }
 
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="void imprimir() ">
     public void imprimir() {
 
-//        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.LETTER);
         com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4.rotate());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            PdfWriter.getInstance(document, baos);
+            //METADATA
 
+            document.open();
+            document.add(ReportUtils.paragraph("PROGRAMACION DE FLOTA VEHICULAR", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+
+            Date currentDate = new Date();
+            String date = showDate(currentDate) + " " + showHour(currentDate);
+
+            document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 10, Font.BOLD), Element.ALIGN_RIGHT));
+            document.add(new Paragraph("\n"));
+
+            PdfPTable table = new PdfPTable(8);
+
+//            table.setTotalWidth(new float[]{90, 75, 90, 85, 225, 72, 110});
+            table.setTotalWidth(new float[]{85, 65, 85, 80, 85, 220, 72, 105});
+
+            table.setLockedWidth(true);
+
+            table.addCell(ReportUtils.PdfCell("Partida", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Dia", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Regreso", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Unidad", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Solicitado", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Mision", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Conductor", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Vehiculo", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+
+            for (ProgramacionVehicular pv : programacionVehicular) {
+
+                String fechaPartida = showDate(pv.getFechahorasalida()) + " " + showHour(pv.getFechahorasalida());
+                String fechaRegreso = showDate(pv.getFechahoraregreso()) + " " + showHour(pv.getFechahoraregreso());
+                String fechaSolicitado = showDate(pv.getFechasolicitud()) + " " + showHour(pv.getFechasolicitud());
+
+                PdfPCell cellFechaPartida = new PdfPCell(new Paragraph(fechaPartida, FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellFechaPartida);
+
+                PdfPCell cellNombredia = new PdfPCell(new Paragraph(pv.getNombredia(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellNombredia);
+
+                PdfPCell cellFechaRegreso = new PdfPCell(new Paragraph(fechaRegreso, FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellFechaRegreso);
+
+                PdfPCell cellUnidad = new PdfPCell(new Paragraph(pv.getUnidad(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellUnidad);
+                PdfPCell cellSolicitado = new PdfPCell(new Paragraph(fechaSolicitado, FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellSolicitado);
+
+                PdfPCell cellMision = new PdfPCell(new Paragraph(pv.getMision(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellMision);
+
+                PdfPCell cellConductor = new PdfPCell(new Paragraph(pv.getConductor(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellConductor);
+
+                PdfPCell cellVehiculo = new PdfPCell(new Paragraph(pv.getMarca() + " " + pv.getModelo() + " PLACA:" + pv.getPlaca(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellVehiculo);
+
+            }
+            document.add(table);
+        } catch (Exception ex) {
+            System.out.println("Error " + ex.getMessage());
+        }
+        document.close();
+
+        ReportUtils.printPDF(baos);
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        Object response = context.getExternalContext().getResponse();
+//        if (response instanceof HttpServletResponse) {
+//            HttpServletResponse hsr = (HttpServletResponse) response;
+//            hsr.setContentType("application/pdf");
+//            hsr.setHeader("Contentdisposition", "attachment;filename=report.pdf");
+//            //        hsr.setHeader("Content-disposition", "attachment");
+//            hsr.setContentLength(baos.size());
+//            try {
+//                ServletOutputStream out = hsr.getOutputStream();
+//                baos.writeTo(out);
+//                out.flush();
+//            } catch (IOException ex) {
+//                System.out.println("Error:  " + ex.getMessage());
+//            }
+//            context.responseComplete();
+//        }
+    }
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="void imprimir() ">
+
+    public void imprimir2() {
+
+        //com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4.rotate());
+        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4.rotate());
+        //  com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.EXECUTIVE.rotate());
+
+//        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.LEGAL.rotate());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             PdfWriter.getInstance(document, baos);
@@ -326,42 +423,36 @@ public class ProgramacionVechicularController implements Serializable, IControll
                             Font.BOLD));
             p.setAlignment(Element.ALIGN_CENTER);
             document.add(p);
-            //document.add(new Paragraph(" PROGRAMACION DE FLOTA VEHICULAR \n"));
 
-            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy '-' hh:mm");
             Date currentDate = new Date();
-            String date = formatter.format(currentDate);
-            
-              Paragraph titleDate = new Paragraph("Fecha: " + date,
+
+            String date = showDate(currentDate) + " " + showHour(currentDate);
+
+            Paragraph titleDate = new Paragraph("Fecha: " + date,
                     FontFactory.getFont("arial", // fuente
                             10, // tamaño
                             Font.BOLD));
-           titleDate.setAlignment(Element.ALIGN_RIGHT);
+            titleDate.setAlignment(Element.ALIGN_RIGHT);
             document.add(titleDate);
             document.add(new Paragraph("\n"));
-            
-            
 
-            PdfPTable table = new PdfPTable(7);
+            PdfPTable table = new PdfPTable(8);
 
-//                  table.setTotalWidth(new float[]{ 20,72, 110, 95, 170, 72 });
-            table.setTotalWidth(new float[]{20, 100, 85, 85, 225, 72, 110});
+//            table.setTotalWidth(new float[]{90, 75, 90, 85, 225, 72, 110});
+            table.setTotalWidth(new float[]{85, 65, 85, 80, 85, 220, 72, 105});
+
             table.setLockedWidth(true);
 
-            PdfPCell cell = new PdfPCell(new Paragraph("id",
-                    FontFactory.getFont("arial", // fuente
-                            12, // tamaño
-                            Font.BOLD)));
+            PdfPCell cell = new PdfPCell(new Paragraph("Partida", FontFactory.getFont("arial", 12, Font.BOLD)));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 
             cell.setColspan(1);
             table.addCell(cell);
 
-            //  cell = new PdfPCell(new Paragraph("ID", FontFactory.getFont("arial", 8, Font.BOLD)));
-            table.addCell("Partida");
-              table.addCell("Dia");
-//             table.addCell("Regreso");
+            table.addCell("Dia");
+            table.addCell("Regreso");
             table.addCell("Unidad");
+            table.addCell("Solicitado");
             table.addCell("Mision");
 
             table.addCell("Conductor");
@@ -369,26 +460,36 @@ public class ProgramacionVechicularController implements Serializable, IControll
             table.addCell("Vehiculo");
 
             for (ProgramacionVehicular pv : programacionVehicular) {
-                String fechaPartida = formatter.format(pv.getFechahorasalida());
-                PdfPCell cellId = new PdfPCell(new Paragraph(pv.getIdviaje().toString(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellId);
+                // String fechaPartida = formatter.format(pv.getFechahorasalida());
+                String fechaPartida = showDate(pv.getFechahorasalida()) + " " + showHour(pv.getFechahorasalida());
+                String fechaRegreso = showDate(pv.getFechahoraregreso()) + " " + showHour(pv.getFechahoraregreso());
+                String fechaSolicitado = showDate(pv.getFechasolicitud()) + " " + showHour(pv.getFechasolicitud());
+
                 PdfPCell cellFechaPartida = new PdfPCell(new Paragraph(fechaPartida, FontFactory.getFont("arial", 9, Font.NORMAL)));
                 table.addCell(cellFechaPartida);
 
                 PdfPCell cellNombredia = new PdfPCell(new Paragraph(pv.getNombredia(), FontFactory.getFont("arial", 9, Font.NORMAL)));
                 table.addCell(cellNombredia);
 
+                PdfPCell cellFechaRegreso = new PdfPCell(new Paragraph(fechaRegreso, FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellFechaRegreso);
+
                 PdfPCell cellUnidad = new PdfPCell(new Paragraph(pv.getUnidad(), FontFactory.getFont("arial", 9, Font.NORMAL)));
                 table.addCell(cellUnidad);
-                PdfPCell cellMision = new PdfPCell(new Paragraph(pv.getMision(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                PdfPCell cellSolicitado = new PdfPCell(new Paragraph(fechaSolicitado, FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellSolicitado);
 
+//                  PdfPCell cellFechaSolicitado= new PdfPCell(new Paragraph(fechaSolicitado, FontFactory.getFont("arial", 9, Font.NORMAL)));
+//                table.addCell(cellFechaSolicitado);
+//                
+                PdfPCell cellMision = new PdfPCell(new Paragraph(pv.getMision(), FontFactory.getFont("arial", 9, Font.NORMAL)));
                 table.addCell(cellMision);
 //                table.addCell(pv.getMision());
 
                 PdfPCell cellConductor = new PdfPCell(new Paragraph(pv.getConductor(), FontFactory.getFont("arial", 9, Font.NORMAL)));
                 table.addCell(cellConductor);
 
-                PdfPCell cellVehiculo = new PdfPCell(new Paragraph(pv.getMarca() + " "+pv.getModelo() +" PLACA:"+pv.getPlaca(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                PdfPCell cellVehiculo = new PdfPCell(new Paragraph(pv.getMarca() + " " + pv.getModelo() + " PLACA:" + pv.getPlaca(), FontFactory.getFont("arial", 9, Font.NORMAL)));
                 table.addCell(cellVehiculo);
 
             }
@@ -415,5 +516,6 @@ public class ProgramacionVechicularController implements Serializable, IControll
             context.responseComplete();
         }
     }
+    // </editor-fold>  
 
 }
