@@ -27,6 +27,7 @@ import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
+import com.lowagie.text.*;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
@@ -311,8 +312,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
 
 //        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.LETTER);
         com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4.rotate());
-        
-              
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             PdfWriter.getInstance(document, baos);
@@ -320,18 +320,32 @@ public class ProgramacionVechicularController implements Serializable, IControll
 
             document.open();
 
-            document.add(new Paragraph(" PROGRAMACION DE FLOTA VEHICULAR \n"));
+            Paragraph p = new Paragraph("PROGRAMACION DE FLOTA VEHICULAR",
+                    FontFactory.getFont("arial", // fuente
+                            12, // tamaño
+                            Font.BOLD));
+            p.setAlignment(Element.ALIGN_CENTER);
+            document.add(p);
+            //document.add(new Paragraph(" PROGRAMACION DE FLOTA VEHICULAR \n"));
 
-            DateFormat formatter = new SimpleDateFormat("dd/MM/yy '-' hh:mm:ss:");
+            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy '-' hh:mm");
             Date currentDate = new Date();
             String date = formatter.format(currentDate);
-            document.add(new Paragraph("Fecha Generado: " + date));
+            
+              Paragraph titleDate = new Paragraph("Fecha: " + date,
+                    FontFactory.getFont("arial", // fuente
+                            10, // tamaño
+                            Font.BOLD));
+           titleDate.setAlignment(Element.ALIGN_RIGHT);
+            document.add(titleDate);
             document.add(new Paragraph("\n"));
+            
+            
 
             PdfPTable table = new PdfPTable(7);
 
 //                  table.setTotalWidth(new float[]{ 20,72, 110, 95, 170, 72 });
-            table.setTotalWidth(new float[]{20, 100,85,85,225, 72, 110});
+            table.setTotalWidth(new float[]{20, 100, 85, 85, 225, 72, 110});
             table.setLockedWidth(true);
 
             PdfPCell cell = new PdfPCell(new Paragraph("id",
@@ -343,39 +357,39 @@ public class ProgramacionVechicularController implements Serializable, IControll
             cell.setColspan(1);
             table.addCell(cell);
 
-          //  cell = new PdfPCell(new Paragraph("ID", FontFactory.getFont("arial", 8, Font.BOLD)));
+            //  cell = new PdfPCell(new Paragraph("ID", FontFactory.getFont("arial", 8, Font.BOLD)));
+            table.addCell("Partida");
+              table.addCell("Dia");
+//             table.addCell("Regreso");
+            table.addCell("Unidad");
+            table.addCell("Mision");
 
-            table.addCell("fechapartida");
-            table.addCell("dia");
-            table.addCell("unidad");
-            table.addCell("mision");
-            
-            table.addCell("conductor");
+            table.addCell("Conductor");
 
-            table.addCell("placa");
+            table.addCell("Vehiculo");
 
             for (ProgramacionVehicular pv : programacionVehicular) {
-                String fechaPartida= formatter.format(pv.getFechahorasalida());
-  PdfPCell cellId = new PdfPCell(new Paragraph(pv.getIdviaje().toString(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                String fechaPartida = formatter.format(pv.getFechahorasalida());
+                PdfPCell cellId = new PdfPCell(new Paragraph(pv.getIdviaje().toString(), FontFactory.getFont("arial", 9, Font.NORMAL)));
                 table.addCell(cellId);
                 PdfPCell cellFechaPartida = new PdfPCell(new Paragraph(fechaPartida, FontFactory.getFont("arial", 9, Font.NORMAL)));
                 table.addCell(cellFechaPartida);
-                
-                 PdfPCell cellNombredia= new PdfPCell(new Paragraph(pv.getNombredia(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellNombredia);
-                
-                 PdfPCell cellUnidad= new PdfPCell(new Paragraph(pv.getUnidad(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellUnidad);
-               PdfPCell cellMision = new PdfPCell(new Paragraph(pv.getMision(), FontFactory.getFont("arial", 9, Font.NORMAL)));
 
-                table.addCell(cellMision );
+                PdfPCell cellNombredia = new PdfPCell(new Paragraph(pv.getNombredia(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellNombredia);
+
+                PdfPCell cellUnidad = new PdfPCell(new Paragraph(pv.getUnidad(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellUnidad);
+                PdfPCell cellMision = new PdfPCell(new Paragraph(pv.getMision(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+
+                table.addCell(cellMision);
 //                table.addCell(pv.getMision());
 
-PdfPCell cellConductor= new PdfPCell(new Paragraph(pv.getConductor(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                PdfPCell cellConductor = new PdfPCell(new Paragraph(pv.getConductor(), FontFactory.getFont("arial", 9, Font.NORMAL)));
                 table.addCell(cellConductor);
-                
-                PdfPCell cellPlaca= new PdfPCell(new Paragraph(pv.getPlaca(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellPlaca);
+
+                PdfPCell cellVehiculo = new PdfPCell(new Paragraph(pv.getMarca() + " "+pv.getModelo() +" PLACA:"+pv.getPlaca(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(cellVehiculo);
 
             }
             document.add(table);
@@ -401,6 +415,5 @@ PdfPCell cellConductor= new PdfPCell(new Paragraph(pv.getConductor(), FontFactor
             context.responseComplete();
         }
     }
-    
-   
+
 }
