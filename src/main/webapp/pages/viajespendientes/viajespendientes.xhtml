@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
+                >
+    <ui:define name="content">
+
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            } 
+        </style>
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+
+            <b:growl  id="msgs"/>
+
+            <b:panel collapsible="false" title="#{msg['titlelist.viajespendientes']}" id="content"   look="primary" > 
+                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
+
+
+
+
+
+                <b:row>
+                    <b:column medium-screen="25" >
+
+
+                        <jmoordbjsf:searchBetweenDate 
+                            renderedMove="true"
+                            labelDesde="#{msg['field.fechainicio']}"
+                            valueDesde="#{viajesPendientesController.fechaDesde}"
+                            labelHasta="#{msg['field.fechafin']}"
+                            valueHasta="#{viajesPendientesController.fechaHasta}"
+                            renderedList="true"  
+                            search="#{viajesPendientesController.searchBy('_betweendates',viajesPendientesController.viaje)}"
+                            update=":form:dataTable "
+                            />
+                    </b:column>
+
+                </b:row>
+
+
+            </b:panel>
+            <b:panel collapsible="false" id="dataTable" look="primary">
+
+                <jmoordbjsf:paginator
+                    controller="#{viajesPendientesController}"                        
+                    rowPage="#{viajesPendientesController.rowPage}"                   
+                    page="#{viajesPendientesController.page}"
+                    pages="#{viajesPendientesController.pages}"
+                    renderedPrint="#{viajesPendientesController.availablePrint()}"                   
+                    renderedNew="false"                    
+                    skip="ajax:viajesPendientesController.skip()" 
+                    url = "/pages/viaje/new.xhtml"
+                    />
+
+                <p:dataTable value="#{viajesPendientesController.programacionVehicular}"
+                             var="item"
+                             id="dataTable2"
+                             >
+
+                    <f:facet name="header">
+                        <p:outputLabel value="#{msg['titlelist.viajes']}"/>
+                   
+                    </f:facet>
+                    <p:column style="width:16px">
+                        <p:rowToggler />
+                    </p:column>
+                   
+
+
+                    <p:column headerText="#{msg['field.fechapartida']}" style="width:130px">
+                        <h:outputText value="#{viajesPendientesController.showDate(item.fechahorasalida)} #{viajesPendientesController.showHour(item.fechahorasalida)}" style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}" />
+                        <p:outputLabel value="#{msg['field.dia']} #{item.nombredia}" style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['field.mision']}"  style="width:190px ">
+                        <p:outputLabel value="#{item.mision}" style="font-size: 10; color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}"/>
+
+                    </p:column>
+
+
+
+                    <p:column headerText="#{msg['field.unidad']}" >
+
+                        <p:outputLabel value="#{item.unidad}"/>
+
+                    </p:column>
+
+
+
+                    <p:column headerText="#{msg['field.fecharegreso']}" style="width:100px">
+                        <h:outputText value="#{viajesPendientesController.showDate(item.fechahoraregreso)} #{viajesPendientesController.showHour(item.fechahoraregreso)}" style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}" />
+                        
+                    </p:column>
+                    <p:column headerText="#{msg['field.vehiculo']}"  >
+
+                        <p:outputLabel value="#{item.marca} #{item.modelo}  #{msg['field.placa']} #{item.placa}"/>
+
+                    </p:column>
+                    <p:column headerText="#{msg['field.conductor']}" >
+
+                        <p:outputLabel value="#{item.conductor}"/>
+
+                    </p:column>
+
+
+                    <p:rowExpansion >
+
+                        <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"> 
+
+                            <p:outputLabel value="#{msg['field.mision']}"  style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.mision}"  />
+
+                            <p:outputLabel value="#{msg['field.lugarpartida']}" style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.lugarpartida}"  style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}"/>
+
+                            <p:outputLabel value="#{msg['field.lugardestino']}" style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.lugardestino}"  style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}"/>
+
+
+
+                            <p:outputLabel value="#{msg['field.fechasolicitud']}" />
+                            <h:outputText value="#{viajesPendientesController.showDate(item.fechasolicitud)} #{viajesPendientesController.showHour(item.fechasolicitud)}" style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}" />
+
+                            <p:outputLabel value="#{msg['field.numerosolicitudes']}" style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}" />
+                            <p:outputLabel value="#{item.numerosolicitudes}"  style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}"/>
+
+                            <p:outputLabel value="#{msg['field.solicita']}" style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.solicita}"  style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}"/>
+
+                            <p:outputLabel value="#{msg['field.responsable']}" style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.responsable}"  style="color: #{viajesPendientesController.columnColor(item.realizado,item.activo)}"/>
+
+
+                        </b:panelGrid>
+                    </p:rowExpansion>
+
+
+
+
+
+
+                </p:dataTable>
+            </b:panel>
+
+        </b:form>
+
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" />
+    </ui:define>
+</ui:composition>
