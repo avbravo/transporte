@@ -199,91 +199,96 @@ public class ProgramacionVechicularController implements Serializable, IControll
             viajeDataModel = new ViajeDataModel(viajeList);
             Document doc;
 
-            switch (getSearch()) {
-                case "_init":
-                case "_autocomplete":
-                    viajeList = viajeRepository.findPagination(page, rowPage);
-                    break;
-
-                case "activo":
-                    if (getValueSearch() != null) {
-                        viajeSearch.setActivo(getValueSearch().toString());
-                        doc = new Document("activo", viajeSearch.getActivo());
-                        viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
-                    } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage);
-                    }
-                    break;
-
-                case "_betweendates":
+//            switch (getSearch()) {
+//                case "_init":
+//                case "_autocomplete":
+//                    viajeList = viajeRepository.findPagination(page, rowPage);
+//                    break;
+//
+//                case "activo":
+//                    if (getValueSearch() != null) {
+//                        viajeSearch.setActivo(getValueSearch().toString());
+//                        doc = new Document("activo", viajeSearch.getActivo());
+//                        viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("fechahorainicioreserva", -1));
+//                    } else {
+//                        viajeList = viajeRepository.findPagination(page, rowPage);
+//                    }
+//                    break;
+//
+//                case "_betweendates":
 
                     viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("activo", "si",
                             "fechahorainicioreserva", fechaDesde,
                             "fechahorafinreserva", fechaHasta,
-                            page, rowPage, new Document("idviaje", -1));
-                    break;
-
-                default:
-                    viajeList = viajeRepository.findPagination(page, rowPage);
-                    break;
-            }
+                            page, rowPage, new Document("fechahorainicioreserva", -1));
+//                    break;
+//
+//                default:
+//                    viajeList = viajeRepository.findPagination(page, rowPage);
+//                    break;
+//            }
             if (viajeList == null || viajeList.isEmpty()) {
 
             } else {
                 for (Viaje v : viajeList) {
-                    ProgramacionVehicular pv = new ProgramacionVehicular();
-                    pv.setConductor(v.getConductor().getNombre());
-                    pv.setFechahoraregreso(v.getFechahorainicioreserva());
-                    pv.setFechahorasalida(v.getFechahorainicioreserva());
-                    pv.setIdviaje(v.getIdviaje());
-                    pv.setMarca(v.getVehiculo().getMarca());
-                    pv.setModelo(v.getVehiculo().getModelo());
-                    pv.setPlaca(v.getVehiculo().getPlaca());
-                    pv.setNombredia(DateUtil.nameOfDay(pv.getFechahorasalida()));
-                    pv.setResponsable(v.getRealizado());
-                    pv.setActivo(v.getActivo());
-                    pv.setLugardestino(v.getLugardestino());
-                    pv.setLugarpartida(v.getLugarpartida());
-                    pv.setMision(v.getMision());
-                    //Datos de la solicitud
-                    pv.setFechasolicitud(v.getFechahorainicioreserva());
-                    pv.setNumerosolicitudes("");
-
-                    pv.setUnidad("");
-                    pv.setResponsable("");
-                    pv.setSolicita("");
-                    Solicitud solicitud = new Solicitud();
-
-                    Document search = new Document("viaje.idviaje", v.getIdviaje());
-                    List<Solicitud> list = solicitudRepository.findBy(search);
-                    if (list == null || list.isEmpty()) {
-
+                    if (v.getRealizado().equals("ca")) {
+// esta cancelado
                     } else {
-                        String unidad = "";
+                        ProgramacionVehicular pv = new ProgramacionVehicular();
+                        pv.setConductor(v.getConductor().getNombre());
+                        pv.setFechahoraregreso(v.getFechahorafinreserva());
+                        pv.setFechahorasalida(v.getFechahorainicioreserva());
+                        pv.setIdviaje(v.getIdviaje());
+                        pv.setMarca(v.getVehiculo().getMarca());
+                        pv.setModelo(v.getVehiculo().getModelo());
+                        pv.setPlaca(v.getVehiculo().getPlaca());
+                        pv.setNombredia(DateUtil.nameOfDay(pv.getFechahorasalida()));
+                        pv.setResponsable(v.getRealizado());
+                        pv.setActivo(v.getActivo());
+                        pv.setLugardestino(v.getLugardestino());
+                        pv.setLugarpartida(v.getLugarpartida());
+                        pv.setMision(v.getMision());
+                        //Datos de la solicitud
+                        pv.setFechasolicitud(v.getFechahorainicioreserva());
+                        pv.setNumerosolicitudes("");
 
-                        String numeroSolicitudes = "";
-                        String responsable = "";
-                        String solicita = "";
-                        //Se recorren todas las solicitudes que tengan ese viaje asignado.
-                        for (Solicitud s : list) {
-                            pv.setFechasolicitud(s.getFecha());
-                            for (Unidad u : s.getUnidad()) {
-                                unidad += " " + u.getIdunidad();
+                        pv.setUnidad("");
+                        pv.setResponsable("");
+                        pv.setSolicita("");
+                        Solicitud solicitud = new Solicitud();
+//Busco la solicitud
+                        Document search = new Document("viaje.idviaje", v.getIdviaje());
+                        List<Solicitud> list = solicitudRepository.findBy(search);
+                        if (list == null || list.isEmpty()) {
+
+                        } else {
+                            String unidad = "";
+
+                            String numeroSolicitudes = "";
+                            String responsable = "";
+                            String solicita = "";
+                            //Se recorren todas las solicitudes que tengan ese viaje asignado.
+                            for (Solicitud s : list) {
+                                pv.setFechasolicitud(s.getFecha());
+                                for (Unidad u : s.getUnidad()) {
+                                    unidad += " " + u.getIdunidad();
+                                }
+
+                                numeroSolicitudes += " " + String.valueOf(s.getIdsolicitud());
+                                solicita += " " + s.getUsuario().get(0).getNombre();
+                                responsable += " " + s.getUsuario().get(1).getNombre();
                             }
+                            pv.setUnidad(unidad.trim());
 
-                            numeroSolicitudes += " " + String.valueOf(s.getIdsolicitud());
-                            solicita += " " + s.getUsuario().get(0).getNombre();
-                            responsable += " " + s.getUsuario().get(1).getNombre();
+                            pv.setNumerosolicitudes(numeroSolicitudes.trim());
+                            pv.setResponsable(responsable.trim());
+                            pv.setSolicita(solicita.trim());
+                         
+
                         }
-                        pv.setUnidad(unidad.trim());
-
-                        pv.setNumerosolicitudes(numeroSolicitudes.trim());
-                        pv.setResponsable(responsable.trim());
-                        pv.setSolicita(solicita.trim());
-
+                        programacionVehicular.add(pv);
                     }
-                    programacionVehicular.add(pv);
-                }
+                }//for
             }
             viajeDataModel = new ViajeDataModel(viajeList);
 
@@ -312,7 +317,8 @@ public class ProgramacionVechicularController implements Serializable, IControll
 
     // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="void imprimir() ">
-    public void imprimir() {
+    @Override
+    public String printAll() {
 
         com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4.rotate());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -323,17 +329,20 @@ public class ProgramacionVechicularController implements Serializable, IControll
             document.open();
             document.add(ReportUtils.paragraph("PROGRAMACION DE FLOTA VEHICULAR", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
 
+            String texto="Desde "+DateUtil.showDate(fechaDesde) + "  Hasta: "+DateUtil.showDate(fechaHasta) ;
+            document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+            
             Date currentDate = new Date();
             String date = DateUtil.showDate(currentDate) + " " + DateUtil.showHour(currentDate);
 
-            document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 10, Font.BOLD), Element.ALIGN_RIGHT));
+            document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 8, Font.BOLD), Element.ALIGN_RIGHT));
             document.add(new Paragraph("\n"));
 
             //Numero de columnas
             PdfPTable table = new PdfPTable(8);
 
 //Aqui indicamos el tamaño de cada columna
-            table.setTotalWidth(new float[]{84, 62, 84, 80, 84, 218, 72, 105});
+            table.setTotalWidth(new float[]{75, 62, 75, 82, 75, 220, 80, 105});
 
             table.setLockedWidth(true);
 
@@ -370,123 +379,14 @@ public class ProgramacionVechicularController implements Serializable, IControll
         document.close();
 
         ReportUtils.printPDF(baos);
-
+return "";
     }
     // </editor-fold>  
-    // <editor-fold defaultstate="collapsed" desc="void imprimir() ">
-
-    public void imprimir2() {
-
-        //com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4.rotate());
-        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4.rotate());
-        //  com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.EXECUTIVE.rotate());
-
-//        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.LEGAL.rotate());
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            PdfWriter.getInstance(document, baos);
-            //METADATA
-
-            document.open();
-
-            Paragraph p = new Paragraph("PROGRAMACION DE FLOTA VEHICULAR",
-                    FontFactory.getFont("arial", // fuente
-                            12, // tamaño
-                            Font.BOLD));
-            p.setAlignment(Element.ALIGN_CENTER);
-            document.add(p);
-
-            Date currentDate = new Date();
-
-            String date = showDate(currentDate) + " " + showHour(currentDate);
-
-            Paragraph titleDate = new Paragraph("Fecha: " + date,
-                    FontFactory.getFont("arial", // fuente
-                            10, // tamaño
-                            Font.BOLD));
-            titleDate.setAlignment(Element.ALIGN_RIGHT);
-            document.add(titleDate);
-            document.add(new Paragraph("\n"));
-
-            PdfPTable table = new PdfPTable(8);
-
-//            table.setTotalWidth(new float[]{90, 75, 90, 85, 225, 72, 110});
-            table.setTotalWidth(new float[]{85, 65, 85, 80, 85, 220, 72, 105});
-
-            table.setLockedWidth(true);
-
-            PdfPCell cell = new PdfPCell(new Paragraph("Partida", FontFactory.getFont("arial", 12, Font.BOLD)));
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-
-            cell.setColspan(1);
-            table.addCell(cell);
-
-            table.addCell("Dia");
-            table.addCell("Regreso");
-            table.addCell("Unidad");
-            table.addCell("Solicitado");
-            table.addCell("Mision");
-
-            table.addCell("Conductor");
-
-            table.addCell("Vehiculo");
-
-            for (ProgramacionVehicular pv : programacionVehicular) {
-                // String fechaPartida = formatter.format(pv.getFechahorasalida());
-                String fechaPartida = showDate(pv.getFechahorasalida()) + " " + showHour(pv.getFechahorasalida());
-                String fechaRegreso = showDate(pv.getFechahoraregreso()) + " " + showHour(pv.getFechahoraregreso());
-                String fechaSolicitado = showDate(pv.getFechasolicitud()) + " " + showHour(pv.getFechasolicitud());
-
-                PdfPCell cellFechaPartida = new PdfPCell(new Paragraph(fechaPartida, FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellFechaPartida);
-
-                PdfPCell cellNombredia = new PdfPCell(new Paragraph(pv.getNombredia(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellNombredia);
-
-                PdfPCell cellFechaRegreso = new PdfPCell(new Paragraph(fechaRegreso, FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellFechaRegreso);
-
-                PdfPCell cellUnidad = new PdfPCell(new Paragraph(pv.getUnidad(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellUnidad);
-                PdfPCell cellSolicitado = new PdfPCell(new Paragraph(fechaSolicitado, FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellSolicitado);
-
-//                  PdfPCell cellFechaSolicitado= new PdfPCell(new Paragraph(fechaSolicitado, FontFactory.getFont("arial", 9, Font.NORMAL)));
-//                table.addCell(cellFechaSolicitado);
-//                
-                PdfPCell cellMision = new PdfPCell(new Paragraph(pv.getMision(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellMision);
-//                table.addCell(pv.getMision());
-
-                PdfPCell cellConductor = new PdfPCell(new Paragraph(pv.getConductor(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellConductor);
-
-                PdfPCell cellVehiculo = new PdfPCell(new Paragraph(pv.getMarca() + " " + pv.getModelo() + " PLACA:" + pv.getPlaca(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(cellVehiculo);
-
-            }
-            document.add(table);
-        } catch (Exception ex) {
-            System.out.println("Error " + ex.getMessage());
-        }
-        document.close();
-        FacesContext context = FacesContext.getCurrentInstance();
-        Object response = context.getExternalContext().getResponse();
-        if (response instanceof HttpServletResponse) {
-            HttpServletResponse hsr = (HttpServletResponse) response;
-            hsr.setContentType("application/pdf");
-            hsr.setHeader("Contentdisposition", "attachment;filename=report.pdf");
-            //        hsr.setHeader("Content-disposition", "attachment");
-            hsr.setContentLength(baos.size());
-            try {
-                ServletOutputStream out = hsr.getOutputStream();
-                baos.writeTo(out);
-                out.flush();
-            } catch (IOException ex) {
-                System.out.println("Error:  " + ex.getMessage());
-            }
-            context.responseComplete();
-        }
+  
+    
+    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    public Boolean availablePrint(){
+        return !programacionVehicular.isEmpty();
     }
     // </editor-fold>  
 

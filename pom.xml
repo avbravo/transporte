@@ -4,7 +4,7 @@
 
     <groupId>com.avbravo</groupId>
     <artifactId>transporte</artifactId>
-    <version>20.10</version>
+    <version>20.11</version>
     <packaging>war</packaging>
 
     <name>transporte</name>
@@ -103,6 +103,7 @@
             <version>1.1</version>
             <scope>provided</scope>
         </dependency>
+       
         
 <!--        <dependency>
         <groupId>com.github.librepdf</groupId>

@@ -46,15 +46,10 @@
                             valueHasta="#{programacionVechicularController.fechaHasta}"
                             renderedList="true"  
                             search="#{programacionVechicularController.searchBy('_betweendates',programacionVechicularController.viaje)}"
+                            update=":form:dataTable "
                             />
                     </b:column>
-                    <b:column medium-screen="25" >
-<p:commandButton action="#{programacionVechicularController.imprimir()}" value="Reporte"
-                        icon="icon-report" ajax="false">
-                  </p:commandButton>
 
-                      
-                    </b:column>
                 </b:row>
 
 
@@ -66,6 +61,8 @@
                     rowPage="#{programacionVechicularController.rowPage}"                   
                     page="#{programacionVechicularController.page}"
                     pages="#{programacionVechicularController.pages}"
+                    renderedPrint="#{programacionVechicularController.availablePrint()}"                   
+                    renderedNew="false"                    
                     skip="ajax:programacionVechicularController.skip()" 
                     url = "/pages/viaje/new.xhtml"
                     />
@@ -77,6 +74,7 @@
 
                     <f:facet name="header">
                         <p:outputLabel value="#{msg['titlelist.viajes']}"/>
+                   
                     </f:facet>
                     <p:column style="width:16px">
                         <p:rowToggler />
