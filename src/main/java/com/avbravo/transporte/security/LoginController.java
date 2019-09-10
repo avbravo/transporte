@@ -390,7 +390,7 @@ public class LoginController implements Serializable, SecurityInterface {
                         case "ADMINISTRADOR":
                         case "SECRETARIO ADMINISTRATIVO":
              
-                        case "CHOFER":
+                        case "CONDUCTOR":
                             return "/faces/pages/index.xhtml?faces-redirect=true";
                         default:
                            JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.rolnovalidadoenelmenu"));

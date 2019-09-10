@@ -172,6 +172,7 @@ public class RolController implements Serializable, IController {
         return false;
     }    // </editor-fold> 
 
+    
 // <editor-fold defaultstate="collapsed" desc="handleSelect">
     public void handleSelect(SelectEvent event) {
         try {
@@ -246,7 +247,17 @@ public class RolController implements Serializable, IController {
     public Boolean beforeDelete() {
         Boolean delete = rolServices.isDeleted(rol);
         if (!delete) {
-            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getAppMessage("warning.nosepuedeeliminarrol"));
+            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminarrol"));
+        }
+        return delete;
+    }
+    // </editor-fold>     
+    // <editor-fold defaultstate="collapsed" desc="Boolean beforeDelete()">
+    @Override
+    public Boolean beforeDeleteFromListXhtml(){
+        Boolean delete = rolServices.isDeleted(rol);
+        if (!delete) {
+            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminarrol"));
         }
         return delete;
     }

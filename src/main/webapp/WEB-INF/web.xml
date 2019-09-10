@@ -68,6 +68,7 @@ JAVA EE 8 API SECURITY
         <auth-constraint>
             <role-name>ADMINISTRADOR</role-name>
             <role-name>DOCENTE</role-name>
+            <role-name>CONDUCTOR</role-name>
             <role-name>ADMINISTRATIVO</role-name>
             <role-name>SECRETARIA</role-name>
             <role-name>COORDINADOR</role-name>
@@ -81,6 +82,9 @@ JAVA EE 8 API SECURITY
     </security-role>
     <security-role>
         <role-name>DOCENTE</role-name>
+    </security-role>
+    <security-role>
+        <role-name>CONDUCTOR</role-name>
     </security-role>
     <security-role>
         <role-name>ADMINISTRATIVO</role-name>

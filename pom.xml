@@ -4,7 +4,7 @@
 
     <groupId>com.avbravo</groupId>
     <artifactId>transporte</artifactId>
-    <version>20.11</version>
+    <version>20.13</version>
     <packaging>war</packaging>
 
     <name>transporte</name>
@@ -58,6 +58,7 @@
             <artifactId>transporteejb</artifactId>
             <version>21.7</version>
         </dependency>
+    
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -81,11 +82,12 @@
             <version>0.2</version>
         </dependency>
      
-      <dependency>
+     <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbjsf</artifactId>
             <version>0.26</version>
         </dependency>
+        
         <!--
                         parche para bootfaces
         -->
