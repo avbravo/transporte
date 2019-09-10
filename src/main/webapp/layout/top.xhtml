@@ -72,6 +72,10 @@
 
                 <b:dropMenu value="#{msg['menubar.viaje']}" rendered="#{p:ifGranted('ADMINISTRADOR')}">
                     <b:navLink value="#{msg['menu.viajes']}"  outcome="/pages/viaje/list" iconAwesome= "fa-book" />
+                      <b:navLink value="#{msg['menu.programacionvehicular']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO, CONDUCTOR')}" outcome="/pages/programacionvehicular/programacionvehicular" iconAwesome= "fa-print" />  
+                <b:navLink value="#{msg['menu.viajespendientes']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/viajespendientes/viajespendientes" iconAwesome= "fa-car" />    
+                <b:navLink value="#{msg['menu.viajessinconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/viajessinconductor/viajessinconductor" iconAwesome= "fa-car" />    
+              
                     <b:navLink/>
                 </b:dropMenu>
                 <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{p:ifGranted('ADMINISTRADOR')}">

@@ -49,8 +49,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
-import lombok.Getter;
-import lombok.Setter;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.primefaces.PrimeFaces;
@@ -67,9 +65,7 @@ import org.primefaces.model.ScheduleModel;
  */
 @Named
 @ViewScoped
-@Getter
-@Setter
-public class ViajeController implements Serializable, IController {
+public class ViajeController1 implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -166,10 +162,169 @@ public class ViajeController implements Serializable, IController {
         this.pages = pages;
     }
 
-  
+    public ScheduleModel getVehiculoScheduleModel() {
+        return vehiculoScheduleModel;
+    }
+
+    public void setVehiculoScheduleModel(ScheduleModel vehiculoScheduleModel) {
+        this.vehiculoScheduleModel = vehiculoScheduleModel;
+    }
+
+    public List<Vehiculo> getVehiculoList() {
+        return vehiculoList;
+    }
+
+    public Date getFechaHoraInicioReservaanterior() {
+        return fechaHoraInicioReservaanterior;
+    }
+
+    public void setFechaHoraInicioReservaanterior(Date fechaHoraInicioReservaanterior) {
+        this.fechaHoraInicioReservaanterior = fechaHoraInicioReservaanterior;
+    }
+
+    public Date getFechaHoraFinReservaAnterior() {
+        return fechaHoraFinReservaAnterior;
+    }
+
+    public void setFechaHoraFinReservaAnterior(Date fechaHoraFinReservaAnterior) {
+        this.fechaHoraFinReservaAnterior = fechaHoraFinReservaAnterior;
+    }
+
+    public void setVehiculoList(List<Vehiculo> vehiculoList) {
+        this.vehiculoList = vehiculoList;
+    }
+
+    public List<Conductor> getConductorList() {
+        return conductorList;
+    }
+
+    public void setConductorList(List<Conductor> conductorList) {
+        this.conductorList = conductorList;
+    }
+
+    public LookupServices getLookupServices() {
+        return lookupServices;
+    }
+
+    public void setLookupServices(LookupServices lookupServices) {
+        this.lookupServices = lookupServices;
+    }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public Integer getRowPage() {
+        return rowPage;
+    }
+
+    public void setRowPage(Integer rowPage) {
+        this.rowPage = rowPage;
+    }
+
+    public ViajeServices getViajeServices() {
+        return viajeServices;
+    }
+
+    public void setViajeServices(ViajeServices viajeServices) {
+        this.viajeServices = viajeServices;
+    }
+
+    public List<Viaje> getViajeList() {
+        return viajeList;
+    }
+
+    public void setViajeList(List<Viaje> viajeList) {
+        this.viajeList = viajeList;
+    }
+
+    public List<Viaje> getViajeFiltered() {
+        return viajeFiltered;
+    }
+
+    public void setViajeFiltered(List<Viaje> viajeFiltered) {
+        this.viajeFiltered = viajeFiltered;
+    }
+
+    public ViajeDataModel getViajeDataModel() {
+        return viajeDataModel;
+    }
+
+    public void setViajeDataModel(ViajeDataModel viajeDataModel) {
+        this.viajeDataModel = viajeDataModel;
+    }
+
+    public Viaje getViaje() {
+        return viaje;
+    }
+
+    public void setViaje(Viaje viaje) {
+        this.viaje = viaje;
+    }
+
+    public Viaje getViajeSelected() {
+        return viajeSelected;
+    }
+
+    public void setViajeSelected(Viaje viajeSelected) {
+        this.viajeSelected = viajeSelected;
+    }
+
+    public Boolean getWritable() {
+        return writable;
+    }
+
+    public void setWritable(Boolean writable) {
+        this.writable = writable;
+    }
+
+    public Vehiculo getVehiculoSelected() {
+        return vehiculoSelected;
+    }
+
+    public void setVehiculoSelected(Vehiculo vehiculoSelected) {
+        this.vehiculoSelected = vehiculoSelected;
+    }
+
+    public Conductor getConductorSelected() {
+        return conductorSelected;
+    }
+
+    public void setConductorSelected(Conductor conductorSelected) {
+        this.conductorSelected = conductorSelected;
+    }
+
+    public ScheduleModel getConductorScheduleModel() {
+        return conductorScheduleModel;
+    }
+
+    public void setConductorScheduleModel(ScheduleModel conductorScheduleModel) {
+        this.conductorScheduleModel = conductorScheduleModel;
+    }
+
+    public ScheduleModel getSolicitudScheduleModel() {
+        return solicitudScheduleModel;
+    }
+
+    public void setSolicitudScheduleModel(ScheduleModel solicitudScheduleModel) {
+        this.solicitudScheduleModel = solicitudScheduleModel;
+    }
+
+    public ScheduleModel getViajeScheduleModel() {
+        return viajeScheduleModel;
+    }
+
+    public void setViajeScheduleModel(ScheduleModel viajeScheduleModel) {
+        this.viajeScheduleModel = viajeScheduleModel;
+    }
+
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public ViajeController() {
+    public ViajeController1() {
     }
 
     // </editor-fold>

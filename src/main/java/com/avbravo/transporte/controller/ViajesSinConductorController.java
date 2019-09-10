@@ -70,7 +70,7 @@ import org.primefaces.event.SelectEvent;
 @ViewScoped
 @Getter
 @Setter
-public class ViajesPendientesController implements Serializable, IController {
+public class ViajesSinConductorController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
@@ -128,7 +128,7 @@ public class ViajesPendientesController implements Serializable, IController {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public ViajesPendientesController() {
+    public ViajesSinConductorController() {
     }
 
     // </editor-fold>
@@ -175,7 +175,7 @@ public class ViajesPendientesController implements Serializable, IController {
 //            if (action.equals("view")) {
 //                //view
 //            }
-            setSearchAndValue("searchViajesPendientesController", "_betweendates");
+            setSearchAndValue("searchViajesSinConductorController", "_betweendates");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -233,58 +233,62 @@ public class ViajesPendientesController implements Serializable, IController {
                     if (v.getRealizado().equals("ca") || v.getRealizado().equals("si")) {
 // esta cancelado
                     } else {
-                        ProgramacionVehicular pv = new ProgramacionVehicular();
-                        pv.setConductor(v.getConductor().getNombre());
-                        pv.setFechahoraregreso(v.getFechahorafinreserva());
-                        pv.setFechahorasalida(v.getFechahorainicioreserva());
-                        pv.setIdviaje(v.getIdviaje());
-                        pv.setMarca(v.getVehiculo().getMarca());
-                        pv.setModelo(v.getVehiculo().getModelo());
-                        pv.setPlaca(v.getVehiculo().getPlaca());
-                        pv.setNombredia(DateUtil.nameOfDay(pv.getFechahorasalida()));
-                        pv.setResponsable(v.getRealizado());
-                        pv.setActivo(v.getActivo());
-                        pv.setLugardestino(v.getLugardestino());
-                        pv.setLugarpartida(v.getLugarpartida());
-                        pv.setMision(v.getMision());
-                        //Datos de la solicitud
-                        pv.setFechasolicitud(v.getFechahorainicioreserva());
-                        pv.setNumerosolicitudes("");
+                        //CONDUCTOR PENDIENTE
+                        if (v.getConductor().getIdconductor() == 5) {
 
-                        pv.setUnidad("");
-                        pv.setResponsable("");
-                        pv.setSolicita("");
-                        Solicitud solicitud = new Solicitud();
+                            ProgramacionVehicular pv = new ProgramacionVehicular();
+                            pv.setConductor(v.getConductor().getNombre());
+                            pv.setFechahoraregreso(v.getFechahorafinreserva());
+                            pv.setFechahorasalida(v.getFechahorainicioreserva());
+                            pv.setIdviaje(v.getIdviaje());
+                            pv.setMarca(v.getVehiculo().getMarca());
+                            pv.setModelo(v.getVehiculo().getModelo());
+                            pv.setPlaca(v.getVehiculo().getPlaca());
+                            pv.setNombredia(DateUtil.nameOfDay(pv.getFechahorasalida()));
+                            pv.setResponsable(v.getRealizado());
+                            pv.setActivo(v.getActivo());
+                            pv.setLugardestino(v.getLugardestino());
+                            pv.setLugarpartida(v.getLugarpartida());
+                            pv.setMision(v.getMision());
+                            //Datos de la solicitud
+                            pv.setFechasolicitud(v.getFechahorainicioreserva());
+                            pv.setNumerosolicitudes("");
+
+                            pv.setUnidad("");
+                            pv.setResponsable("");
+                            pv.setSolicita("");
+                            Solicitud solicitud = new Solicitud();
 //Busco la solicitud
-                        Document search = new Document("viaje.idviaje", v.getIdviaje());
-                        List<Solicitud> list = solicitudRepository.findBy(search);
-                        if (list == null || list.isEmpty()) {
+                            Document search = new Document("viaje.idviaje", v.getIdviaje());
+                            List<Solicitud> list = solicitudRepository.findBy(search);
+                            if (list == null || list.isEmpty()) {
 
-                        } else {
-                            String unidad = "";
+                            } else {
+                                String unidad = "";
 
-                            String numeroSolicitudes = "";
-                            String responsable = "";
-                            String solicita = "";
-                            //Se recorren todas las solicitudes que tengan ese viaje asignado.
-                            for (Solicitud s : list) {
-                                pv.setFechasolicitud(s.getFecha());
-                                for (Unidad u : s.getUnidad()) {
-                                    unidad += " " + u.getIdunidad();
+                                String numeroSolicitudes = "";
+                                String responsable = "";
+                                String solicita = "";
+                                //Se recorren todas las solicitudes que tengan ese viaje asignado.
+                                for (Solicitud s : list) {
+                                    pv.setFechasolicitud(s.getFecha());
+                                    for (Unidad u : s.getUnidad()) {
+                                        unidad += " " + u.getIdunidad();
+                                    }
+
+                                    numeroSolicitudes += " " + String.valueOf(s.getIdsolicitud());
+                                    solicita += " " + s.getUsuario().get(0).getNombre();
+                                    responsable += " " + s.getUsuario().get(1).getNombre();
                                 }
+                                pv.setUnidad(unidad.trim());
 
-                                numeroSolicitudes += " " + String.valueOf(s.getIdsolicitud());
-                                solicita += " " + s.getUsuario().get(0).getNombre();
-                                responsable += " " + s.getUsuario().get(1).getNombre();
+                                pv.setNumerosolicitudes(numeroSolicitudes.trim());
+                                pv.setResponsable(responsable.trim());
+                                pv.setSolicita(solicita.trim());
+
                             }
-                            pv.setUnidad(unidad.trim());
-
-                            pv.setNumerosolicitudes(numeroSolicitudes.trim());
-                            pv.setResponsable(responsable.trim());
-                            pv.setSolicita(solicita.trim());
-
+                            programacionVehicular.add(pv);
                         }
-                        programacionVehicular.add(pv);
                     }
                 }//for
             }
@@ -325,7 +329,7 @@ public class ViajesPendientesController implements Serializable, IController {
             //METADATA
 
             document.open();
-            document.add(ReportUtils.paragraph("VIAJES PENDIENTES", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+            document.add(ReportUtils.paragraph("VIAJES SIN CONDUCTOR", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
 
             String texto = "Desde " + DateUtil.showDate(fechaDesde) + "  Hasta: " + DateUtil.showDate(fechaHasta);
             document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
