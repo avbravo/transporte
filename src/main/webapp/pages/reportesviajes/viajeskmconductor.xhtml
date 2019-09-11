@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
+                >
+    <ui:define name="content">
+
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            } 
+        </style>
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+
+            <b:growl  id="msgs"/>
+
+            <b:panel collapsible="false" title="#{msg['titlelist.viajeskmvehiculos']}" id="content"   look="primary" > 
+                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
+
+
+
+
+
+                <b:row>
+                    <b:column medium-screen="25" >
+
+
+                        <jmoordbjsf:searchBetweenDate 
+                            renderedMove="true"
+                            labelDesde="#{msg['field.fechainicio']}"
+                            valueDesde="#{viajesKmConductorController.fechaDesde}"
+                            labelHasta="#{msg['field.fechafin']}"
+                            valueHasta="#{viajesKmConductorController.fechaHasta}"
+                            renderedList="true"  
+                            search="#{viajesKmConductorController.searchBy('_betweendates',viajesKmConductorController.viaje)}"
+                            update=":form:dataTable, :form:panel "
+                            />
+                    </b:column>
+
+                </b:row>
+
+
+            </b:panel>
+            <b:panel collapsible="false" id="dataTable" look="primary">
+
+                
+
+                   <jmoordbjsf:paginator
+                    controller="#{viajesKmConductorController}"                        
+                    rowPage="#{viajesKmConductorController.rowPage}"                   
+                    page="#{viajesKmConductorController.page}"
+                    pages="#{viajesKmConductorController.pages}"
+                    renderedPrint="#{viajesKmConductorController.availablePrint()}"                   
+                    renderedNew="false"    
+                    renderedClear ="false"
+                    skip="ajax:viajesKmConductorController.skip()" 
+                    url = "/pages/viaje/new.xhtml"
+                    />
+                   <p:dataTable value="#{viajesKmConductorController.conductorDataModel}"
+                             var="item"
+                             id="dataTable2"
+                             >
+
+                    <f:facet name="header">
+                        <p:outputLabel value="#{msg['titlelist.viajes']}"/>
+                   
+                    </f:facet>
+                  
+                   
+
+
+                    <p:column headerText="#{msg['field.cedula']}" style="width:70px">
+                       <p:outputLabel value="#{item.cedula}" style="font-size: 10; "/>
+                    </p:column>
+                    <p:column headerText="#{msg['field.nombre']}"  style="width:80px ">
+                        <p:outputLabel value="#{item.nombre}" style="font-size: 10;"/>
+
+                    </p:column>
+                  
+                    <p:column headerText="#{msg['field.totalkm']}"  style="width:35px ">
+                        <p:outputLabel value="#{item.totalkm}" style="font-size: 10;"/>
+
+                    </p:column>
+                    <p:column headerText="#{msg['field.totalviajes']}"  style="width:35px ">
+                        <p:outputLabel value="#{item.totalviajes}" style="font-size: 10; "/>
+
+                    </p:column>
+                    <p:column headerText="#{msg['field.totalconsumo']}"  style="width:35px ">
+                        <p:outputLabel value="#{item.totalconsumo}" style="font-size: 10;"/>
+
+                    </p:column>
+
+
+
+
+                </p:dataTable>
+            </b:panel>
+            <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{viajesKmConductorController.availablePrint()}"> 
+
+                        <p:outputLabel  value="#{msg['field.totalGlobalkm']}" />
+                       <p:outputLabel value="#{viajesKmConductorController.totalGlobalkm}"  />
+                        <p:outputLabel  value="#{msg['field.totalGlobalConsumo']}" />
+                      <p:outputLabel value="#{viajesKmConductorController.totalGlobalConsumo}"  />
+
+            </b:panelGrid>
+        </b:form>
+
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" />
+    </ui:define>
+</ui:composition>

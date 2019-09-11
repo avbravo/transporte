@@ -84,6 +84,7 @@
                      <b:navLink value="#{msg['menu.viajesporconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajesporconductor" iconAwesome= "fa-drivers-license-o" />
                     <b:navLink/>
                        <b:navLink value="#{msg['menu.kmrecorridosporvehiculo']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajeskmvehiculos" iconAwesome= "fa-map-signs" />
+                       <b:navLink value="#{msg['menu.kmrecorridosporconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajeskmconductor" iconAwesome= "fa-map-signs" />
                     <b:navLink/>
                     
                     <h:form id="topFormTimeLine">
