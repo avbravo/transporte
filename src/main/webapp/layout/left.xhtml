@@ -69,10 +69,11 @@ Hint to editors: The menus follow the Chicago style of capitalization. Please ca
                 <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('COORDINADOR')}" outcome="/pages/coordinador/notificar" iconAwesome= "fa-phone" />    
 
                 <b:navCommandLink value="#{msg['menu.vistobueno']}" action="#{secretarioAdministrativoController.goList('secretarioadministrativo')}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"  iconAwesome= "fa-book" />                                               
-                <b:dropMenu value="#{msg['menu.calendario']}" iconAwesome="fa-list" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}">
+             
+            <b:navLink value="#{msg['menu.disponibles']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/disponibles/disponibles" iconAwesome= "fa-calendar-o" />                                                                    
                     <b:navLink value="#{msg['menu.calendariosolicitud']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/calendario" iconAwesome= "fa-calendar-o" />                                   
                     <b:navLink value="#{msg['menu.calendarioviajes']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/calendarioviajes" iconAwesome= "fa-calendar-o" />    
-                </b:dropMenu>
+             
 
                 <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-phone" />    
                

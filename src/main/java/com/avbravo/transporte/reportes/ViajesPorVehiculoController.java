@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.avbravo.transporte.controller;
+package com.avbravo.transporte.reportes;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.jmoordb.configuration.JmoordbContext;
@@ -22,43 +22,32 @@ import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.Usuario;
+import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
+import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
-import com.lowagie.text.*;
 import com.lowagie.text.FontFactory;
-import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.PageSize;
 import com.mongodb.client.model.Filters;
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.eq;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 import java.util.ArrayList;
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
@@ -74,7 +63,7 @@ import org.primefaces.event.SelectEvent;
 @ViewScoped
 @Getter
 @Setter
-public class ViajesSinSolicitudController implements Serializable, IController {
+public class ViajesPorVehiculoController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
@@ -90,6 +79,7 @@ public class ViajesSinSolicitudController implements Serializable, IController {
     List<Integer> pages = new ArrayList<>();
 
     //Entity
+    Vehiculo vehiculoSearch = new Vehiculo();
     Viaje viaje = new Viaje();
     Viaje viajeSelected;
     Viaje viajeSearch = new Viaje();
@@ -112,6 +102,8 @@ public class ViajesSinSolicitudController implements Serializable, IController {
     @Inject
     AutoincrementableServices autoincrementableServices;
     @Inject
+    VehiculoServices vehiculoServices;
+    @Inject
     EstatusServices estatusServices;
     @Inject
     ErrorInfoServices errorServices;
@@ -132,7 +124,7 @@ public class ViajesSinSolicitudController implements Serializable, IController {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public ViajesSinSolicitudController() {
+    public ViajesPorVehiculoController() {
     }
 
     // </editor-fold>
@@ -202,98 +194,81 @@ public class ViajesSinSolicitudController implements Serializable, IController {
             this.page = page;
             viajeDataModel = new ViajeDataModel(viajeList);
             Document doc;
-
-            Bson filterActivo = Filters.eq("activo", "si");
-            List<Viaje> listv = viajeRepository.filterBetweenDateWithoutHours(filterActivo,
+  
+   
+            Bson filter = Filters.and(Filters.eq("activo","si"),Filters.eq("vehiculo.idvehiculo",vehiculoSearch.getIdvehiculo()));    
+            viajeList = viajeRepository.filterBetweenDateWithoutHours(filter,
                     "fechahorainicioreserva", fechaDesde,
                     "fechahorafinreserva", fechaHasta,
                     new Document("fechahorainicioreserva", -1));
+            
 
-            viajeList = new ArrayList<>();
-            if (listv == null || listv.isEmpty()) {
+            if (viajeList == null || viajeList.isEmpty()) {
 
             } else {
-                //Busca en la solicitud si existe una solicitud con ese viaje asignado
-                for (Viaje v : listv) {
-                    Bson filter = Filters.or(
-                            Filters.eq("viaje.0.idviaje", v.getIdviaje()),
-                            Filters.eq("viaje.1.idviaje", v.getIdviaje())
-                    );
-
-                    List<Solicitud> solicitudList = solicitudRepository.findBy(and(eq("activo", "si"), filter), new Document("idsolicitud", -1));
-                    if (solicitudList == null || solicitudList.isEmpty()) {
-                        viajeList.add(v);
-                    }
-                }
-
-                if (viajeList == null || viajeList.isEmpty()) {
-
-                } else {
-                    for (Viaje v : viajeList) {
-                        if (v.getRealizado().equals("ca") || v.getRealizado().equals("si")) {
+                for (Viaje v : viajeList) {
+                    if (v.getRealizado().equals("ca") || v.getRealizado().equals("si")) {
 // esta cancelado
-                        } else {
-                            //CONDUCTOR PENDIENTE
-                            if (v.getConductor().getIdconductor() == 5) {
+                    } else {
+                        //CONDUCTOR PENDIENTE
+                        if (v.getConductor().getIdconductor() == 5) {
 
-                                ProgramacionVehicular pv = new ProgramacionVehicular();
-                                pv.setConductor(v.getConductor().getNombre());
-                                pv.setFechahoraregreso(v.getFechahorafinreserva());
-                                pv.setFechahorasalida(v.getFechahorainicioreserva());
-                                pv.setIdviaje(v.getIdviaje());
-                                pv.setMarca(v.getVehiculo().getMarca());
-                                pv.setModelo(v.getVehiculo().getModelo());
-                                pv.setPlaca(v.getVehiculo().getPlaca());
-                                pv.setNombredia(DateUtil.nameOfDay(pv.getFechahorasalida()));
-                                pv.setResponsable(v.getRealizado());
-                                pv.setActivo(v.getActivo());
-                                pv.setLugardestino(v.getLugardestino());
-                                pv.setLugarpartida(v.getLugarpartida());
-                                pv.setMision(v.getMision());
-                                //Datos de la solicitud
-                                pv.setFechasolicitud(v.getFechahorainicioreserva());
-                                pv.setNumerosolicitudes("");
+                            ProgramacionVehicular pv = new ProgramacionVehicular();
+                            pv.setConductor(v.getConductor().getNombre());
+                            pv.setFechahoraregreso(v.getFechahorafinreserva());
+                            pv.setFechahorasalida(v.getFechahorainicioreserva());
+                            pv.setIdviaje(v.getIdviaje());
+                            pv.setMarca(v.getVehiculo().getMarca());
+                            pv.setModelo(v.getVehiculo().getModelo());
+                            pv.setPlaca(v.getVehiculo().getPlaca());
+                            pv.setNombredia(DateUtil.nameOfDay(pv.getFechahorasalida()));
+                            pv.setResponsable(v.getRealizado());
+                            pv.setActivo(v.getActivo());
+                            pv.setLugardestino(v.getLugardestino());
+                            pv.setLugarpartida(v.getLugarpartida());
+                            pv.setMision(v.getMision());
+                            //Datos de la solicitud
+                            pv.setFechasolicitud(v.getFechahorainicioreserva());
+                            pv.setNumerosolicitudes("");
 
-                                pv.setUnidad("");
-                                pv.setResponsable("");
-                                pv.setSolicita("");
-                                Solicitud solicitud = new Solicitud();
+                            pv.setUnidad("");
+                            pv.setResponsable("");
+                            pv.setSolicita("");
+                            Solicitud solicitud = new Solicitud();
 //Busco la solicitud
-                                Document search = new Document("viaje.idviaje", v.getIdviaje());
-                                List<Solicitud> list = solicitudRepository.findBy(search);
-                                if (list == null || list.isEmpty()) {
+                            Document search = new Document("viaje.idviaje", v.getIdviaje());
+                            List<Solicitud> list = solicitudRepository.findBy(search);
+                            if (list == null || list.isEmpty()) {
 
-                                } else {
-                                    String unidad = "";
+                            } else {
+                                String unidad = "";
 
-                                    String numeroSolicitudes = "";
-                                    String responsable = "";
-                                    String solicita = "";
-                                    //Se recorren todas las solicitudes que tengan ese viaje asignado.
-                                    for (Solicitud s : list) {
-                                        pv.setFechasolicitud(s.getFecha());
-                                        for (Unidad u : s.getUnidad()) {
-                                            unidad += " " + u.getIdunidad();
-                                        }
-
-                                        numeroSolicitudes += " " + String.valueOf(s.getIdsolicitud());
-                                        solicita += " " + s.getUsuario().get(0).getNombre();
-                                        responsable += " " + s.getUsuario().get(1).getNombre();
+                                String numeroSolicitudes = "";
+                                String responsable = "";
+                                String solicita = "";
+                                //Se recorren todas las solicitudes que tengan ese viaje asignado.
+                                for (Solicitud s : list) {
+                                    pv.setFechasolicitud(s.getFecha());
+                                    for (Unidad u : s.getUnidad()) {
+                                        unidad += " " + u.getIdunidad();
                                     }
-                                    pv.setUnidad(unidad.trim());
 
-                                    pv.setNumerosolicitudes(numeroSolicitudes.trim());
-                                    pv.setResponsable(responsable.trim());
-                                    pv.setSolicita(solicita.trim());
-
+                                    numeroSolicitudes += " " + String.valueOf(s.getIdsolicitud());
+                                    solicita += " " + s.getUsuario().get(0).getNombre();
+                                    responsable += " " + s.getUsuario().get(1).getNombre();
                                 }
-                                programacionVehicular.add(pv);
-                            }
-                        }
-                    }//for
-                }
-            }
+                                pv.setUnidad(unidad.trim());
 
+                                pv.setNumerosolicitudes(numeroSolicitudes.trim());
+                                pv.setResponsable(responsable.trim());
+                                pv.setSolicita(solicita.trim());
+
+                            }
+                            programacionVehicular.add(pv);
+                        }
+                    }
+                }//for
+            }
             viajeDataModel = new ViajeDataModel(viajeList);
 
         } catch (Exception e) {
@@ -331,7 +306,10 @@ public class ViajesSinSolicitudController implements Serializable, IController {
             //METADATA
 
             document.open();
-            document.add(ReportUtils.paragraph("VIAJES SIN SOLICITUD ASIGNADA", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+            document.add(ReportUtils.paragraph("VIAJES POR VEHICULO", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+            document.add(ReportUtils.paragraph("", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+            document.add(ReportUtils.paragraph("", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+            document.add(ReportUtils.paragraph("VEHICULO "+vehiculoSearch.getMarca() + " "+vehiculoSearch.getModelo() + " "+vehiculoSearch.getPlaca() , FontFactory.getFont("arial", 10, Font.BOLD), Element.ALIGN_CENTER));
 
             String texto = "Desde " + DateUtil.showDate(fechaDesde) + "  Hasta: " + DateUtil.showDate(fechaHasta);
             document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
@@ -343,10 +321,10 @@ public class ViajesSinSolicitudController implements Serializable, IController {
             document.add(new Paragraph("\n"));
 
             //Numero de columnas
-            PdfPTable table = new PdfPTable(8);
+            PdfPTable table = new PdfPTable(7);
 
 //Aqui indicamos el tamaño de cada columna
-            table.setTotalWidth(new float[]{75, 62, 75, 82, 75, 220, 80, 105});
+            table.setTotalWidth(new float[]{75, 62, 75, 82, 75, 220, 105});
 
             table.setLockedWidth(true);
 
@@ -356,8 +334,8 @@ public class ViajesSinSolicitudController implements Serializable, IController {
             table.addCell(ReportUtils.PdfCell("Unidad", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
             table.addCell(ReportUtils.PdfCell("Solicitado", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
             table.addCell(ReportUtils.PdfCell("Mision", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            
             table.addCell(ReportUtils.PdfCell("Conductor", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
-            table.addCell(ReportUtils.PdfCell("Vehiculo", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
 
             for (ProgramacionVehicular pv : programacionVehicular) {
 
@@ -373,7 +351,7 @@ public class ViajesSinSolicitudController implements Serializable, IController {
                 table.addCell(ReportUtils.PdfCell(fechaSolicitado, FontFactory.getFont("arial", 10, Font.NORMAL)));
                 table.addCell(ReportUtils.PdfCell(pv.getMision(), FontFactory.getFont("arial", 9, Font.NORMAL)));
                 table.addCell(ReportUtils.PdfCell(pv.getConductor(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(ReportUtils.PdfCell(pv.getMarca() + " " + pv.getModelo() + " PLACA:" + pv.getPlaca(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                
 
             }
             document.add(table);

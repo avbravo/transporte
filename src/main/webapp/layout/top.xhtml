@@ -28,31 +28,20 @@
                     <h:form >
                         <b:navLink value="#{msg['menu.crearsolicitud']}" rendered="#{p:ifGranted('DOCENTE')}"  outcome="/pages/solicituddocente/new" iconAwesome="fa-pencil-square-o"  />                   
                         <b:navCommandLink value="#{msg['menu.misolicitud']}" action="#{solicitudController.goList('solicituddocente')}" rendered="#{p:ifGranted('DOCENTE')}"  iconAwesome= "fa-book" />                                               
-                        <b:navLink value="#{msg['menu.calendariodocente']}" rendered="#{p:ifGranted('DOCENTE')}" outcome="/pages/solicituddocente/calendario" iconAwesome= "fa-calendar-o" />                   
-                        <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('DOCENTE')}" outcome="/pages/solicituddocente/notificar" iconAwesome= "fa-phone" />                   
+
 
 
                         <b:navLink value="#{msg['menu.crearsolicitud']}" rendered="#{p:ifGranted('ADMINISTRATIVO')}"  outcome="/pages/solicitudadministrativo/new" iconAwesome="fa-pencil-square-o"  />                   
                         <b:navCommandLink value="#{msg['menu.misolicitud']}" action="#{solicitudController.goList('solicitudadministrativo')}" rendered="#{p:ifGranted('ADMINISTRATIVO')}"  iconAwesome= "fa-book" />                                               
-                        <b:navLink value="#{msg['menu.calendariodocente']}" rendered="#{p:ifGranted('ADMINISTRATIVO')}" outcome="/pages/solicitudadministrativo/calendario" iconAwesome= "fa-calendar-o" />                   
-                        <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('ADMINISTRATIVO')}" outcome="/pages/solicitudadministrativo/notificar" iconAwesome= "fa-phone" />                   
-
-
 
 
                         <b:navCommandLink value="#{msg['menu.vistobueno']}" action="#{coordinadorController.goList('coordinador')}" rendered="#{p:ifGranted('COORDINADOR')}"  iconAwesome= "fa-book" />                                               
-                        <b:navLink value="#{msg['menu.calendariodocente']}" rendered="#{p:ifGranted('COORDINADOR')}" outcome="/pages/coordinador/calendario" iconAwesome= "fa-calendar-o" />                   
-                        <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('COORDINADOR')}" outcome="/pages/coordinador/notificar" iconAwesome= "fa-phone" />                   
 
-
+                  
                         <b:navCommandLink value="#{msg['menu.vistobueno']}" action="#{secretarioAdministrativoController.goList('secretarioadministrativo')}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"  iconAwesome= "fa-book" />                                               
-                        <b:navLink value="#{msg['menu.calendariodocente']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/calendario" iconAwesome= "fa-calendar-o" />                   
-                        <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-phone" />    
+
                         <b:navLink rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"/>
-                        <b:navLink value="#{msg['menu.vehiculosdisponibles']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-car" />    
-                        <b:navLink value="#{msg['menu.conductoresdisponibles']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-user-o" />    
-                        <b:navLink value="#{msg['menu.estadisticas']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-area-chart" />    
-                        <b:navLink value="#{msg['menu.reportes']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-print " />    
+
 
 
                         <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{p:ifGranted('ADMINISTRADOR')}" outcome="/pages/solicitudmanualdocente/list" iconAwesome= "fa-calendar-o" />
@@ -62,51 +51,53 @@
                     </h:form>
                 </b:dropMenu>
 
-                <b:dropMenu value="#{msg['menubar.calendario']}" rendered="#{p:ifGranted('ADMINISTRADOR')}">
-                    <b:navLink value="#{msg['menu.viajes']}"  outcome="/pages/calendario/viaje" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.solicitudes']}"  outcome="/pages/calendario/solicitudes" iconAwesome= "fa-calendar-o" />
-
+                <b:dropMenu value="#{msg['menubar.calendario']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}">
+                    <b:navLink value="#{msg['menu.viajes']}"  rendered="#{p:ifGranted('ADMINISTRADOR')}" outcome="/pages/calendario/viaje" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.solicitudes']}" rendered="#{p:ifGranted('ADMINISTRADOR')}" outcome="/pages/calendario/solicitudes" iconAwesome= "fa-calendar-o" />
+                    <b:navLink value="#{msg['menu.calendario']}" rendered="#{p:ifGranted('DOCENTE')}" outcome="/pages/solicituddocente/calendario" iconAwesome= "fa-calendar-o" />                   
+                    
+                    <b:navLink value="#{msg['menu.calendariosolicitud']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/calendario" iconAwesome= "fa-calendar-o" />                                   
+                    <b:navLink value="#{msg['menu.calendarioviajes']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/calendarioviajes" iconAwesome= "fa-calendar-o" />    
+                    <b:navLink value="#{msg['menu.calendario']}" rendered="#{p:ifGranted('COORDINADOR')}" outcome="/pages/coordinador/calendario" iconAwesome= "fa-calendar-o" />                   
+                    <b:navLink value="#{msg['menu.calendario']}" rendered="#{p:ifGranted('ADMINISTRATIVO')}" outcome="/pages/solicitudadministrativo/calendario" iconAwesome= "fa-calendar-o" />                   
 
 
                 </b:dropMenu>
 
-                <b:dropMenu value="#{msg['menubar.viaje']}" rendered="#{p:ifGranted('ADMINISTRADOR')}">
+                <b:dropMenu value="#{msg['menubar.viaje']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO, CONDUCTOR')}">
                     <b:navLink value="#{msg['menu.viajes']}"  outcome="/pages/viaje/list" iconAwesome= "fa-book" />
-                   
+                    <b:navLink value="#{msg['menu.disponibles']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/disponibles/disponibles" iconAwesome= "fa-calendar-o" />                                   
                     <b:navLink value="#{msg['menu.programacionvehicular']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO, CONDUCTOR')}" outcome="/pages/programacionvehicular/programacionvehicular" iconAwesome= "fa-print" />  
-                     <b:navLink/>
-                     <b:navLink value="#{msg['menu.viajesrealizados']}"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajesrealizados" iconAwesome= "fa-drivers-license-o" />
+                    <b:navLink/>
+                    <b:navLink value="#{msg['menu.viajesrealizados']}"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajesrealizados" iconAwesome= "fa-drivers-license-o" />
                     <b:navLink value="#{msg['menu.viajespendientes']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajespendientes" iconAwesome= "fa-car" />    
                     <b:navLink value="#{msg['menu.viajessinconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajessinconductor" iconAwesome= "fa-child" />    
                     <b:navLink value="#{msg['menu.viajessinsolicitud']}"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajessinsolicitud" iconAwesome= "fa-unlink" />
                     <b:navLink/>
-                     <b:navLink value="#{msg['menu.viajesporvehiculo']}"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajesporvehiculo" iconAwesome= "fa-car" />
-                     <b:navLink value="#{msg['menu.viajesporconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajesporconductor" iconAwesome= "fa-drivers-license-o" />
+                    <b:navLink value="#{msg['menu.viajesporvehiculo']}"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajesporvehiculo" iconAwesome= "fa-car" />
+                    <b:navLink value="#{msg['menu.viajesporconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajesporconductor" iconAwesome= "fa-drivers-license-o" />
                     <b:navLink/>
-                       <b:navLink value="#{msg['menu.kmrecorridosporvehiculo']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajeskmvehiculos" iconAwesome= "fa-map-signs" />
-                       <b:navLink value="#{msg['menu.kmrecorridosporconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajeskmconductor" iconAwesome= "fa-map-signs" />
+                    <b:navLink value="#{msg['menu.kmrecorridosporvehiculo']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajeskmvehiculos" iconAwesome= "fa-map-signs" />
+                    <b:navLink value="#{msg['menu.kmrecorridosporconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajeskmconductor" iconAwesome= "fa-map-signs" />
                     <b:navLink/>
-                    
+
+
+
+
+                </b:dropMenu>
+                <b:dropMenu value="#{msg['menu.timeline']}" iconAwesome="fa-list" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}">
                     <h:form id="topFormTimeLine">
-                        <b:dropMenu value="#{msg['menu.timeline']}" iconAwesome="fa-list" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}">
-                     <b:navCommandLink value="#{msg['menu.timelinevehiculo']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineVehiculo()}" iconAwesome= "fa-list" />    
-                    <b:navCommandLink value="#{msg['menu.timelineconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineConductor()}" iconAwesome= "fa-list" />    
-                    <b:navCommandLink value="#{msg['menu.timelinesolicitud']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineSolicitud()}" iconAwesome= "fa-list" />    
-                    <b:navCommandLink value="#{msg['menu.timelineusuario']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineUsuarioSolicitud()}" iconAwesome= "fa-list" />    
-                    </b:dropMenu>
-               </h:form>
+                        <b:navCommandLink value="#{msg['menu.timelinevehiculo']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineVehiculo()}" iconAwesome= "fa-list" />    
+                        <b:navCommandLink value="#{msg['menu.timelineconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineConductor()}" iconAwesome= "fa-list" />    
+                        <b:navCommandLink value="#{msg['menu.timelinesolicitud']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineSolicitud()}" iconAwesome= "fa-list" />    
+                        <b:navCommandLink value="#{msg['menu.timelineusuario']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineUsuarioSolicitud()}" iconAwesome= "fa-list" />    
+                    </h:form>
                 </b:dropMenu>
                 <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{p:ifGranted('ADMINISTRADOR')}">
                     <b:navLink value="#{msg['menu.solicitudpendiente']}"  outcome="/pages/reportes/solicitudpendiente" iconAwesome= "fa-battery-empty" />
-                    
-                   
-           
 
-                    
-                    <b:navLink/>
-                    
-                    <b:navLink value="#{msg['menu.kmrecorridosporconductor']}"  outcome="/pages/reportes/kmrecorridosporconductor" iconAwesome= "fa-map-signs" />
-                 
+
+
                 </b:dropMenu>
 
 
@@ -170,6 +161,11 @@
                             process="@all">
                         </p:remoteCommand>
                     </h:form>
+                    <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('COORDINADOR')}" outcome="/pages/coordinador/notificar" iconAwesome= "fa-phone" />                   
+                    <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('ADMINISTRATIVO')}" outcome="/pages/solicitudadministrativo/notificar" iconAwesome= "fa-phone" />                   
+                    <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('DOCENTE')}" outcome="/pages/solicituddocente/notificar" iconAwesome= "fa-phone" />                   
+                    <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-phone" />    
+
                 </b:dropMenu>
 
 

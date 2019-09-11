@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.avbravo.transporte.controller;
+package com.avbravo.transporte.reportes;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.jmoordb.configuration.JmoordbContext;
@@ -18,15 +18,15 @@ import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.jmoordbutils.ReportUtils;
 import com.avbravo.transporte.beans.ProgramacionVehicular;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
+import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.Usuario;
-import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.ViajeRepository;
+import com.avbravo.transporteejb.services.ConductorServices;
 import com.avbravo.transporteejb.services.EstatusServices;
-import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
@@ -63,7 +63,7 @@ import org.primefaces.event.SelectEvent;
 @ViewScoped
 @Getter
 @Setter
-public class ViajesPorVehiculoController implements Serializable, IController {
+public class ViajesPorConductorController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
@@ -79,7 +79,7 @@ public class ViajesPorVehiculoController implements Serializable, IController {
     List<Integer> pages = new ArrayList<>();
 
     //Entity
-    Vehiculo vehiculoSearch = new Vehiculo();
+    Conductor conductorSearch = new Conductor();
     Viaje viaje = new Viaje();
     Viaje viajeSelected;
     Viaje viajeSearch = new Viaje();
@@ -102,7 +102,7 @@ public class ViajesPorVehiculoController implements Serializable, IController {
     @Inject
     AutoincrementableServices autoincrementableServices;
     @Inject
-    VehiculoServices vehiculoServices;
+    ConductorServices conductorServices;
     @Inject
     EstatusServices estatusServices;
     @Inject
@@ -124,7 +124,7 @@ public class ViajesPorVehiculoController implements Serializable, IController {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public ViajesPorVehiculoController() {
+    public ViajesPorConductorController() {
     }
 
     // </editor-fold>
@@ -195,8 +195,7 @@ public class ViajesPorVehiculoController implements Serializable, IController {
             viajeDataModel = new ViajeDataModel(viajeList);
             Document doc;
   
-   
-            Bson filter = Filters.and(Filters.eq("activo","si"),Filters.eq("vehiculo.idvehiculo",vehiculoSearch.getIdvehiculo()));    
+               Bson filter = Filters.and(Filters.eq("activo","si"),Filters.eq("conductor.idconductor",conductorSearch.getIdconductor()));    
             viajeList = viajeRepository.filterBetweenDateWithoutHours(filter,
                     "fechahorainicioreserva", fechaDesde,
                     "fechahorafinreserva", fechaHasta,
@@ -306,10 +305,10 @@ public class ViajesPorVehiculoController implements Serializable, IController {
             //METADATA
 
             document.open();
-            document.add(ReportUtils.paragraph("VIAJES POR VEHICULO", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+            document.add(ReportUtils.paragraph("VIAJES POR CONDUCTOR", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
             document.add(ReportUtils.paragraph("", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
             document.add(ReportUtils.paragraph("", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
-            document.add(ReportUtils.paragraph("VEHICULO "+vehiculoSearch.getMarca() + " "+vehiculoSearch.getModelo() + " "+vehiculoSearch.getPlaca() , FontFactory.getFont("arial", 10, Font.BOLD), Element.ALIGN_CENTER));
+            document.add(ReportUtils.paragraph("CONDUCTOR "+conductorSearch.getNombre(), FontFactory.getFont("arial", 10, Font.BOLD), Element.ALIGN_CENTER));
 
             String texto = "Desde " + DateUtil.showDate(fechaDesde) + "  Hasta: " + DateUtil.showDate(fechaHasta);
             document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
@@ -335,7 +334,7 @@ public class ViajesPorVehiculoController implements Serializable, IController {
             table.addCell(ReportUtils.PdfCell("Solicitado", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
             table.addCell(ReportUtils.PdfCell("Mision", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
             
-            table.addCell(ReportUtils.PdfCell("Conductor", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Vehiculo", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
 
             for (ProgramacionVehicular pv : programacionVehicular) {
 
@@ -350,8 +349,8 @@ public class ViajesPorVehiculoController implements Serializable, IController {
                 table.addCell(ReportUtils.PdfCell(pv.getUnidad(), FontFactory.getFont("arial", 9, Font.NORMAL)));
                 table.addCell(ReportUtils.PdfCell(fechaSolicitado, FontFactory.getFont("arial", 10, Font.NORMAL)));
                 table.addCell(ReportUtils.PdfCell(pv.getMision(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-                table.addCell(ReportUtils.PdfCell(pv.getConductor(), FontFactory.getFont("arial", 9, Font.NORMAL)));
                 
+                table.addCell(ReportUtils.PdfCell(pv.getMarca() + " " + pv.getModelo() + " PLACA:" + pv.getPlaca(), FontFactory.getFont("arial", 9, Font.NORMAL)));
 
             }
             document.add(table);
