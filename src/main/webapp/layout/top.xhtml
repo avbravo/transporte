@@ -78,6 +78,9 @@
                     <b:navLink value="#{msg['menu.viajessinconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajessinconductor" iconAwesome= "fa-child" />    
                     <b:navLink value="#{msg['menu.viajessinsolicitud']}"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajessinsolicitud" iconAwesome= "fa-unlink" />
                     <b:navLink/>
+                     <b:navLink value="#{msg['menu.viajesporconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportesviajes/viajesporconductor" iconAwesome= "fa-drivers-license-o" />
+                    <b:navLink/>
+                    
                     <h:form id="topFormTimeLine">
                         <b:dropMenu value="#{msg['menu.timeline']}" iconAwesome="fa-list" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}">
                      <b:navCommandLink value="#{msg['menu.timelinevehiculo']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineVehiculo()}" iconAwesome= "fa-list" />    
@@ -90,9 +93,8 @@
                 <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{p:ifGranted('ADMINISTRADOR')}">
                     <b:navLink value="#{msg['menu.solicitudpendiente']}"  outcome="/pages/reportes/solicitudpendiente" iconAwesome= "fa-battery-empty" />
                     <b:navLink value="#{msg['menu.viajesporvehiculo']}"  outcome="/pages/reportes/viajeporvehiculo" iconAwesome= "fa-car" />
-                    <b:navLink value="#{msg['menu.viajesporconductor']}"  outcome="/pages/reportes/viajeporconductor" iconAwesome= "fa-drivers-license-o" />
-                    <b:navLink value="#{msg['menu.viajespendientes']}"  outcome="/pages/reportes/viajependiente" iconAwesome= "fa-book" />
-                    <b:navLink/>
+                   
+                                        <b:navLink/>
                     <b:navLink value="#{msg['menu.viajesrealizados']}" outcome="/pages/reportes/viajerealizado" iconAwesome= "fa-drivers-license-o" />
 
 

@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
+                >
+    <ui:define name="content">
+
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            } 
+        </style>
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+
+            <b:growl  id="msgs"/>
+
+            <b:panel collapsible="false" title="#{msg['titlelist.viajessinconductor']}" id="content"   look="primary" > 
+                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
+
+
+
+
+
+                <b:row>
+                    <b:column medium-screen="25" >
+
+
+                        <p:outputLabel value="#{msg['field.conductor']}"/>
+                    <jmoordbjsf:autocomplete converter="#{conductorConverter}"
+                                             completeMethod="#{viajesPorConductorController.conductorServices.complete}"
+                                             labeltip1="#{msg['field.cedula']} #{p.cedula}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}" 
+                                             listener="#{viajesPorConductorController.handleAutocompleteOfListXhtml}"
+                                             value="#{viajesPorConductorController.conductorSearch}"
+                                             itemLabel=" #{p.nombre}"
+                                              dropdown="true"
+                              
+                                                 minQueryLength="0"
+                                             field="nombre"
+                                             update=" :form:dataTable"/>
+                    </b:column>
+                    <b:column medium-screen="25" >
+
+
+                        <jmoordbjsf:searchBetweenDate 
+                            renderedMove="true"
+                            labelDesde="#{msg['field.fechainicio']}"
+                            valueDesde="#{viajesPorConductorController.fechaDesde}"
+                            labelHasta="#{msg['field.fechafin']}"
+                            valueHasta="#{viajesPorConductorController.fechaHasta}"
+                            renderedList="true"  
+                            search="#{viajesPorConductorController.searchBy('_betweendates',viajesPorConductorController.viaje)}"
+                            update=":form:dataTable "
+                            />
+                    </b:column>
+
+                </b:row>
+
+
+            </b:panel>
+            <b:panel collapsible="false" id="dataTable" look="primary">
+
+                <jmoordbjsf:paginator
+                    controller="#{viajesPorConductorController}"                        
+                    rowPage="#{viajesPorConductorController.rowPage}"                   
+                    page="#{viajesPorConductorController.page}"
+                    pages="#{viajesPorConductorController.pages}"
+                    renderedPrint="#{viajesPorConductorController.availablePrint()}"                   
+                    renderedNew="false"              
+                    renderedClear ="false"
+                    skip="ajax:viajesPorConductorController.skip()" 
+                    url = "/pages/viaje/new.xhtml"
+                    />
+
+                <p:dataTable value="#{viajesPorConductorController.programacionVehicular}"
+                             var="item"
+                             id="dataTable2"
+                             >
+
+                    <f:facet name="header">
+                        <p:outputLabel value="#{msg['titlelist.viajes']}"/>
+                   
+                    </f:facet>
+                    <p:column style="width:16px">
+                        <p:rowToggler />
+                    </p:column>
+                   
+
+
+                    <p:column headerText="#{msg['field.fechapartida']}" style="width:130px">
+                        <h:outputText value="#{viajesPorConductorController.showDate(item.fechahorasalida)} #{viajesPorConductorController.showHour(item.fechahorasalida)}" style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}" />
+                        <p:outputLabel value="#{msg['field.dia']} #{item.nombredia}" style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['field.mision']}"  style="width:190px ">
+                        <p:outputLabel value="#{item.mision}" style="font-size: 10; color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}"/>
+
+                    </p:column>
+
+
+
+                    <p:column headerText="#{msg['field.unidad']}" >
+
+                        <p:outputLabel value="#{item.unidad}"/>
+
+                    </p:column>
+
+
+
+                    <p:column headerText="#{msg['field.fecharegreso']}" style="width:100px">
+                        <h:outputText value="#{viajesPorConductorController.showDate(item.fechahoraregreso)} #{viajesPorConductorController.showHour(item.fechahoraregreso)}" style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}" />
+                        
+                    </p:column>
+                    <p:column headerText="#{msg['field.vehiculo']}"  >
+
+                        <p:outputLabel value="#{item.marca} #{item.modelo}  #{msg['field.placa']} #{item.placa}"/>
+
+                    </p:column>
+                    <p:column headerText="#{msg['field.conductor']}" >
+
+                        <p:outputLabel value="#{item.conductor}"/>
+
+                    </p:column>
+
+
+                    <p:rowExpansion >
+
+                        <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
+
+                            <p:outputLabel value="#{msg['field.mision']}"  style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.mision}"  />
+
+                            <p:outputLabel value="#{msg['field.lugarpartida']}" style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.lugarpartida}"  style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}"/>
+
+                            <p:outputLabel value="#{msg['field.lugardestino']}" style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.lugardestino}"  style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}"/>
+
+
+
+                            <p:outputLabel value="#{msg['field.fechasolicitud']}" />
+                            <h:outputText value="#{viajesPorConductorController.showDate(item.fechasolicitud)} #{viajesPorConductorController.showHour(item.fechasolicitud)}" style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}" />
+
+                            <p:outputLabel value="#{msg['field.numerosolicitudes']}" style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}" />
+                            <p:outputLabel value="#{item.numerosolicitudes}"  style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}"/>
+
+                            <p:outputLabel value="#{msg['field.solicita']}" style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.solicita}"  style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}"/>
+
+                            <p:outputLabel value="#{msg['field.responsable']}" style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.responsable}"  style="color: #{viajesPorConductorController.columnColor(item.realizado,item.activo)}"/>
+
+
+                        </b:panelGrid>
+                    </p:rowExpansion>
+
+
+
+
+
+
+                </p:dataTable>
+            </b:panel>
+
+        </b:form>
+
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" />
+    </ui:define>
+</ui:composition>

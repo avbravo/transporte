@@ -62,7 +62,8 @@
                     page="#{viajesSinConductorController.page}"
                     pages="#{viajesSinConductorController.pages}"
                     renderedPrint="#{viajesSinConductorController.availablePrint()}"                   
-                    renderedNew="false"                    
+                    renderedNew="false"              
+                    renderedClear ="false"
                     skip="ajax:viajesSinConductorController.skip()" 
                     url = "/pages/viaje/new.xhtml"
                     />
@@ -119,7 +120,7 @@
 
                     <p:rowExpansion >
 
-                        <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"> 
+                        <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
 
                             <p:outputLabel value="#{msg['field.mision']}"  style="color: #{viajesSinConductorController.columnColor(item.realizado,item.activo)}"/>
                             <p:outputLabel value="#{item.mision}"  />
