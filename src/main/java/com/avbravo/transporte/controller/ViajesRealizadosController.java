@@ -72,7 +72,7 @@ import org.primefaces.event.SelectEvent;
 @ViewScoped
 @Getter
 @Setter
-public class ViajesPendientesController implements Serializable, IController {
+public class ViajesRealizadosController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
@@ -130,7 +130,7 @@ public class ViajesPendientesController implements Serializable, IController {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public ViajesPendientesController() {
+    public ViajesRealizadosController() {
     }
 
     // </editor-fold>
@@ -212,7 +212,7 @@ public class ViajesPendientesController implements Serializable, IController {
 
             } else {
                 for (Viaje v : viajeList) {
-                    if (v.getRealizado().equals("ca") || v.getRealizado().equals("si")) {
+                    if (v.getRealizado().equals("ca") || v.getRealizado().equals("no")) {
 // esta cancelado
                     } else {
                         ProgramacionVehicular pv = new ProgramacionVehicular();
@@ -307,7 +307,7 @@ public class ViajesPendientesController implements Serializable, IController {
             //METADATA
 
             document.open();
-            document.add(ReportUtils.paragraph("VIAJES PENDIENTES", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+            document.add(ReportUtils.paragraph("VIAJES REALIZADOS", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
 
             String texto = "Desde " + DateUtil.showDate(fechaDesde) + "  Hasta: " + DateUtil.showDate(fechaHasta);
             document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
