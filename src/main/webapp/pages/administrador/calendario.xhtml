@@ -1,0 +1,273 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
+    <ui:define name="content">
+
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            } 
+
+        </style>
+
+        <jmoordbjsf:cssschedule/>  
+        <jmoordbjsf:jsschedule/>
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+
+            <b:growl  id="msgs"/>
+
+            <b:panel collapsible="false" title="#{msg['titlelist.calendariosolicitudes']}" id="content"   look="primary" > 
+                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
+                <b:row>
+                    <b:column span="1">
+                        <p:outputLabel value="#{msg['field.idestatus']}"/>
+                    </b:column>
+
+                    <b:column span="4">
+
+
+                        <jmoordbjsf:autocomplete converter="#{estatusConverter}"
+                                                 dropdown="true"
+                                                 minQueryLength="0"
+                                                 completeMethod="#{administradorController.estatusServices.complete}"
+                                                 labeltip1="#{msg['field.estatus']} #{p.idestatus}" 
+                                                 listener="#{administradorController.handleAutocompleteEstatusForSchedule}"
+                                                 value="#{administradorController.estatusSearch}"
+                                                 itemLabel=" #{p.idestatus}"
+                                                 field="idestatus"
+                                                 update=" :form:schedule"/>
+
+                    </b:column>
+
+                    <b:column span="1">
+                        <p:outputLabel value="#{msg['field.tipo']}"/>
+
+                    </b:column>
+
+                    <b:column span="4">
+                        <jmoordbjsf:autocomplete converter="#{tiposolicitudConverter}"
+                                                 completeMethod="#{administradorController.tiposolicitudServices.complete}" 
+                                                 labeltip1="#{msg['field.tiposolicitud']} #{p.idtiposolicitud}"  
+                                                 listener="#{administradorController.handleAutocompleteTipoSolicitudForSchedule}"
+                                                 value="#{administradorController.tiposolicitudSearch}"
+                                                 itemLabel=" #{p.idtiposolicitud}"
+                                                 dropdown="true"
+                                                 minQueryLength="0"
+                                                 field="idtiposolicitud"
+                                                 update=" :form:schedule"/>
+                    </b:column>
+
+                    <b:column span="1"> 
+                        <p:commandButton value="#{app['button.print']}" type="button" icon="pi pi-print" style="display:block;margin-bottom: 20px">
+                            <p:printer target="schedule" />
+                        </p:commandButton>
+                    </b:column>
+                </b:row>
+             
+                <b:row>
+                    <b:column span="1"> <p:outputLabel value="#{msg['field.solicitadopor']}"/></b:column>
+
+                    <b:column span="4">
+                    <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                             completeMethod="#{administradorController.usuarioServices.complete}"
+                                             labeltip1="#{msg['field.username']} #{p.username}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}"   
+                                             listener="#{administradorController.handleAutocompleteSolicitaForSchedule}"
+                                             value="#{administradorController.solicita}"
+                                             itemLabel=" #{p.nombre}"
+                                             field="nombre"
+                                             dropdown="true"
+                                             minQueryLength="0"
+                                             update=":form:schedule"
+                                             size="25"
+                                             />
+</b:column>
+                    <b:column span="2"><p:outputLabel value="#{msg['field.responsable']}"/></b:column>
+
+                    <b:column span="4">
+                        <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                                 completeMethod="#{administradorController.usuarioServices.complete}"
+                                                 labeltip1="#{msg['field.username']} #{p.username}"
+                                                 labeltip2="#{msg['field.nombre']} #{p.nombre}"   
+                                                 listener="#{administradorController.handleAutocompleteResponsableForSchedule}"
+                                                 value="#{administradorController.responsable}"
+                                                 itemLabel=" #{p.nombre}"
+                                                 field="nombre"
+                                                 dropdown="true"
+                                                 minQueryLength="0"
+                                                 update=":form:schedule"
+                                                 size="25"
+                                                 />
+                    </b:column>
+
+                </b:row>
+
+                <p:schedule id="schedule"  
+                            rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
+                            value="#{administradorController.eventModel}"
+                            widgetVar="myschedule" timeZone="GMT-5" locale="es">
+                    <p:ajax  event="eventSelect"  listener="#{administradorController.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+
+                </p:schedule>
+
+                <b:panel collapsible="false" id="colores" autoUpdate="true" >
+                    <b:row >
+
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.solicitado']} #{administradorController.totalSolicitado}" style="color:orange"/>
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.aprobado']} #{administradorController.totalAprobado}" style="color:green"/>
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.rechazadocancelado']} #{administradorController.totalRechazadoCancelado}" style="color:red"/>
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.viaje']} #{administradorController.totalViajes}" style="color:blue"/>
+
+                        </b:column>
+
+                    </b:row>
+                    <b:row >
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.vistobueno']}" />
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.pendiente']} #{administradorController.totalPendienteVistoBueno}" style="color:orange"/>
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.aprobado']} #{administradorController.totalAprobadoVistoBueno}" style="color:green"/>
+                        </b:column>
+                        <b:column span="3">
+                            <p:outputLabel value="#{msg['label.noaprobado']} #{administradorController.totalNoAprobadoVistoBueno}" style="color:red"/>
+                        </b:column>
+
+                    </b:row>
+
+
+
+
+                </b:panel>
+            </b:panel>
+
+
+
+
+            <p:dialog widgetVar="eventDialog" header="#{msg['dialogo.solicitud']}" 
+                      width="650" height="450"
+                      styleClass="customDialog"
+
+                      responsive="true"
+
+                      showEffect="clip" hideEffect="clip">
+                <b:panelGrid id="eventDetails" colSpans="2,10" size="xs" > 
+                    <p:outputLabel  value="#{msg['field.idsolicitud']}" />
+                    <p:outputLabel  value="#{administradorController.solicitud.idsolicitud}" id="idsolicitud"   />
+
+                    <p:outputLabel  value="#{msg['field.solicitadopor']}" />
+                    <p:outputLabel  value="#{administradorController.solicitud.usuario.get(0).nombre}" id="solicitadopor"   />
+
+                    <p:outputLabel  value="#{msg['field.responsable']}" />
+                    <p:outputLabel  value="#{administradorController.solicitud.usuario.get(1).nombre}" id="responsable"   />
+
+                    <p:outputLabel value="#{msg['field.idestatus']}" />
+                    <p:outputLabel value="#{administradorController.solicitud.estatus.idestatus}" />
+
+
+
+                    <p:outputLabel value="#{msg['field.vistobueno']}" />
+                    <p:outputLabel value="#{administradorController.columnNameVistoBueno()}"  />
+
+
+                    <p:outputLabel  value="#{msg['field.fechapartida']}" />
+                    <p:fieldset >
+                        <p:calendar  disabled="true"  size="8"                                  
+                                     style="background-color: grey;"
+                                     pattern="dd/MM/yyyy" value="#{administradorController.solicitud.fechahorapartida}"  />
+
+                        <p:outputLabel  value="#{msg['field.horapartida']}" />        
+                        <p:calendar  disabled="true"    
+                                     size="8" 
+                                     pattern="HH:mm:ss a" value="#{administradorController.solicitud.fechahorapartida}"  />
+
+
+                    </p:fieldset>
+
+
+                    <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+
+                    <p:outputLabel value="#{administradorController.solicitud.lugarpartida}" id="lugarpartida"   />
+                    <p:outputLabel  value="#{msg['field.lugarllegada']}" />
+
+                    <p:outputLabel value="#{administradorController.solicitud.lugarllegada}" id="lugarllegada"   />
+
+
+                    <p:outputLabel  value="#{msg['field.fecharegreso']}" />
+                    <p:fieldset >
+
+                        <p:calendar  disabled="true"  size="8"                                  
+                                     style="background-color: grey;"
+                                     pattern="dd/MM/yyyy" value="#{administradorController.solicitud.fechahoraregreso}"  />
+
+
+
+                        <p:outputLabel  value="#{msg['field.horaregreso']}" />
+                        <p:calendar  disabled="true"    
+                                     size="8" 
+                                     pattern="HH:mm:ss a" value="#{administradorController.solicitud.fechahoraregreso}"  />
+
+
+                    </p:fieldset>
+
+                    <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
+                    <p:outputLabel  value="#{administradorController.solicitud.numerodevehiculos}" />
+                    <p:outputLabel  value="#{msg['field.pasajeros']}" />
+                    <p:outputLabel  value="#{administradorController.solicitud.pasajeros}" />
+
+
+                    <p:outputLabel  value="#{msg['field.numerogrupos']}" />
+                    <p:chips id="numerogrupo" disabled="true" value="#{administradorController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
+                    <p:outputLabel value="#{msg['field.idtipogira']}"/>
+                    <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
+                                             completeMethod="#{administradorController.tipogiraServices.complete}" 
+                                             labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"  
+                                             listener="#{administradorController.handleSelect}"
+                                             value="#{administradorController.solicitud.tipogira}"
+                                             itemLabel=" #{p.idtipogira}"
+                                             field="idtipogira"
+                                             dropdown="true"
+                                             fromstart="true"
+                                             minQueryLength="0"
+                                             disabled="true"
+                                             update=""/>
+
+                    <p:outputLabel  value="#{msg['field.objetivo']}" />
+                    <b:inputTextarea disabled="true" rows="2" span="8"  value="#{administradorController.solicitud.objetivo}" id="objetivo"   />
+
+
+
+                    <p:outputLabel  value="#{msg['field.lugares']}" />
+                    <p:chips disabled="true" value="#{administradorController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
+
+
+                </b:panelGrid>
+            </p:dialog>
+        </b:form>
+
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}"/>
+    </ui:define>
+</ui:composition>
