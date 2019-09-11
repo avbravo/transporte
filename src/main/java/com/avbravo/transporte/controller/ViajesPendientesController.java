@@ -38,6 +38,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.PageSize;
+import com.mongodb.client.model.Filters;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -59,6 +60,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
 
@@ -216,10 +218,16 @@ public class ViajesPendientesController implements Serializable, IController {
 //                    break;
 //
 //                case "_betweendates":
-            viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("activo", "si",
+//            viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("activo", "si",
+//                    "fechahorainicioreserva", fechaDesde,
+//                    "fechahorafinreserva", fechaHasta,
+//                    page, rowPage, new Document("fechahorainicioreserva", -1));
+            
+            Bson filter = Filters.eq("activo","si");            
+            viajeList = viajeRepository.filterBetweenDateWithoutHours(filter,
                     "fechahorainicioreserva", fechaDesde,
                     "fechahorafinreserva", fechaHasta,
-                    page, rowPage, new Document("fechahorainicioreserva", -1));
+                     new Document("fechahorainicioreserva", -1));
 //                    break;
 //
 //                default:
@@ -314,7 +322,7 @@ public class ViajesPendientesController implements Serializable, IController {
     }
 
     // </editor-fold>  
-    // <editor-fold defaultstate="collapsed" desc="void imprimir() ">
+    // <editor-fold defaultstate="collapsed" desc="String printAll()">
     @Override
     public String printAll() {
 
@@ -381,7 +389,7 @@ public class ViajesPendientesController implements Serializable, IController {
     }
     // </editor-fold>  
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="Boolean availablePrint()">
     public Boolean availablePrint() {
         return !programacionVehicular.isEmpty();
     }

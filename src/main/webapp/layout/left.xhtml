@@ -75,101 +75,23 @@ Hint to editors: The menus follow the Chicago style of capitalization. Please ca
                 </b:dropMenu>
 
                 <b:navLink value="#{msg['menu.notificar']}" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" outcome="/pages/secretarioadministrativo/notificar" iconAwesome= "fa-phone" />    
-                <b:dropMenu value="#{msg['menu.timeline']}" iconAwesome="fa-list" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}">
+               
                     <b:navCommandLink value="#{msg['menu.timelinevehiculo']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineVehiculo()}" iconAwesome= "fa-list" />    
                     <b:navCommandLink value="#{msg['menu.timelineconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineConductor()}" iconAwesome= "fa-list" />    
                     <b:navCommandLink value="#{msg['menu.timelinesolicitud']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineSolicitud()}" iconAwesome= "fa-list" />    
                     <b:navCommandLink value="#{msg['menu.timelineusuario']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineUsuarioSolicitud()}" iconAwesome= "fa-list" />    
-                </b:dropMenu>
+               
 
-                <b:navLink rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO, CONDUCTOR')}" />                <b:navLink value="#{msg['menu.disponibles']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/disponibles/disponibles" iconAwesome= "fa-car" />  
-                
-                <b:navLink value="#{msg['menu.programacionvehicular']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO, CONDUCTOR')}" outcome="/pages/programacionvehicular/programacionvehicular" iconAwesome= "fa-print" />  
-                <b:navLink value="#{msg['menu.viajespendientes']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/viajespendientes/viajespendientes" iconAwesome= "fa-car" />    
                 
      
 
 
 
-                <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{p:ifGranted('ADMINISTRADOR')}" outcome="/pages/solicitudmanualdocente/list" iconAwesome= "fa-calendar-o" />
-                <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{p:ifGranted('ADMINISTRADOR')}"  outcome="/pages/solicitudmanualadministrativo/list" iconAwesome= "fa-calendar-o" />
+
+                
 
 
-
-                <b:navLink></b:navLink>
-
-                <b:dropMenu value="#{msg['menubar.calendario']}" rendered="#{p:ifGranted('ADMINISTRADOR')}">
-                    <b:navLink value="#{msg['menu.viajes']}"  outcome="/pages/calendario/viaje" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.solicitudes']}"  outcome="/pages/calendario/solicitudes" iconAwesome= "fa-calendar-o" />
-
-
-
-                </b:dropMenu>
-
-                <b:dropMenu value="#{msg['menubar.viaje']}"  icon="globe" iconAlign="right" rendered="#{p:ifGranted('ADMINISTRADOR')}">
-                    <b:navLink value="#{msg['menu.viajes']}"  outcome="/pages/viaje/list" iconAwesome= "fa-book" />
-                    <b:navLink/>
-                </b:dropMenu>
-                <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{p:ifGranted('ADMINISTRADOR')}">
-                    <b:navLink value="#{msg['menu.solicitudpendiente']}"  outcome="/pages/reportes/solicitudpendiente" iconAwesome= "fa-battery-empty" />
-                    <b:navLink value="#{msg['menu.viajesporvehiculo']}"  outcome="/pages/reportes/viajeporvehiculo" iconAwesome= "fa-car" />
-                    <b:navLink value="#{msg['menu.viajesporconductor']}"  outcome="/pages/reportes/viajeporconductor" iconAwesome= "fa-drivers-license-o" />
-                    <b:navLink value="#{msg['menu.viajespendientes']}"  outcome="/pages/reportes/viajependiente" iconAwesome= "fa-book" />
-                    <b:navLink/>
-                    <b:navLink value="#{msg['menu.viajesrealizados']}" outcome="/pages/reportes/viajerealizado" iconAwesome= "fa-drivers-license-o" />
-
-                    <b:navLink value="#{msg['menu.viajessinconductor']}"  outcome="/pages/reportes/viajesinconductor" iconAwesome= "fa-child" />
-
-                    <b:navLink value="#{msg['menu.viajessinsolicitud']}"  outcome="/pages/reportes/viajesinsolicitud" iconAwesome= "fa-unlink" />
-
-                    <b:navLink/>
-                    <b:navLink value="#{msg['menu.kmrecorridosporvehiculo']}"  outcome="/pages/reportes/kmrecorridosporvehiculo" iconAwesome= "fa-map-signs" />
-                    <b:navLink value="#{msg['menu.kmrecorridosporconductor']}"  outcome="/pages/reportes/kmrecorridosporconductor" iconAwesome= "fa-map-signs" />
-                    <b:navLink/>
-                    <b:navLink value="#{msg['menu.programacionflota']}"  outcome="/pages/reportes/programacionflota" iconAwesome= "fa-bus" />
-                </b:dropMenu>
-
-
-                <b:dropMenu value="#{msg['menubar.registros']}"  icon="link" rendered="#{p:ifGranted('ADMINISTRADOR')}">
-
-
-
-                    <b:navLink value="#{msg['menu.vehiculo']}"  outcome="/pages/vehiculo/list" iconAwesome= "fa-car" />
-                    <b:navLink value="#{msg['menu.vehiculocambiarplaca']}"  outcome="/pages/vehiculo/cambiarplaca" iconAwesome="fa-pencil-square-o" />
-                    <b:navLink />
-                    <b:navLink value="#{msg['menu.conductor']}"  outcome="/pages/conductor/list" iconAwesome= "fa-drivers-license-o" />
-
-                    <b:navLink value="#{msg['menu.cambiarcedulaconductor']}"  outcome="/pages/conductor/cambiarcedula" iconAwesome="fa-pencil-square-o" />
-                    <b:navLink/>
-                    <b:navLink value="#{msg['menu.estatus']}"   outcome="/pages/estatus/list" iconAwesome="fa-address-card " />
-                    <b:navLink value="#{msg['menu.estatusviaje']}"   outcome="/pages/estatusviaje/list" iconAwesome="fa-thermometer-half" />
-                    <b:navLink value="#{msg['menu.lugares']}"   outcome="/pages/lugares/list" iconAwesome=" fa-building" />
-                    <b:navLink/>
-                    <b:navLink value="#{msg['menu.tipovehiculo']}"  outcome="/pages/tipovehiculo/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.tiposolicitud']}" outcome="/pages/tiposolicitud/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.sugerencia']}"  outcome="/pages/sugerencia/list" iconAwesome= "fa-comments-o" />
-
-                    <b:navLink/>
-                    <b:navLink value="#{msg['menu.tipogira']}"  outcome="/pages/tipogira/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.unidad']}"  outcome="/pages/unidad/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink/>
-                    <b:navLink value="#{msg['menu.semestre']}"  outcome="/pages/semestre/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.facultad']}" outcome="/pages/facultad/list" iconAwesome= "fa-calendar-o" />
-                    <b:navLink value="#{msg['menu.carrera']}"  outcome="/pages/carrera/list" iconAwesome= "fa-calendar-o" />
-
-
-                </b:dropMenu>
-
-
-
-                <b:dropMenu value="#{msg['menubar.administracion']}"  rendered="#{p:ifGranted('ADMINISTRADOR')}">
-                    <b:navLink value="#{msg['menu.usuario']}"  outcome="/pages/usuario/list" icon="user"  />
-                    <b:navLink value="#{msg['menu.rol']}"  outcome="/pages/rol/list" iconAwesome="desktop"  />
-                    <b:navLink value="#{msg['menu.emailmaster']}"  outcome="/pages/emailmaster/list" iconAwesome="fa-twitch"  />
-
-
-
-                </b:dropMenu>
+             
 
             </b:listLinks>
         </b:panel>

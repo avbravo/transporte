@@ -39,6 +39,8 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.PageSize;
 import com.mongodb.client.model.Filters;
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -72,7 +74,7 @@ import org.primefaces.event.SelectEvent;
 @ViewScoped
 @Getter
 @Setter
-public class ViajesSinConductorController implements Serializable, IController {
+public class ViajesSinSolicitudController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
@@ -130,7 +132,7 @@ public class ViajesSinConductorController implements Serializable, IController {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public ViajesSinConductorController() {
+    public ViajesSinSolicitudController() {
     }
 
     // </editor-fold>
@@ -201,107 +203,97 @@ public class ViajesSinConductorController implements Serializable, IController {
             viajeDataModel = new ViajeDataModel(viajeList);
             Document doc;
 
-//            switch (getSearch()) {
-//                case "_init":
-//                case "_autocomplete":
-//                    viajeList = viajeRepository.findPagination(page, rowPage);
-//                    break;
-//
-//                case "activo":
-//                    if (getValueSearch() != null) {
-//                        viajeSearch.setActivo(getValueSearch().toString());
-//                        doc = new Document("activo", viajeSearch.getActivo());
-//                        viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("fechahorainicioreserva", -1));
-//                    } else {
-//                        viajeList = viajeRepository.findPagination(page, rowPage);
-//                    }
-//                    break;
-//
-//                case "_betweendates":
-//            viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("activo", "si",
-//                    "fechahorainicioreserva", fechaDesde,
-//                    "fechahorafinreserva", fechaHasta,
-//                    page, rowPage, new Document("fechahorainicioreserva", -1));
-            
-               Bson filter = Filters.eq("activo","si");    
-            viajeList = viajeRepository.filterBetweenDateWithoutHours(filter,
+            Bson filterActivo = Filters.eq("activo", "si");
+            List<Viaje> listv = viajeRepository.filterBetweenDateWithoutHours(filterActivo,
                     "fechahorainicioreserva", fechaDesde,
                     "fechahorafinreserva", fechaHasta,
                     new Document("fechahorainicioreserva", -1));
-            
-            
-//                    break;
-//
-//                default:
-//                    viajeList = viajeRepository.findPagination(page, rowPage);
-//                    break;
-//            }
-            if (viajeList == null || viajeList.isEmpty()) {
+
+            viajeList = new ArrayList<>();
+            if (listv == null || listv.isEmpty()) {
 
             } else {
-                for (Viaje v : viajeList) {
-                    if (v.getRealizado().equals("ca") || v.getRealizado().equals("si")) {
-// esta cancelado
-                    } else {
-                        //CONDUCTOR PENDIENTE
-                        if (v.getConductor().getIdconductor() == 5) {
+                //Busca en la solicitud si existe una solicitud con ese viaje asignado
+                for (Viaje v : listv) {
+                    Bson filter = Filters.or(
+                            Filters.eq("viaje.0.idviaje", v.getIdviaje()),
+                            Filters.eq("viaje.1.idviaje", v.getIdviaje())
+                    );
 
-                            ProgramacionVehicular pv = new ProgramacionVehicular();
-                            pv.setConductor(v.getConductor().getNombre());
-                            pv.setFechahoraregreso(v.getFechahorafinreserva());
-                            pv.setFechahorasalida(v.getFechahorainicioreserva());
-                            pv.setIdviaje(v.getIdviaje());
-                            pv.setMarca(v.getVehiculo().getMarca());
-                            pv.setModelo(v.getVehiculo().getModelo());
-                            pv.setPlaca(v.getVehiculo().getPlaca());
-                            pv.setNombredia(DateUtil.nameOfDay(pv.getFechahorasalida()));
-                            pv.setResponsable(v.getRealizado());
-                            pv.setActivo(v.getActivo());
-                            pv.setLugardestino(v.getLugardestino());
-                            pv.setLugarpartida(v.getLugarpartida());
-                            pv.setMision(v.getMision());
-                            //Datos de la solicitud
-                            pv.setFechasolicitud(v.getFechahorainicioreserva());
-                            pv.setNumerosolicitudes("");
-
-                            pv.setUnidad("");
-                            pv.setResponsable("");
-                            pv.setSolicita("");
-                            Solicitud solicitud = new Solicitud();
-//Busco la solicitud
-                            Document search = new Document("viaje.idviaje", v.getIdviaje());
-                            List<Solicitud> list = solicitudRepository.findBy(search);
-                            if (list == null || list.isEmpty()) {
-
-                            } else {
-                                String unidad = "";
-
-                                String numeroSolicitudes = "";
-                                String responsable = "";
-                                String solicita = "";
-                                //Se recorren todas las solicitudes que tengan ese viaje asignado.
-                                for (Solicitud s : list) {
-                                    pv.setFechasolicitud(s.getFecha());
-                                    for (Unidad u : s.getUnidad()) {
-                                        unidad += " " + u.getIdunidad();
-                                    }
-
-                                    numeroSolicitudes += " " + String.valueOf(s.getIdsolicitud());
-                                    solicita += " " + s.getUsuario().get(0).getNombre();
-                                    responsable += " " + s.getUsuario().get(1).getNombre();
-                                }
-                                pv.setUnidad(unidad.trim());
-
-                                pv.setNumerosolicitudes(numeroSolicitudes.trim());
-                                pv.setResponsable(responsable.trim());
-                                pv.setSolicita(solicita.trim());
-
-                            }
-                            programacionVehicular.add(pv);
-                        }
+                    List<Solicitud> solicitudList = solicitudRepository.findBy(and(eq("activo", "si"), filter), new Document("idsolicitud", -1));
+                    if (solicitudList == null || solicitudList.isEmpty()) {
+                        viajeList.add(v);
                     }
-                }//for
+                }
+
+                if (viajeList == null || viajeList.isEmpty()) {
+
+                } else {
+                    for (Viaje v : viajeList) {
+                        if (v.getRealizado().equals("ca") || v.getRealizado().equals("si")) {
+// esta cancelado
+                        } else {
+                            //CONDUCTOR PENDIENTE
+                            if (v.getConductor().getIdconductor() == 5) {
+
+                                ProgramacionVehicular pv = new ProgramacionVehicular();
+                                pv.setConductor(v.getConductor().getNombre());
+                                pv.setFechahoraregreso(v.getFechahorafinreserva());
+                                pv.setFechahorasalida(v.getFechahorainicioreserva());
+                                pv.setIdviaje(v.getIdviaje());
+                                pv.setMarca(v.getVehiculo().getMarca());
+                                pv.setModelo(v.getVehiculo().getModelo());
+                                pv.setPlaca(v.getVehiculo().getPlaca());
+                                pv.setNombredia(DateUtil.nameOfDay(pv.getFechahorasalida()));
+                                pv.setResponsable(v.getRealizado());
+                                pv.setActivo(v.getActivo());
+                                pv.setLugardestino(v.getLugardestino());
+                                pv.setLugarpartida(v.getLugarpartida());
+                                pv.setMision(v.getMision());
+                                //Datos de la solicitud
+                                pv.setFechasolicitud(v.getFechahorainicioreserva());
+                                pv.setNumerosolicitudes("");
+
+                                pv.setUnidad("");
+                                pv.setResponsable("");
+                                pv.setSolicita("");
+                                Solicitud solicitud = new Solicitud();
+//Busco la solicitud
+                                Document search = new Document("viaje.idviaje", v.getIdviaje());
+                                List<Solicitud> list = solicitudRepository.findBy(search);
+                                if (list == null || list.isEmpty()) {
+
+                                } else {
+                                    String unidad = "";
+
+                                    String numeroSolicitudes = "";
+                                    String responsable = "";
+                                    String solicita = "";
+                                    //Se recorren todas las solicitudes que tengan ese viaje asignado.
+                                    for (Solicitud s : list) {
+                                        pv.setFechasolicitud(s.getFecha());
+                                        for (Unidad u : s.getUnidad()) {
+                                            unidad += " " + u.getIdunidad();
+                                        }
+
+                                        numeroSolicitudes += " " + String.valueOf(s.getIdsolicitud());
+                                        solicita += " " + s.getUsuario().get(0).getNombre();
+                                        responsable += " " + s.getUsuario().get(1).getNombre();
+                                    }
+                                    pv.setUnidad(unidad.trim());
+
+                                    pv.setNumerosolicitudes(numeroSolicitudes.trim());
+                                    pv.setResponsable(responsable.trim());
+                                    pv.setSolicita(solicita.trim());
+
+                                }
+                                programacionVehicular.add(pv);
+                            }
+                        }
+                    }//for
+                }
             }
+
             viajeDataModel = new ViajeDataModel(viajeList);
 
         } catch (Exception e) {
