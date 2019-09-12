@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
+                >
+    <ui:define name="content">
+
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            } 
+        </style>
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+
+            <b:growl  id="msgs"/>
+
+            <b:panel collapsible="false" title="#{msg['titlelist.solicitudesporusuarios']}" id="content"   look="primary" > 
+                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
+
+                <b:row>
+                    <b:column medium-screen="25" >
+                        <p:outputLabel  value="#{msg['field.usuario']}" />
+
+                        <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                                 completeMethod="#{solicitudesPorUsuariosController.usuarioServices.complete}"
+                                                 labeltip1="#{msg['field.username']} #{p.username}"
+                                                 labeltip2="#{msg['field.nombre']} #{p.nombre}"  
+                                                 listener="#{solicitudesPorUsuariosController.handleAutocompleteOfListXhtml}"
+                                                 value="#{solicitudesPorUsuariosController.usuarioSearch}"
+                                                 itemLabel=" #{p.nombre}"
+                                                 field="nombre"
+                                                 dropdown="true"
+                                                 minQueryLength="0"
+                                                 disabled="false"
+                                                 update=" :form:dataTable"
+                                                 />
+
+                    </b:column>
+
+
+                    <b:column medium-screen="25" >
+
+
+                        <jmoordbjsf:searchBetweenDate 
+                            renderedMove="true"
+                            labelDesde="#{msg['field.fechainicio']}"
+                            valueDesde="#{solicitudesPorUsuariosController.fechaDesde}"
+                            labelHasta="#{msg['field.fechafin']}"
+                            valueHasta="#{solicitudesPorUsuariosController.fechaHasta}"
+                            renderedList="true"  
+                            search="#{solicitudesPorUsuariosController.searchBy('_betweendates',solicitudesPorUsuariosController.solicitud)}"
+                            update=":form:dataTable "
+                            />
+                    </b:column>
+
+                </b:row>
+
+
+            </b:panel>
+            <b:panel collapsible="false" id="dataTable" look="primary">
+
+                <jmoordbjsf:paginator
+                    controller="#{solicitudesPorUsuariosController}"                        
+                    rowPage="#{solicitudesPorUsuariosController.rowPage}"                   
+                    page="#{solicitudesPorUsuariosController.page}"
+                    pages="#{solicitudesPorUsuariosController.pages}"
+                    renderedPrint="#{solicitudesPorUsuariosController.availablePrint()}"                   
+                    renderedNew="false"                 
+                    renderedClear ="false"
+                    skip="ajax:solicitudesPorUsuariosController.skip()" 
+                    url = "/pages/viaje/new.xhtml"
+                    />
+
+                <p:dataTable value="#{solicitudesPorUsuariosController.solicitudDataModel}"
+                             var="item"
+                             id="dataTable2"
+                             >
+
+                    <f:facet name="header">
+                        <p:outputLabel value="#{msg['titlelist.solicitudes']}"/>
+                    </f:facet>
+                    <p:column style="width:16px">
+                        <p:rowToggler />
+                    </p:column>
+
+                    <p:column headerText="#{msg['field.idsolicitud']}" style="width:75px">
+                        <h:outputText value="#{item.idsolicitud}"    />
+                    </p:column>
+
+                    <p:column headerText="#{msg['field.fechapartida']}" style="width:150px">
+                        <h:outputText value="#{solicitudController.showDate(item.fechahorapartida)} #{solicitudController.showHour(item.fechahorapartida)}"    />
+                    </p:column>
+                    <p:column headerText="#{msg['field.fecharegreso']}" style="width:150px">
+                        <h:outputText value="#{solicitudController.showDate(item.fechahoraregreso)} #{solicitudController.showHour(item.fechahoraregreso)}"    />
+                    </p:column>
+                    <p:column headerText="#{msg['field.solicita']}" style="width:150px">
+                        <h:outputText value="#{item.usuario.get(0).nombre}"    />
+                    </p:column>
+
+
+                    <p:column headerText="#{msg['field.vistobueno']}"  >
+                        <p:outputLabel value="#{secretarioAdministrativoController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}" 
+                                       />
+                    </p:column>
+                    <p:column headerText="#{msg['field.estatus']}"  >
+                        <p:outputLabel  value="#{item.estatus.idestatus}"    />
+                    </p:column>
+
+
+
+
+
+                    <p:rowExpansion>
+
+                        <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
+
+                            <p:outputLabel value="#{msg['field.fecharegreso']}" />
+                            <p:outputLabel value="#{solicitudesPorUsuariosController.showDate(item.fechahoraregreso)}"  />
+
+                            <p:outputLabel value="#{msg['field.horaregreso']}" />
+                            <p:outputLabel value="#{solicitudesPorUsuariosController.showHour(item.fechahoraregreso)}"  />
+
+                            <p:outputLabel  value="#{msg['field.solicitadopor']}" />
+                            <p:outputLabel  value="#{item.usuario.get(0).nombre}" id="solicitadopor"   />
+
+                            <p:outputLabel  value="#{msg['field.responsable']}" />
+                            <p:outputLabel  value="#{item.usuario.get(1).nombre}" id="responsable"   />
+
+
+
+                            <p:outputLabel value="#{msg['field.objetivo']}"  />
+                            <p:outputLabel value="#{item.objetivo}"   />
+                            <p:outputLabel value="#{msg['field.lugares']}"/>
+                            <p:outputLabel value="#{item.lugares}"    />
+
+
+
+
+                            <p:outputLabel  value="#{msg['field.facultad']}" />
+                            <p:repeat value="#{item.facultad}" var="car">
+                                <p:outputLabel value="#{car.descripcion}"/>
+                            </p:repeat>
+
+                            <p:outputLabel  value="#{msg['field.carrera']}" />
+                            <p:repeat value="#{item.carrera}" var="car">
+                                <p:outputLabel value="#{car.descripcion}"/>
+                            </p:repeat>
+                            <p:outputLabel  value="#{msg['field.numerogrupos']}" />
+                            <p:outputLabel  value="#{item.numerogrupo}" />
+
+
+
+                            <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
+
+                            <p:outputLabel  value="#{item.numerodevehiculos}"  />
+
+                            <p:outputLabel  value="#{msg['field.pasajeros']}" >
+                                <i class="pi pi-users"></i>
+                            </p:outputLabel>
+                            <p:outputLabel value="#{item.pasajeros}"   />
+
+                            <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+                            <p:outputLabel value="#{item.lugarpartida}"  />
+                            <p:outputLabel  value="#{msg['field.lugarllegada']}" >
+                                <i class="pi pi-home"></i>
+                            </p:outputLabel>
+                            <p:outputLabel value="#{item.lugarllegada}" />
+
+
+                            <p:outputLabel  value="#{msg['field.coordinador']}"  />
+                            <p:outputLabel value="#{solicitudesPorUsuariosController.columnNameVistoBueno(item.vistoBueno)}"      />
+
+
+                            <p:outputLabel  value="#{msg['field.secadministrativo']}" />
+                            <p:outputLabel value="#{secretarioAdministrativoController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"      />
+
+
+
+                            <p:outputLabel value="#{msg['field.tiposolicitud']}" />
+                            <p:outputLabel  value="#{item.tiposolicitud.idtiposolicitud}"    />
+
+                            <p:outputLabel value="#{msg['field.estatus']}" />
+                            <p:outputLabel  value="#{item.estatus.idestatus}"    />
+
+                        </b:panelGrid>
+                    </p:rowExpansion>
+                </p:dataTable>
+            </b:panel>
+
+        </b:form>
+
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" />
+    </ui:define>
+</ui:composition>
