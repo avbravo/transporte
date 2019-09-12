@@ -27,7 +27,7 @@
 
             <b:growl  id="msgs"/>
 
-            <b:panel collapsible="false" title="#{msg['titlelist.solicitudespendientes']}" id="content"   look="primary" > 
+            <b:panel collapsible="false" title="#{msg['titlelist.solicitudesaprobadas']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
 
 
@@ -41,11 +41,11 @@
                         <jmoordbjsf:searchBetweenDate 
                             renderedMove="true"
                             labelDesde="#{msg['field.fechainicio']}"
-                            valueDesde="#{solicitudesPendientesController.fechaDesde}"
+                            valueDesde="#{solicitudesAprobadasController.fechaDesde}"
                             labelHasta="#{msg['field.fechafin']}"
-                            valueHasta="#{solicitudesPendientesController.fechaHasta}"
+                            valueHasta="#{solicitudesAprobadasController.fechaHasta}"
                             renderedList="true"  
-                            search="#{solicitudesPendientesController.searchBy('_betweendates',solicitudesPendientesController.solicitud)}"
+                            search="#{solicitudesAprobadasController.searchBy('_betweendates',solicitudesAprobadasController.solicitud)}"
                             update=":form:dataTable "
                             />
                     </b:column>
@@ -57,18 +57,18 @@
             <b:panel collapsible="false" id="dataTable" look="primary">
 
                 <jmoordbjsf:paginator
-                    controller="#{solicitudesPendientesController}"                        
-                    rowPage="#{solicitudesPendientesController.rowPage}"                   
-                    page="#{solicitudesPendientesController.page}"
-                    pages="#{solicitudesPendientesController.pages}"
-                    renderedPrint="#{solicitudesPendientesController.availablePrint()}"                   
+                    controller="#{solicitudesAprobadasController}"                        
+                    rowPage="#{solicitudesAprobadasController.rowPage}"                   
+                    page="#{solicitudesAprobadasController.page}"
+                    pages="#{solicitudesAprobadasController.pages}"
+                    renderedPrint="#{solicitudesAprobadasController.availablePrint()}"                   
                     renderedNew="false"                 
                     renderedClear ="false"
-                    skip="ajax:solicitudesPendientesController.skip()" 
+                    skip="ajax:solicitudesAprobadasController.skip()" 
                     url = "/pages/viaje/new.xhtml"
                     />
 
-                <p:dataTable value="#{solicitudesPendientesController.solicitudDataModel}"
+                <p:dataTable value="#{solicitudesAprobadasController.solicitudDataModel}"
                              var="item"
                              id="dataTable2"
                              >
@@ -112,10 +112,10 @@
                         <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
 
                             <p:outputLabel value="#{msg['field.fecharegreso']}" />
-                            <p:outputLabel value="#{solicitudesPendientesController.showDate(item.fechahoraregreso)}"  />
+                            <p:outputLabel value="#{solicitudesAprobadasController.showDate(item.fechahoraregreso)}"  />
 
                             <p:outputLabel value="#{msg['field.horaregreso']}" />
-                            <p:outputLabel value="#{solicitudesPendientesController.showHour(item.fechahoraregreso)}"  />
+                            <p:outputLabel value="#{solicitudesAprobadasController.showHour(item.fechahoraregreso)}"  />
 
                             <p:outputLabel  value="#{msg['field.solicitadopor']}" />
                             <p:outputLabel  value="#{item.usuario.get(0).nombre}" id="solicitadopor"   />
@@ -165,7 +165,7 @@
                            
 
                             <p:outputLabel  value="#{msg['field.coordinador']}"  />
-                            <p:outputLabel value="#{solicitudesPendientesController.columnNameVistoBueno(item.vistoBueno)}"      />
+                            <p:outputLabel value="#{solicitudesAprobadasController.columnNameVistoBueno(item.vistoBueno)}"      />
 
 
                             <p:outputLabel  value="#{msg['field.secadministrativo']}" />

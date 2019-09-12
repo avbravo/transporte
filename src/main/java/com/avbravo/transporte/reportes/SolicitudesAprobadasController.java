@@ -60,7 +60,7 @@ import org.primefaces.event.SelectEvent;
 @ViewScoped
 @Getter
 @Setter
-public class SolicitudesPendientesController implements Serializable, IController {
+public class SolicitudesAprobadasController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
@@ -117,7 +117,7 @@ public class SolicitudesPendientesController implements Serializable, IControlle
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public SolicitudesPendientesController() {
+    public SolicitudesAprobadasController() {
     }
 
     // </editor-fold>
@@ -188,7 +188,7 @@ public class SolicitudesPendientesController implements Serializable, IControlle
             solicitudDataModel = new SolicitudDataModel(solicitudList);
             Document doc;
             
-         Bson filter = Filters.eq("estatus.idestatus", "SOLICITADO");
+         Bson filter = Filters.eq("estatus.idestatus", "APROBADO");
           solicitudList = solicitudRepository.filterBetweenDateWithoutHours(filter,
                     "fechahorapartida", fechaDesde,
                     "fechahoraregreso", fechaHasta,
@@ -227,7 +227,7 @@ public class SolicitudesPendientesController implements Serializable, IControlle
             //METADATA
 
             document.open();
-            document.add(ReportUtils.paragraph("SOLICITUDES PENDIENTES", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+            document.add(ReportUtils.paragraph("SOLICITUDES APROBADAS", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
 
             String texto = "Desde " + DateUtil.showDate(fechaDesde) + "  Hasta: " + DateUtil.showDate(fechaHasta);
             document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));

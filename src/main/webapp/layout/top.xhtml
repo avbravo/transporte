@@ -93,8 +93,10 @@
                     </h:form>
                 </b:dropMenu>
                 <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}">
-                    <b:navLink value="#{msg['menu.solicitudpendiente']}"  outcome="/pages/reportes/solicitudpendiente" iconAwesome= "fa-battery-empty" />
-                    <b:navLink value="#{msg['menu.solicitudpendiente']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudespendientes" iconAwesome= "fa-battery-empty" />
+                    <b:navLink value="#{msg['menu.solicitudpendiente']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudespendientes" iconAwesome= "fa-battery-empty" />                    
+                    <b:navLink value="#{msg['menu.solicitudesaprobadas']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudesaprobadas" iconAwesome= "fa-battery-full" />
+                                        
+                                        
 
 
 
