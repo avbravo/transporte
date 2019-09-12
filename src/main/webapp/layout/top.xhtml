@@ -95,9 +95,9 @@
                 <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}">
                     <b:navLink value="#{msg['menu.solicitudpendiente']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudespendientes" iconAwesome= "fa-battery-empty" />                    
                     <b:navLink value="#{msg['menu.solicitudesaprobadas']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudesaprobadas" iconAwesome= "fa-battery-full" />
-                    <b:navLink value="#{msg['menu.solicitudescanceladas']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudescanceladas" iconAwesome= "fa-battery-empty" />
+                    <b:navLink value="#{msg['menu.solicitudescanceladas']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudescanceladas" iconAwesome= "fa-eraser" />
                     <b:navLink value="#{msg['menu.solicitudesrechazadas']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudesrechazadas" iconAwesome= "fa-battery-empty" />
-                    <b:navLink value="#{msg['menu.solicitudesporusuario']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudesporusuario" iconAwesome= "fa-battery-empty" />
+                    <b:navLink value="#{msg['menu.solicitudesporusuario']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudesporusuario" icon="user" />
                                         
                                         
 
