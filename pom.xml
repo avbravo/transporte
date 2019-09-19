@@ -58,11 +58,7 @@
             <artifactId>transporteejb</artifactId>
             <version>21.7</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jmoordbjsf</artifactId>
-            <version>0.26.1</version>
-        </dependency>
+      
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -86,11 +82,11 @@
             <version>0.2</version>
         </dependency>
      
-<!--     <dependency>
+    <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbjsf</artifactId>
-            <version>0.26</version>
-        </dependency>-->
+            <version>0.27</version>
+        </dependency>
         
         <!--
                         parche para bootfaces
