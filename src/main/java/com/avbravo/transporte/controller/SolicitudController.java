@@ -121,7 +121,7 @@ public class SolicitudController implements Serializable, IController {
     private static final long serialVersionUID = 1L;
 
     Date date14 = new Date();
-    
+
     String messages = "";
     Boolean coordinadorvalido = false;
     Boolean escoordinador = false;
@@ -200,7 +200,6 @@ public class SolicitudController implements Serializable, IController {
 
     // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">
-
     //Repository
     @Inject
     RevisionHistoryRepository revisionHistoryRepository;
@@ -224,12 +223,11 @@ public class SolicitudController implements Serializable, IController {
     VehiculoRepository vehiculoRepository;
     @Inject
     UsuarioRepository usuarioRepository;
-   
-    
+
     // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="services">
     //Services
-     @Inject
+    @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
     AutoincrementableServices autoincrementableServices;
@@ -336,8 +334,8 @@ public class SolicitudController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/solicituddocente/details.jasper")
                     .withPathReportAll("/resources/reportes/solicituddocente/all.jasper")
                     .withparameters(parameters)
-                    .withResetInSave(false) 
-                  .withAction("golist")
+                    .withResetInSave(false)
+                    .withAction("golist")
                     .build();
 
             start();
@@ -442,7 +440,7 @@ public class SolicitudController implements Serializable, IController {
             solicitudDataModel = new SolicitudDataModel(solicitudList);
             Document doc;
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-           
+
             switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
@@ -473,18 +471,16 @@ public class SolicitudController implements Serializable, IController {
 
                 case "vistobuenocoordinador":
 
-                   
-                   String vistoBueno = (String)getValueSearch();
-                     doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
+                    String vistoBueno = (String) getValueSearch();
+                    doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
                     doc.append("vistoBueno.aprobado", vistoBueno);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
                 case "vistobuenosecretarioadministrativo":
 
-                   
-                   String vistoBuenoSecretarioAdministrativo = (String) getValueSearch();
-                     doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
+                    String vistoBuenoSecretarioAdministrativo = (String) getValueSearch();
+                    doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
                     doc.append("vistoBuenoSecretarioAdministrativo.aprobado", vistoBuenoSecretarioAdministrativo);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
@@ -631,8 +627,6 @@ public class SolicitudController implements Serializable, IController {
     }
 
     // </editor-fold>
-    
-
     // <editor-fold defaultstate="collapsed" desc="String save()">
     @Override
     public String save() {
@@ -685,6 +679,13 @@ public class SolicitudController implements Serializable, IController {
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
 
+            //Buscar los administradores
+            List<Usuario> usuarioAdministradoreslist = usuarioServices.usuariosParaNotificar();
+            if (usuarioAdministradoreslist == null || usuarioAdministradoreslist.isEmpty()) {
+            } else {
+                usuarioAdministradoreslist = usuarioServices.removerUsuarioLista(usuarioAdministradoreslist, jmoordb_user);
+            }
+
             //Obtiene la lista de usuarios para notificar
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
             //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
@@ -692,7 +693,7 @@ public class SolicitudController implements Serializable, IController {
 
             //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
             if (vistoBuenoAprobado) {
-                usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+                usuarioList = usuarioServices.removerUsuarioLista(usuarioList, jmoordb_user);
             }
 
             Boolean vistoBuenoSecretarioAdministrativo = usuarioServices.esElSecretarioAdministrativoQuienSolicita(jmoordb_user);
@@ -733,9 +734,26 @@ public class SolicitudController implements Serializable, IController {
 
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
-                //Verifica si es un coordinador y le envia la notificacion
+                //Agrega los adminisradores
+                if (usuarioAdministradoreslist == null || usuarioAdministradoreslist.isEmpty()) {
+                } else {
+                    //Agrega el administrador a la lista
+                    for (Usuario u : usuarioAdministradoreslist) {
+                        Boolean exist = false;
+                        for (Usuario u1 : usuarioList) {
+                            if (u.getUsername().equals(u1.getUsername())) {
+                                exist = true;
+                            }
+                        }
+                        if (!exist) {
+                            usuarioList.add(u);
+                        }
+                    }
+                }
 
+                //Verifica si es un coordinador y le envia la notificacion
                 usuarioList.forEach((u) -> {
+                    System.out.println("===> Usuario: " + u.getUsername());
                     notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
 
                 });
@@ -1155,7 +1173,7 @@ public class SolicitudController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="Boolean inicializar()">
     private String inicializar() {
         try {
-            date14 =null;
+            date14 = null;
             tipoVehiculoCantidadBeansList = new ArrayList<>();
             Integer id = 0;
             Date idsecond = new Date();
@@ -1594,6 +1612,13 @@ public class SolicitudController implements Serializable, IController {
 
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
 
+            //Buscar los administradores
+            List<Usuario> usuarioAdministradoreslist = usuarioServices.usuariosParaNotificar();
+            if (usuarioAdministradoreslist == null || usuarioAdministradoreslist.isEmpty()) {
+            } else {
+                usuarioAdministradoreslist = usuarioServices.removerUsuarioLista(usuarioAdministradoreslist, jmoordb_user);
+            }
+
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
             //  Guardar las notificaciones
 
@@ -1603,12 +1628,28 @@ public class SolicitudController implements Serializable, IController {
             //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
             if (vistoBuenoAprobado) {
 //                    usuarioList.remove(jmoordb_user);
-                usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+                usuarioList = usuarioServices.removerUsuarioLista(usuarioList, jmoordb_user);
             }
 
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
 
+                 //Agrega los adminisradores
+                if (usuarioAdministradoreslist == null || usuarioAdministradoreslist.isEmpty()) {
+                } else {
+                    //Agrega el administrador a la lista
+                    for (Usuario u : usuarioAdministradoreslist) {
+                        Boolean exist = false;
+                        for (Usuario u1 : usuarioList) {
+                            if (u.getUsername().equals(u1.getUsername())) {
+                                exist = true;
+                            }
+                        }
+                        if (!exist) {
+                            usuarioList.add(u);
+                        }
+                    }
+                }
                 usuarioList.forEach((u) -> {
                     notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
 
@@ -1654,7 +1695,7 @@ public class SolicitudController implements Serializable, IController {
     public String handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
             setSearchAndValue("estatus", estatusSearch);
-          
+
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -2000,7 +2041,7 @@ public class SolicitudController implements Serializable, IController {
             Integer numeroPasajeros = 0;
 
             List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
-            fechasValidasList = DateUtil.validarRangoFechas(fechaPartidaDescompuesta.getYear(), fechaPartidaDescompuesta.getNameOfMonth(),varFechaHoraPartida,varFechaHoraRegreso);
+            fechasValidasList = DateUtil.validarRangoFechas(fechaPartidaDescompuesta.getYear(), fechaPartidaDescompuesta.getNameOfMonth(), varFechaHoraPartida, varFechaHoraRegreso);
             //recorre todos los vehiculos 
 
             Integer pasajerosPendientes = solicitud.getPasajeros();
@@ -2033,7 +2074,7 @@ public class SolicitudController implements Serializable, IController {
                 if (fechaPartidaDescompuesta.getYear().equals(fechaRegresoDescompuesta.getYear())) {
                     Integer m = fechaPartidaDescompuesta.getMonth() + i;
                     String nameOfMohth = DateUtil.nombreMes(m);
-                    List<FechaDiaUtils> list = DateUtil.validarRangoFechas(fechaPartidaDescompuesta.getYear(), nameOfMohth,varFechaHoraPartida, varFechaHoraRegreso);
+                    List<FechaDiaUtils> list = DateUtil.validarRangoFechas(fechaPartidaDescompuesta.getYear(), nameOfMohth, varFechaHoraPartida, varFechaHoraRegreso);
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                     if (list == null || list.isEmpty()) {
                         JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes;" + nameOfMohth);
@@ -2063,7 +2104,7 @@ public class SolicitudController implements Serializable, IController {
 
                     String nameOfMohth = DateUtil.nombreMes(m);
 
-                    List<FechaDiaUtils> list = DateUtil.validarRangoFechas(varAnio, nameOfMohth,varFechaHoraPartida,varFechaHoraRegreso);
+                    List<FechaDiaUtils> list = DateUtil.validarRangoFechas(varAnio, nameOfMohth, varFechaHoraPartida, varFechaHoraRegreso);
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                     if (list == null || list.isEmpty()) {
                         JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes: " + nameOfMohth);
@@ -2157,7 +2198,6 @@ public class SolicitudController implements Serializable, IController {
     }
     // </editor-fold>
 
-    
     // <editor-fold defaultstate="collapsed" desc="Integer pasajerosRecomendados(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros)">
     /**
      * Devuelve la cantidad de pasajeros que quedan pendientes
@@ -2188,7 +2228,6 @@ public class SolicitudController implements Serializable, IController {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="List<Integer> listPasajerosRecomendados(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros)">
-    
     // <editor-fold defaultstate="collapsed" desc="String  cancel()">
     public String cancel() {
         try {
@@ -2278,7 +2317,7 @@ public class SolicitudController implements Serializable, IController {
             //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
             if (vistoBuenoAprobado) {
 //                    usuarioList.remove(jmoordb_user);
-                usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+                usuarioList = usuarioServices.removerUsuarioLista(usuarioList, jmoordb_user);
             }
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
@@ -2392,6 +2431,7 @@ public class SolicitudController implements Serializable, IController {
         }
         return valid;
     }
+
     // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
     public String columnNameVistoBueno(VistoBueno vistoBueno) {
@@ -2409,7 +2449,7 @@ public class SolicitudController implements Serializable, IController {
     public String onVistoBuenoChange() {
         try {
             setSearchAndValue("vistobuenocoordinador", vistoBuenoSearch);
-            
+
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -2417,10 +2457,11 @@ public class SolicitudController implements Serializable, IController {
         return "";
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSecretarioAdministrativo()">
+
     public String onVistoBuenoChangeSecretarioAdministrativo() {
         try {
             setSearchAndValue("vistobuenosecretarioadministrativo", vistoBuenoSecretarioAdministrativoSearch);
-          
+
             move(page);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());

@@ -770,7 +770,7 @@ public class AdministradorController implements Serializable, IController {
 
             //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
             if (vistoBuenoAprobado) {
-                usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+                usuarioList = usuarioServices.removerUsuarioLista(usuarioList, jmoordb_user);
             }
 
             //Guarda la solicitud
@@ -1959,7 +1959,7 @@ public class AdministradorController implements Serializable, IController {
             //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
             if (vistoBuenoAprobado) {
 
-                usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+                usuarioList = usuarioServices.removerUsuarioLista(usuarioList, jmoordb_user);
             }
 
             if (usuarioList == null || usuarioList.isEmpty()) {
@@ -2793,7 +2793,7 @@ public class AdministradorController implements Serializable, IController {
             //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
             if (vistoBuenoAprobado) {
 //                    usuarioList.remove(jmoordb_user);
-                usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+                usuarioList = usuarioServices.removerUsuarioLista(usuarioList, jmoordb_user);
             }
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
@@ -2932,7 +2932,7 @@ public class AdministradorController implements Serializable, IController {
 
             //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
             if (vistoBuenoAprobado) {
-                usuarioList = usuarioServices.removerCoordinadorLista(usuarioList, jmoordb_user);
+                usuarioList = usuarioServices.removerUsuarioLista(usuarioList, jmoordb_user);
             } else {
                 //Agrega el docente para que se le envie la notificacion
                 usuarioList.add(solicitud.getUsuario().get(0));

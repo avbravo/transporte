@@ -4,7 +4,7 @@
 
     <groupId>com.avbravo</groupId>
     <artifactId>transporte</artifactId>
-    <version>20.15</version>
+    <version>20.16</version>
     <packaging>war</packaging>
 
     <name>transporte</name>
@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--<version.payara.micro>5.182</version.payara.micro>-->
         <!--<version.payara>5.191</version.payara>-->
-        <version.payara>5.192</version.payara>
+        <version.payara>5.193</version.payara>
         <!--<version.payara.micro>5.183</version.payara.micro>-->
     </properties>
     
@@ -65,16 +65,16 @@
             <version>8.0</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.omnifaces</groupId>
             <artifactId>omnifaces</artifactId>
             <version>3.3</version>
             <type>jar</type>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>net.bootsfaces</groupId>
             <artifactId>bootsfaces</artifactId>
-            <version>1.4.1</version>
+            <version>1.4.2</version>
         </dependency>
         <dependency>
             <groupId>com.github.avbravo</groupId>
@@ -85,17 +85,17 @@
     <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbjsf</artifactId>
-            <version>0.27</version>
+            <version>0.28</version>
         </dependency>
         
         <!--
                         parche para bootfaces
         -->
-        <dependency>
+<!--        <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbbootfacespatch</artifactId>
             <version>0.1</version>
-        </dependency>
+        </dependency>-->
         <!--
                   websocket
         -->
