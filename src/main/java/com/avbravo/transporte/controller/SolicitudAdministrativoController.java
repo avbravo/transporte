@@ -341,10 +341,11 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             sugerenciaList = sugerenciaRepository.findBy("activo", "si");
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
             cargarSchedule();
-            String action = "gonew";
-            if (JmoordbContext.get("solicitud") != null) {
-                action = JmoordbContext.get("solicitud").toString();
-            }
+//            String action = "gonew";
+String action = getAction();
+//            if (JmoordbContext.get("solicitud") != null) {
+//                action = JmoordbContext.get("solicitud").toString();
+//            }
 
             if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
                 inicializar();
