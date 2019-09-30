@@ -163,19 +163,8 @@ public class ProgramacionVechicularController implements Serializable, IControll
 
             start();
 
-//            String action = "gonew";
-//            if (getAction() != null) {
-//                action = getAction();
-//            }
-//
-//            if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
-//                //inicializar
-//
-//            }
-//            if (action.equals("view")) {
-//                //view
-//            }
-            setSearchAndValue("searchProgramacionVehicularController", "_betweendates");
+
+           // setSearchAndValue("ProgramacionVehicularController", "_betweendates");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -381,7 +370,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
     }
     // </editor-fold>  
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="availablePrint()">
     public Boolean availablePrint() {
         return !programacionVehicular.isEmpty();
     }

@@ -85,9 +85,9 @@ public class RolController implements Serializable, IController {
     JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
-   // </editor-fold>  
+    // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="services">
- 
+
     //Notification
     @Inject
     UsuarioServices usuarioServices;
@@ -141,14 +141,16 @@ public class RolController implements Serializable, IController {
                     .build();
 
             start();
-
+//            String action = "gonew";
+//            if (getAction() != null) {
+//                action = getAction();
+//            }
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Boolean afterSave(Boolean saved)">
- 
     @Override
     public Boolean afterSave(Boolean saved) {
         try {
@@ -172,7 +174,6 @@ public class RolController implements Serializable, IController {
         return false;
     }    // </editor-fold> 
 
-    
 // <editor-fold defaultstate="collapsed" desc="handleSelect">
     public void handleSelect(SelectEvent event) {
         try {
@@ -188,7 +189,6 @@ public class RolController implements Serializable, IController {
             this.page = page;
             rolDataModel = new RolDataModel(rolList);
             Document doc;
-
 
             switch (getSearch()) {
                 case "_init":
@@ -209,7 +209,7 @@ public class RolController implements Serializable, IController {
                     break;
 
                 case "rol":
-                    if (getValueSearch()!= null) {
+                    if (getValueSearch() != null) {
                         rolSearch.setRol(getValueSearch().toString());
                         rolList = rolRepository.findRegexInTextPagination("rol", rolSearch.getRol(), true, page, rowPage, new Document("rol", -1));
 
@@ -251,10 +251,11 @@ public class RolController implements Serializable, IController {
         }
         return delete;
     }
+
     // </editor-fold>     
-    // <editor-fold defaultstate="collapsed" desc="Boolean beforeDelete()">
+    // <editor-fold defaultstate="collapsed" desc="Boolean beforeDeleteFromListXhtml()">
     @Override
-    public Boolean beforeDeleteFromListXhtml(){
+    public Boolean beforeDeleteFromListXhtml() {
         Boolean delete = rolServices.isDeleted(rol);
         if (!delete) {
             JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminarrol"));

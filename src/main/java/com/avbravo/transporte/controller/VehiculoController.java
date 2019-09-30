@@ -6,7 +6,6 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
-
 import com.avbravo.jmoordb.configuration.JmoordbContext;
 import com.avbravo.jmoordb.configuration.JmoordbControllerEnvironment;
 import com.avbravo.jmoordb.interfaces.IController;
@@ -37,7 +36,6 @@ import org.bson.Document;
 import org.primefaces.event.SelectEvent;
 
 // </editor-fold>
-
 /**
  *
  * @authoravbravo
@@ -47,8 +45,6 @@ import org.primefaces.event.SelectEvent;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
 /**
  *
  * @authoravbravo
@@ -140,7 +136,7 @@ public class VehiculoController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/vehiculo/details.jasper")
                     .withPathReportAll("/resources/reportes/vehiculo/all.jasper")
                     .withparameters(parameters)
-                     .withResetInSave(true) 
+                    .withResetInSave(true)
                     .withAction("golist")
                     .build();
 
@@ -167,7 +163,6 @@ public class VehiculoController implements Serializable, IController {
             vehiculoDataModel = new VehiculoDataModel(vehiculoList);
             Document doc;
 
-        
             switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
@@ -194,7 +189,7 @@ public class VehiculoController implements Serializable, IController {
                     }
 
                     break;
-             
+
                 case "marca":
                     if (getValueSearch() != null) {
                         vehiculoSearch.setMarca(getValueSearch().toString());
@@ -206,7 +201,7 @@ public class VehiculoController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (getValueSearch()!= null) {
+                    if (getValueSearch() != null) {
                         vehiculoSearch.setActivo(getValueSearch().toString());
                         doc = new Document("activo", vehiculoSearch.getActivo());
                         vehiculoList = vehiculoRepository.findPagination(doc, page, rowPage, new Document("placa", -1));
@@ -229,15 +224,14 @@ public class VehiculoController implements Serializable, IController {
 
     }// </editor-fold>
 
-    
-     // <editor-fold defaultstate="collapsed" desc="clearPlaca()">
+    // <editor-fold defaultstate="collapsed" desc="clearPlaca()">
     public String clearPlaca() {
         try {
             vehiculo = new Vehiculo();
             vehiculo.setPlaca("");
             writable = false;
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }
@@ -266,7 +260,7 @@ public class VehiculoController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
 
         return "";
@@ -289,20 +283,19 @@ public class VehiculoController implements Serializable, IController {
             }
 
             vehiculo.setPlaca(placanueva);
- Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), jmoordb_user.getUsername(),
                     "update", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
 
             vehiculoRepository.update(vehiculo);
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
 
-    
-     // <editor-fold defaultstate="collapsed" desc="beforeSave()">
+    // <editor-fold defaultstate="collapsed" desc="beforeSave()">
     public Boolean beforeSave() {
         try {
             vehiculo.setIdvehiculo(autoincrementableServices.getContador("vehiculo"));
@@ -313,5 +306,5 @@ public class VehiculoController implements Serializable, IController {
         return false;
     }
     // </editor-fold>
-    
+
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.avbravo.transporte.controller;
+package com.avbravo.transporte.controller.sinarreglar;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.jmoordbutils.DateUtil;

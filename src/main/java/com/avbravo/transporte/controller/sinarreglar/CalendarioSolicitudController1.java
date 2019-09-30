@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.avbravo.transporte.controller;
+package com.avbravo.transporte.controller.sinarreglar;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
 import com.avbravo.jmoordbutils.DateUtil;
@@ -20,7 +20,8 @@ import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.transporte.security.LoginController;
- 
+
+import com.avbravo.transporte.util.LookupServices;
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
@@ -31,11 +32,12 @@ import com.avbravo.transporteejb.entity.Unidad;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viaje;
-
-import com.avbravo.transporte.util.LookupServices;
+import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
+import com.avbravo.transporteejb.repository.VehiculoRepository;
+import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TiposolicitudServices;
@@ -43,6 +45,7 @@ import com.avbravo.transporteejb.services.TipovehiculoServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -80,17 +83,17 @@ import org.primefaces.model.ScheduleModel;
  */
 @Named
 @ViewScoped
-public class CalendarioViajesController implements Serializable, IControllerOld {
+public class CalendarioSolicitudController1 implements Serializable, IControllerOld {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
 
     //    private String stmpPort="80";
+    private Boolean esAprobado = false;
+    private Boolean esAprobadoParaEditar = false;
     private String stmpPort = "25";
     private String menuelement = "";
-    List<Facultad> suggestionsFacultad = new ArrayList<>();
-    List<Carrera> suggestionsCarrera = new ArrayList<>();
-    List<Unidad> suggestionsUnidad = new ArrayList<>();
+
     private Date _old;
     private Boolean writable = false;
     private Boolean esDocente = true;
@@ -101,7 +104,10 @@ public class CalendarioViajesController implements Serializable, IControllerOld 
     Tipovehiculo tipovehiculo = new Tipovehiculo();
     Vehiculo vehiculo = new Vehiculo();
     Conductor conductor = new Conductor();
+    Vehiculo vehiculoSelected = new Vehiculo();
+    Conductor conductorSelected = new Conductor();
     Viaje viajes = new Viaje();
+    Viaje viajesSelected = new Viaje();
 
     private ScheduleModel eventModel;
 
@@ -123,21 +129,29 @@ public class CalendarioViajesController implements Serializable, IControllerOld 
     Usuario responsable = new Usuario();
     Usuario responsableOld = new Usuario();
 
-    //List
+    //List  
+    List<Carrera> carreraList = new ArrayList<>();
+    List<Facultad> facultadList = new ArrayList<>();
     List<Solicitud> solicitudList = new ArrayList<>();
     List<Solicitud> solicitudFiltered = new ArrayList<>();
     List<Unidad> unidadList = new ArrayList<>();
-    List<Facultad> facultadList = new ArrayList<>();
-    List<Carrera> carreraList = new ArrayList<>();
+    List<Viaje> viajesList = new ArrayList<>();
+
     List<Usuario> usuarioList = new ArrayList<>();
+    List<Vehiculo> vehiculoList = new ArrayList<>();
+    List<Conductor> conductorList = new ArrayList<>();
+    List<Facultad> suggestionsFacultad = new ArrayList<>();
+    List<Carrera> suggestionsCarrera = new ArrayList<>();
+    List<Unidad> suggestionsUnidad = new ArrayList<>();
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">
 
     //Repository
     @Inject
-    FacultadRepository facultadRepository;
-    @Inject
     CarreraRepository carreraRepository;
+    @Inject
+    FacultadRepository facultadRepository;
+
     @Inject
     UnidadRepository unidadRepository;
     @Inject
@@ -146,20 +160,23 @@ public class CalendarioViajesController implements Serializable, IControllerOld 
     RevisionHistoryRepository revisionHistoryRepository;
     @Inject
     UsuarioRepository usuarioRepository;
-
-    // </editor-fold>  
+    @Inject
+    ViajeRepository viajesRepository;
+    @Inject
+    VehiculoRepository vehiculoRepository;
+    @Inject
+    ConductorRepository conductorRepository;
+// </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="services">
     //Services
     //Atributos para busquedas
     @Inject
     AutoincrementableServices autoincrementableServices;
 
-  @Inject
-ErrorInfoServices errorServices;
-
     @Inject
     LookupServices lookupServices;
-
+    @Inject
+    ErrorInfoServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
 
@@ -194,6 +211,64 @@ ErrorInfoServices errorServices;
         this.pages = pages;
     }
 
+    public Vehiculo getVehiculoSelected() {
+        return vehiculoSelected;
+    }
+
+    public void setVehiculoSelected(Vehiculo vehiculoSelected) {
+        this.vehiculoSelected = vehiculoSelected;
+    }
+
+    public Conductor getConductorSelected() {
+        return conductorSelected;
+    }
+
+    public void setConductorSelected(Conductor conductorSelected) {
+        this.conductorSelected = conductorSelected;
+    }
+
+    
+    
+    public Viaje getViajesSelected() {
+        return viajesSelected;
+    }
+
+    public Boolean getEsAprobadoParaEditar() {
+        return esAprobadoParaEditar;
+    }
+
+    public void setEsAprobadoParaEditar(Boolean esAprobadoParaEditar) {
+        this.esAprobadoParaEditar = esAprobadoParaEditar;
+    }
+
+    public void setViajesSelected(Viaje viajesSelected) {
+        this.viajesSelected = viajesSelected;
+    }
+
+    public Boolean getEsAprobado() {
+        return esAprobado;
+    }
+
+    public void setEsAprobado(Boolean esAprobado) {
+        this.esAprobado = esAprobado;
+    }
+
+    public List<Vehiculo> getVehiculoList() {
+        return vehiculoList;
+    }
+
+    public void setVehiculoList(List<Vehiculo> vehiculoList) {
+        this.vehiculoList = vehiculoList;
+    }
+
+    public List<Conductor> getConductorList() {
+        return conductorList;
+    }
+
+    public void setConductorList(List<Conductor> conductorList) {
+        this.conductorList = conductorList;
+    }
+
     public Vehiculo getVehiculo() {
         return vehiculo;
     }
@@ -218,9 +293,6 @@ ErrorInfoServices errorServices;
         this.viajes = viajes;
     }
 
-    
-    
-    
     public Estatus getEstatusSelected() {
         return estatusSelected;
     }
@@ -423,7 +495,7 @@ ErrorInfoServices errorServices;
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public CalendarioViajesController() {
+    public CalendarioSolicitudController1() {
     }
 
     // </editor-fold>
@@ -439,7 +511,7 @@ ErrorInfoServices errorServices;
     @PostConstruct
     public void init() {
         try {
-           
+            esAprobadoParaEditar = false;
             String action = loginController.get("solicitud");
             String id = loginController.get("idsolicitud");
             String pageSession = loginController.get("pagesolicitud");
@@ -470,7 +542,7 @@ ErrorInfoServices errorServices;
             cargarSchedule();
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="reset">
@@ -518,7 +590,7 @@ ErrorInfoServices errorServices;
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
 
         return url;
@@ -535,7 +607,7 @@ ErrorInfoServices errorServices;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -574,6 +646,7 @@ ErrorInfoServices errorServices;
             unidadList = new ArrayList<>();
             unidadList.add(loginController.getUsuario().getUnidad());
 
+            viajesSelected = new Viaje();
             Integer mes = DateUtil.mesDeUnaFecha(solicitud.getFecha());
 
             String idsemestre = "V";
@@ -591,9 +664,9 @@ ErrorInfoServices errorServices;
                 }
             }
             solicitud.setSemestre(semestreServices.findById(idsemestre));
-  List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
-                    
-                    tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+            List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+
+            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
             solicitud.setTipovehiculo(tipovehiculoList);
 
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
@@ -606,7 +679,7 @@ ErrorInfoServices errorServices;
             solicitudSelected = solicitud;
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -615,13 +688,7 @@ ErrorInfoServices errorServices;
     @Override
     public String save() {
         try {
-            Integer idsolicitud = autoincrementableServices.getContador("solicitud");
-            solicitud.setIdsolicitud(idsolicitud);
-            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
-            if (optional.isPresent()) {
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return null;
-            }
+
             solicitud.setActivo("si");
             solicitud.setUnidad(unidadList);
             solicitud.setFacultad(facultadList);
@@ -659,8 +726,16 @@ ErrorInfoServices errorServices;
                 return "";
             }
 
+            Integer idsolicitud = autoincrementableServices.getContador("solicitud");
+            solicitud.setIdsolicitud(idsolicitud);
+            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
+            if (optional.isPresent()) {
+                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
+                return null;
+            }
+
             //Lo datos del usuario
-            solicitud.setUserInfo(solicitudRepository.generateListUserinfo(loginController.getUsername(), "create"));
+            solicitud.setUserInfo(viajesRepository.generateListUserinfo(loginController.getUsername(), "create"));
             if (solicitudRepository.save(solicitud)) {
                 //guarda el contenido anterior
                 revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
@@ -682,55 +757,94 @@ ErrorInfoServices errorServices;
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="edit">
 
+// <editor-fold defaultstate="collapsed" desc="edit">
     @Override
     public String edit() {
         try {
+            //Si era apronado para editar
+
+            if (esAprobado) {
+                if (DateUtil.fechaMayor(viajes.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
+
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechainicioreservamayorfechapartida"));
+                    return "";
+                }
+                if (DateUtil.fechaMenor(viajes.getFechahorafinreserva(), solicitud.getFechahoraregreso())) {
+
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fechafinreservamenorfecharegreso"));
+                    return "";
+                }
+
+                if (solicitud.getNumerodevehiculos() != vehiculoList.size()) {
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodevehiculosnoigualvehiculos"));
+                    return "";
+                }
+                if (conductorList.size() != vehiculoList.size()) {
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.conductoresnoigualvehiculos"));
+                    return "";
+                }
+                if (!esAprobadoParaEditar) {
+                    viajes = viajesSelected;
+                    Integer idviaje = autoincrementableServices.getContador("viajes");
+                    viajes.setActivo("si");
+                    viajes.setIdviaje(idviaje);
+                    viajes.setConductor(conductorSelected);
+                    viajes.setVehiculo(vehiculoSelected);
+                    // viajes.setVehsolicitudList);
+
+                    viajes.setUserInfo(viajesRepository.generateListUserinfo(loginController.getUsername(), "create"));
+
+                    if (viajesRepository.save(viajes)) {
+                        revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viajes.getIdviaje().toString(), loginController.getUsername(),
+                                "create", "viajes", viajesRepository.toDocument(viajes).toString()));
+                        JsfUtil.successMessage(rf.getAppMessage("info.save"));
+
+                    } else {
+                        JsfUtil.successMessage("save() " + viajesRepository.getException().toString());
+                        return "";
+                    }
+                } else {
+                    viajes = viajesSelected;
+                    viajes.setConductor(conductorSelected);
+                    viajes.setVehiculo(vehiculoSelected);
+                    viajesSelected.setUserInfo(viajesRepository.generateListUserinfo(loginController.getUsername(), "update"));
+                    if (viajesRepository.update(viajesSelected)) {
+                        revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viajesSelected.getIdviaje().toString(), loginController.getUsername(),
+                                "update", "viajes", viajesRepository.toDocument(viajesSelected).toString()));
+
+                    }
+                }
+
+            } else {
+                //Si era apronado para editar y se cambio el estatus se coloca activo = no
+                if (esAprobadoParaEditar) {
+                    viajesSelected.setActivo("no");
+                    viajesSelected.setUserInfo(viajesRepository.generateListUserinfo(loginController.getUsername(), "update"));
+                    if (viajesRepository.update(viajesSelected)) {
+                        revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viajesSelected.getIdviaje().toString(), loginController.getUsername(),
+                                "update", "viajes", viajesRepository.toDocument(viajesSelected).toString()));
+
+                    }
+                }
+            }
+
             solicitud.setEstatus(estatusSelected);
-//            solicitud.setUnidad(unidadList);
-//            solicitud.getUserInfo().add(solicitudRepository.generateUserinfo(loginController.getUsername(), "update"));
-//            solicitud.setUnidad(unidadList);
-//            solicitud.setFacultad(facultadList);
-//            solicitud.setCarrera(carreraList);
-//            //guarda el contenido actualizado
-//            if (DateUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
-//
-//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
-//                return "";
-//            }
-//            if (DateUtil.getHoraDeUnaFecha(solicitud.getFechahorapartida()) == 0
-//                    && DateUtil.getMinutosDeUnaFecha(solicitud.getFechahorapartida()) == 0) {
-//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horapartidaescero"));
-//                return "";
-//            }
-//            if (DateUtil.getHoraDeUnaFecha(solicitud.getFechahoraregreso()) == 0
-//                    && DateUtil.getMinutosDeUnaFecha(solicitud.getFechahoraregreso()) == 0) {
-//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.horallegadaescero"));
-//            }
-//
-//            usuarioList = new ArrayList<>();
-//            usuarioList.add(solicita);
-//            usuarioList.add(responsable);
-//            solicitud.setUsuario(usuarioList);
-//            if (solicitud.getPasajeros() < 0) {
-//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.numerodepasajerosmenorcero"));
-//                return "";
-//            }
 
             revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), loginController.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             solicitudRepository.update(solicitud);
 
-            JsfUtil.successMessage(rf.getAppMessage("info.update"));
+            JsfUtil.infoDialog(rf.getAppMessage("info.view"), rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            System.out.println("exception " + solicitudRepository.getException());
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -767,7 +881,7 @@ ErrorInfoServices errorServices;
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         // path = deleteonviewpage ? "/pages/solicitud/list.xhtml" : "";
         path = "";
@@ -795,7 +909,7 @@ ErrorInfoServices errorServices;
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -812,7 +926,7 @@ ErrorInfoServices errorServices;
             // parameters.put("P_parametro", "valor");
             printer.imprimir(list, ruta, parameters);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return null;
     }// </editor-fold>
@@ -821,37 +935,49 @@ ErrorInfoServices errorServices;
     public void handleSelect(SelectEvent event) {
         try {
 
-          
-          
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="handleAutocompleteOfListXhtml(SelectEvent event)">
     public void handleAutocompleteOfListXhtml(SelectEvent event) {
         try {
-             solicitudList.removeAll(solicitudList);
+
+            solicitudList.removeAll(solicitudList);
             solicitudList.add(solicitudSelected);
             solicitudFiltered = solicitudList;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-            
+
             loginController.put("searchsolicitud", "idsolicitud");
             lookupServices.setIdsolicitud(solicitudSelected.getIdsolicitud());
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelectEstatus(SelectEvent event)">
 
-    public void handleSelectVehiculoConductor(SelectEvent event) {
+    public void handleSelectEstatus(SelectEvent event) {
+        try {
+            esAprobado = false;
+            if (estatusSelected.getIdestatus().equals("APROBADO")) {
+                esAprobado = true;
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+    }// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="handleSelectEstatus(SelectEvent event)">
+
+    public void handleSelectEstatusTipovehiculo(SelectEvent event) {
         try {
             loginController.put("calendariotipovehiculo", tipovehiculo.getIdtipovehiculo());
             loginController.put("calendarioestatus", estatus.getIdestatus());
             cargarSchedule();
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="cargarSchedule()">
@@ -864,14 +990,27 @@ ErrorInfoServices errorServices;
             eventModel = new DefaultScheduleModel();
             if (!solicitudList.isEmpty()) {
                 solicitudList.forEach((a) -> {
-                    eventModel.addEvent(new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso()));
+
+                    eventModel.addEvent(
+                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
+                    );
                 });
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
+
+    public String recorrerEventModel(ScheduleModel eventModel) {
+        try {
+
+            String title = event.getTitle();
+            System.out.println("----> " + eventModel.toString());
+        } catch (Exception e) {
+        }
+        return "";
+    }
 // <editor-fold defaultstate="collapsed" desc="handleSelectResponsable(SelectEvent event)">
 
     public void handleSelectResponsable(SelectEvent event) {
@@ -879,7 +1018,7 @@ ErrorInfoServices errorServices;
 
             responsableOld = responsable;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -890,7 +1029,7 @@ ErrorInfoServices errorServices;
             page = solicitudRepository.sizeOfPage(rowPage);
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -902,7 +1041,7 @@ ErrorInfoServices errorServices;
             page = 1;
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -916,7 +1055,7 @@ ErrorInfoServices errorServices;
             }
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -930,7 +1069,7 @@ ErrorInfoServices errorServices;
             }
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -942,7 +1081,7 @@ ErrorInfoServices errorServices;
             this.page = page;
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -956,18 +1095,17 @@ ErrorInfoServices errorServices;
             Document doc;
             switch (loginController.get("searchsolicitud")) {
                 case "_init":
+                case "_autocomplete":
                     doc = new Document("usuario.username", loginController.getUsuario().getUsername());
-//                    solicitudList = solicitudRepository.findPagination(page, rowPage);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
-                    break;
-                case "_autocomplete":
-                    //no se realiza ninguna accion 
                     break;
 
                 case "idsolicitud":
+
                     doc = new Document("idsolicitud", solicitud.getIdsolicitud()).append("usuario.username", loginController.getUsuario().getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
                     break;
 
                 default:
@@ -984,7 +1122,7 @@ ErrorInfoServices errorServices;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -996,7 +1134,7 @@ ErrorInfoServices errorServices;
             page = 1;
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -1012,7 +1150,7 @@ ErrorInfoServices errorServices;
             move(page);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
     }// </editor-fold>
@@ -1045,7 +1183,8 @@ ErrorInfoServices errorServices;
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+
         }
         return suggestionsUnidad;
     }// </editor-fold>
@@ -1079,8 +1218,7 @@ ErrorInfoServices errorServices;
             }
 
         } catch (Exception e) {
-               errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-            
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return suggestionsFacultad;
     }// </editor-fold>
@@ -1109,7 +1247,7 @@ ErrorInfoServices errorServices;
                 }
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return suggestionsCarrera;
     }// </editor-fold>
@@ -1137,7 +1275,7 @@ ErrorInfoServices errorServices;
             });
 
         } catch (Exception e) {
-                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return list;
     }
@@ -1151,7 +1289,7 @@ ErrorInfoServices errorServices;
             }
 
         } catch (Exception e) {
-errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
 
@@ -1169,7 +1307,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             }
 
         } catch (Exception e) {
-                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return _found;
     }
@@ -1187,7 +1325,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
                 _found = false;
             }
         } catch (Exception e) {
-                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return _found;
     }
@@ -1206,7 +1344,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             }
 
         } catch (Exception e) {
-                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return _found;
     }
@@ -1219,7 +1357,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
                 suggestionsFacultad.add(facultad);
             }
         } catch (Exception e) {
-                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
     }
@@ -1232,7 +1370,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
                 suggestionsCarrera.add(carrera);
             }
         } catch (Exception e) {
-                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
     }
@@ -1245,13 +1383,12 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
                 suggestionsUnidad.add(unidad);
             }
         } catch (Exception e) {
-                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
     }
     // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="enviarEmails()">
+// <editor-fold defaultstate="collapsed" desc="enviarEmails()">
 
     public String enviarEmails() {
         try {
@@ -1301,12 +1438,13 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             }
 
         } catch (Exception e) {
-                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
-    }    // </editor-fold>
-
+    }
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )">
+
     public String columnColor(String estatus) {
         String color = "";
         try {
@@ -1321,7 +1459,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
                     color = "black";
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return color;
     } // </editor-fold>
@@ -1341,7 +1479,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return editable;
     } // </editor-fold>
@@ -1356,20 +1494,21 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
-        // </editor-fold>
-    }
+
+    } // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="onEventSelect(SelectEvent selectEvent)">
-
     public void onEventSelect(SelectEvent selectEvent) {
         try {
             // esnuevo = false;
+            esAprobadoParaEditar = false;
+            viajesSelected = new Viaje();
             esDocente = false;
             event = (ScheduleEvent) selectEvent.getObject();
-
+            esAprobado = false;
             String title = event.getTitle();
             Integer i = title.indexOf("M");
 
@@ -1381,6 +1520,7 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
             Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
             if (optional.isPresent()) {
                 solicitud = optional.get();
+
                 solicita = solicitud.getUsuario().get(0);
                 responsable = solicitud.getUsuario().get(1);
                 facultadList = solicitud.getFacultad();
@@ -1389,19 +1529,33 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
                 solicitudSelected = solicitud;
                 estatusSelected = solicitud.getEstatus();
                 esDocente = solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE");
+                if (solicitud.getEstatus().getIdestatus().equals("APROBADO")) {
+                    esAprobado = true;
+                    esAprobadoParaEditar = true;
+                    List<Viaje> list = new ArrayList<>();
+                    list = viajesRepository.findBy(new Document("solicitud.idsolicitud", solicitud.getIdsolicitud()));
+                    if (list.isEmpty()) {
+                        JsfUtil.warningMessage(rf.getMessage("warning.notexitsviajeconesasolicitud"));
+                    } else {
+                        viajesSelected = list.get(0);
+                        vehiculoSelected = viajesSelected.getVehiculo();
+                        conductorSelected = viajesSelected.getConductor();
+                    }
+                } else {
+                    viajesSelected.setActivo("si");
+                    viajesSelected.setFechahorainicioreserva(solicitud.getFechahorapartida());
+                    viajesSelected.setFechahorafinreserva(solicitud.getFechahoraregreso());
+                }
             }
 
         } catch (Exception e) {
 
-            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
-    }    // </editor-fold>
+    } // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="onDateSelectCalendar(SelectEvent selectEvent)">
-  
-    
-    // <editor-fold defaultstate="collapsed" desc="onDateSelectCalendar(SelectEvent selectEvent)">
-  
+
     /*
     cuando selecciona una fecha
      */
@@ -1409,34 +1563,446 @@ errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage()
         try {
 //            esnuevo = true;
             event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
-            JsfUtil.warningDialog("this ", "onDateSelectCalendar "+ (Date) selectEvent.getObject());
+            JsfUtil.warningDialog("this ", "onDateSelectCalendar " + (Date) selectEvent.getObject());
             System.out.println("onDateSelectCalendar()");
         } catch (Exception e) {
-                errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
 
-    }
-      // </editor-fold>
+    } // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="onEventMove(ScheduleEntryMoveEvent event))">
-   
-
+    // <editor-fold defaultstate="collapsed" desc="onEventMove(ScheduleEntryMoveEvent event) ">
     public void onEventMove(ScheduleEntryMoveEvent event) {
-        System.out.println("--->onEventMove() ");
+
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event moved", "Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
 
 //        addMessage(message);
-    }
- // </editor-fold>
+    } // </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc="onEventResize(ScheduleEntryResizeEvent event)">
-    
     public void onEventResize(ScheduleEntryResizeEvent event) {
         System.out.println("--->onEventResize() ");
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event resized", "Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
 
 //        addMessage(message);
+    } // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="completeFiltrado(String query)">
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
+    public List<Vehiculo> completeVehiculoFiltrado(String query) {
+        List<Vehiculo> suggestions = new ArrayList<>();
+        List<Vehiculo> disponibles = new ArrayList<>();
+        List<Vehiculo> temp = new ArrayList<>();
+        try {
+            Boolean found = false;
+            query = query.trim();
+
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            temp = vehiculoRepository.findRegex(field, query, true, new Document(field, 1));
+
+            if (temp.isEmpty()) {
+                return suggestions;
+            } else {
+                List<Vehiculo> validos = temp.stream()
+                        .filter(x -> isVehiculoActivo(x)).collect(Collectors.toList());
+                if (validos.isEmpty()) {
+                    return suggestions;
+                }
+                if (vehiculoList.isEmpty()) {
+                    return validos;
+                } else {
+// REMOVERLOS SI YA ESTAN EN EL LISTADO
+
+                    validos.forEach((v) -> {
+                        Optional<Vehiculo> optional = vehiculoList.stream()
+                                .filter(v2 -> v2.getIdvehiculo() == v.getIdvehiculo())
+                                .findAny();
+                        if (!optional.isPresent()) {
+                            suggestions.add(v);
+                        }
+                    });
+                    /*
+                    Verificar si tiene viajes
+                     */
+                    for (Vehiculo v : suggestions) {
+
+                        List<Viaje> viajesList;
+                        if (esMismoDiaSolicitud()) {
+                            //SI LA SOLICITUD(salida y regreso es el mismo dia)
+                            //BUSCAR LOS REGISTROS DE VIAJES DEL VEHICULO ESE DIA
+                            viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
+                            if (viajesList.isEmpty()) {
+                                // INDICA QUE ESE VEHICULO ESTA DISPONIBLE NO TIENE NINGUN VIAJE
+                                disponibles.add(v);
+                            } else {
+                                // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
+                                if (!tieneDisponibilidadViaje(viajesList)) {
+                                    disponibles.add(v);
+                                }
+
+                            }
+                        } else {
+                            // ABARCA VARIOS DIAS 
+                            // OBTENER LOS VIAJES ENTRE ESOS DIAS
+
+                            viajesList = viajesVariosDias(v);
+                            if (viajesList.isEmpty()) {
+                                //SI ESTA VACIO INDICA QUE ESTA DISPONIBLE NO TIENE VIAJES EN ESA FECHA
+                                disponibles.add(v);
+                            } else {
+                                // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
+                                if (!tieneDisponibilidadViaje(viajesList)) {
+                                    disponibles.add(v);
+                                }
+                            }
+//                     
+                        }
+                    }
+                    // VERIRIFICAR SI TIENE VIAJES
+                    // List<Viajes> viajesList = viajesRepository.fi
+                    //si el dia y mes
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return disponibles;
     }
-// </editor-fold>
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="completeFiltrado(String query)">
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
+    public List<Conductor> completeConductorFiltrado(String query) {
+        List<Conductor> suggestions = new ArrayList<>();
+        List<Conductor> temp = new ArrayList<>();
+        try {
+            Boolean found = false;
+            query = query.trim();
+//            if (query.length() < 1) {
+//                return suggestions;
+//            }
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            temp = conductorRepository.findRegex(field, query, true, new Document(field, 1));
+
+            if (conductorList.isEmpty()) {
+                if (!temp.isEmpty()) {
+                    suggestions = temp;
+                }
+            } else {
+                if (!temp.isEmpty()) {
+
+                    for (Conductor c : temp) {
+                        found = false;
+                        for (Conductor c2 : conductorList) {
+                            if (c.getIdconductor() == c2.getIdconductor()) {
+                                found = true;
+                            }
+                        }
+                        if (!found) {
+                            suggestions.add(c);
+                        }
+
+                    }
+                }
+
+            }
+            //suggestions=  rolRepository.findRegex(field,query,true,new Document(field,1));
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+
+        }
+        return suggestions;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isVehiculoValido(Vehiculo vehiculo)">
+    public Boolean isVehiculoValid(Vehiculo vehiculo) {
+        Boolean valid = false;
+        try {
+
+            if (vehiculo.getActivo().equals("si") && vehiculo.getEnreparacion().equals("no")) {
+
+                for (Tipovehiculo t : solicitud.getTipovehiculo()) {
+                    if (vehiculo.getTipovehiculo().getIdtipovehiculo().equals(t.getIdtipovehiculo())) {
+                        valid = true;
+                        break;
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+//            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isVehiculoValid()", e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isVehiculoValido(Vehiculo vehiculo)">
+    public Boolean isVehiculoActivo(Vehiculo vehiculo) {
+        Boolean valid = false;
+        try {
+
+            if (vehiculo.getActivo().equals("si") && vehiculo.getEnreparacion().equals("no")) {
+
+                valid = true;
+
+            }
+
+        } catch (Exception e) {
+//            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isVehiculoValid()", e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isSolicitudValid(Vehiculo vehiculo)">
+    public Boolean isSolicitudValid(Solicitud solicitud) {
+        Boolean valid = false;
+        try {
+
+            if (solicitud.getActivo().equals("si") && solicitud.getEstatus().getIdestatus().equals("SOLICITADO")) {
+
+                valid = true;
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean esMismoDiaSolicitud()">
+    /**
+     * si el dia de partida es el mismo que el de regreso
+     *
+     * @return
+     */
+    private Boolean esMismoDiaSolicitud() {
+        try {
+
+            Integer dia = DateUtil.diaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer mes = DateUtil.diaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer anio = DateUtil.diaDeUnaFecha(solicitud.getFechahorapartida());
+            Integer diaf = DateUtil.diaDeUnaFecha(solicitud.getFechahoraregreso());
+            Integer mesf = DateUtil.diaDeUnaFecha(solicitud.getFechahoraregreso());
+            Integer aniof = DateUtil.diaDeUnaFecha(solicitud.getFechahoraregreso());
+// ES EN LA MISMA FECHA
+
+            if (anio == aniof && mes == mesf && dia == diaf) {
+                return true;
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="tieneDisponibilidadViaje(List<Viajes> viajesList)">
+    /**
+     * recorre el list de viajes y verifica si esta ocupado
+     *
+     * @param viajesList
+     * @return
+     */
+    public Boolean tieneDisponibilidadViaje(List<Viaje> viajesList) {
+        Boolean disponible = true;
+        try {
+
+            for (Viaje vj : viajesList) {
+                if (esOcupadoEseDiaHora(solicitud, vj)) {
+                    disponible = false;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return disponible;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="esOcupadoEseDiaHora()">
+    /**
+     * verifica si esa solicitud esta ocupada
+     *
+     * @param solicitud
+     * @param viajes
+     * @return
+     */
+    public Boolean esOcupadoEseDiaHora(Solicitud solicitud, Viaje viajes) {
+        try {
+            if (DateUtil.dateBetween(solicitud.getFechahorapartida(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())
+                    || DateUtil.dateBetween(solicitud.getFechahoraregreso(), viajes.getFechahorainicioreserva(), viajes.getFechahorainicioreserva())) {
+                return true;
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="viajesVariosDias()">
+    /**
+     * devuelve la lista de viajes entre varios dias considerar que el busca
+     * entre la fecha de partida y la fecha de regreso por lo que muchos viajes
+     * puede que tengan fecha de partida y no de regreso en viajess y en otros
+     * casos no esten en la de partida y si en la de regreso
+     *
+     * @return
+     */
+    private List<Viaje> viajesVariosDias(Vehiculo v) {
+        List<Viaje> viajesList = new ArrayList<>();
+        try {
+            viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
+            List<Viaje> viajesStart = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorainicioreserva", solicitud.getFechahorapartida());
+            List<Viaje> viajesEnd = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdvehiculo(), "fechahorafinreserva", solicitud.getFechahoraregreso());
+            viajesList = new ArrayList<>();
+            if (viajesStart.isEmpty() && viajesEnd.isEmpty()) {
+                // NO HAY VIAJES EN ESAS FECHAS
+
+            } else {
+                if (!viajesStart.isEmpty() && !viajesEnd.isEmpty()) {
+                    viajesList = viajesStart;
+                    for (Viaje vjs : viajesEnd) {
+                        Boolean foundv = false;
+                        for (Viaje vje : viajesList) {
+                            if (vjs.getIdviaje() == vje.getIdviaje()) {
+                                foundv = true;
+                                break;
+                            }
+                        }
+                        if (!foundv) {
+                            viajesList.add(vjs);
+                        }
+                    }
+                } else {
+                    if (viajesStart.isEmpty() && !viajesEnd.isEmpty()) {
+                        viajesList = viajesEnd;
+                    } else {
+                        if (!viajesStart.isEmpty() && viajesEnd.isEmpty()) {
+                            viajesList = viajesStart;
+                        }
+                    }
+                }
+                Collections.sort(viajesList,
+                        (Viaje a, Viaje b) -> a.getIdviaje().compareTo(b.getIdviaje()));
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return viajesList;
+    }
+    // </editor-fold>
+
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
+    public List<Solicitud> completeSolicitudFiltrado(String query) {
+        List<Solicitud> suggestions = new ArrayList<>();
+        List<Solicitud> disponibles = new ArrayList<>();
+        List<Solicitud> temp = new ArrayList<>();
+        try {
+            Boolean found = false;
+            query = query.trim();
+
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            // temp = solicitudRepository.findRegex(field, query, true, new Document(field, 1));
+            Document doc = new Document();
+            doc.append("activo", "si").append("estatus.idestatus", "SOLICITADO");
+            temp = solicitudRepository.findBy(doc, new Document("idsolicitud", -1));
+
+            if (temp.isEmpty()) {
+                return suggestions;
+            } else {
+                List<Solicitud> validos = temp.stream()
+                        .filter(x -> isSolicitudValid(x)).collect(Collectors.toList());
+                if (validos.isEmpty()) {
+                    return suggestions;
+                }
+
+                if (solicitudList.isEmpty()) {
+                    return validos;
+                } else {
+// REMOVERLOS SI YA ESTAN EN EL LISTADO
+
+                    validos.forEach((v) -> {
+                        Optional<Solicitud> optional = solicitudList.stream()
+                                .filter(v2 -> v2.getIdsolicitud() == v.getIdsolicitud())
+                                .findAny();
+                        if (!optional.isPresent()) {
+                            suggestions.add(v);
+                        }
+                    });
+                    disponibles = suggestions;
+
+//                    for (Solicitud v : suggestions) {
+//
+//                        List<Viajes> viajesList;
+//                        if (esMismoDiaSolicitud()) {
+//                            //SI LA SOLICITUD(salida y regreso es el mismo dia)
+//                            //BUSCAR LOS REGISTROS DE VIAJES DEL VEHICULO ESE DIA
+//                            viajesList = viajesRepository.filterDayWithoutHour("vehiculo.idvehiculo", v.getIdsolicitud(), "fechahorainicioreserva", solicitud.getFechahorapartida());
+//                            if (viajesList.isEmpty()) {
+//                                // INDICA QUE ESE VEHICULO ESTA DISPONIBLE NO TIENE NINGUN VIAJE
+//                                disponibles.add(v);
+//                            } else {
+//                                // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
+//                                if (!tieneDisponibilidadViaje(viajesList)) {
+//                                    disponibles.add(v);
+//                                }
+//
+//                            }
+//                        } else {
+//                            // ABARCA VARIOS DIAS 
+//                            // OBTENER LOS VIAJES ENTRE ESOS DIAS
+//
+//                            viajesList = viajesVariosDias(v);
+//                            if (viajesList.isEmpty()) {
+//                                //SI ESTA VACIO INDICA QUE ESTA DISPONIBLE NO TIENE VIAJES EN ESA FECHA
+//                                disponibles.add(v);
+//                            } else {
+//                                // RECORRER LA LISTA Y VER SI EN LOS VIAJES QUE TIENE ESE DIA ESTA DISPONIBLE
+//                                if (!tieneDisponibilidadViaje(viajesList)) {
+//                                    disponibles.add(v);
+//                                }
+//                            }
+////                     
+//                        }
+//                    }
+                    // VERIRIFICAR SI TIENE VIAJES
+                    // List<Viajes> viajesList = viajesRepository.fi
+                    //si el dia y mes
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return disponibles;
+    }
+
+    // </editor-fold>
 
     @Override
     public Integer sizeOfPage() {
