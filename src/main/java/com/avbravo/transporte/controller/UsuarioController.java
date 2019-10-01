@@ -240,20 +240,28 @@ public class UsuarioController implements Serializable, IController {
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="beforeDelete()">
+   
+     // <editor-fold defaultstate="collapsed" desc="Boolean beforeDelete()">
+    @Override
     public Boolean beforeDelete() {
-        try {
-            if (usuarioServices.isDeleted(usuario)) {
-                return true;
-            }
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        Boolean delete = usuarioServices.isDeleted(usuario);
+        if (!delete) {
+            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
         }
-        return false;
-
-        // </editor-fold>
+        return delete;
     }
 
+    // </editor-fold>     
+    // <editor-fold defaultstate="collapsed" desc="Boolean beforeDeleteFromListXhtml()">
+    @Override
+    public Boolean beforeDeleteFromListXhtml() {
+               Boolean delete = usuarioServices.isDeleted(usuario);
+        if (!delete) {
+            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
+        }
+        return delete;
+    }
+    // </editor-fold>   
     // <editor-fold defaultstate="collapsed" desc="completeFiltrado(String query)">
     /**
      * Se usa para los autocomplete filtrando

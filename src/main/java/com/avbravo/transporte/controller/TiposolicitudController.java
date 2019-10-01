@@ -14,6 +14,7 @@ import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.transporteejb.datamodel.TiposolicitudDataModel;
 import com.avbravo.transporteejb.entity.Tiposolicitud;
 import com.avbravo.transporteejb.entity.Usuario;
@@ -187,4 +188,26 @@ public class TiposolicitudController implements Serializable, IController {
         }
 
     }// </editor-fold>
+    
+       // <editor-fold defaultstate="collapsed" desc="Boolean beforeDelete()">
+    @Override
+    public Boolean beforeDelete() {
+        Boolean delete = tiposolicitudServices.isDeleted(tiposolicitud);
+        if (!delete) {
+            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
+        }
+        return delete;
+    }
+
+    // </editor-fold>     
+    // <editor-fold defaultstate="collapsed" desc="Boolean beforeDeleteFromListXhtml()">
+    @Override
+    public Boolean beforeDeleteFromListXhtml() {
+        Boolean delete = tiposolicitudServices.isDeleted(tiposolicitud);
+        if (!delete) {
+            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
+        }
+        return delete;
+    }
+    // </editor-fold>     
 }

@@ -14,6 +14,7 @@ import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
  
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.transporteejb.datamodel.TipogiraDataModel;
 import com.avbravo.transporteejb.entity.Tipogira;
 import com.avbravo.transporteejb.entity.Usuario;
@@ -187,4 +188,26 @@ public class TipogiraController implements Serializable, IController {
         }
 
     }// </editor-fold>
+    
+       // <editor-fold defaultstate="collapsed" desc="Boolean beforeDelete()">
+    @Override
+    public Boolean beforeDelete() {
+        Boolean delete = tipogiraServices.isDeleted(tipogira);
+        if (!delete) {
+            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
+        }
+        return delete;
+    }
+
+    // </editor-fold>     
+    // <editor-fold defaultstate="collapsed" desc="Boolean beforeDeleteFromListXhtml()">
+    @Override
+    public Boolean beforeDeleteFromListXhtml() {
+        Boolean delete = tipogiraServices.isDeleted(tipogira);
+        if (!delete) {
+            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
+        }
+        return delete;
+    }
+    // </editor-fold>     
 }

@@ -14,6 +14,7 @@ import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
  
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.transporteejb.datamodel.TipovehiculoDataModel;
 import com.avbravo.transporteejb.entity.Tipovehiculo;
 import com.avbravo.transporteejb.entity.Usuario;
@@ -188,4 +189,26 @@ public class TipovehiculoController implements Serializable, IController {
         }
 
     }// </editor-fold>
+    
+      // <editor-fold defaultstate="collapsed" desc="Boolean beforeDelete()">
+    @Override
+    public Boolean beforeDelete() {
+        Boolean delete = tipovehiculoServices.isDeleted(tipovehiculo);
+        if (!delete) {
+            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
+        }
+        return delete;
+    }
+
+    // </editor-fold>     
+    // <editor-fold defaultstate="collapsed" desc="Boolean beforeDeleteFromListXhtml()">
+    @Override
+    public Boolean beforeDeleteFromListXhtml() {
+           Boolean delete = tipovehiculoServices.isDeleted(tipovehiculo);
+        if (!delete) {
+            JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
+        }
+        return delete;
+    }
+    // </editor-fold>   
 }
