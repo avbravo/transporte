@@ -123,6 +123,7 @@
                     rowPage="#{coordinadorController.rowPage}"                   
                     page="#{coordinadorController.page}"
                     pages="#{coordinadorController.pages}"
+                    renderedPrint="false"
                     renderedNew="false"
                     skip="ajax:coordinadorController.skip()" 
                     url = "/pages/coordinador/new.xhtml"
@@ -142,43 +143,40 @@
                         <h:outputText value="#{item.idsolicitud}" style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}"/>
                     </p:column>
 
-                    <p:column headerText="#{msg['field.fechapartida']}" style="width:150px">
+                    <p:column headerText="#{msg['field.fechapartida']}" style="width:140px">
                         <h:outputText value="#{coordinadorController.showDate(item.fechahorapartida)} #{coordinadorController.showHour(item.fechahorapartida)}" style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}" />
                     </p:column>
-                    <p:column headerText="#{msg['field.fecharegreso']}" style="width:150px">
+                    <p:column headerText="#{msg['field.fecharegreso']}" style="width:140px">
                         <h:outputText value="#{coordinadorController.showDate(item.fechahoraregreso)} #{coordinadorController.showHour(item.fechahoraregreso)}" style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}" />
                     </p:column>
 
-                    <p:column headerText="#{msg['field.solicita']}" style="width:150px">
-                        <h:outputText value="#{item.usuario.get(0).nombre}" style="color: #{solicitudController.columnColor(item.estatus)}" />
+                    <p:column headerText="#{msg['field.solicita']}" style="width:140px">
+                        <h:outputText value="#{item.usuario.get(0).nombre}" style="font-size: 10; color: #{solicitudController.columnColor(item.estatus)}" />
                     </p:column>
-                    <p:column headerText="#{msg['field.lugarllegada']}"  >
+<!--                    <p:column headerText="#{msg['field.lugarllegada']}"  >
                         <p:outputLabel value="#{item.lugarllegada}"   style="color: #{coordinadorController.columnColor(item.estatus)}" />
-                    </p:column>
-                    <p:column headerText="#{msg['field.vistobueno']}"  >
-                        <p:outputLabel value="#{coordinadorController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}" />
-                    </p:column>
-
-
-
-                    <p:column headerText="#{msg['field.estatus']}" style="width:100px">
-                        <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}"/>
-
+                    </p:column>-->
+                  
+                    <p:column headerText="#{msg['field.vistobueno']}"  style="width:70px">
+                              <p:outputLabel value="#{coordinadorController.columnNameVistoBueno(item.vistoBueno)}"   style="font-size: 10; color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}" />
                     </p:column>
 
 
-                    <p:column headerText="" style="width:70px">
+
+                    <p:column headerText="#{msg['field.estatus']}" style="width:70px">
+                        <p:outputLabel  value="#{item.estatus.idestatus}"  style="font-size: 10; color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}"/>
+
+                    </p:column>
+
+
+                    <p:column headerText="" style="width:80px">
                         <b:commandButton action="#{coordinadorController.aceptarVistoBueno(item,'si')}"
                                          iconAwesome="fa-check-square-o" 
                                          title="#{msg['button.aprobar']}"
                                          rendered="#{coordinadorController.isSolicitado(item.estatus)}"
                                          update=":form:dataTable, :form:msgs"/>
-
-
-
-                    </p:column>
-                    <p:column headerText="" style="width:70px">
-                        <b:commandButton action="#{coordinadorController.aceptarVistoBueno(item,'no')}"
+                        
+                         <b:commandButton action="#{coordinadorController.aceptarVistoBueno(item,'no')}"
                                          iconAwesome="fa-times" 
                                          rendered="#{coordinadorController.isSolicitado(item.estatus)}"
                                          title="#{msg['button.rechazar']}"
@@ -187,7 +185,7 @@
 
 
                     </p:column>
-
+                   
 
 
 

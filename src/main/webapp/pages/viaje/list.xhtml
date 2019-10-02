@@ -21,7 +21,7 @@
             } 
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA, SECRETARIO ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
@@ -153,6 +153,7 @@
                     page="#{viajeController.page}"
                     pages="#{viajeController.pages}"
                     skip="ajax:viajeController.skip()" 
+                     renderedPrint="false"
                     url = "/pages/viaje/new.xhtml"
                     />
 
@@ -224,6 +225,6 @@
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR, SECRETARIA, SECRETARIO ADMINISTRATIVO')}" />
     </ui:define>
 </ui:composition>
