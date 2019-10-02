@@ -31,11 +31,11 @@
    
 
 
-                <b:panel collapsible="false" title="#{msg['title.solicitudmanualadministrativo']}" look="primary" rendered="#{p:ifGranted('ADMINISTRATIVO')}" >
+                <b:panel collapsible="false" title="#{msg['title.solicitudmanualadministrativo']}" look="primary"  >
 
 
 
-                    <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('ADMINISTRATIVO')}"> 
+                    <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
 
 
 
@@ -394,9 +394,9 @@
 
                         <b:column span="6">
                             <jmoordbjsf:toolbarnewsavereturn id="ref"
-                                                             renderedNew="#{p:ifGranted('ADMINISTRATIVO')}"
-                                                             renderedSave="#{p:ifGranted('ADMINISTRATIVO')}"
-                                                             renderedList="#{p:ifGranted('ADMINISTRATIVO')}"
+                                                             renderedNew="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"
+                                                             renderedSave="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"
+                                                             renderedList="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"
                                                              controller="#{solicitudManualAdministrativoController}" 
                                                              componentToBlock="panel"
                                                              url  = "/pages/solicitudmanualadministrativo/list.xhtml"

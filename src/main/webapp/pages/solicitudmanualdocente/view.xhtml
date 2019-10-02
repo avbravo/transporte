@@ -28,11 +28,11 @@
                 <jmoordbjsf:messages id="msg"/>
 
 
-                <b:panel collapsible="false" title="#{msg['title.solicitudmanualdocente']}" look="primary" rendered="#{p:ifGranted('DOCENTE')}" >
+                <b:panel collapsible="false" title="#{msg['title.solicitudmanualdocente']}" look="primary"  >
 
 
 
-                    <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('DOCENTE')}"> 
+                    <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
 
                         <p:outputLabel  value="#{msg['field.fecha']}" />
                         <jmoordbjsf:labelDate  value="#{solicitudManualDocenteController.solicitud.fecha}" id="fecha"   />
@@ -425,9 +425,9 @@
 
                         <b:column span="12">
                             <jmoordbjsf:toolbarview 
-                                renderedDelete="#{p:ifGranted('DOCENTE')}"
-                                renderedEdit="#{p:ifGranted('DOCENTE')}"
-                                renderedList="#{p:ifGranted('DOCENTE')}"                    
+                                renderedDelete="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"
+                                renderedEdit="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"
+                                renderedList="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"                    
                                 renderedPrint="false"                    
                                 controller="#{solicitudManualDocenteController}"
 
