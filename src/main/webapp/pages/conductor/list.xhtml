@@ -20,7 +20,7 @@
             } 
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
                      return false;
                  }">
 
@@ -95,8 +95,8 @@
                     <b:dataTableColumn label="">
 
                       <jmoordbjsf:column
-                            renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
-                            renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                            renderedEdit="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"
+                            renderedDelete="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"
                             controller="#{conductorController}"
                             url="/pages/conductor/view.xhtml"
                             item="#{item}"
@@ -108,6 +108,6 @@
 
         </b:form>
 
-         <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}"/>
+         <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"/>
     </ui:define>
 </ui:composition>

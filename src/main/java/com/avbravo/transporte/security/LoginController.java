@@ -389,6 +389,7 @@ public class LoginController implements Serializable, SecurityInterface {
                             return "/faces/pages/coordinador/list.xhtml?faces-redirect=true";
                         case "ADMINISTRADOR":
                         case "SECRETARIO ADMINISTRATIVO":
+                        case "SECRETARIA":
              
                         case "CONDUCTOR":
                             return "/faces/pages/index.xhtml?faces-redirect=true";
