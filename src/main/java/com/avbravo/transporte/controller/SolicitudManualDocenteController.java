@@ -341,7 +341,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             start();
             sugerenciaList = sugerenciaRepository.findBy("activo", "si");
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
-            cargarSchedule();
+          //  cargarSchedule();
      String  action = getAction();
             
 

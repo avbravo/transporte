@@ -340,7 +340,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
             start();
             sugerenciaList = sugerenciaRepository.findBy("activo", "si");
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
-            cargarSchedule();
+     //       cargarSchedule();
 String action = getAction();
 
 
