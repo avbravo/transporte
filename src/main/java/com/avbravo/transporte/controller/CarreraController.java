@@ -21,6 +21,7 @@ import com.avbravo.jmoordb.mongodb.history.repository.AutoincrementablebReposito
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.transporteejb.entity.Usuario;
 
 import java.util.ArrayList;
@@ -227,7 +228,7 @@ public class CarreraController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="Boolean beforeDelete()">
     @Override
     public Boolean beforeDelete() {
-        Boolean delete = vehiculoServices.isDeleted(vehiculo);
+        Boolean delete = carreraServices.isDeleted(carrera);
         if (!delete) {
             JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
         }
@@ -238,7 +239,7 @@ public class CarreraController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="Boolean beforeDeleteFromListXhtml()">
     @Override
     public Boolean beforeDeleteFromListXhtml() {
-           Boolean delete = vehiculoServices.isDeleted(vehiculo);
+     Boolean delete = carreraServices.isDeleted(carrera);
         if (!delete) {
             JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
         }

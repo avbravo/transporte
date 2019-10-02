@@ -205,7 +205,7 @@ public class EstatusController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="Boolean beforeDelete()">
     @Override
     public Boolean beforeDelete() {
-        Boolean delete = vehiculoServices.isDeleted(vehiculo);
+        Boolean delete = estatusServices.isDeleted(estatus);
         if (!delete) {
             JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
         }
@@ -216,7 +216,7 @@ public class EstatusController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="Boolean beforeDeleteFromListXhtml()">
     @Override
     public Boolean beforeDeleteFromListXhtml() {
-           Boolean delete = vehiculoServices.isDeleted(vehiculo);
+         Boolean delete = estatusServices.isDeleted(estatus);
         if (!delete) {
             JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
         }

@@ -317,7 +317,7 @@ public class ConductorController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="Boolean beforeDelete()">
     @Override
     public Boolean beforeDelete() {
-        Boolean delete = vehiculoServices.isDeleted(vehiculo);
+        Boolean delete = conductorServices.isDeleted(conductor);
         if (!delete) {
             JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
         }
@@ -328,7 +328,7 @@ public class ConductorController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="Boolean beforeDeleteFromListXhtml()">
     @Override
     public Boolean beforeDeleteFromListXhtml() {
-           Boolean delete = vehiculoServices.isDeleted(vehiculo);
+   Boolean delete = conductorServices.isDeleted(conductor);
         if (!delete) {
             JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
         }
