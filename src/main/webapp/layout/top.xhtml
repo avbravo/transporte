@@ -44,8 +44,8 @@
 
 
 
-                        <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{p:ifGranted('ADMINISTRADOR')}" outcome="/pages/solicitudmanualdocente/list" iconAwesome= "fa-calendar-o" />
-                        <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{p:ifGranted('ADMINISTRADOR')}"  outcome="/pages/solicitudmanualadministrativo/list" iconAwesome= "fa-calendar-o" />
+                        <b:navLink value="#{msg['menu.solicituddocentemanual']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}" outcome="/pages/solicitudmanualdocente/list" iconAwesome= "fa-calendar-o" />
+                        <b:navLink value="#{msg['menu.solicitudadministrativomanual']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"  outcome="/pages/solicitudmanualadministrativo/list" iconAwesome= "fa-calendar-o" />
 
 
                     </h:form>

@@ -10,7 +10,7 @@
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
     <ui:define name="content">
-         
+
 
         <style>
             .thumbnail { max-width: 100%; }
@@ -18,103 +18,286 @@
                 border: 1px solid;
                 border-color: #428BCA;
             } 
+
         </style>
+        <script type="text/javascript">
+            function socketListener(message, channel, event) {
+                document.getElementById("clockId").innerHTML += message + "<br/>";
+            }
+        </script>    
+        <jmoordbjsf:cssschedule/>  
+        <jmoordbjsf:jsschedule/>
 
-
-        <b:form id="form"  styleClass="form-signin" prependId="false"  rendered="#{loginController.loggedIn and applicationMenu.solicitudDocentePorAdministrador.list}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
+
+
             <b:growl  id="msgs"/>
 
-            <b:panel collapsible="false" title="#{msg['titlelist.solicitudmanualdocente']}" id="content"   look="primary" > 
-                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-                <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
+            <b:panel collapsible="false" title="#{msg['titlelist.solicitudmanualdocente']}" id="content"   look="primary"  > 
+                <b:panelGrid colSpans="2,4,2,4"  columns="4" size="xs"> 
+                    <p:outputLabel value="#{msg['field.idestatus']}"/>
+                    <jmoordbjsf:autocomplete converter="#{estatusConverter}"
+                                             dropdown="true"
+                                             minQueryLength="0"
+                                             completeMethod="#{solicitudManualDocenteController.estatusServices.complete}"
+                                             labeltip1="#{msg['field.estatus']} #{p.idestatus}" 
+                                             listener="#{solicitudManualDocenteController.handleAutocompleteOfListXhtml}"
+                                             value="#{solicitudManualDocenteController.estatusSearch}"
+                                             itemLabel=" #{p.idestatus}"
+                                             field="idestatus"
+                                             update=" :form:dataTable"/>
+
+                  
+
+                    <p:outputLabel value="#{msg['field.coordinador']}"/>
+                    <p:selectOneMenu id="coordinador" value="#{solicitudManualDocenteController.vistoBuenoSearch}" style="width:150px">
+                        <p:ajax listener="#{solicitudManualDocenteController.onVistoBuenoChange}" update=":form:dataTable" />
+                        <f:selectItem itemLabel="#{msg['selectitem.seleccione']}" itemValue="" noSelectionOption="true" />
+                        <f:selectItem itemLabel="#{msg['selectitem.pendiente']}" itemValue="pe" />
+                        <f:selectItem itemLabel="#{msg['selectitem.aprobado']}" itemValue="si" />
+                        <f:selectItem itemLabel="#{msg['selectitem.noaprobado']}" itemValue="no" />
+
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="#{msg['field.secretarioadministrativo']}"/>
+                    <p:selectOneMenu id="secretarioadministrativo" value="#{solicitudManualDocenteController.vistoBuenoSecretarioAdministrativoSearch}" style="width:150px">
+                        <p:ajax listener="#{solicitudManualDocenteController.onVistoBuenoChangeSecretarioAdministrativo}" update=":form:dataTable" />
+                        <f:selectItem itemLabel="#{msg['selectitem.seleccione']}" itemValue="" noSelectionOption="true" />
+                        <f:selectItem itemLabel="#{msg['selectitem.pendiente']}" itemValue="pe" />
+                        <f:selectItem itemLabel="#{msg['selectitem.aprobado']}" itemValue="si" />
+                        <f:selectItem itemLabel="#{msg['selectitem.noaprobado']}" itemValue="no" />
+
+                    </p:selectOneMenu>
+                    
+                    <p:spacer/>
+                    <p:spacer/>
+                      <p:outputLabel value="#{msg['field.mensaje']}"/>
+                    <p:inputTextarea rows="2" value="#{solicitudManualDocenteController.messages}"/>
+                    <p:commandButton value="#{msg['button.send']}" action="#{solicitudManualDocenteController.enviarMensajesDirectos()}"
+                                     update=":form:msgs"
+                                     />
+                </b:panelGrid>
+
+            </b:panel>
+
+
+            <b:panel collapsible="false" id="dataTable" look="primary" >
+                <jmoordbjsf:paginator
+                    controller="#{solicitudManualDocenteController}"                        
+                    rowPage="#{solicitudManualDocenteController.rowPage}"                   
+                    page="#{solicitudManualDocenteController.page}"
+                    pages="#{solicitudManualDocenteController.pages}"
+                    skip="ajax:solicitudManualDocenteController.skip()" 
+                    url = "/pages/solicitudmanualdocente/new.xhtml"
+                    />
 
 
 
-                    <p:outputLabel value="#{msg['field.idsolicitud']}"/>
+                <p:dataTable var="item" value="#{solicitudManualDocenteController.solicitudDataModel}"
+                             reflow="true">
+                    <f:facet name="header">
+                        <p:outputLabel value="#{msg['titlelist.solicituddocente']}"/>
+                    </f:facet>
+                    <p:column style="width:16px">
+                        <p:rowToggler />
+                    </p:column>
+                    <p:column headerText="#{msg['field.idsolicitud']}" style="width:75px">
+                        <h:outputText value="#{item.idsolicitud}" style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+                    </p:column>
+
+                    <p:column headerText="#{msg['field.fechapartida']}" style="width:150px">
+                        <h:outputText value="#{solicitudManualDocenteController.showDate(item.fechahorapartida)} #{solicitudManualDocenteController.showHour(item.fechahorapartida)}" style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+                    </p:column>
+                    <p:column headerText="#{msg['field.lugarllegada']}"  >
+                        <p:outputLabel value="#{item.lugarllegada}"   style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+                    </p:column>
+
+                    <p:column headerText="#{msg['field.coordinador']}"  >
+                        <p:outputLabel value="#{solicitudManualDocenteController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+                    </p:column>
+                    <p:column headerText="#{msg['field.secadministrativo']}"  >
+                        <p:outputLabel value="#{solicitudManualDocenteController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+                    </p:column>
 
 
+
+                    <p:column headerText="#{msg['field.estatus']}" style="width:100px">
+                        <p:outputLabel  value="#{item.estatus.idestatus}"   style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}"/>
+
+                    </p:column>
+
+                    <p:column style="width:55px" >
+
+                        <jmoordbjsf:commandbuttondatatableprepareView
+                            rendered="#{(item.estatus.idestatus eq 'SOLICITADO') or ((item.estatus.idestatus eq 'APROBADO'))}"
+                            controller="#{solicitudManualDocenteController}"
+                            url="/pages/solicituddocente/view.xhtml"
+                            item="#{item}"
+                            />                
+                    </p:column>
+
+
+
+
+
+
+                    <p:rowExpansion>
+
+                        <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('DOCENTE')}"> 
+
+                            <p:outputLabel value="#{msg['field.fecharegreso']}" />
+                            <p:outputLabel value="#{solicitudManualDocenteController.showDate(item.fechahoraregreso)}"  />
+
+                            <p:outputLabel value="#{msg['field.horaregreso']}" />
+                            <p:outputLabel value="#{solicitudManualDocenteController.showHour(item.fechahoraregreso)}"  />
+
+
+                            <p:outputLabel value="#{msg['field.objetivo']}"  />
+                            <p:outputLabel value="#{item.objetivo}" style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+                            <p:outputLabel value="#{msg['field.lugares']}"/>
+                            <p:outputLabel value="#{item.lugares}"  style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+
+
+
+
+                            <p:outputLabel  value="#{msg['field.facultad']}" />
+                            <p:repeat value="#{item.facultad}" var="car">
+                                <p:outputLabel value="#{car.descripcion}"/>
+                            </p:repeat>
+
+                            <p:outputLabel  value="#{msg['field.carrera']}" />
+                            <p:repeat value="#{item.carrera}" var="car">
+                                <p:outputLabel value="#{car.descripcion}"/>
+                            </p:repeat>
+                            <p:outputLabel  value="#{msg['field.numerogrupos']}" />
+                            <p:outputLabel  value="#{item.numerogrupo}" />
+
+
+
+                            <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
+
+                            <p:outputLabel  value="#{item.numerodevehiculos}"  />
+
+                            <p:outputLabel  value="#{msg['field.pasajeros']}" >
+                                <i class="pi pi-users"></i>
+                            </p:outputLabel>
+                            <p:outputLabel value="#{item.pasajeros}"   />
+
+                            <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+                            <p:outputLabel value="#{solicitudManualDocenteController.solicitud.lugarpartida}"  />
+                            <p:outputLabel  value="#{msg['field.lugarllegada']}" >
+                                <i class="pi pi-home"></i>
+                            </p:outputLabel>
+                            <p:outputLabel value="#{item.lugarllegada}" />
+                            <p:outputLabel  value="#{msg['field.objetivo']}" />
+                            <p:outputLabel  value="#{item.objetivo}" id="objetivo"   />
+
+                 <p:outputLabel value="#{msg['field.coordinador']}" />
+                        <p:outputLabel value="#{solicitudManualDocenteController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+              
+                   <p:outputLabel value="#{msg['field.secadministrativo']}"  />
+                        <p:outputLabel value="#{solicitudManualDocenteController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+                   
+                            <p:outputLabel value="#{msg['field.estatus']}" />
+                            <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+
+                        </b:panelGrid>
+                    </p:rowExpansion>
+                </p:dataTable>
+
+            </b:panel>
+
+
+
+            <p:dialog widgetVar="eventDialog" header="#{msg['dialogo.solicitud']}" 
+                      width="650" height="450"
+                      styleClass="customDialog"
+
+                      responsive="true"
+
+                      showEffect="clip" hideEffect="clip">
+                <b:panelGrid id="eventDetails" colSpans="2,10" size="xs" > 
+                    <p:outputLabel  value="#{msg['field.idsolicitud']}" />
+                    <p:outputLabel  value="#{solicitudManualDocenteController.solicitud.idsolicitud}" id="idsolicitud"   />
+
+
+
+                    <p:outputLabel  value="#{msg['field.fechapartida']}" />
+                    <p:fieldset >
+                        <p:calendar  disabled="true"  size="8"                                  
+                                     style="background-color: grey;"
+                                     pattern="dd/MM/yyyy" value="#{solicitudManualDocenteController.solicitud.fechahorapartida}"  />
+
+                        <p:outputLabel  value="#{msg['field.horapartida']}" />        
+                        <p:calendar  disabled="true"    
+                                     size="8" 
+                                     pattern="HH:mm:ss a" value="#{solicitudManualDocenteController.solicitud.fechahorapartida}"  />
+
+
+                    </p:fieldset>
+
+
+                    <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+
+                    <p:outputLabel value="#{solicitudManualDocenteController.solicitud.lugarpartida}" id="lugarpartida"   />
+
+
+                    <p:outputLabel  value="#{msg['field.fecharegreso']}" />
+                    <p:fieldset >
+
+                        <p:calendar  disabled="true"  size="8"                                  
+                                     style="background-color: grey;"
+                                     pattern="dd/MM/yyyy" value="#{solicitudManualDocenteController.solicitud.fechahoraregreso}"  />
+
+
+
+                        <p:outputLabel  value="#{msg['field.horaregreso']}" />
+                        <p:calendar  disabled="true"    
+                                     size="8" 
+                                     pattern="HH:mm:ss a" value="#{solicitudManualDocenteController.solicitud.fechahoraregreso}"  />
+
+
+                    </p:fieldset>
+
+                    <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
+                    <p:outputLabel  value="#{solicitudManualDocenteController.solicitud.numerodevehiculos}" />
+                    <p:outputLabel  value="#{msg['field.pasajeros']}" />
+                    <p:outputLabel  value="#{solicitudManualDocenteController.solicitud.pasajeros}" />
+                    <p:outputLabel value="#{msg['field.idestatus']}" />
+                    <p:outputLabel value="#{solicitudManualDocenteController.solicitud.estatus.idestatus}" />
+
+                    <p:outputLabel  value="#{msg['field.numerogrupos']}" />
+                    <p:chips id="numerogrupo" disabled="true" value="#{solicitudManualDocenteController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
+                    <p:outputLabel value="#{msg['field.idtipogira']}"/>
+                    <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
+                                             completeMethod="#{solicitudManualDocenteController.tipogiraServices.complete}" 
+                                             labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"  
+                                             listener="#{solicitudManualDocenteController.handleSelect}"
+                                             value="#{solicitudManualDocenteController.solicitud.tipogira}"
+                                             itemLabel=" #{p.idtipogira}"
+                                             field="idtipogira"
+                                             dropdown="true"
+                                             fromstart="true"
+                                             minQueryLength="0"
+                                             disabled="true"
+                                             update=""/>
+
+                    <p:outputLabel  value="#{msg['field.objetivo']}" />
+                    <b:inputTextarea disabled="true" rows="2" span="8"  value="#{solicitudManualDocenteController.solicitud.objetivo}" id="objetivo"   />
+
+
+
+                    <p:outputLabel  value="#{msg['field.lugares']}" />
+                    <p:chips disabled="true" value="#{solicitudManualDocenteController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
 
 
                 </b:panelGrid>
-            </b:panel>
-            <b:panel collapsible="false" id="dataTable" look="primary">
-                <jmoordbjsf:paginator 
-                    rowPage="#{solicitudManualDocenteController.rowPage}"
-                    clear="#{solicitudManualDocenteController.clear()}"
-                    first="#{solicitudManualDocenteController.first()}"
-                    back="#{solicitudManualDocenteController.back()}"
-                    next="#{solicitudManualDocenteController.next()}"
-                    last="#{solicitudManualDocenteController.last()}"
-                    page="#{solicitudManualDocenteController.page}"
-                    pages="#{solicitudManualDocenteController.pages}"
-                    skip="ajax:solicitudManualDocenteController.skip(solicitudManualDocenteController.page)" 
-                    new="#{solicitudManualDocenteController.prepare('gonew',solicitudManualDocenteController.solicitud)}"
-                    printAll="#{solicitudManualDocenteController.printAll()}"
-                    />
-                <b:dataTable value="#{solicitudManualDocenteController.solicitudDataModel}"
-                             var="item"
-                             id="dataTable2"
-                             paginated="false"
-
-                             onpage="console.log('page');">
-
-                    <b:dataTableColumn value="#{item.idsolicitud}" label="#{msg['field.idsolicitud']}"/>
-                    <b:dataTableColumn  label="#{msg['field.solicitudpadre']}">
-                        <p:outputLabel value="#{item.solicitudpadre}" style="color: #009900;" rendered="#{item.solicitudpadre gt 0}"/>
-                    </b:dataTableColumn>
-
-
-
-                    <b:dataTableColumn label="#{msg['field.fechapartida']}" >
-                        <p:calendar  disabled="true"  size="8"                                  
-                                     style="background-color: grey;"
-                                     pattern="dd/MM/yyyy" value="#{item.fechahorapartida}"  />
-
-
-                    </b:dataTableColumn> 
-                    <b:dataTableColumn label="#{msg['field.horapartida']}" >
-                        <p:calendar  disabled="true"    
-                                     size="8" 
-                                     pattern="HH:mm:ss a" value="#{item.fechahorapartida}"  />
-
-                    </b:dataTableColumn> 
-                    <b:dataTableColumn label="#{msg['field.fecharegreso']}" >
-                        <p:calendar  disabled="true"    
-                                     size="8" 
-                                     pattern="dd/MM/yyyy" value="#{item.fechahoraregreso}"  />
-
-                    </b:dataTableColumn> 
-                    <b:dataTableColumn label="#{msg['field.horaregreso']}" >
-                        <p:calendar  disabled="true"   
-                                     size="8" 
-                                     pattern="HH:mm:ss a" value="#{item.fechahoraregreso}"  />
-
-                    </b:dataTableColumn> 
-
-
-
-                    <b:dataTableColumn value="#{item.lugares}" label="#{msg['field.lugares']}" style="color: #{solicitudDocenteController.columnColor(item.estatus.idestatus)}" />
-                    <b:dataTableColumn value="#{item.estatus.idestatus}" label="#{msg['field.estatus']}" style="color: #{solicitudManualDocenteController.columnColor(item.estatus.idestatus)}" />
-                    <b:dataTableColumn value="#{solicitudManualDocenteController.solicitudServices.responsable(item).nombre}" label="#{msg['field.responsable']}" style="color: #{solicitudManualDocenteController.columnColor(item.estatus.idestatus)}" />
-
-
-                    <b:dataTableColumn label="">
-
-                        <jmoordbjsf:column_view
-
-                            edit="#{solicitudManualDocenteController.prepare('view',item)}"
-                            rendered="#{applicationMenu.solicitud.delete}"
-                            />
-                    </b:dataTableColumn>
-
-                </b:dataTable>
-            </b:panel>
-
+            </p:dialog>
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!loginController.loggedIn or !applicationMenu.solicitudDocentePorAdministrador.list}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"/>
     </ui:define>
 </ui:composition>
