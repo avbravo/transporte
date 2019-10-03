@@ -343,7 +343,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             cargarSchedule();
 String action = getAction();
 
-
+            System.out.println("==> action "+action);
             if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
                 inicializar();
 
