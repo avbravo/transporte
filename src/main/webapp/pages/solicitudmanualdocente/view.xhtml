@@ -215,8 +215,8 @@
 
 
                             <p:column headerText="#{msg['field.idtipovehiculo']}">
-
-                                <h:outputText value="#{item.tipovehiculo.idtipovehiculo}" />
+ <h:outputText value="#{item.tipovehiculo.idtipovehiculo} (#{item.maximo})" />
+                                <!--<h:outputText value="#{item.tipovehiculo.idtipovehiculo}" />-->
                             </p:column>
 
                             <p:column  headerText="#{msg['field.vehiculos']}" style="width:150px">
@@ -226,10 +226,10 @@
                                 </p:cellEditor>
                             </p:column>
 
-                            <p:column headerText="#{msg['field.maximo']}" style="width:150px">
+<!--                            <p:column headerText="#{msg['field.maximo']}" style="width:150px">
 
                                 <h:outputText value="#{item.maximo}" />
-                            </p:column>
+                            </p:column>-->
                             <p:column  headerText="#{msg['field.pasajeros']}" style="width:150px">
                                 <p:cellEditor>
                                     <f:facet name="output"><h:outputText value="#{item.pasajeros}" /></f:facet>
