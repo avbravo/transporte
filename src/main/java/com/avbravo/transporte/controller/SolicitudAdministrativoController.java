@@ -114,7 +114,7 @@ import org.primefaces.model.ScheduleModel;
 
 @Setter
 
-public class SolicitudAdministrativoController implements Serializable, IController {
+public class SolicitudAdministrativoController implements Serializable, IController{
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;

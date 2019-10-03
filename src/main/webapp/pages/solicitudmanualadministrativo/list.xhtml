@@ -109,7 +109,7 @@
                    
                     
                      <p:column headerText="#{msg['field.secadministrativo']}"  >
-                        <p:outputLabel value="#{solicitudController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
+                        <p:outputLabel value="#{solicitudAdministrativoController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudAdministrativoController.columnColor(item.estatus)}" />
                     </p:column>
                     <p:column headerText="#{msg['field.estatus']}" style="width:100px">
                         <p:outputLabel  value="#{item.estatus.idestatus}"   style="color: #{solicitudManualAdministrativoController.columnColor(item.estatus)}"/>
@@ -189,7 +189,7 @@
                           
                             <p:outputLabel  value="#{msg['field.vistobueno']}" />
                           
-                                  <p:outputLabel value="#{solicitudController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
+                                  <p:outputLabel value="#{solicitudAdministrativoController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudAdministrativoController.columnColor(item.estatus)}" />
                           
 
                             <p:outputLabel value="#{msg['field.estatus']}" />
