@@ -1292,12 +1292,7 @@ public class ViajeController implements Serializable, IController {
     }
     // </editor-fold>
 
-    @Override
-    public Integer sizeOfPage() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
+   
       // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
     public String showDate(Date date) {
         return viajeServices.showDate(date);
