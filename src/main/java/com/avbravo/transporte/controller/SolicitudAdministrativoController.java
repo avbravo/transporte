@@ -2311,19 +2311,19 @@ String action = getAction();
     }
     // </editor-fold>  
 
-    // <editor-fold defaultstate="collapsed" desc="String clear() ">
-    @Override
-    public String clear() {
-        try {
-            setSearchAndValue("searchSolicitudController", "_init");
-           
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return "";
-    }// </editor-fold>
-    
+//    // <editor-fold defaultstate="collapsed" desc="String clear() ">
+//    @Override
+//    public String clear() {
+//        try {
+//            setSearchAndValue("searchSolicitudController", "_init");
+//           
+//            move(page);
+//        } catch (Exception e) {
+//            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+//        }
+//        return "";
+//    }// </editor-fold>
+//    
   // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
     public String columnNameVistoBueno(VistoBueno vistoBueno) {
         return vistoBuenoServices.columnNameVistoBueno(vistoBueno);
