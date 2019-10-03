@@ -580,7 +580,7 @@ public class SolicitudController implements Serializable, IController {
             //Lo datos del usuario
             List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
 
-//            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+
             tipovehiculoList.add(tipovehiculo);
             solicitud.setTipovehiculo(tipovehiculoList);
             solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));

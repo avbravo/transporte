@@ -21,8 +21,6 @@ import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.repository.Repository;
 import com.avbravo.jmoordb.pojos.JmoordbEmailMaster;
-import com.avbravo.jmoordb.pojos.JmoordbNotifications;
-import com.avbravo.jmoordb.pojos.UserInfo;
 import com.avbravo.jmoordb.profiles.repository.JmoordbEmailMasterRepository;
 import com.avbravo.jmoordb.profiles.repository.JmoordbNotificationsRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
@@ -71,12 +69,9 @@ import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 import com.avbravo.transporteejb.services.VistoBuenoSecretarioAdministrativoServices;
 import com.avbravo.transporteejb.services.VistoBuenoServices;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.or;
 
 import java.util.ArrayList;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -99,7 +94,6 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.primefaces.component.api.UIColumn;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
@@ -574,7 +568,7 @@ String action = getAction();
             //Lo datos del usuario
             List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
 
-//            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
+
             tipovehiculoList.add(tipovehiculo);
             solicitud.setTipovehiculo(tipovehiculoList);
             solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
