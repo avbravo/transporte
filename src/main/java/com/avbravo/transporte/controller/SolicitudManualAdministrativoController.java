@@ -785,6 +785,12 @@ String action = getAction();
 
     }
     // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="completeSolicitudParaCopiar(String query)">
+    public List<Solicitud> completeAllSolicitudParaCopiar(String query) {
+        return solicitudServices.completeAllSolicitudParaCopiar(query, "ADMINISTRATIVO");
+
+    }
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="completeFiltradoUnidad">
     public List<Unidad> completeFiltradoUnidad(String query) {

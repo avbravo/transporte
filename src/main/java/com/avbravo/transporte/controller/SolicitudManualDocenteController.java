@@ -832,6 +832,12 @@ public class SolicitudManualDocenteController implements Serializable, IControll
 
     }
     // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="completeAllSolicitudParaCopiar(String query)">
+    public List<Solicitud> completeAllSolicitudParaCopiar(String query) {
+        return solicitudServices.completeAllSolicitudParaCopiar(query, "DOCENTE");
+
+    }
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="completeFiltradoUnidad">
     public List<Unidad> completeFiltradoUnidad(String query) {
