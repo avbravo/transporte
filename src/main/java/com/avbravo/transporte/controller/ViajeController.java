@@ -11,24 +11,16 @@ import com.avbravo.jmoordb.configuration.JmoordbControllerEnvironment;
 import com.avbravo.jmoordb.interfaces.IController;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
-import com.avbravo.jmoordb.interfaces.IControllerOld;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
-import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
-import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.transporte.security.LoginController;
  
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
-import com.avbravo.transporteejb.entity.Viaje;
-
-import com.avbravo.transporte.util.LookupServices;
-import com.avbravo.transporteejb.datamodel.ViajeDataModel;
+import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.repository.ViajeRepository;
-import com.avbravo.transporteejb.repository.ViajeRepository;
-import com.avbravo.transporteejb.services.ViajeServices;
+import com.avbravo.transporteejb.services.ConductorServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 
 import java.util.ArrayList;
@@ -36,16 +28,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.faces.context.FacesContext;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
-import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
 
@@ -71,10 +60,13 @@ public class ViajeController implements Serializable, IController {
     List<Integer> pages = new ArrayList<>();
 
     //Entity
+    
     Viaje viaje = new Viaje();
     Viaje viajeSelected;
     Viaje viajeSearch = new Viaje();
 
+    Conductor conductor = new Conductor();
+    
     //List
     List<Viaje> viajeList = new ArrayList<>();
 // </editor-fold>  
@@ -88,6 +80,8 @@ public class ViajeController implements Serializable, IController {
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;
+    @Inject
+    ConductorServices conductorServices;
     @Inject
     ErrorInfoServices errorServices;
     @Inject
@@ -188,6 +182,15 @@ public class ViajeController implements Serializable, IController {
                         viajeList = viajeRepository.findPagination(page, rowPage,new Document("idviaje", -1));
                     }
                     break;
+                    
+                      case "conductor":
+
+                    Conductor conductor = (Conductor)getValueSearch() ;
+                    doc = new Document("activo", "si");
+                    doc.append("conductor.idconductor", conductor.getIdconductor());
+                    viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
+
+                    break;
 
                 default:
                     viajeList = viajeRepository.findPagination(page, rowPage,new Document("idviaje", -1));
@@ -245,4 +248,18 @@ public class ViajeController implements Serializable, IController {
     }
 // </editor-fold>
      
+    
+    // <editor-fold defaultstate="collapsed" desc="handleSelectPorSolicitado(SelectEvent event) ">
+
+    public void handleSelectPorConductor(SelectEvent event) {
+        try {
+
+         setSearchAndValue("conductor", conductor);
+
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+
+    }// </editor-fold>
 }

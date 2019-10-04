@@ -43,6 +43,18 @@
                                              update=" :form:dataTable"/>
 
 
+  <p:outputLabel value="#{msg['field.conductor']}"/>
+                    <jmoordbjsf:autocomplete converter="#{conductorConverter}"
+                                             completeMethod="#{viajeController.conductorServices.complete}"
+                                             labeltip1="#{msg['field.cedula']} #{p.cedula}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}" 
+                                             listener="#{viajeController.handleSelectPorConductor}"
+                                             value="#{viajeController.conductor}"
+                                             itemLabel=" #{p.nombre}"
+                                              dropdown="true"
+                                                 minQueryLength="0"
+                                             field="nombre"
+                                             update=" :form:dataTable"/>
 
 
 
