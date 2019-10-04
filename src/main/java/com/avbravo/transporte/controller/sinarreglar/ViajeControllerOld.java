@@ -69,7 +69,7 @@ import org.primefaces.model.ScheduleModel;
 @ViewScoped
 @Getter
 @Setter
-public class ViajeController implements Serializable, IController {
+public class ViajeControllerOld implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="fields">  
 
     private static final long serialVersionUID = 1L;
@@ -169,7 +169,7 @@ public class ViajeController implements Serializable, IController {
   
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public ViajeController() {
+    public ViajeControllerOld() {
     }
 
     // </editor-fold>
@@ -284,7 +284,7 @@ public class ViajeController implements Serializable, IController {
                     viaje = viajeSelected;
                     loginController.put("idviaje", viaje.getIdviaje().toString());
 
-                    url = "/pages/viaje/view.xhtml";
+                    url = "/pages/viajeOld/view.xhtml";
                     break;
                 case "viewfecha":
 
@@ -292,16 +292,16 @@ public class ViajeController implements Serializable, IController {
                     viaje = viajeSelected;
                     loginController.put("idviaje", viaje.getIdviaje().toString());
 
-                    url = "/pages/viaje/viewfecha.xhtml";
+                    url = "/pages/viajeOld/viewfecha.xhtml";
                     break;
 
                 case "golist":
-                    url = "/pages/viaje/list.xhtml";
+                    url = "/pages/viajeOld/list.xhtml";
                     break;
 
                 case "gonew":
 
-                    url = "/pages/viaje/new.xhtml";
+                    url = "/pages/viajeOld/new.xhtml";
                     break;
 
             }

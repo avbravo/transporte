@@ -8,8 +8,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
-                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions"
-                >
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
     <ui:define name="content">
 
 
@@ -21,7 +20,7 @@
             } 
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA, SECRETARIO ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
@@ -29,202 +28,121 @@
 
             <b:panel collapsible="false" title="#{msg['titlelist.viaje']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-
-
-                <b:row>
-
-                    <b:column medium-screen="6">
-                        <p:outputLabel value="#{msg['field.conductor']}"/>
-                        <jmoordbjsf:autocomplete converter="#{conductorConverter}"
-                                                 completeMethod="#{conductorController.conductorServices.complete}"
-                                                 labeltip1="#{msg['field.cedula']} #{p.cedula}"
-                                                 labeltip2="#{msg['field.nombre']} #{p.nombre}"    listener="#{viajeController.searchBy('conductor')}"
-                                                 value="#{viajeController.lookupServices.conductor}"
-                                                 itemLabel=" #{p.nombre}"
-                                                 dropdown="true"
-                                                 minQueryLength="0"
-                                                 field="nombre"
-                                                 update=" :form:dataTable"/>
-
-
-                    </b:column>
-                    <b:column medium-screen="6">
-
-                        <p:outputLabel value="#{msg['field.vehiculo']}"/>
-                        <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
-                                                 completeMethod="#{vehiculoController.vehiculoServices.complete}" 
-                                                 labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
-                                                 labeltip2="#{msg['field.marca']} #{p.marca}"
-                                                 labeltip3="#{msg['field.modelo']} #{p.modelo}"      listener="#{viajeController.searchBy('vehiculo')}"
-                                                 value="#{vehiculoController.vehiculo}"
-                                                 itemLabel=" #{p.marca}"
-                                                 dropdown="true"
-                                                 minQueryLength="0"
-                                                 field="marca"
-                                                 update=" :form:dataTable"/>
-
-                    </b:column>
-                </b:row>
-                <b:row>
-
-                    <b:column medium-screen="6">
-                        <jmoordbjsf:search label="#{msg['field.idviaje']}"
-                                           value="#{viajeController.lookupServices.idviaje}"
-                                           renderedList="#{applicationMenu.viaje.list}"  
-                                           search="#{viajeController.searchBy('idviaje')}"
-                                           />
-                    </b:column>
-                    <b:column medium-screen="6">
-                        <jmoordbjsf:search label="#{msg['field.lugardestino']}"
-                                           value="#{viajeController.lookupServices.lugardestino}"
-                                           renderedList="#{applicationMenu.viaje.list}"  
-                                           search="#{viajeController.searchBy('lugardestino')}"
-                                           />
-                    </b:column>
-                </b:row>
-                <b:row>
-                    <b:column medium-screen="6" >
-
-                        <jmoordbjsf:searchYesNo label="#{msg['field.conconductor']}" 
-
-                                                value="#{viajeController.lookupServices.conconductor}"
-                                                id="sinconductor"  
-                                                renderedList="#{applicationMenu.viaje.list}"
-                                                search="#{viajeController.searchBy('conconductor')}"
-                                                />
-
-                    </b:column>
-                    <b:column medium-screen="6">
-                        <jmoordbjsf:search label="#{msg['field.comentarios']}"
-                                           value="#{viajeController.lookupServices.comentarios}"
-                                           renderedList="#{applicationMenu.viaje.list}"  
-                                           search="#{viajeController.searchBy('comentarios')}"
-                                           />
-                    </b:column>
-
-                </b:row>
-
-                <b:row>
-                    <b:column medium-screen="25" >
+                <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
 
 
 
-                        <jmoordbjsf:searchBetweenDate
-                            renderedMove="true"
-                            labelDesde="#{msg['field.fechainicio']}"
-                            valueDesde="#{viajeController.lookupServices.fechaDesde}"
-                            labelHasta="#{msg['field.fechafin']}"
-                            valueHasta="#{viajeController.lookupServices.fechaHasta}"
-                            renderedList="#{applicationMenu.viaje.list}"
-                            search="#{viajeController.searchBy('_betweendates')}"
-                            />
-                    </b:column>
-                </b:row>
-                <b:row>
-                    <b:column medium-screen="6" >
+                    <p:outputLabel value="#{msg['field.idviaje']}"/>
+                    <jmoordbjsf:autocomplete converter="#{viajeConverter}"
+                                             completeMethod="#{viajeController.viajeServices.complete}"
+                                             labeltip1="#{msg['field.viaje']} #{p.idviaje}" 
+                                             listener="#{viajeController.handleAutocompleteOfListXhtml}"
+                                             value="#{viajeController.viajeSearch}"
+                                             itemLabel=" #{p.idviaje}"
+                                             field="idviaje"
+                                             update=" :form:dataTable"/>
 
-                        <jmoordbjsf:searchYesNo label="#{msg['field.realizado']}" 
 
-                                                value="#{viajeController.lookupServices.realizado}"
-                                                id="realizado"  
-                                                renderedList="#{applicationMenu.viaje.list}"
-                                                search="#{viajeController.searchBy('realizado')}"
-                                                />
 
-                    </b:column>
-                    <b:column medium-screen="6" >
-                        <jmoordbjsf:searchYesNo label="#{msg['field.activo']}" 
 
-                                                value="#{viajeController.lookupServices.activo}"
-                                                id="activo"  
-                                                renderedList="#{applicationMenu.viaje.list}"
-                                                search="#{viajeController.searchBy('activo')}"
-                                                />
-                    </b:column>
-                </b:row>
 
+                </b:panelGrid>
 
             </b:panel>
             <b:panel collapsible="false" id="dataTable" look="primary">
-
                 <jmoordbjsf:paginator
                     controller="#{viajeController}"                        
                     rowPage="#{viajeController.rowPage}"                   
                     page="#{viajeController.page}"
                     pages="#{viajeController.pages}"
                     skip="ajax:viajeController.skip()" 
-                     renderedPrint="false"
                     url = "/pages/viaje/new.xhtml"
                     />
+                <p:dataTable  value="#{viajeController.viajeDataModel}"
+                              var="item"
+                              id="dataTable2"
+                              paginated="false"
+                              onpage="console.log('page');">
+                    <p:column style="width:16px">
+                        <p:rowToggler />
+                    </p:column>
 
-                <b:dataTable value="#{viajeController.viajeDataModel}"
-                             var="item"
-                             id="dataTable2"
-                             paginated="false"
-                             onpage="console.log('page');">
-
-                    <b:dataTableColumn value="#{item.idviaje}" label="#{msg['field.idviaje']}"
-                                       style="color: #{viajeController.columnColor(item.realizado,item.activo)}"/>
+                    <p:column headerText="#{msg['field.idviaje']}" style="width:75px">
+                        <h:outputText value="#{item.idviaje}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" />
+                    </p:column>
 
 
-                    <b:dataTableColumn  label="#{msg['field.fechapartida']}" style="width:150px">
+
+
+                    <p:column headerText="#{msg['field.fechapartida']}" style="width:100px">
                         <h:outputText value="#{viajeController.showDate(item.fechahorainicioreserva)} #{viajeController.showHour(item.fechahorainicioreserva)}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" />
-                    </b:dataTableColumn>
-                    <b:dataTableColumn  label="#{msg['field.fecharegreso']}" style="width:150px">
+                    </p:column>
+                    <p:column headerText="#{msg['field.fecharegreso']}" style="width:100px">
                         <h:outputText value="#{viajeController.showDate(item.fechahorafinreserva)} #{viajeController.showHour(item.fechahorafinreserva)}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" />
-                    </b:dataTableColumn>
+                    </p:column>
 
 
-                   
-
-                    <b:dataTableColumn label="#{msg['field.mision']}"  style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
-
-                        <p:outputLabel value="#{item.mision}"/>
-
-                    </b:dataTableColumn>
-                    <b:dataTableColumn label="#{msg['field.vehiculos']}"  style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
+                    <p:column headerText="#{msg['field.vehiculos']}"  style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
 
                         <p:outputLabel value="#{item.vehiculo.marca} #{item.vehiculo.modelo}"/>
 
-                    </b:dataTableColumn>
-                    <b:dataTableColumn label="#{msg['field.conductores']}"  style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
+                    </p:column>
+                    <p:column headerText="#{msg['field.conductores']}"  style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
 
                         <p:outputLabel value="#{item.conductor.nombre}"/>
 
-                    </b:dataTableColumn>
+                    </p:column>
 
-                    <b:dataTableColumn label="#{msg['field.lugardestino']}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
+                    <p:column headerText="#{msg['field.lugardestino']}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
                         <p:outputLabel value="#{item.lugardestino}"  />
 
-                    </b:dataTableColumn> 
+                    </p:column> 
 
-                    <b:dataTableColumn  label="#{msg['field.r']}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" >
-                        <p:outputLabel value="#{item.realizado}"/>
+               
+                 
+                    <p:column style="width:55px" > 
+             
 
-                    </b:dataTableColumn>
-                    <b:dataTableColumn  label="#{msg['field.a']}"  
-                                        style="color: #{viajeController.columnColor(item.realizado,item.activo)}" >
+                        <jmoordbjsf:commandbuttondatatableprepareView
+                            rendered="#{p:ifGranted('ADMINISTRADOR')}"
+                            controller="#{viajeController}"
+                            url="/pages/viaje/view.xhtml"
+                            item="#{item}"
+                            />                
+                    </p:column>
 
-                        <p:outputLabel value="#{item.activo}"/>
-
-                    </b:dataTableColumn>
-
-                    <b:dataTableColumn label="">
-
-                        <jmoordbjsf:column
-
-                            edit="#{viajeController.prepare('view',item)}"
-                            delete="#{viajeController.delete(item,false)}"
-                            rendered="#{applicationMenu.viaje.delete}"
-                            />
-                    </b:dataTableColumn>
+                      
 
 
-                </b:dataTable>
+                    <p:rowExpansion>
+
+                        <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
+
+                            <p:outputLabel value="#{msg['field.mision']}"/>
+                            <p:outputLabel value="#{item.mision}"/>
+                            <p:outputLabel value="#{msg['field.lugarpartida']}"/>
+                            <p:outputLabel value="#{item.lugarpartida}"/>
+                            
+                            
+                            <p:outputLabel value="#{msg['field.comentarios']}"/>
+                            <p:outputLabel value="#{item.comentarios}"/>
+                            <p:outputLabel value="#{msg['field.kmestimados']}"/>
+                            <p:outputLabel value="#{item.kmestimados}"/>
+                            <p:outputLabel value="#{msg['field.costocombustible']}"/>
+                            <p:outputLabel value="#{item.costocombustible}"/>
+                              <p:outputLabel value="#{msg['field.realizado']}"/>
+                              <p:outputLabel value="#{item.realizado}"/>
+                            <p:outputLabel value="#{msg['field.activo']}"/>
+                            <p:outputLabel value="#{item.activo}"/>
+
+
+                        </b:panelGrid>
+                    </p:rowExpansion>
+                </p:dataTable>
             </b:panel>
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR, SECRETARIA, SECRETARIO ADMINISTRATIVO')}" />
+        <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
     </ui:define>
 </ui:composition>

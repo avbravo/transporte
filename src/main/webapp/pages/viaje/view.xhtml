@@ -3,11 +3,11 @@
 <ui:composition template="/layout/template.xhtml" 
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
-                 >
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
     <ui:define name="content">
          
 
@@ -18,8 +18,8 @@
                 border-color: #428BCA;
             }
         </style>
-
-        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA, SECRETARIO ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
+       
+         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
@@ -30,229 +30,21 @@
                         <p:outputLabel  value="#{msg['field.idviaje']}" />
                         <p:outputLabel  value="#{viajeController.viaje.idviaje}" id="idviaje"   />
 
-                        <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
-
-                        <p:fieldset>
-
-
-                            <jmoordbjsf:calendar
-                                pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorainicioreserva}" 
-                                label="#{msg['field.fechahorainicioreserva']}" 
-                                listener="#{viajeController.handleSelect}"
-                                update=":form:vehiculo, :form:conductor, :form:msg"/>
-
-                            <p:spacer width="25"/>
-
-                            <jmoordbjsf:calendar
-                                disabled="true"
-                                pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.fechaHoraInicioReservaanterior}" 
-                                label="#{msg['field.fechahorainicioreserva']}" 
-                                listener="#{viajeController.handleSelect}"
-                                update=":form:vehiculo, :form:conductor, :form:msg"/>
-                            <p:spacer width="25"/>
-                            <b:commandButton  look="success"
-                                              title="#{msg['label.solicitudpendiente']}"
-                                              immediate="true"
-                                              iconAwesome="fa-calendar" 
-                                              update="solicitudDetails"
-                                              action="#{viajeController.prepareScheduleSolicitud()}"
-                                              oncomplete="PF('solicitudDialog').show();" />
-                        </p:fieldset>
-
-                        <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
-                        <p:fieldset>
-
-
-
-                            <jmoordbjsf:calendar 
-                                pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.viaje.fechahorafinreserva}"    
-                                label="#{msg['field.fechahorafinreserva']}" 
-                                listener="#{viajeController.handleSelect}"
-                                update=":form:vehiculo, :form:conductor, :form:msg"/>
-
-                            <p:spacer width="25"/>
-
-                            <jmoordbjsf:calendar 
-                                disabled="true"
-                                pattern="dd/MM/yyyy HH:mm a" value="#{viajeController.fechaHoraFinReservaAnterior}"    
-                                label="#{msg['field.fechahorafinreserva']}" 
-                                listener="#{viajeController.handleSelect}"
-                                update=":form:vehiculo, :form:conductor, :form:msg"/>
-
-
-                        </p:fieldset>
-                        <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <jmoordbjsf:inputText   value="#{viajeController.viaje.lugarpartida}"    />
-
-                        <p:outputLabel  value="#{msg['field.lugardestino']}" />
-                        <jmoordbjsf:inputText  value="#{viajeController.viaje.lugardestino}"    />
-
-
-                        <p:outputLabel value="#{msg['field.vehiculo']}"
-                                       id="vehiculolabel" />
-
-                        <p:fieldset>
- 
-                            
-                             <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
-                                                     completeMethod="#{viajeController.completeVehiculo}"
-                                                     labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
-                                                     labeltip2="#{msg['field.marca']} #{p.marca}"
-                                                     labeltip3="#{msg['field.modelo']} #{p.modelo}"
-                                                     labeltip4="#{msg['field.placa']} #{p.placa}" 
-                                                     listener="#{viajeController.handleSelect}"
-                                                     dropdown="true"
-
-                                                     minQueryLength="0"
-                                                     id="vehiculo"
-                                                     value="#{viajeController.viaje.vehiculo}"
-                                                     itemLabel="#{p.marca} #{p.modelo} #{p.placa}"
-                                                     field="marca"
-                                                     />
-
-                            <p:spacer width="25"/>
-                            <p:outputLabel value="#{viajeController.vehiculoSelected.marca}- #{viajeController.vehiculoSelected.modelo }-#{viajeController.vehiculoSelected.placa }" />
-                            <p:spacer width="25"/>
-                            <b:commandButton  look="primary"
-                                              immediate="true"
-                                              title="#{msg['label.viajevehiculo']}"
-                                              iconAwesome="fa-calendar" 
-                                              update="vehiculoDetails"
-                                              action="#{viajeController.prepareScheduleVehiculo()}"
-                                              oncomplete="PF('vehiculoDialog').show();" />
-
-                        </p:fieldset>
-
-                        <p:outputLabel value="#{msg['field.conductor']}"  />
-                        <p:fieldset>
-
-
-                                                    <jmoordbjsf:autocomplete converter="#{conductorConverter}"
-                                                     completeMethod="#{viajeController.completeConductor}"
-                                                     labeltip1="#{msg['field.cedula']} #{p.cedula}"
-                                                     labeltip2="#{msg['field.nombre']} #{p.nombre}" 
-                                                     listener="#{viajeController.handleSelect}"
-                                                     dropdown="true"
-                                                      minQueryLength="0"
-                                                     value="#{viajeController.viaje.conductor}"
-                                                    itemLabel="#{p.nombre}"
-                                                    field="nombre"
-                                                     id="conductor"/>
-                            <p:spacer width="25"/>
-                            <p:outputLabel value="#{viajeController.conductorSelected.nombre}- #{viajeController.conductorSelected.cedula }" />
-                            <p:spacer width="25"/>
-                            <b:commandButton  look="primary"
-                                              immediate="true"
-                                              title="#{msg['label.viajeconductor']}"
-                                              iconAwesome="fa-calendar" 
-                                              update="conductorDetails"
-                                              action="#{viajeController.prepareScheduleConductor()}"
-                                              oncomplete="PF('conductorDialog').show();" />
-
-
-                        </p:fieldset>
-
-
-
-
-                        <p:outputLabel  value="#{msg['field.mision']}"/>
-                        <b:inputTextarea  requiredMessage="#{msg['field.mision']}"
-                                          required="true"
-                                          rows="2" value="#{viajeController.viaje.mision}"  />
-                        <p:outputLabel  value="#{msg['field.comentarios']}"/>
-                        <b:inputTextarea  requiredMessage="#{msg['field.comentarios']}"
-                                          required="true"
-                                          rows="2" value="#{viajeController.viaje.comentarios}"  />
-
-
-
-                        <p:outputLabel  value="#{msg['field.kmestimados']}" />
-                        <jmoordbjsf:inputText  span="5" value="#{viajeController.viaje.kmestimados}"  />
-
-                        <p:outputLabel  value="#{msg['field.costocombustible']}"  />
-                        <jmoordbjsf:inputText  label="#{msg['field.costocombustible']}"
-                                               span="5" value="#{viajeController.viaje.costocombustible}"   />
-
-                        <p:outputLabel  value="#{msg['field.realizado']}" />
-                        <jmoordbjsf:noyes value="#{viajeController.viaje.realizado}" id="realizado"  required="true"/>
-                        <p:outputLabel  value="#{msg['field.activo']}" />
+                     <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{viajeController.viaje.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
-                    <jmoordbjsf:toolbarview 
-                        renderedDelete="#{applicationMenu.viaje.delete and viajeController.writable and viajeController.viaje.realizado eq 'no'}"
-                        renderedEdit="#{applicationMenu.viaje.edit and viajeController.writable and viajeController.viaje.realizado eq 'no'}" 
-                        renderedList="#{applicationMenu.viaje.list and viajeController.writable}"
-                        edit="#{viajeController.edit()}"
-                        delete="#{viajeController.delete(viajeController.viaje,true)}"
-                        print="#{viajeController.print()}"
-                        url="#{viajeController.prepare('golist',viajeController.viaje)}"
+                      <jmoordbjsf:toolbarview 
+                        renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
+                        controller="#{viajeController}"
+                        url  = "/pages/viaje/list.xhtml"
                         />
                 </b:panel>
             </h:panelGroup>
-
-            <p:dialog widgetVar="vehiculoDialog" header="#{msg['dialogo.viajevehiculos']}" 
-                      width="850" height="450"
-                      styleClass="customDialog"
-
-                      responsive="true"
-
-                      showEffect="clip" hideEffect="clip">
-                <b:panelGrid id="vehiculoDetails" colSpans="12" size="xs" > 
-                    <p:schedule id="vehiculoSchedule"       
-                                rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
-                                value="#{viajeController.vehiculoScheduleModel}" widgetVar="vehiculoSchedule" timeZone="GMT-5" locale="es">
-
-
-                    </p:schedule>
-                    <b:commandButton value="#{app['button.close']}"
-                                     iconAwesome="fa-close"
-                                     oncomplete="PF('vehiculoDialog').hide();"/>
-
-                </b:panelGrid>
-            </p:dialog>
-            <p:dialog widgetVar="conductorDialog" header="#{msg['dialogo.viajeconductor']}" 
-                      width="850" height="450"
-                      styleClass="customDialog"
-
-                      responsive="true"
-
-                      showEffect="clip" hideEffect="clip">
-                <b:panelGrid id="conductorDetails" colSpans="12" size="xs" > 
-                    <p:schedule id="conductorSchedule"       
-                                rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
-                                value="#{viajeController.conductorScheduleModel}" widgetVar="conductorSchedule" timeZone="GMT-5" locale="es">
-
-
-                    </p:schedule>
-                    <b:commandButton value="#{app['button.close']}"
-                                     iconAwesome="fa-close"
-                                     oncomplete="PF('conductorDialog').hide();"/>
-
-                </b:panelGrid>
-            </p:dialog>
-            <p:dialog widgetVar="solicitudDialog" header="#{msg['dialogo.viajesolicitud']}" 
-                      width="850" height="450"
-                      styleClass="customDialog"
-
-                      responsive="true"
-
-                      showEffect="clip" hideEffect="clip">
-                <b:panelGrid id="solicitudDetails" colSpans="12" size="xs" > 
-                    <p:schedule id="solicitudSchedule"       
-                                rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
-                                value="#{viajeController.solicitudScheduleModel}" widgetVar="solicitudSchedule" timeZone="GMT-5" locale="es">
-
-
-                    </p:schedule>
-                    <b:commandButton value="#{app['button.close']}"
-                                     iconAwesome="fa-close"
-                                     oncomplete="PF('solicitudDialog').hide();"/>
-
-                </b:panelGrid>
-            </p:dialog>
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR, SECRETARIA, SECRETARIO ADMINISTRATIVO')}"  />
+          <jmoordbjsf:denegado renderedcondition="#{!p:ifGranted('ADMINISTRADOR')}" />
         <br/><br/><br/>
     </ui:define>
 </ui:composition>
