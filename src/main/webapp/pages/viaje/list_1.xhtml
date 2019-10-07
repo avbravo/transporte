@@ -88,25 +88,37 @@
                             />
                     </b:column>
                 </b:row>
+                <b:row>
+                    <b:column medium-screen="6">
+                        <jmoordbjsf:search label="#{msg['field.lugardestino']}"
+                                           value="#{viajeController.lugarDestino1}"
+                                           renderedList="#{applicationMenu.viaje.list}"  
+                                           search="#{viajeController.searchBy('lugardestino',lugarDestino1)}"
+                                           />
+                    </b:column>
+                </b:row>
+
+                <div class="ui-g ui-fluid">
+
+                    <div class="ui-g-12 ui-md-1">
+                        <div class="ui-inputgroup">
+                            <p:outputLabel value="Destino"/>    
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <div class="ui-inputgroup">
+                            <p:inputText id="search" placeholder="Keyboard"  value="#{viajeController.lugarDestino}"/>
+                            <p:commandButton icon="pi pi-search"  styleClass="white-button"
+
+                                             action="#{viajeController.searchBy('lugardestino',viajeController.lugarDestino)}"
+                                             update=":form:dataTable"/>  
+                        </div>
+                    </div>
 
 
+                </div>
 
-                <jmoordbjsf:search label="#{msg['field.lugardestino']}"
-                                   value="#{viajeController.lugarDestino}"
-                                   search="#{viajeController.searchBy('lugardestino',viajeController.lugarDestino)}"
-                                   />
-
-                <jmoordbjsf:searchTwoColummns
-                    label="#{msg['field.lugardestino']}"
-                    value="#{viajeController.lugarDestino}"
-                    search="#{viajeController.searchBy('lugardestino',viajeController.lugarDestino)}"
-                    label2="#{msg['field.comentario']}"
-                    value2="#{viajeController.comentarios}"
-                    search2="#{viajeController.searchBy('comentarios',viajeController.comentarios)}"
-                    />
-
-
-
+               
             </b:panel>
             <b:panel collapsible="false" id="dataTable" look="primary">
                 <jmoordbjsf:paginator

@@ -62,8 +62,8 @@ public class ViajeController implements Serializable, IController {
     List<Integer> pages = new ArrayList<>();
     Date fechaDesde = new Date();
     Date fechaHasta = new Date();
-    String lugarDestino1 = "";
     String lugarDestino = "";
+    String comentarios = "";
 
     //Entity
     Viaje viaje = new Viaje();
@@ -281,6 +281,11 @@ public class ViajeController implements Serializable, IController {
                 case "lugardestino":
                     String lugarDestino = (String) getValueSearch();
                     viajeList = viajeRepository.findRegexInTextPagination("lugardestino", lugarDestino, true, page, rowPage, new Document("idviaje", -1));
+
+                    break;
+                case "comentarios":
+                    String comentarios = (String) getValueSearch();
+                    viajeList = viajeRepository.findRegexInTextPagination("comentarios", comentarios, true, page, rowPage, new Document("idviaje", -1));
 
                     break;
                 default:
