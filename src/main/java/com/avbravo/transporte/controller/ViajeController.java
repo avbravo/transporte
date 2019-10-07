@@ -13,14 +13,16 @@ import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
- 
+
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.Usuario;
+import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.ConductorServices;
+import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 
 import java.util.ArrayList;
@@ -58,15 +60,19 @@ public class ViajeController implements Serializable, IController {
     Integer page = 1;
     Integer rowPage = 25;
     List<Integer> pages = new ArrayList<>();
+    Date fechaDesde = new Date();
+    Date fechaHasta = new Date();
+    String lugarDestino1 = "";
+    String lugarDestino = "";
 
     //Entity
-    
     Viaje viaje = new Viaje();
     Viaje viajeSelected;
     Viaje viajeSearch = new Viaje();
 
     Conductor conductor = new Conductor();
-    
+    Vehiculo vehiculo = new Vehiculo();
+
     //List
     List<Viaje> viajeList = new ArrayList<>();
 // </editor-fold>  
@@ -84,6 +90,8 @@ public class ViajeController implements Serializable, IController {
     ConductorServices conductorServices;
     @Inject
     ErrorInfoServices errorServices;
+    @Inject
+    VehiculoServices vehiculoServices;
     @Inject
     ViajeServices viajeServices;
     @Inject
@@ -130,8 +138,8 @@ public class ViajeController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/viaje/details.jasper")
                     .withPathReportAll("/resources/reportes/viaje/all.jasper")
                     .withparameters(parameters)
-                     .withResetInSave(true) 
-                  .withAction("golist")
+                    .withResetInSave(true)
+                    .withAction("golist")
                     .build();
 
             start();
@@ -149,63 +157,6 @@ public class ViajeController implements Serializable, IController {
         }
     }// </editor-fold>
 
-// <editor-fold defaultstate="collapsed" desc="move(Integer page)">
-    @Override
-    public void move(Integer page) {
-        try {
-            this.page = page;
-            viajeDataModel = new ViajeDataModel(viajeList);
-            Document doc;
-
-            switch (getSearch()) {
-                case "_init":
-                case "_autocomplete":
-                    viajeList = viajeRepository.findPagination(page, rowPage,new Document("idviaje", -1));
-                    break;
-
-                case "idviaje":
-                    if (getValueSearch() != null) {
-                        viajeSearch.setIdviaje(Integer.parseInt(getValueSearch().toString()));
-                        doc = new Document("idviaje", viajeSearch.getIdviaje());
-                        viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
-                    } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage,new Document("idviaje", -1));
-                    }
-
-                    break;
-                case "activo":
-                    if (getValueSearch() != null) {
-                        viajeSearch.setActivo(getValueSearch().toString());
-                        doc = new Document("activo", viajeSearch.getActivo());
-                        viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
-                    } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage,new Document("idviaje", -1));
-                    }
-                    break;
-                    
-                      case "conductor":
-
-                    Conductor conductor = (Conductor)getValueSearch() ;
-                    doc = new Document("activo", "si");
-                    doc.append("conductor.idconductor", conductor.getIdconductor());
-                    viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
-
-                    break;
-
-                default:
-                    viajeList = viajeRepository.findPagination(page, rowPage,new Document("idviaje", -1));
-                    break;
-            }
-
-            viajeDataModel = new ViajeDataModel(viajeList);
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
-
-        }
-
-    }// </editor-fold>
-    
     // <editor-fold defaultstate="collapsed" desc="Boolean beforeDelete()">
     @Override
     public Boolean beforeDelete() {
@@ -220,17 +171,15 @@ public class ViajeController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="Boolean beforeDeleteFromListXhtml()">
     @Override
     public Boolean beforeDeleteFromListXhtml() {
-         Boolean delete = viajeServices.isDeleted(viaje);
+        Boolean delete = viajeServices.isDeleted(viaje);
         if (!delete) {
             JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
         }
         return delete;
     }
     // </editor-fold>   
-    
-    
-      
-      // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
+
+    // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
     public String showDate(Date date) {
         return viajeServices.showDate(date);
     }// </editor-fold>
@@ -240,21 +189,19 @@ public class ViajeController implements Serializable, IController {
         return viajeServices.showHour(date);
 
     }// </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="columnColor(String descripcion )"> 
     public String columnColor(String realizado, String activo) {
-       return viajeServices.columnColor(realizado, activo);
+        return viajeServices.columnColor(realizado, activo);
 
     }
 // </editor-fold>
-     
-    
-    // <editor-fold defaultstate="collapsed" desc="handleSelectPorSolicitado(SelectEvent event) ">
 
-    public void handleSelectPorConductor(SelectEvent event) {
+    // <editor-fold defaultstate="collapsed" desc="handleSelectedConductor(SelectEvent event) ">
+    public void handleSelectedConductor(SelectEvent event) {
         try {
 
-         setSearchAndValue("conductor", conductor);
+            setSearchAndValue("conductor", conductor);
 
             move(page);
         } catch (Exception e) {
@@ -262,4 +209,93 @@ public class ViajeController implements Serializable, IController {
         }
 
     }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="handleSelectedVehiculo(SelectEvent event) ">
+
+    public void handleSelectedVehiculo(SelectEvent event) {
+        try {
+
+            setSearchAndValue("vehiculo", vehiculo);
+
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="move(Integer page)">
+    @Override
+    public void move(Integer page) {
+        try {
+            this.page = page;
+            viajeDataModel = new ViajeDataModel(viajeList);
+            Document doc;
+
+            switch (getSearch()) {
+                case "_init":
+                case "_autocomplete":
+                    viajeList = viajeRepository.findPagination(page, rowPage, new Document("idviaje", -1));
+                    break;
+
+                case "idviaje":
+                    if (getValueSearch() != null) {
+                        viajeSearch.setIdviaje(Integer.parseInt(getValueSearch().toString()));
+                        doc = new Document("idviaje", viajeSearch.getIdviaje());
+                        viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
+                    } else {
+                        viajeList = viajeRepository.findPagination(page, rowPage, new Document("idviaje", -1));
+                    }
+
+                    break;
+                case "activo":
+                    if (getValueSearch() != null) {
+                        viajeSearch.setActivo(getValueSearch().toString());
+                        doc = new Document("activo", viajeSearch.getActivo());
+                        viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
+                    } else {
+                        viajeList = viajeRepository.findPagination(page, rowPage, new Document("idviaje", -1));
+                    }
+                    break;
+
+                case "conductor":
+
+                    Conductor conductor = (Conductor) getValueSearch();
+                    doc = new Document("activo", "si");
+                    doc.append("conductor.idconductor", conductor.getIdconductor());
+                    viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
+
+                    break;
+                case "vehiculo":
+
+                    Vehiculo vehiculo = (Vehiculo) getValueSearch();
+                    doc = new Document("activo", "si");
+                    doc.append("vehiculo.idvehiculo", vehiculo.getIdvehiculo());
+                    viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
+
+                    break;
+                case "_betweendates":
+                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("activo", "si", "fechahorainicioreserva", fechaDesde, "fechahorafinreserva", fechaHasta, page, rowPage, new Document("idviaje", -1));
+
+                    break;
+
+                case "lugardestino":
+                    String lugarDestino = (String) getValueSearch();
+                    viajeList = viajeRepository.findRegexInTextPagination("lugardestino", lugarDestino, true, page, rowPage, new Document("idviaje", -1));
+
+                    break;
+                default:
+                    viajeList = viajeRepository.findPagination(page, rowPage, new Document("idviaje", -1));
+                    break;
+            }
+
+            viajeDataModel = new ViajeDataModel(viajeList);
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+
+        }
+
+    }// </editor-fold>
+    
+   
 }

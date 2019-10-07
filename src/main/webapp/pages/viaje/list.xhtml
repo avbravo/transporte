@@ -43,23 +43,82 @@
                                              update=" :form:dataTable"/>
 
 
-  <p:outputLabel value="#{msg['field.conductor']}"/>
+                    <p:outputLabel value="#{msg['field.conductor']}"/>
                     <jmoordbjsf:autocomplete converter="#{conductorConverter}"
                                              completeMethod="#{viajeController.conductorServices.complete}"
                                              labeltip1="#{msg['field.cedula']} #{p.cedula}"
                                              labeltip2="#{msg['field.nombre']} #{p.nombre}" 
-                                             listener="#{viajeController.handleSelectPorConductor}"
+                                             listener="#{viajeController.handleSelectedConductor}"
                                              value="#{viajeController.conductor}"
                                              itemLabel=" #{p.nombre}"
-                                              dropdown="true"
-                                                 minQueryLength="0"
+                                             dropdown="true"
+                                             minQueryLength="0"
                                              field="nombre"
                                              update=" :form:dataTable"/>
 
+                    <p:outputLabel value="#{msg['field.vehiculo']}"/>
+                    <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
+                                             completeMethod="#{viajeController.vehiculoServices.complete}" 
+                                             labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
+                                             labeltip2="#{msg['field.marca']} #{p.marca}"
+                                             labeltip3="#{msg['field.modelo']} #{p.modelo}"  
+                                             listener="#{viajeController.handleSelectedVehiculo}"
+                                             value="#{viajeController.vehiculo}"
+                                             itemLabel=" #{p.marca}"
+                                             field="marca"
+                                             dropdown="true"
+                                             minQueryLength="0"
+                                             update=" :form:dataTable"/>
 
 
                 </b:panelGrid>
+                <b:row>
+                    <b:column medium-screen="25" >
 
+
+
+                        <jmoordbjsf:searchBetweenDate
+                            renderedMove="true"
+                            labelDesde="#{msg['field.fechainicio']}"
+                            valueDesde="#{viajeController.fechaDesde}"
+                            labelHasta="#{msg['field.fechafin']}"
+                            valueHasta="#{viajeController.fechaHasta}"
+                            renderedList="#{applicationMenu.viaje.list}"
+                            search="#{viajeController.searchBetweenDate('_betweendates',fechaDesde, fechaHasta)}"
+                            />
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <b:column medium-screen="6">
+                        <jmoordbjsf:search label="#{msg['field.lugardestino']}"
+                                           value="#{viajeController.lugarDestino1}"
+                                           renderedList="#{applicationMenu.viaje.list}"  
+                                           search="#{viajeController.searchBy('lugardestino',lugarDestino1)}"
+                                           />
+                    </b:column>
+                </b:row>
+
+                <div class="ui-g ui-fluid">
+
+                    <div class="ui-g-12 ui-md-1">
+                        <div class="ui-inputgroup">
+                            <p:outputLabel value="Destino"/>    
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <div class="ui-inputgroup">
+                            <p:inputText id="search" placeholder="Keyboard"  value="#{viajeController.lugarDestino}"/>
+                            <p:commandButton icon="pi pi-search"  styleClass="white-button"
+
+                                             action="#{viajeController.searchBy('lugardestino',viajeController.lugarDestino)}"
+                                             update=":form:dataTable"/>  
+                        </div>
+                    </div>
+
+
+                </div>
+
+               
             </b:panel>
             <b:panel collapsible="false" id="dataTable" look="primary">
                 <jmoordbjsf:paginator
@@ -110,10 +169,10 @@
 
                     </p:column> 
 
-               
-                 
+
+
                     <p:column style="width:55px" > 
-             
+
 
                         <jmoordbjsf:commandbuttondatatableprepareView
                             rendered="#{p:ifGranted('ADMINISTRADOR')}"
@@ -123,7 +182,7 @@
                             />                
                     </p:column>
 
-                      
+
 
 
                     <p:rowExpansion>
@@ -134,16 +193,16 @@
                             <p:outputLabel value="#{item.mision}"/>
                             <p:outputLabel value="#{msg['field.lugarpartida']}"/>
                             <p:outputLabel value="#{item.lugarpartida}"/>
-                            
-                            
+
+
                             <p:outputLabel value="#{msg['field.comentarios']}"/>
                             <p:outputLabel value="#{item.comentarios}"/>
                             <p:outputLabel value="#{msg['field.kmestimados']}"/>
                             <p:outputLabel value="#{item.kmestimados}"/>
                             <p:outputLabel value="#{msg['field.costocombustible']}"/>
                             <p:outputLabel value="#{item.costocombustible}"/>
-                              <p:outputLabel value="#{msg['field.realizado']}"/>
-                              <p:outputLabel value="#{item.realizado}"/>
+                            <p:outputLabel value="#{msg['field.realizado']}"/>
+                            <p:outputLabel value="#{item.realizado}"/>
                             <p:outputLabel value="#{msg['field.activo']}"/>
                             <p:outputLabel value="#{item.activo}"/>
 

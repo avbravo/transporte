@@ -82,11 +82,11 @@
             <version>0.2</version>
         </dependency>
      
-    <dependency>
+<!--    <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbjsf</artifactId>
             <version>0.28</version>
-        </dependency>
+        </dependency>-->
         
         <!--
                         parche para bootfaces
