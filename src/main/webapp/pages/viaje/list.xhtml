@@ -127,7 +127,18 @@
                     </b:column>
                 </b:row>
                 
-               
+                <b:row>
+                    <b:column medium-screen="6" >
+
+                        <jmoordbjsf:searchDate label="#{msg['field.fechapartida']}" 
+                                                value="#{viajeController.fechaPartida}"
+                                                id="fechapartida"  
+                                             
+                                                search="#{viajeController.searchBy('fechapartida',viajeController.fechaPartida)}"
+                                                />
+
+                    </b:column>
+                </b:row>
 
             </b:panel>
             <b:panel collapsible="false" id="dataTable" look="primary">

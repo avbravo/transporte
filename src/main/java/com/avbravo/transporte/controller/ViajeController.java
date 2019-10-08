@@ -13,6 +13,7 @@ import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
+import com.avbravo.jmoordbutils.DateUtil;
 
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
@@ -24,9 +25,13 @@ import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.ConductorServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
+import com.mongodb.client.model.Filters;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +42,7 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
 
@@ -66,7 +72,7 @@ public class ViajeController implements Serializable, IController {
     String comentarios = "";
     String activo = "";
     String realizado = "";
-    Date fecha = new Date();
+    Date fechaPartida = new Date();
 
     //Entity
     Viaje viaje = new Viaje();
@@ -251,11 +257,11 @@ public class ViajeController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    
-                       String activo =getValueSearch().toString();
-                        doc = new Document("activo", activo);
-                        viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
-                    
+
+                    String activo = getValueSearch().toString();
+                    doc = new Document("activo", activo);
+                    viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
+
                     break;
 
                 case "realizado":
@@ -284,6 +290,37 @@ public class ViajeController implements Serializable, IController {
                 case "_betweendates":
                     viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("activo", "si", "fechahorainicioreserva", fechaDesde, "fechahorafinreserva", fechaHasta, page, rowPage, new Document("idviaje", -1));
 
+                    break;
+                case "fechapartida":
+                    System.out.println("=======> fecha de partida" + fechaPartida);
+                    viajeList = viajeRepository.filterDayWithoutHourPagination("activo", "si", "fechahorainicioreserva", fechaPartida, page, rowPage, new Document("idviaje", -1));
+                    System.out.println(" size=>>>>>>> " + viajeList.size());
+
+                    Integer anio = DateUtil.anioDeUnaFecha(fechaPartida);
+                    Integer mes = DateUtil.mesDeUnaFecha(fechaPartida);
+                    Integer dia = DateUtil.diaDeUnaFecha(fechaPartida);
+                    LocalDateTime start = LocalDateTime.of(anio, mes, dia, 0, 0, 0);
+                    LocalDateTime end = LocalDateTime.of(anio, mes, dia, 23, 59, 59);
+                    Date dateStart = Date.from(start.atZone(ZoneId.systemDefault()).toInstant());
+                    Date dateEnd = Date.from(end.atZone(ZoneId.systemDefault()).toInstant());
+
+//        // zone from Buenos Aires
+//        ZoneId zoneBuenosAires = ZoneId.of("America/Buenos_Aires");
+//        ZonedDateTime asiaZonedDateTime = localDateTime.atZone(zoneBuenosAires);
+//
+//        // zone from Amsterdan
+//        ZoneId zoneAmsterdan = ZoneId.of("Europe/Amsterdam");
+//        ZonedDateTime nyDateTime = asiaZonedDateTime.withZoneSameInstant(zoneAmsterdan);
+                    // print dateTime with tz
+                    System.out.println("Date : " + dateStart);
+                    System.out.println("Date : " + dateEnd);
+
+                    Bson filter = Filters.and(
+                            Filters.gte("fechahorainicioreserva", dateStart),
+                            Filters.lt("fechahorainicioreserva", dateEnd));
+                    System.out.println("==filter " + filter.toString());
+                    viajeList = viajeRepository.findBy(filter, new Document("idviaje", -1));
+                    System.out.println("====== size::: " + viajeList.size());
                     break;
 
                 case "lugardestino":
