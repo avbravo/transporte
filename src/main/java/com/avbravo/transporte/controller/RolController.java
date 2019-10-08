@@ -74,13 +74,7 @@ public class RolController implements Serializable, IController {
     //Repository
     @Inject
     RolRepository rolRepository;
-    //Services
-    @Inject
-    AutoincrementableServices autoincrementableServices;
-    @Inject
-    ErrorInfoServices errorServices;
-    @Inject
-    RolServices rolServices;
+   
     @Inject
     JmoordbResourcesFiles rf;
     @Inject
@@ -93,6 +87,13 @@ public class RolController implements Serializable, IController {
     UsuarioServices usuarioServices;
     @Inject
     JmoordbNotificationsRepository jmoordbNotificationsRepository;
+     //Services
+    @Inject
+    AutoincrementableServices autoincrementableServices;
+    @Inject
+    ErrorInfoServices errorServices;
+    @Inject
+    RolServices rolServices;
     @Inject
     @Push(channel = "notification")
     private PushContext push;
