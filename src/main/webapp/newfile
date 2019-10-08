@@ -1,20 +1,24 @@
-  <b:row>
-    <b:column medium-screen="6" >
+   public List<T> filterBetweenDateWithoutHours(Bson myfilter, String fieldnamestart, Date datestartvalue, String fieldlimitname, Date datelimitvalue, Document... docSort) {
+        list = new ArrayList<>();
+        try {
+            Document sortQuery = new Document();
 
-        <jmoordbjsf:searchYesNo label="#{msg['field.realizado']}" 
-                                                value="#{viajeController.realizado}"
-                                                id="realizado"  
-                                                renderedList="true"
-                                                search="#{viajeController.searchBy('realizado',viajeController.realizado)}"
-        />
+            if (docSort.length != 0) {
+                sortQuery = docSort[0];
 
-    </b:column>
-    <b:column medium-screen="6" >
-        <jmoordbjsf:searchYesNo label="#{msg['field.activo']}" 
-                                                value="#{viajeController.activo}"
-                                                id="activo"  
-                                                renderedList="true"
-                                                search="#{viajeController.searchBy('activo',viajeController.activo)}"
-        />
-    </b:column>
-</b:row>
+            }
+            Date dateStart = setHourToDate(datestartvalue, 0, 0);
+            Date dateEnd = setHourToDate(datelimitvalue, 23, 59);
+            Bson filter = Filters.and(
+                    myfilter,
+                    Filters.gte(fieldnamestart, dateStart), Filters.lte(fieldlimitname, dateEnd)
+            );
+
+            list = filters(filter, sortQuery);
+        } catch (Exception e) {
+            Logger.getLogger(Repository.class.getName() + "filterBetweenDateWithoutHours()").log(Level.SEVERE, null, e);
+            exception = new Exception("filterBetweenDateWithoutHours() ", e);
+        }
+
+        return list;
+    }
