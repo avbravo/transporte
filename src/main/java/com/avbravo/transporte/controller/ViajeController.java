@@ -64,6 +64,9 @@ public class ViajeController implements Serializable, IController {
     Date fechaHasta = new Date();
     String lugarDestino = "";
     String comentarios = "";
+    String activo = "";
+    String realizado = "";
+    Date fecha = new Date();
 
     //Entity
     Viaje viaje = new Viaje();
@@ -248,13 +251,18 @@ public class ViajeController implements Serializable, IController {
 
                     break;
                 case "activo":
-                    if (getValueSearch() != null) {
-                        viajeSearch.setActivo(getValueSearch().toString());
-                        doc = new Document("activo", viajeSearch.getActivo());
+                    
+                       String activo =getValueSearch().toString();
+                        doc = new Document("activo", activo);
                         viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
-                    } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage, new Document("idviaje", -1));
-                    }
+                    
+                    break;
+
+                case "realizado":
+
+                    String realizado = (String) getValueSearch().toString();
+                    viajeList = viajeRepository.findPagination(new Document("realizado", realizado), page, rowPage, new Document("idviaje", -1));
+
                     break;
 
                 case "conductor":
@@ -301,6 +309,5 @@ public class ViajeController implements Serializable, IController {
         }
 
     }// </editor-fold>
-    
-   
+
 }

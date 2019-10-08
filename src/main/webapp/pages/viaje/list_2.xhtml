@@ -105,23 +105,22 @@
                     search2="#{viajeController.searchBy('comentarios',viajeController.comentarios)}"
                     />
 
-                
                 <b:row>
                     <b:column medium-screen="6" >
 
                         <jmoordbjsf:searchYesNo label="#{msg['field.realizado']}" 
                                                 value="#{viajeController.realizado}"
                                                 id="realizado"  
-                                             
+                                                rendered="true"
                                                 search="#{viajeController.searchBy('realizado',viajeController.realizado)}"
                                                 />
 
                     </b:column>
-                     <b:column medium-screen="6" >
+                    <b:column medium-screen="6" >
                         <jmoordbjsf:searchYesNo label="#{msg['field.activo']}" 
                                                 value="#{viajeController.activo}"
                                                 id="activo"  
-                                   
+                                                 rendered="true"
                                                 search="#{viajeController.searchBy('activo',viajeController.activo)}"
                                                 />
                     </b:column>
