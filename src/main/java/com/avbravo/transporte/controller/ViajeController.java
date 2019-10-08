@@ -292,32 +292,11 @@ public class ViajeController implements Serializable, IController {
 
                     break;
                 case "fechapartida":
-                    System.out.println("=======> fecha de partida" + fechaPartida);
+                 
                     viajeList = viajeRepository.filterDayWithoutHourPagination("activo", "si", "fechahorainicioreserva", fechaPartida, page, rowPage, new Document("idviaje", -1));
-                    System.out.println(" size=>>>>>>> " + viajeList.size());
+                 
 
-//                    Integer anio = DateUtil.anioDeUnaFecha(fechaPartida);
-//                    Integer mes = DateUtil.mesDeUnaFecha(fechaPartida);
-//                    Integer dia = DateUtil.diaDeUnaFecha(fechaPartida);
-//                    LocalDateTime start = LocalDateTime.of(anio, mes, dia, 0, 0, 0);
-//                    LocalDateTime end = LocalDateTime.of(anio, mes, dia, 23, 59, 59);
-//                    Date dateStart = Date.from(start.atZone(ZoneId.systemDefault()).toInstant());
-//                    Date dateEnd = Date.from(end.atZone(ZoneId.systemDefault()).toInstant());
 
-Date dateStart = DateUtil.insertHoursMinutesSecondsToDate(fechaPartida, 0,0,0);
-Date dateEnd = DateUtil.insertHoursMinutesSecondsToDate(fechaPartida, 23,59,59);
-                    
-                    // print dateTime with tz
-                    System.out.println("Date : " + dateStart);
-                    System.out.println("Date : " + dateEnd);
-
-                    Bson filter = Filters.and(
-                            Filters.gte("fechahorainicioreserva", dateStart),
-                            Filters.lt("fechahorainicioreserva", dateEnd));
-                    System.out.println("==filter " + filter.toString());
-                    viajeList = viajeRepository.findBy(filter, new Document("idviaje", -1));
-                    System.out.println("====== size::: " + viajeList.size());
-                    break;
 
                 case "lugardestino":
                     String lugarDestino = (String) getValueSearch();
