@@ -55,15 +55,7 @@
 
                 </b:panelGrid>
 
-                <b:row>
-                    <b:column medium-screen="4">
-                        <jmoordbjsf:search label="#{msg['field.activo']}"
-                                           value="#{rolController.rolSearch.activo}"
-                                           renderedList="#{p:ifGranted('ADMINISTRADOR')}"  
-                                           search="#{rolController.searchBy('activo',rolController.rolSearch.activo)}"
-                                           />
-                    </b:column>
-                </b:row>
+              
             </b:panel>
             <b:panel collapsible="false" id="dataTable" look="primary">
                 
