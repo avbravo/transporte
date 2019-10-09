@@ -9,41 +9,48 @@ package com.avbravo.transporte.controller;
 import com.avbravo.jmoordb.configuration.JmoordbContext;
 import com.avbravo.jmoordb.configuration.JmoordbControllerEnvironment;
 import com.avbravo.jmoordb.interfaces.IController;
+import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
-import com.avbravo.jmoordbutils.DateUtil;
+import com.avbravo.jmoordb.services.RevisionHistoryServices;
 
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
+import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
+import com.avbravo.transporteejb.repository.ConductorRepository;
+import com.avbravo.transporteejb.repository.SolicitudRepository;
+import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.ConductorServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
-import com.mongodb.client.model.Filters;
 
 import java.util.ArrayList;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultScheduleEvent;
+import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.ScheduleModel;
 // </editor-fold>
 
 /**
@@ -73,21 +80,37 @@ public class ViajeController implements Serializable, IController {
     String activo = "";
     String realizado = "";
     Date fechaPartida = new Date();
+    Date fechaHoraInicioReservaanterior = new Date();
+    Date fechaHoraFinReservaAnterior = new Date();
 
     //Entity
     Viaje viaje = new Viaje();
     Viaje viajeSelected;
     Viaje viajeSearch = new Viaje();
+    Vehiculo vehiculoSelected;
+    Conductor conductorSelected;
+    Boolean iseditable = false;
 
     Conductor conductor = new Conductor();
     Vehiculo vehiculo = new Vehiculo();
 
     //List
     List<Viaje> viajeList = new ArrayList<>();
+    List<Conductor> suggestionsConductor = new ArrayList<>();
+        List<Vehiculo> vehiculoList = new ArrayList<>();
+    List<Conductor> conductorList = new ArrayList<>();
+
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">
-
     //Repository
+    @Inject
+    ConductorRepository conductorRepository;
+       @Inject
+    RevisionHistoryRepository revisionHistoryRepository;
+    @Inject
+    SolicitudRepository solicitudRepository;
+    @Inject
+    VehiculoRepository vehiculoRepository;
     @Inject
     ViajeRepository viajeRepository;
     // </editor-fold>  
@@ -99,6 +122,8 @@ public class ViajeController implements Serializable, IController {
     ConductorServices conductorServices;
     @Inject
     ErrorInfoServices errorServices;
+     @Inject
+    RevisionHistoryServices revisionHistoryServices;
     @Inject
     VehiculoServices vehiculoServices;
     @Inject
@@ -110,6 +135,14 @@ public class ViajeController implements Serializable, IController {
 
     //List of Relations
     //Repository of Relations
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="schedule">
+    //Schedule
+    private ScheduleModel vehiculoScheduleModel;
+    private ScheduleModel conductorScheduleModel;
+    private ScheduleModel solicitudScheduleModel;
+    private ScheduleModel viajeScheduleModel;
+
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="getter/setter">
     public List<Integer> getPages() {
@@ -127,7 +160,10 @@ public class ViajeController implements Serializable, IController {
     @PostConstruct
     public void init() {
         try {
-
+            vehiculoScheduleModel = new DefaultScheduleModel();
+            conductorScheduleModel = new DefaultScheduleModel();
+            solicitudScheduleModel = new DefaultScheduleModel();
+            viajeScheduleModel = new DefaultScheduleModel();
             /*
             configurar el ambiente del controller
              */
@@ -152,6 +188,14 @@ public class ViajeController implements Serializable, IController {
                     .build();
 
             start();
+            String action = getAction();
+
+            if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
+             //  inicializar();
+            }
+            if (action.equals("view")) {
+                view();
+            }
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -292,11 +336,8 @@ public class ViajeController implements Serializable, IController {
 
                     break;
                 case "fechapartida":
-                 
+
                     viajeList = viajeRepository.filterDayWithoutHourPagination("activo", "si", "fechahorainicioreserva", fechaPartida, page, rowPage, new Document("idviaje", -1));
-                 
-
-
 
                 case "lugardestino":
                     String lugarDestino = (String) getValueSearch();
@@ -322,4 +363,442 @@ public class ViajeController implements Serializable, IController {
 
     }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="prepareScheduleSolicitud(()">
+    public String prepareScheduleSolicitud() {
+        try {
+            Document doc;
+            Document docViajes = new Document("activo", "si").append("estatus.idestatus", "SOLICITADO");
+            doc = new Document("activo", "si");
+            List<Solicitud> list = solicitudRepository.findBy(docViajes, new Document("fecha", 1));
+            // String tema = "schedule-orange";
+            solicitudScheduleModel = new DefaultScheduleModel();
+
+            if (!list.isEmpty()) {
+                list.forEach((a) -> {
+                    String tipovehiculo = "";
+                    tipovehiculo = a.getTipovehiculo().stream().map((tv) -> tv.getIdtipovehiculo()).reduce(tipovehiculo, String::concat);
+                    String tema = "";
+                    if (a.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
+                        tema = "schedule-green";
+                    } else {
+                        tema = "schedule-orange";
+                    }
+                    solicitudScheduleModel.addEvent(
+                            new DefaultScheduleEvent(a.getUsuario().get(0).getNombre() + " " + a.getUsuario().get(0).getCedula()
+                                    + "Tipo vehiculo " + tipovehiculo
+                                    + "Solicitud " + a.getTiposolicitud().getIdtiposolicitud()
+                                    + " Destino " + a.getLugarllegada(),
+                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
+                    );
+                });
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="prepareScheduleConductor()">
+    public String prepareScheduleConductor() {
+        try {
+            Document doc;
+            Document docViajes = new Document("activo", "si");
+            doc = new Document("activo", "si");
+            List<Viaje> list = viajeRepository.findBy(docViajes, new Document("fecha", 1));
+
+            conductorScheduleModel = new DefaultScheduleModel();
+
+            if (!list.isEmpty()) {
+                list.forEach((a) -> {
+
+                    String tema = "schedule-blue";
+                    switch (a.getRealizado()) {
+//                        case "si":                            
+//                            tema = "schedule-orange";
+//                            break;
+                        case "si":
+
+                            tema = "schedule-green";
+                            break;
+                        case "no":
+
+                            tema = "schedule-red";
+                            break;
+//                        case "talvez":
+//
+//                            tema = "schedule-red";
+//                            break;
+                    }
+
+                    conductorScheduleModel.addEvent(
+                            new DefaultScheduleEvent(a.getConductor().getNombre() + " " + a.getConductor().getCedula()
+                                    + "# " + a.getIdviaje() + " Destino " + a.getLugardestino()
+                                    + " " + a.getVehiculo().getMarca() + " " + a.getVehiculo().getModelo(),
+                                    a.getFechahorainicioreserva(), a.getFechahorafinreserva(), tema)
+                    );
+                });
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="prepareScheduleVehiculo()">
+    public String prepareScheduleVehiculo() {
+        try {
+            Document doc;
+            Document docViajes = new Document("activo", "si");
+            doc = new Document("activo", "si");
+            List<Viaje> list = viajeRepository.findBy(docViajes, new Document("fecha", 1));
+
+            vehiculoScheduleModel = new DefaultScheduleModel();
+
+            if (!list.isEmpty()) {
+                list.forEach((a) -> {
+
+                    String tema = "schedule-blue";
+                    switch (a.getRealizado()) {
+//                        case "si":                            
+//                            tema = "schedule-orange";
+//                            break;
+                        case "si":
+
+                            tema = "schedule-green";
+                            break;
+                        case "no":
+
+                            tema = "schedule-red";
+                            break;
+//                        case "talvez":
+//
+//                            tema = "schedule-red";
+//                            break;
+                    }
+
+                    vehiculoScheduleModel.addEvent(
+                            new DefaultScheduleEvent(a.getVehiculo().getMarca()
+                                    + " " + a.getVehiculo().getModelo() + " Placa: "
+                                    + a.getVehiculo().getPlaca() + "# " + a.getIdviaje() + " Destino " + a.getLugardestino()
+                                    + " Conductor " + a.getConductor().getNombre(),
+                                    a.getFechahorainicioreserva(), a.getFechahorafinreserva(), tema)
+                    );
+                });
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="completeVehiculo(String query)">
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
+    public List<Vehiculo> completeVehiculo(String query) {
+        List<Vehiculo> suggestions = new ArrayList<>();
+        List<Vehiculo> temp = new ArrayList<>();
+
+        try {
+            Boolean found = false;
+            query = query.trim();
+            if (iseditable && noHayCambioFechaHoras()) {
+                suggestions.add(vehiculoSelected);
+            }
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            temp = vehiculoRepository.findRegex(field, query, true, new Document(field, 1));
+
+            if (!temp.isEmpty()) {
+                List<Vehiculo> validos = new ArrayList<>();
+                if (noHayCambioFechaHoras()) {
+                    validos = temp.stream()
+                            .filter(x -> isVehiculoActivoDisponible(x)).collect(Collectors.toList());
+
+                } else {
+                    validos = temp.stream()
+                            .filter(x -> isVehiculoActivoDisponibleExcluyendoMismoViaje(x)).collect(Collectors.toList());
+                    //si cambia el vehiculo
+
+                }
+
+                if (validos.isEmpty()) {
+
+                    return suggestions;
+                }
+                if (vehiculoList == null || vehiculoList.isEmpty()) {
+
+                    validos.forEach((v) -> {
+                        suggestions.add(v);
+                    }); //  validos.add(vehiculoSelected);
+
+                    //   return validos;
+                } else {
+// REMOVERLOS SI YA ESTAN EN EL LISTADO
+
+                    validos.forEach((v) -> {
+                        Optional<Vehiculo> optional = vehiculoList.stream()
+                                .filter(v2 -> v2.getIdvehiculo() == v.getIdvehiculo())
+                                .findAny();
+                        if (!optional.isPresent()) {
+                            suggestions.add(v);
+                        }
+                    });
+
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return suggestions;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="completeConductor(String query)">
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
+    public List<Conductor> completeConductor(String query) {
+        suggestionsConductor = new ArrayList<>();
+        List<Conductor> temp = new ArrayList<>();
+        try {
+            Boolean found = false;
+            query = query.trim();
+            if (iseditable && conductorSelected.getEscontrol().equals("no") && noHayCambioFechaHoras()) {
+                suggestionsConductor.add(conductorSelected);
+            }
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            temp = conductorRepository.findRegex(field, query, true, new Document(field, 1));
+
+            if (!temp.isEmpty()) {
+                List<Conductor> validos = new ArrayList<>();
+                if (noHayCambioFechaHoras()) {
+                    validos = temp.stream()
+                            .filter(x -> isConductorActivoDisponible(x)).collect(Collectors.toList());
+                } else {
+                    validos = temp.stream()
+                            .filter(x -> isConductorActivoDisponibleExcluyendoMismoViaje(x)).collect(Collectors.toList());
+                }
+
+                if (validos.isEmpty()) {
+
+                    return suggestionsConductor;
+                }
+                if (conductorList == null || conductorList.isEmpty()) {
+                    validos.forEach((v) -> {
+                        suggestionsConductor.add(v);
+                    });
+
+                } else {
+                    validos.forEach((v) -> {
+                        Optional<Conductor> optional = conductorList.stream()
+                                .filter(v2 -> v2.getIdconductor() == v.getIdconductor())
+                                .findAny();
+                        if (!optional.isPresent()) {
+                            if (iseditable && conductorSelected.getEscontrol().equals("no")) {
+                                suggestionsConductor.add(conductorSelected);
+                            }
+                            suggestionsConductor.add(v);
+                        }
+                    });
+                }
+
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+
+        }
+        return suggestionsConductor;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Boolean noHayCambioFechaHoras()">
+    private Boolean noHayCambioFechaHoras() {
+        return fechaHoraInicioReservaanterior.equals(viaje.getFechahorainicioreserva()) && fechaHoraFinReservaAnterior.equals(viaje.getFechahorafinreserva());
+
+    }
+    // </editor-fold>
+
+     // <editor-fold defaultstate="collapsed" desc="isVehiculoValid(Vehiculo vehiculo)">
+    public Boolean isVehiculoValid(Vehiculo vehiculo) {
+        return vehiculo.getActivo().equals("si") && vehiculo.getEnreparacion().equals("no");
+
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isVehiculoActivo(Vehiculo vehiculo)">
+    public Boolean isVehiculoActivo(Vehiculo vehiculo) {
+        Boolean valid = false;
+        try {
+
+            if (vehiculo.getActivo().equals("si") && vehiculo.getEnreparacion().equals("no")) {
+
+                valid = true;
+
+            }
+
+        } catch (Exception e) {
+//            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isVehiculoValid()", e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isVehiculoActivoDisponible(Vehiculo vehiculo)">
+    public Boolean isVehiculoActivoDisponible(Vehiculo vehiculo) {
+        Boolean valid = false;
+        try {
+
+            if (vehiculo.getActivo().equals("no") && vehiculo.getEnreparacion().equals("si")) {
+
+            } else {
+                if (viajeServices.vehiculoDisponible(vehiculo, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva())) {
+                    valid = true;
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isVehiculoActivoDisponibleExcluyendoMismoViaje(Vehiculo vehiculo)">
+    public Boolean isVehiculoActivoDisponibleExcluyendoMismoViaje(Vehiculo vehiculo) {
+        Boolean valid = false;
+        try {
+
+            if (vehiculo.getActivo().equals("no") && vehiculo.getEnreparacion().equals("si")) {
+
+            } else {
+                if (viajeServices.vehiculoDisponibleExcluyendoMismoViaje(vehiculo, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva(), viaje.getIdviaje())) {
+                    valid = true;
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isVehiculoValid()", e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isConductorActivoDisponible(Conductor conductor)">
+    public Boolean isConductorActivoDisponible(Conductor conductor) {
+        Boolean valid = false;
+        try {
+            if (conductor.getActivo().equals("si") && conductor.getEscontrol().equals("si")) {
+                return true;
+            }
+
+            if (viajeServices.conductorDisponible(conductor, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva())) {
+                valid = true;
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isConductorActivoDisponible", e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isConductorActivoDisponibleExcluyendoMismoViaje(Conductor conductor)">
+    public Boolean isConductorActivoDisponibleExcluyendoMismoViaje(Conductor conductor) {
+        Boolean valid = false;
+        try {
+            if (conductor.getActivo().equals("si") && conductor.getEscontrol().equals("si")) {
+                return true;
+            }
+
+            if (viajeServices.conductorDisponibleExcluyendoMismoViaje(conductor, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva(), viaje.getIdviaje())) {
+                valid = true;
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="view()">
+    public String view() {
+        try {
+            viajeSelected = viaje;
+            vehiculoSelected = viaje.getVehiculo();
+            conductorSelected = viaje.getConductor();
+
+            fechaHoraInicioReservaanterior = viaje.getFechahorainicioreserva();
+            fechaHoraFinReservaAnterior = viaje.getFechahorafinreserva();
+            iseditable = true;
+            writable = true;
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+
+        }
+        return "";
+    }   // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="save">
+
+    @Override
+    public String save() {
+        try {
+       
+            if (!viajeServices.isValid(viaje)) {
+                return "";
+            }
+
+            if (!viajeServices.vehiculoDisponible(viaje)) {
+                JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
+                return null;
+            }
+
+            if (viaje.getConductor().getEscontrol().equals("no")) {
+                if (!viajeServices.conductorDisponible(viaje)) {
+                    JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
+                    return null;
+                }
+            }
+
+            Integer idviaje = autoincrementableServices.getContador("viaje");
+            viaje.setIdviaje(idviaje);
+            viaje.setRealizado("no");
+            viaje.setActivo("si");
+
+            //Lo datos del usuario
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            viaje.setUserInfo(viajeRepository.generateListUserinfo( jmoordb_user.getUsername(), "create"));
+            if (viajeRepository.save(viaje)) {
+                //guarda el contenido anterior
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(),  jmoordb_user.getUsername(),
+                        "create", "viaje", viajeRepository.toDocument(viaje).toString()));
+
+                JsfUtil.successMessage(rf.getAppMessage("info.save"));
+                reset();
+            } else {
+                JsfUtil.successMessage("save() " + viajeRepository.getException().toString());
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
 }

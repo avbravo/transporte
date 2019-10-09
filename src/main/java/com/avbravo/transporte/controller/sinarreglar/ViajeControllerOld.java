@@ -103,6 +103,7 @@ public class ViajeControllerOld implements Serializable, IController {
     List<Vehiculo> vehiculoList = new ArrayList<>();
     List<Conductor> conductorList = new ArrayList<>();
     List<Conductor> suggestionsConductor = new ArrayList<>();
+    
 
     //Schedule
     private ScheduleModel vehiculoScheduleModel;
