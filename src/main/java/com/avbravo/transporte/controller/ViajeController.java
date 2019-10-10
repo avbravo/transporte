@@ -67,6 +67,7 @@ public class ViajeController implements Serializable, IController {
     private static final long serialVersionUID = 1L;
 
     private Boolean writable = false;
+    private Boolean validFechas=false;
     //DataModel
     private ViajeDataModel viajeDataModel;
 
@@ -764,7 +765,10 @@ public class ViajeController implements Serializable, IController {
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
-
+ if (!viajeServices.isValidDates(viaje, true)) {
+                    return "";
+                }
+              
             if (!viajeServices.vehiculoDisponible(viaje)) {
                 JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
                 return null;
@@ -800,5 +804,32 @@ public class ViajeController implements Serializable, IController {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return "";
+    }// </editor-fold>
+    
+    
+    
+    // <editor-fold defaultstate="collapsed" desc="calendarChangeListener(SelectEvent event)">
+    public void calendarChangeListener(SelectEvent event) {
+        try {
+            validFechas=false;
+//verifica si hay buses disponibles
+
+            if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
+
+            } else {
+                if (!viajeServices.isValidDates(viaje, true)) {
+                    return;
+                }else{
+                        validFechas=true;
+                }
+              
+
+             
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+
     }// </editor-fold>
 }

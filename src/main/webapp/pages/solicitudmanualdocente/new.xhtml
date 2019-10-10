@@ -307,7 +307,9 @@
                         <b:row>
                             <b:column medium-screen="4">
                                 <jmoordbjsf:calendar required="true"
-                                                     pattern="dd/MM/yyyy HH:mm a" value="#{solicitudManualDocenteController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
+                                                     pattern="dd/MM/yyyy HH:mm a" 
+                                                     value="#{solicitudManualDocenteController.solicitud.fechahorapartida}" 
+                                                     id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
                                                      listener="#{solicitudManualDocenteController.calendarChangeListener}"
                                                      update=":form:msg :form:datatableDisponibles, :form:horapartida"
                                                      />
