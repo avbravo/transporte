@@ -47,6 +47,7 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
@@ -814,8 +815,14 @@ public class ViajeController implements Serializable, IController {
     public void calendarChangeListener(SelectEvent event) {
         try {
             validFechas=false;
+            viaje.setVehiculo(new Vehiculo());
+            viaje.setConductor(new Conductor());
 //verifica si hay buses disponibles
-
+JsfUtil.warningMessage("actualizalo"+ viaje.getVehiculo());
+PrimeFaces.current().ajax().update(":form:vehiculo");
+PrimeFaces.current().ajax().update(":form:conductor");
+//PrimeFaces.current().ajax().update(":form:growl");
+JsfUtil.updateJSFComponent(":form:growl");
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
 
             } else {
