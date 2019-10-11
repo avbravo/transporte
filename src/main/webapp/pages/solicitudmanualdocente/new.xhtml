@@ -311,7 +311,7 @@
                                                      value="#{solicitudManualDocenteController.solicitud.fechahorapartida}" 
                                                      id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
                                                      listener="#{solicitudManualDocenteController.calendarChangeListener}"
-                                                     update=":form:msg :form:datatableDisponibles, :form:horapartida"
+                                                     update=":form:msg , :form:growl :form:datatableDisponibles, :form:horapartida"
                                                      />
                             </b:column>
                             <b:column medium-screen="2">
@@ -334,7 +334,7 @@
 
                                              label="#{msg['field.fechahoraregreso']}"
                                              listener="#{solicitudManualDocenteController.calendarChangeListener}"
-                                             update=":form:msg  :form:datatableDisponibles :form:horaregreso"
+                                             update=":form:msg , :form:growl :form:datatableDisponibles :form:horaregreso"
                                              />
                             </b:column>
                             <b:column medium-screen="2">
@@ -528,7 +528,7 @@
 
 
    <jmoordbjsf:messages id="msg"/>
-            
+               <p:growl id="growl"/>
 
             </h:panelGroup>
             

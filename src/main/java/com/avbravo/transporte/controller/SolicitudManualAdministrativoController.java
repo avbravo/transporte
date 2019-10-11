@@ -1398,7 +1398,7 @@ String action = getAction();
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!solicitudServices.isValidDates(solicitud, true)) {
+                if (!solicitudServices.isValidDates(solicitud,false){
                     return;
                 }
                 changeDaysViewAvailable();

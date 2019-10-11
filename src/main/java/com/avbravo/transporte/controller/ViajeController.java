@@ -367,6 +367,8 @@ public class ViajeController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="prepareScheduleSolicitud(()">
     public String prepareScheduleSolicitud() {
         try {
+            vehiculo = new Vehiculo();
+            conductor = new Conductor();
             Document doc;
             Document docViajes = new Document("activo", "si").append("estatus.idestatus", "SOLICITADO");
             doc = new Document("activo", "si");
@@ -817,7 +819,7 @@ public class ViajeController implements Serializable, IController {
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
 
             } else {
-                if (!viajeServices.isValidDates(viaje, true)) {
+                if (!viajeServices.isValidDates(viaje, false)) {
                     return;
                 }else{
                         validFechas=true;

@@ -37,6 +37,7 @@
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
+                <p:growl id="growl"/>
 
                 <b:panel collapsible="false" title="#{msg['titleview.viaje']}" look="primary" >
 
@@ -56,7 +57,7 @@
                                 value="#{viajeController.viaje.fechahorainicioreserva}" 
                                 label="#{msg['field.fechahorainicioreserva']}"
                                 listener="#{viajeController.calendarChangeListener}"
-                                update=":form:vehiculo, :form:conductor, :form:msg"/>
+                                update=":form:vehiculo, :form:conductor, :form:msg, :form:growl"/>
 
                             <p:spacer width="25"/>
                             <b:commandButton  look="success"
@@ -78,7 +79,7 @@
                             value="#{viajeController.viaje.fechahorafinreserva}"
                             label="#{msg['field.fechahorafinreserva']}" 
                             listener="#{viajeController.calendarChangeListener}"
-                            update=":form:vehiculo, :form:conductor, :form:msg"/>
+                            update=":form:vehiculo, :form:conductor, :form:msg, :form:growl"/>
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <jmoordbjsf:inputText   value="#{viajeController.viaje.lugarpartida}"    />
