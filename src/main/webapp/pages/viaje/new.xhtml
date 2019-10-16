@@ -10,7 +10,7 @@
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 > 
     <ui:define name="content">
-         
+
 
         <style>
             .thumbnail { max-width: 100%; }
@@ -53,11 +53,12 @@
                         <p:fieldset >
 
                             <jmoordbjsf:calendar
+                                required="true"
                                 pattern="dd/MM/yyyy HH:mm a" 
                                 value="#{viajeController.viaje.fechahorainicioreserva}" 
                                 label="#{msg['field.fechahorainicioreserva']}"
                                 listener="#{viajeController.calendarChangeListener}"
-                                update=":form:vehiculo, :form:conductor, :form:msg, :form:growl"/>
+                                update=":form:vehiculo, , :form:conductor, :form:msg, :form:growl"/>
 
                             <p:spacer width="25"/>
                             <b:commandButton  look="success"
@@ -73,19 +74,23 @@
 
 
                         <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
-                        
+
                         <jmoordbjsf:calendar
                             pattern="dd/MM/yyyy HH:mm a" 
+                            required="true"
                             value="#{viajeController.viaje.fechahorafinreserva}"
                             label="#{msg['field.fechahorafinreserva']}" 
                             listener="#{viajeController.calendarChangeListener}"
-                            update=":form:vehiculo, :form:conductor, :form:msg, :form:growl"/>
+                            update=":form:vehiculo,:form:conductor, :form:msg, :form:growl"/>
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <jmoordbjsf:inputText   value="#{viajeController.viaje.lugarpartida}"    />
+                        <jmoordbjsf:inputText      required="true"  value="#{viajeController.viaje.lugarpartida}"    />
 
                         <p:outputLabel  value="#{msg['field.lugardestino']}" />
-                        <jmoordbjsf:inputText  value="#{viajeController.viaje.lugardestino}"    />
+                        <jmoordbjsf:inputText      required="true"  value="#{viajeController.viaje.lugardestino}"    />
+
+
+                       
 
 
                         <p:outputLabel value="#{msg['field.vehiculo']}"
@@ -100,7 +105,7 @@
                                                      labeltip5="#{msg['field.tipovehiculo']} #{p.tipovehiculo.idtipovehiculo}" 
                                                      listener="#{viajeController.handleSelect}"
                                                      dropdown="true"
-                                                 
+ required="true"
                                                      minQueryLength="0"
                                                      id="vehiculo"
                                                      value="#{viajeController.viaje.vehiculo}"
@@ -127,11 +132,11 @@
                                                      labeltip2="#{msg['field.nombre']} #{p.nombre}" 
                                                      listener="#{viajeController.handleSelect}"
                                                      dropdown="true"
-                                                      minQueryLength="0"
+                                                     minQueryLength="0"
                                                      value="#{viajeController.viaje.conductor}"
-                                                    itemLabel="#{p.nombre}"
-                                                    field="nombre"
-                                              
+                                                     itemLabel="#{p.nombre}"
+                                                     field="nombre"
+                                                     required="true"
                                                      id="conductor"/>
                             <p:spacer width="25"/>
                             <b:commandButton  look="primary"
@@ -158,17 +163,17 @@
 
 
                         <p:outputLabel  value="#{msg['field.kmestimados']}" />
-                        <jmoordbjsf:inputText  span="5" value="#{viajeController.viaje.kmestimados}"  />
+                        <jmoordbjsf:inputText      required="true"  span="5" value="#{viajeController.viaje.kmestimados}"  />
 
                         <p:outputLabel  value="#{msg['field.costocombustible']}"  />
-                        <jmoordbjsf:inputText 
-                            label="#{msg['field.costocombustible']}"
-                            span="5" value="#{viajeController.viaje.costocombustible}"   />
+                        <jmoordbjsf:inputText      required="true" 
+                                                   label="#{msg['field.costocombustible']}"
+                                                   span="5" value="#{viajeController.viaje.costocombustible}"   />
 
 
 
                         <jmoordbjsf:commandbuttonsave rendered="#{applicationMenu.viaje.create}"
-                                         save="#{viajeController.save()}" />
+                                                      save="#{viajeController.save()}" />
 
 
                         <b:commandButton immediate="true"

@@ -207,6 +207,11 @@ public class ViajeController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="handleSelect">
     public void handleSelect(SelectEvent event) {
         try {
+//            Optional<Vehiculo> v = vehiculoRepository.findFirst(new Document("activo","si"));
+//            Vehiculo b = v.get();
+//            viaje.setVehiculo(new Vehiculo());
+            JsfUtil.updateJSFComponent(":form:vehiculo2");
+            
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -513,6 +518,9 @@ public class ViajeController implements Serializable, IController {
         List<Vehiculo> temp = new ArrayList<>();
 
         try {
+            if(viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva()==null){
+                return suggestions;
+            }
             Boolean found = false;
             query = query.trim();
             if (iseditable && noHayCambioFechaHoras()) {
@@ -578,6 +586,9 @@ public class ViajeController implements Serializable, IController {
         suggestionsConductor = new ArrayList<>();
         List<Conductor> temp = new ArrayList<>();
         try {
+            if(viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva()==null){
+                return suggestionsConductor ;
+            }
             Boolean found = false;
             query = query.trim();
             if (iseditable && conductorSelected.getEscontrol().equals("no") && noHayCambioFechaHoras()) {
@@ -814,6 +825,7 @@ public class ViajeController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="calendarChangeListener(SelectEvent event)">
     public void calendarChangeListener(SelectEvent event) {
         try {
+            
             validFechas=false;
             viaje.setVehiculo(new Vehiculo());
             viaje.setConductor(new Conductor());
@@ -821,6 +833,9 @@ public class ViajeController implements Serializable, IController {
 //JsfUtil.warningMessage("actualizalo"+ viaje.getVehiculo());
 JsfUtil.updateJSFComponent(":form:vehiculo");
 JsfUtil.updateJSFComponent(":form:conductor");
+            System.out.println("==============================>");
+            System.out.println("====>> Placa; "+viaje.getVehiculo().getPlaca());
+            System.out.println("toString "+viaje.toString());
 ////PrimeFaces.current().ajax().update(":form:growl");
 //JsfUtil.updateJSFComponent(":form:growl");
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
@@ -835,10 +850,12 @@ JsfUtil.updateJSFComponent(":form:conductor");
 
              
             }
-
+          
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
 
     }// </editor-fold>
+    
+  
 }
