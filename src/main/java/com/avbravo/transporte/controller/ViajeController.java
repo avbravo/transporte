@@ -68,7 +68,7 @@ public class ViajeController implements Serializable, IController {
     private static final long serialVersionUID = 1L;
 
     private Boolean writable = false;
-    private Boolean validFechas=false;
+    private Boolean validFechas = false;
     //DataModel
     private ViajeDataModel viajeDataModel;
 
@@ -99,7 +99,7 @@ public class ViajeController implements Serializable, IController {
     //List
     List<Viaje> viajeList = new ArrayList<>();
     List<Conductor> suggestionsConductor = new ArrayList<>();
-        List<Vehiculo> vehiculoList = new ArrayList<>();
+    List<Vehiculo> vehiculoList = new ArrayList<>();
     List<Conductor> conductorList = new ArrayList<>();
 
 // </editor-fold>  
@@ -107,7 +107,7 @@ public class ViajeController implements Serializable, IController {
     //Repository
     @Inject
     ConductorRepository conductorRepository;
-       @Inject
+    @Inject
     RevisionHistoryRepository revisionHistoryRepository;
     @Inject
     SolicitudRepository solicitudRepository;
@@ -124,7 +124,7 @@ public class ViajeController implements Serializable, IController {
     ConductorServices conductorServices;
     @Inject
     ErrorInfoServices errorServices;
-     @Inject
+    @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
     VehiculoServices vehiculoServices;
@@ -193,7 +193,7 @@ public class ViajeController implements Serializable, IController {
             String action = getAction();
 
             if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
-             //  inicializar();
+                //  inicializar();
             }
             if (action.equals("view")) {
                 view();
@@ -210,8 +210,8 @@ public class ViajeController implements Serializable, IController {
 //            Optional<Vehiculo> v = vehiculoRepository.findFirst(new Document("activo","si"));
 //            Vehiculo b = v.get();
 //            viaje.setVehiculo(new Vehiculo());
-            JsfUtil.updateJSFComponent(":form:vehiculo2");
-            
+
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -518,7 +518,7 @@ public class ViajeController implements Serializable, IController {
         List<Vehiculo> temp = new ArrayList<>();
 
         try {
-            if(viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva()==null){
+            if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
                 return suggestions;
             }
             Boolean found = false;
@@ -586,8 +586,8 @@ public class ViajeController implements Serializable, IController {
         suggestionsConductor = new ArrayList<>();
         List<Conductor> temp = new ArrayList<>();
         try {
-            if(viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva()==null){
-                return suggestionsConductor ;
+            if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
+                return suggestionsConductor;
             }
             Boolean found = false;
             query = query.trim();
@@ -647,7 +647,7 @@ public class ViajeController implements Serializable, IController {
     }
     // </editor-fold>
 
-     // <editor-fold defaultstate="collapsed" desc="isVehiculoValid(Vehiculo vehiculo)">
+    // <editor-fold defaultstate="collapsed" desc="isVehiculoValid(Vehiculo vehiculo)">
     public Boolean isVehiculoValid(Vehiculo vehiculo) {
         return vehiculo.getActivo().equals("si") && vehiculo.getEnreparacion().equals("no");
 
@@ -769,20 +769,19 @@ public class ViajeController implements Serializable, IController {
         }
         return "";
     }   // </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="save">
 
+    // <editor-fold defaultstate="collapsed" desc="save">
     @Override
     public String save() {
         try {
-       
+viaje.setActivo("si");
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
- if (!viajeServices.isValidDates(viaje, true)) {
-                    return "";
-                }
-              
+            if (!viajeServices.isValidDates(viaje, true)) {
+                return "";
+            }
+
             if (!viajeServices.vehiculoDisponible(viaje)) {
                 JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
                 return null;
@@ -802,10 +801,10 @@ public class ViajeController implements Serializable, IController {
 
             //Lo datos del usuario
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            viaje.setUserInfo(viajeRepository.generateListUserinfo( jmoordb_user.getUsername(), "create"));
+            viaje.setUserInfo(viajeRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
             if (viajeRepository.save(viaje)) {
                 //guarda el contenido anterior
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(),  jmoordb_user.getUsername(),
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), jmoordb_user.getUsername(),
                         "create", "viaje", viajeRepository.toDocument(viaje).toString()));
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -819,43 +818,28 @@ public class ViajeController implements Serializable, IController {
         }
         return "";
     }// </editor-fold>
-    
-    
-    
+
     // <editor-fold defaultstate="collapsed" desc="calendarChangeListener(SelectEvent event)">
     public void calendarChangeListener(SelectEvent event) {
         try {
-            
-            validFechas=false;
-            viaje.setVehiculo(new Vehiculo());
-            viaje.setConductor(new Conductor());
-//verifica si hay buses disponibles
-//JsfUtil.warningMessage("actualizalo"+ viaje.getVehiculo());
-JsfUtil.updateJSFComponent(":form:vehiculo");
-JsfUtil.updateJSFComponent(":form:conductor");
-            System.out.println("==============================>");
-            System.out.println("====>> Placa; "+viaje.getVehiculo().getPlaca());
-            System.out.println("toString "+viaje.toString());
-////PrimeFaces.current().ajax().update(":form:growl");
-//JsfUtil.updateJSFComponent(":form:growl");
+
+            validFechas = false;
+
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
 
             } else {
                 if (!viajeServices.isValidDates(viaje, false)) {
                     return;
-                }else{
-                        validFechas=true;
+                } else {
+                    validFechas = true;
                 }
-              
 
-             
             }
-          
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
 
     }// </editor-fold>
-    
-  
+
 }

@@ -174,16 +174,8 @@
 
                         <jmoordbjsf:commandbuttonsave 
                                                       save="#{viajeController.save()}" />
-
-
-                        <b:commandButton immediate="true"
-                                         look="primary"
-                                         iconAwesome="fa-share" 
-
-
-                                         rendered="true" 
-                                         title="#{app['button.search']}" 
-                                         action="#{viajeController.prepare('golist',viajeController.viaje)}"/>
+                        <jmoordbjsf:commandbuttongolist   url = "/pages/viaje/list.xhtml"
+                                                      controller="#{viajeController}" />
 
 
                     </b:panelGrid>
