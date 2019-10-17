@@ -163,7 +163,7 @@
 
 
 
-                        <jmoordbjsf:commandbuttonsave rendered="#{applicationMenu.viaje.create}"
+                        <jmoordbjsf:commandbuttonsave 
                                          save="#{viajeControllerOld.save()}" />
 
 
@@ -172,7 +172,7 @@
                                          iconAwesome="fa-share" 
 
 
-                                         rendered="#{applicationMenu.viaje.list}" 
+                                       
                                          title="#{app['button.search']}" 
                                          action="#{viajeControllerOld.prepare('golist',viajeControllerOld.viaje)}"/>
 

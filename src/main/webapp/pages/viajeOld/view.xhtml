@@ -180,9 +180,9 @@
 
                     </b:panelGrid>
                     <jmoordbjsf:toolbarview 
-                        renderedDelete="#{applicationMenu.viaje.delete and viajeControllerOld.writable and viajeControllerOld.viaje.realizado eq 'no'}"
-                        renderedEdit="#{applicationMenu.viaje.edit and viajeControllerOld.writable and viajeControllerOld.viaje.realizado eq 'no'}" 
-                        renderedList="#{applicationMenu.viaje.list and viajeControllerOld.writable}"
+                        renderedDelete="#{viajeControllerOld.writable and viajeControllerOld.viaje.realizado eq 'no'}"
+                        renderedEdit="#{ viajeControllerOld.writable and viajeControllerOld.viaje.realizado eq 'no'}" 
+                        renderedList="#{ viajeControllerOld.writable}"
                         edit="#{viajeControllerOld.edit()}"
                         delete="#{viajeControllerOld.delete(viajeControllerOld.viaje,true)}"
                         print="#{viajeControllerOld.print()}"

@@ -70,14 +70,14 @@
                     <b:column medium-screen="6">
                         <jmoordbjsf:search label="#{msg['field.idviaje']}"
                                            value="#{viajeControllerOld.lookupServices.idviaje}"
-                                           renderedList="#{applicationMenu.viaje.list}"  
+                                           
                                            search="#{viajeControllerOld.searchBy('idviaje')}"
                                            />
                     </b:column>
                     <b:column medium-screen="6">
                         <jmoordbjsf:search label="#{msg['field.lugardestino']}"
                                            value="#{viajeControllerOld.lookupServices.lugardestino}"
-                                           renderedList="#{applicationMenu.viaje.list}"  
+                                         
                                            search="#{viajeControllerOld.searchBy('lugardestino')}"
                                            />
                     </b:column>
@@ -89,7 +89,7 @@
 
                                                 value="#{viajeControllerOld.lookupServices.conconductor}"
                                                 id="sinconductor"  
-                                                renderedList="#{applicationMenu.viaje.list}"
+                                               
                                                 search="#{viajeControllerOld.searchBy('conconductor')}"
                                                 />
 
@@ -97,7 +97,7 @@
                     <b:column medium-screen="6">
                         <jmoordbjsf:search label="#{msg['field.comentarios']}"
                                            value="#{viajeControllerOld.lookupServices.comentarios}"
-                                           renderedList="#{applicationMenu.viaje.list}"  
+                                      
                                            search="#{viajeControllerOld.searchBy('comentarios')}"
                                            />
                     </b:column>
@@ -115,7 +115,7 @@
                             valueDesde="#{viajeControllerOld.lookupServices.fechaDesde}"
                             labelHasta="#{msg['field.fechafin']}"
                             valueHasta="#{viajeControllerOld.lookupServices.fechaHasta}"
-                            rendered="#{applicationMenu.viaje.list}"
+                          
                             search="#{viajeControllerOld.searchBy('_betweendates')}"
                             />
                     </b:column>
@@ -127,7 +127,7 @@
 
                                                 value="#{viajeControllerOld.lookupServices.realizado}"
                                                 id="realizado"  
-                                                renderedList="#{applicationMenu.viaje.list}"
+                                            
                                                 search="#{viajeControllerOld.searchBy('realizado')}"
                                                 />
 
@@ -137,7 +137,7 @@
 
                                                 value="#{viajeControllerOld.lookupServices.activo}"
                                                 id="activo"  
-                                                renderedList="#{applicationMenu.viaje.list}"
+                                           
                                                 search="#{viajeControllerOld.searchBy('activo')}"
                                                 />
                     </b:column>
@@ -215,7 +215,7 @@
 
                             edit="#{viajeControllerOld.prepare('view',item)}"
                             delete="#{viajeControllerOld.delete(item,false)}"
-                            rendered="#{applicationMenu.viaje.delete}"
+                            rendered="true"
                             />
                     </b:dataTableColumn>
 

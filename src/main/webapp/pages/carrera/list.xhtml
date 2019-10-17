@@ -50,7 +50,7 @@
                     <b:column medium-screen="4">
                         <jmoordbjsf:search label="#{msg['field.idcarrera']}"
                                            value="#{carreraController.carreraSearch.idcarrera}"
-                                           renderedList="#{p:ifGranted('ADMINISTRADOR')}" 
+                                         
                                            search="#{carreraController.searchBy('idcarrera',carreraController.carreraSearch.idcarrera)}"
                                            />
 
@@ -59,7 +59,7 @@
                     <b:column medium-screen="8">
                         <jmoordbjsf:search label="#{msg['field.descripcion']}"
                                            value="#{carreraController.carreraSearch.descripcion}"
-                                           renderedList="#{p:ifGranted('ADMINISTRADOR')}"   
+                                           
                                            search="#{carreraController.searchBy('descripcion',carreraController.carreraSearch.descripcion)}"
                                            />
                     </b:column>
