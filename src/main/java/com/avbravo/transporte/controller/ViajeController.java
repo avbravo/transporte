@@ -66,7 +66,7 @@ public class ViajeController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
-
+   
     private Boolean writable = false;
     private Boolean validFechas = false;
     //DataModel

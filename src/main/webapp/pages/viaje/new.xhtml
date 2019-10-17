@@ -45,10 +45,10 @@
 
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" > 
 
-       <p:outputLabel  value="#{msg['field.solicitud']}" >
+                        <p:outputLabel  value="#{msg['field.solicitud']}" >
                             <i class="pi pi-download"></i>
                         </p:outputLabel>
-                         <jmoordbjsf:autocompleteWithCalendarDateTime
+                        <jmoordbjsf:autocompleteWithCalendarDateTime
                             converter="#{solicitudConverter}"
                             completeMethod="#{viajeController.completeByEstatus}"    
                             labeltip1="#{msg['field.idsolicitud']}"
@@ -86,7 +86,25 @@
                             update=":form:panel"
                             />
 
+                        <p:outputLabel  value="#{msg['field.tipoviaje']}" >
+                            <i class="pi pi-download"></i>
+                        </p:outputLabel>  
 
+                        <b:selectOneMenu id="tipoviaje" 
+
+                                         value="#{viajeController.viaje.tipoviaje}"  
+                                         required="true"  
+                                         requiredMessage="#{msg['field.tipoviaje']} #{app['info.required']}"
+                                         >
+
+
+                     
+                            <f:selectItem itemLabel="#{msg['viaje.idaregreso']}" itemValue="ida/regreso" />
+                            <f:selectItem itemLabel="#{msg['viaje.ida']}" itemValue="ida" />
+                            <f:selectItem itemLabel="#{msg['viaje.regreso']}" itemValue="regreso" />
+
+                        </b:selectOneMenu>
+   
 
                         <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
 
