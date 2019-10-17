@@ -82,11 +82,11 @@
             <version>0.2</version>
         </dependency>
      
-<!--  <dependency>
+  <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbjsf</artifactId>
-            <version>0.32</version>
-        </dependency>-->
+            <version>0.33</version>
+        </dependency>
         
         
         
@@ -101,11 +101,7 @@
         <!--
                   websocket
         -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jmoordbjsf</artifactId>
-            <version>0.32.2</version>
-        </dependency>
+     
         <dependency>
             <groupId>javax.websocket</groupId>
             <artifactId>javax.websocket-api</artifactId>
