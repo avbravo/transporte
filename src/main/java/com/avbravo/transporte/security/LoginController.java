@@ -21,7 +21,7 @@ import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.jmoordbsecurity.SecurityInterface;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.email.ManagerEmail;
-import com.avbravo.transporte.roles.ValidadorRoles;
+
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
@@ -86,8 +86,7 @@ public class LoginController implements Serializable, SecurityInterface {
     AccessInfoRepository accessInfoRepository;
     @Inject
     JmoordbResourcesFiles rf;
-    @Inject
-    ValidadorRoles validadorRoles;
+
     Boolean loggedIn = false;
     private String username;
     private String password;
@@ -418,26 +417,7 @@ public class LoginController implements Serializable, SecurityInterface {
         );
     }
 
-    // <editor-fold defaultstate="collapsed" desc="put(String key, String value)">
-    public void put(String key, String value) {
-        try {
-            parameters.put(key, value);
-        } catch (Exception e) {
-            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
-        }
-    }
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="get(String key)">
-    public String get(String key) {
-        String value = "";
-        try {
-            value = parameters.get(key);
-        } catch (Exception e) {
-            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
-        }
-        return value;
-    }   // </editor-fold>
+   
 
     // <editor-fold defaultstate="collapsed" desc="sendToken()"> 
     public String sendToken() {
