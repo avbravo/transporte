@@ -74,7 +74,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
-
+ <p:fieldset >
                         <jmoordbjsf:calendar
                             pattern="dd/MM/yyyy HH:mm a" 
                             required="true"
@@ -82,6 +82,20 @@
                             label="#{msg['field.fechahorafinreserva']}" 
                             listener="#{viajeController.calendarChangeListener}"
                             update=":form:vehiculo,:form:conductor, :form:msg, :form:growl"/>
+                        
+                         <p:spacer width="25"/>
+                            <b:commandButton  look="success"
+                                              title="#{msg['label.viajes']}"
+                                              immediate="true"
+                                              iconAwesome="fa-calendar" 
+                                              update="viajesDetails"
+                                              action="#{viajeController.prepareScheduleViajes()}"
+                                              oncomplete="PF('viajesDialog').show();" />
+                        
+                     </p:fieldset>   
+                        
+                        
+                        
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <jmoordbjsf:inputText      required="true"  value="#{viajeController.viaje.lugarpartida}"    />
@@ -242,6 +256,26 @@
                     <b:commandButton value="#{app['button.close']}"
                                      iconAwesome="fa-close"
                                      oncomplete="PF('solicitudDialog').hide();"/>
+
+                </b:panelGrid>
+            </p:dialog>
+            <p:dialog widgetVar="viajesDialog" header="#{msg['dialogo.viajes']}" 
+                      width="850" height="450"
+                      styleClass="customDialog"
+
+                      responsive="true"
+
+                      showEffect="clip" hideEffect="clip">
+                <b:panelGrid id="viajesDetails" colSpans="12" size="xs" > 
+                    <p:schedule id="viajesSchedule"       
+                                rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
+                                value="#{viajeController.viajeScheduleModel}" widgetVar="viajesSchedule" timeZone="GMT-5" locale="es">
+
+
+                    </p:schedule>
+                    <b:commandButton value="#{app['button.close']}"
+                                     iconAwesome="fa-close"
+                                     oncomplete="PF('viajesDialog').hide();"/>
 
                 </b:panelGrid>
             </p:dialog>

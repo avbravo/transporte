@@ -392,12 +392,55 @@ public class ViajeController implements Serializable, IController {
                     } else {
                         tema = "schedule-orange";
                     }
-                    solicitudScheduleModel.addEvent(
+                    if(a.getEstatus().getIdestatus().equals("CANCELADO") || a.getEstatus().getIdestatus().equals("RECHAZADO")){
+                        //No mostrarlas
+                    }
+                    else{
+                         solicitudScheduleModel.addEvent(
                             new DefaultScheduleEvent(a.getUsuario().get(0).getNombre() + " " + a.getUsuario().get(0).getCedula()
                                     + "Tipo vehiculo " + tipovehiculo
                                     + "Solicitud " + a.getTiposolicitud().getIdtiposolicitud()
-                                    + " Destino " + a.getLugarllegada(),
+                                    + " Destino " + a.getLugarllegada()
+                                    +"Estatus "+a.getEstatus().getIdestatus(),
                                     a.getFechahorapartida(), a.getFechahoraregreso(), tema)
+                    );
+                    }
+                   
+                });
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="prepareScheduleViajes(()">
+    public String prepareScheduleViajes() {
+        try {
+            vehiculo = new Vehiculo();
+            conductor = new Conductor();
+            Document doc;
+            Document docViajes = new Document("activo", "si");
+            doc = new Document("activo", "si");
+            List<Viaje> list = viajeRepository.findBy(docViajes, new Document("fecha", 1));
+            // String tema = "schedule-orange";
+            viajeScheduleModel = new DefaultScheduleModel();
+
+            if (!list.isEmpty()) {
+                list.forEach((a) -> {
+                    
+                    String tema = "";
+                    
+                        tema = "schedule-green";
+                    
+                    viajeScheduleModel.addEvent(
+                            new DefaultScheduleEvent(
+                                    a.getVehiculo().getMarca()
+                                    +"Placa " + a.getVehiculo().getPlaca()
+                                    + "Conductor " + a.getConductor().getNombre()
+                                    + " Destino " + a.getLugardestino(),
+                                    a.getFechahorainicioreserva(), a.getFechahorafinreserva(), tema)
                     );
                 });
             }
