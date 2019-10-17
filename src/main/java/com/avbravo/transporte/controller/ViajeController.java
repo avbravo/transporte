@@ -28,6 +28,7 @@ import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.ConductorServices;
+import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 
@@ -47,7 +48,6 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
-import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
@@ -95,6 +95,8 @@ public class ViajeController implements Serializable, IController {
 
     Conductor conductor = new Conductor();
     Vehiculo vehiculo = new Vehiculo();
+    Solicitud solicitud = new Solicitud();
+    Solicitud solicitudCopiar = new Solicitud();
 
     //List
     List<Viaje> viajeList = new ArrayList<>();
@@ -126,6 +128,8 @@ public class ViajeController implements Serializable, IController {
     ErrorInfoServices errorServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
+    @Inject
+    SolicitudServices solicitudServices;
     @Inject
     VehiculoServices vehiculoServices;
     @Inject
@@ -210,7 +214,6 @@ public class ViajeController implements Serializable, IController {
 //            Optional<Vehiculo> v = vehiculoRepository.findFirst(new Document("activo","si"));
 //            Vehiculo b = v.get();
 //            viaje.setVehiculo(new Vehiculo());
-
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -392,20 +395,19 @@ public class ViajeController implements Serializable, IController {
                     } else {
                         tema = "schedule-orange";
                     }
-                    if(a.getEstatus().getIdestatus().equals("CANCELADO") || a.getEstatus().getIdestatus().equals("RECHAZADO")){
+                    if (a.getEstatus().getIdestatus().equals("CANCELADO") || a.getEstatus().getIdestatus().equals("RECHAZADO")) {
                         //No mostrarlas
+                    } else {
+                        solicitudScheduleModel.addEvent(
+                                new DefaultScheduleEvent(a.getUsuario().get(0).getNombre() + " " + a.getUsuario().get(0).getCedula()
+                                        + "Tipo vehiculo " + tipovehiculo
+                                        + "Solicitud " + a.getTiposolicitud().getIdtiposolicitud()
+                                        + " Destino " + a.getLugarllegada()
+                                        + "Estatus " + a.getEstatus().getIdestatus(),
+                                        a.getFechahorapartida(), a.getFechahoraregreso(), tema)
+                        );
                     }
-                    else{
-                         solicitudScheduleModel.addEvent(
-                            new DefaultScheduleEvent(a.getUsuario().get(0).getNombre() + " " + a.getUsuario().get(0).getCedula()
-                                    + "Tipo vehiculo " + tipovehiculo
-                                    + "Solicitud " + a.getTiposolicitud().getIdtiposolicitud()
-                                    + " Destino " + a.getLugarllegada()
-                                    +"Estatus "+a.getEstatus().getIdestatus(),
-                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
-                    );
-                    }
-                   
+
                 });
             }
 
@@ -414,6 +416,7 @@ public class ViajeController implements Serializable, IController {
         }
         return "";
     }
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="prepareScheduleViajes(()">
     public String prepareScheduleViajes() {
@@ -429,15 +432,15 @@ public class ViajeController implements Serializable, IController {
 
             if (!list.isEmpty()) {
                 list.forEach((a) -> {
-                    
+
                     String tema = "";
-                    
-                        tema = "schedule-green";
-                    
+
+                    tema = "schedule-green";
+
                     viajeScheduleModel.addEvent(
                             new DefaultScheduleEvent(
                                     a.getVehiculo().getMarca()
-                                    +"Placa " + a.getVehiculo().getPlaca()
+                                    + "Placa " + a.getVehiculo().getPlaca()
                                     + "Conductor " + a.getConductor().getNombre()
                                     + " Destino " + a.getLugardestino(),
                                     a.getFechahorainicioreserva(), a.getFechahorafinreserva(), tema)
@@ -817,7 +820,7 @@ public class ViajeController implements Serializable, IController {
     @Override
     public String save() {
         try {
-viaje.setActivo("si");
+            viaje.setActivo("si");
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
@@ -883,6 +886,32 @@ viaje.setActivo("si");
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
 
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="completeAllSolicitudParaCopiar(String query)">
+    public List<Solicitud> completeByEstatus(String query) {
+        return solicitudServices.completeByEstatus(query,"SOLICITADO");
+
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="handleSelectCopiarDesde(SelectEvent event)">
+    public void handleSelectCopiarDesde(SelectEvent event) {
+        try {
+
+            solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
+            viaje.setMision(solicitud.getMision());
+            viaje.setComentarios(solicitud.getObjetivo());
+            viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
+            viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
+            viaje.setLugarpartida(solicitud.getLugarpartida());
+            viaje.setLugardestino(solicitud.getLugarllegada());
+            completeVehiculo("");
+            completeConductor("");
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
     }// </editor-fold>
 
 }
