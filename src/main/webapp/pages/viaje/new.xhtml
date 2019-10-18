@@ -127,7 +127,7 @@
                         </p:outputLabel>
                         <jmoordbjsf:autocompleteWithCalendarDateTime
                             converter="#{solicitudConverter}"
-                            completeMethod="#{viajeController.completeSolicitud}"    
+                            completeMethod="#{viajeController.completeSolicitudByEstatus}"    
                             labeltip1="#{msg['field.idsolicitud']}"
                             labelvalue1="#{p.idsolicitud}"   
                             labeltip2="#{msg['field.solicitadopor']}" 
@@ -161,7 +161,7 @@
                             dropdown="true"
                             minQueryLength="0"
                             update=":form:panel"
-                            multiple="true"
+                            multiple="false"
                             
                             />
 

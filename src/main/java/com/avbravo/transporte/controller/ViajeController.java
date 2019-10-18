@@ -1013,7 +1013,7 @@ public class ViajeController implements Serializable, IController {
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="completeAllSolicitudParaCopiar(String query)">
-    public List<Solicitud> completeByEstatus(String query) {
+    public List<Solicitud> completeSolicitudByEstatus(String query) {
         return solicitudServices.completeByEstatus(query, "SOLICITADO");
 
     }
@@ -1023,15 +1023,15 @@ public class ViajeController implements Serializable, IController {
     public void handleSelectCopiarDesde(SelectEvent event) {
         try {
 
-//            solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
-//            viaje.setMision(solicitud.getMision());
-//            viaje.setComentarios(solicitud.getObjetivo());
-//            viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
-//            viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
-//            viaje.setLugarpartida(solicitud.getLugarpartida());
-//            viaje.setLugardestino(solicitud.getLugarllegada());
-//            completeVehiculo("");
-//            completeConductor("");
+            solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
+            viaje.setMision(solicitud.getMision());
+            viaje.setComentarios(solicitud.getObjetivo());
+            viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
+            viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
+            viaje.setLugarpartida(solicitud.getLugarpartida());
+            viaje.setLugardestino(solicitud.getLugarllegada());
+            completeVehiculo("");
+            completeConductor("");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
