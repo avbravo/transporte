@@ -31,6 +31,7 @@ import com.avbravo.transporteejb.services.ConductorServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
+import com.avbravo.transporteejb.services.VistoBuenoServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -51,6 +52,7 @@ import org.bson.Document;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 // </editor-fold>
 
@@ -66,9 +68,10 @@ public class ViajeController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
-   
+
     private Boolean writable = false;
     private Boolean validFechas = false;
+    private ScheduleEvent event = new DefaultScheduleEvent();
     //DataModel
     private ViajeDataModel viajeDataModel;
 
@@ -103,6 +106,7 @@ public class ViajeController implements Serializable, IController {
     List<Conductor> suggestionsConductor = new ArrayList<>();
     List<Vehiculo> vehiculoList = new ArrayList<>();
     List<Conductor> conductorList = new ArrayList<>();
+    List<Solicitud> solicitudList = new ArrayList<>();
 
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">
@@ -122,6 +126,8 @@ public class ViajeController implements Serializable, IController {
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;
+    @Inject
+    VistoBuenoServices vistoBuenoServices; 
     @Inject
     ConductorServices conductorServices;
     @Inject
@@ -399,7 +405,9 @@ public class ViajeController implements Serializable, IController {
                         //No mostrarlas
                     } else {
                         solicitudScheduleModel.addEvent(
-                                new DefaultScheduleEvent(a.getUsuario().get(0).getNombre() + " " + a.getUsuario().get(0).getCedula()
+                                new DefaultScheduleEvent(
+                                        "# " + a.getIdsolicitud() + " : ("+
+                                        a.getUsuario().get(0).getNombre() + " " + a.getUsuario().get(0).getCedula()
                                         + "Tipo vehiculo " + tipovehiculo
                                         + "Solicitud " + a.getTiposolicitud().getIdtiposolicitud()
                                         + " Destino " + a.getLugarllegada()
@@ -621,6 +629,75 @@ public class ViajeController implements Serializable, IController {
     }
 
     // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="List<Solicitud> completeSolicitud(String query)">
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
+    public List<Solicitud> completeSolicitud(String query) {
+        List<Solicitud> suggestions = new ArrayList<>();
+        List<Solicitud> temp = new ArrayList<>();
+
+        try {
+            if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
+                return suggestions;
+            }
+            Boolean found = false;
+            query = query.trim();
+            if (iseditable && noHayCambioFechaHoras()) {
+                suggestions.add(solicitud);
+            }
+            String field = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("field");
+            temp = solicitudRepository.findRegex(field, query, true, new Document(field, 1));
+
+            if (!temp.isEmpty()) {
+                List<Solicitud> validos = new ArrayList<>();
+                if (noHayCambioFechaHoras()) {
+                    validos = temp.stream()
+                            .filter(x -> isSolicitudActivoDisponible(x)).collect(Collectors.toList());
+
+                } else {
+                    validos = temp.stream()
+                            .filter(x -> isSolicitudActivoDisponibleExcluyendoMismoViaje(x)).collect(Collectors.toList());
+                    //si cambia la solicitud
+
+                }
+
+                if (validos.isEmpty()) {
+
+                    return suggestions;
+                }
+                if (solicitudList == null || solicitudList.isEmpty()) {
+
+                    validos.forEach((v) -> {
+                        suggestions.add(v);
+                    }); //  validos.add(vehiculoSelected);
+
+                    //   return validos;
+                } else {
+// REMOVERLOS SI YA ESTAN EN EL LISTADO
+
+                    validos.forEach((v) -> {
+                        Optional<Solicitud> optional = solicitudList.stream()
+                                .filter(v2 -> v2.getIdsolicitud() == v.getIdsolicitud())
+                                .findAny();
+                        if (!optional.isPresent()) {
+                            suggestions.add(v);
+                        }
+                    });
+
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return suggestions;
+    }
+
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="completeConductor(String query)">
     /**
      * Se usa para los autocomplete filtrando
@@ -739,6 +816,32 @@ public class ViajeController implements Serializable, IController {
     }
 
     // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="isSolicitudActivoDisponible(Solicitud solicitud)">
+    /**
+     *
+     * @param solicitud
+     * @return
+     */
+    public Boolean isSolicitudActivoDisponible(Solicitud solicitud) {
+        Boolean valid = false;
+        try {
+
+            if (solicitud.getActivo().equals("no") && (solicitud.getEstatus().getIdestatus().equals("CANCELADO") || solicitud.getEstatus().getIdestatus().equals("RECHAZADO")
+                    || solicitud.getEstatus().getIdestatus().equals("APROBADO"))) {
+
+            } else {
+                if (solicitudServices.solicitudDisponibleParaViajes(solicitud, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva())) {
+                    valid = true;
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="isVehiculoActivoDisponibleExcluyendoMismoViaje(Vehiculo vehiculo)">
     public Boolean isVehiculoActivoDisponibleExcluyendoMismoViaje(Vehiculo vehiculo) {
         Boolean valid = false;
@@ -754,6 +857,27 @@ public class ViajeController implements Serializable, IController {
 
         } catch (Exception e) {
             errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isVehiculoValid()", e.getLocalizedMessage());
+        }
+        return valid;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Boolean isSolicitudActivoDisponibleExcluyendoMismoViaje(Solicitud solicitud)">
+    public Boolean isSolicitudActivoDisponibleExcluyendoMismoViaje(Solicitud solicitud) {
+        Boolean valid = false;
+        try {
+
+            if (solicitud.getActivo().equals("no") && (solicitud.getEstatus().getIdestatus().equals("CANCELADO") || solicitud.getEstatus().getIdestatus().equals("RECHAZADO")
+                    || solicitud.getEstatus().getIdestatus().equals("APROBADO"))) {
+
+            } else {
+                if (solicitudServices.solicitudDisponibleExcluyendoMismoViaje(solicitud, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva())) {
+                    valid = true;
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isSolicitudActivoDisponibleExcluyendoMismoViaje()", e.getLocalizedMessage());
         }
         return valid;
     }
@@ -890,7 +1014,7 @@ public class ViajeController implements Serializable, IController {
 
     // <editor-fold defaultstate="collapsed" desc="completeAllSolicitudParaCopiar(String query)">
     public List<Solicitud> completeByEstatus(String query) {
-        return solicitudServices.completeByEstatus(query,"SOLICITADO");
+        return solicitudServices.completeByEstatus(query, "SOLICITADO");
 
     }
     // </editor-fold>
@@ -899,19 +1023,54 @@ public class ViajeController implements Serializable, IController {
     public void handleSelectCopiarDesde(SelectEvent event) {
         try {
 
-            solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
-            viaje.setMision(solicitud.getMision());
-            viaje.setComentarios(solicitud.getObjetivo());
-            viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
-            viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
-            viaje.setLugarpartida(solicitud.getLugarpartida());
-            viaje.setLugardestino(solicitud.getLugarllegada());
-            completeVehiculo("");
-            completeConductor("");
-
+//            solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
+//            viaje.setMision(solicitud.getMision());
+//            viaje.setComentarios(solicitud.getObjetivo());
+//            viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
+//            viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
+//            viaje.setLugarpartida(solicitud.getLugarpartida());
+//            viaje.setLugardestino(solicitud.getLugarllegada());
+//            completeVehiculo("");
+//            completeConductor("");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="onEventSelect(SelectEvent selectEvent)">
+    public void onEventSelect(SelectEvent selectEvent) {
+        try {
+
+            event = (ScheduleEvent) selectEvent.getObject();
+
+            String title = event.getTitle();
+            Integer i = title.indexOf(":");
+
+            Integer idsolicitud = 0;
+            if (i != -1) {
+                idsolicitud = Integer.parseInt(title.substring(1, i).trim());
+            }
+            solicitud.setIdsolicitud(idsolicitud);
+            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
+            if (optional.isPresent()) {
+                solicitud = optional.get();
+                viaje.setMision(solicitud.getMision());
+                viaje.setComentarios(solicitud.getMision());
+
+                JsfUtil.updateJSFComponent(":form:panel");
+            }
+JsfUtil.updateJSFComponent("solicitudDetallesPanel");
+        } catch (Exception e) {
+
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+    } // </editor-fold>
+    
+      // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno()">
+
+    public String columnNameVistoBueno() {
+        return vistoBuenoServices.columnNameVistoBueno(solicitud.getVistoBueno());
+    }
+// </editor-fold>
 
 }
