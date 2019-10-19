@@ -945,6 +945,7 @@ public class ViajeController implements Serializable, IController {
     public String save() {
         try {
             viaje.setActivo("si");
+            viaje.setAsientosdisponibles(vehiculo.getPasajeros());
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
