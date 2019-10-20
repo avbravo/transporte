@@ -104,6 +104,7 @@ public class ViajeController implements Serializable, IController {
     //List
     List<Viaje> viajeList = new ArrayList<>();
     List<Conductor> suggestionsConductor = new ArrayList<>();
+       List<Vehiculo> suggestions = new ArrayList<>();
     List<Vehiculo> vehiculoList = new ArrayList<>();
     List<Conductor> conductorList = new ArrayList<>();
     List<Solicitud> solicitudList = new ArrayList<>();
@@ -220,7 +221,9 @@ public class ViajeController implements Serializable, IController {
 //            Optional<Vehiculo> v = vehiculoRepository.findFirst(new Document("activo","si"));
 //            Vehiculo b = v.get();
 //            viaje.setVehiculo(new Vehiculo());
-
+if(solicitud.getPasajeros() > vehiculo.getPasajeros()){
+       JsfUtil.warningMessage(rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
+}
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -568,7 +571,8 @@ public class ViajeController implements Serializable, IController {
      * @return
      */
     public List<Vehiculo> completeVehiculo(String query) {
-        List<Vehiculo> suggestions = new ArrayList<>();
+//        List<Vehiculo> suggestions = new ArrayList<>();
+suggestions = new ArrayList<>();
         List<Vehiculo> temp = new ArrayList<>();
 
         try {
@@ -618,8 +622,22 @@ public class ViajeController implements Serializable, IController {
                             suggestions.add(v);
                         }
                     });
+//                  //Agrega solo los que tienen el tipo de datos  
+                  
+                    
 
                 }
+                
+                revisar aqui cuando filtra por el tipo de vehiculo
+                 List<Vehiculo> list = new ArrayList<>();
+                    for(Vehiculo v:suggestions){
+                        if(v.getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())){
+                           list.add(v);
+                        }
+                    }
+                  suggestions = new ArrayList<>();
+                    suggestions = list;
+                    
             }
 
         } catch (Exception e) {
@@ -636,7 +654,7 @@ public class ViajeController implements Serializable, IController {
      * @param query
      * @return
      */
-    public List<Solicitud> completeSolicitud(String query) {
+    public List<Solicitud> completeSolicitudRangoFechas(String query) {
         List<Solicitud> suggestions = new ArrayList<>();
         List<Solicitud> temp = new ArrayList<>();
 
@@ -800,8 +818,10 @@ public class ViajeController implements Serializable, IController {
     public Boolean isVehiculoActivoDisponible(Vehiculo vehiculo) {
         Boolean valid = false;
         try {
-
-            if (vehiculo.getActivo().equals("no") && vehiculo.getEnreparacion().equals("si")) {
+            if(vehiculo.getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())){
+                return valid;
+            }
+            if (vehiculo.getActivo().equals("no") && vehiculo.getEnreparacion().equals("si") ) {
 
             } else {
                 if (viajeServices.vehiculoDisponible(vehiculo, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva())) {
@@ -846,6 +866,9 @@ public class ViajeController implements Serializable, IController {
     public Boolean isVehiculoActivoDisponibleExcluyendoMismoViaje(Vehiculo vehiculo) {
         Boolean valid = false;
         try {
+             if(vehiculo.getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())){
+                return valid;
+            }
 
             if (vehiculo.getActivo().equals("no") && vehiculo.getEnreparacion().equals("si")) {
 
@@ -964,7 +987,15 @@ public class ViajeController implements Serializable, IController {
                     return null;
                 }
             }
+if(solicitud.getPasajeros() > vehiculo.getPasajeros()){
+       JsfUtil.warningMessage(rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
+       return "";
+}
 
+  if(vehiculo.getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())){
+        JsfUtil.warningMessage(rf.getMessage("warning.tipovehiculonocoincideconeltipodelasolicitud"));
+                return "";
+            }
             Integer idviaje = autoincrementableServices.getContador("viaje");
             viaje.setIdviaje(idviaje);
             viaje.setRealizado("no");
@@ -1024,15 +1055,16 @@ public class ViajeController implements Serializable, IController {
     public void handleSelectCopiarDesde(SelectEvent event) {
         try {
 
-            solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
+           // solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
             viaje.setMision(solicitud.getMision());
-            viaje.setComentarios(solicitud.getObjetivo());
+         viaje.setComentarios("Responsable "+solicitud.getUsuario().get(1).getNombre() + " Destino "+solicitud.getLugarllegada());
             viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
             viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
             viaje.setLugarpartida(solicitud.getLugarpartida());
             viaje.setLugardestino(solicitud.getLugarllegada());
             completeVehiculo("");
             completeConductor("");
+            JsfUtil.updateJSFComponent(":form:content");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1056,9 +1088,14 @@ public class ViajeController implements Serializable, IController {
             if (optional.isPresent()) {
                 solicitud = optional.get();
                 viaje.setMision(solicitud.getMision());
-                viaje.setComentarios(solicitud.getMision());
+                viaje.setComentarios("Responsable "+solicitud.getUsuario().get(1).getNombre() + " Destino "+solicitud.getLugarllegada());
+                viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
+                viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
+                viaje.setLugarpartida(solicitud.getLugarpartida());
+                viaje.setLugardestino(solicitud.getLugarllegada());
 
                 JsfUtil.updateJSFComponent(":form:panel");
+                JsfUtil.updateJSFComponent(":form:content");
             }
 JsfUtil.updateJSFComponent("solicitudDetallesPanel");
         } catch (Exception e) {
