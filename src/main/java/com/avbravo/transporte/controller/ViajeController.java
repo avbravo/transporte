@@ -628,7 +628,7 @@ suggestions = new ArrayList<>();
 
                 }
                 
-                revisar aqui cuando filtra por el tipo de vehiculo
+                //revisar aqui cuando filtra por el tipo de vehiculo
                  List<Vehiculo> list = new ArrayList<>();
                     for(Vehiculo v:suggestions){
                         if(v.getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())){
