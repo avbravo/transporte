@@ -13,6 +13,7 @@ import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
+import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
@@ -298,7 +299,15 @@ public class VehiculoController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="beforeSave()">
     public Boolean beforeSave() {
         try {
+            if(vehiculo.getAnio()> DateUtil.anioActual()){
+              JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.aniomayorqueactual"));  
+                return false;
+            }
             vehiculo.setIdvehiculo(autoincrementableServices.getContador("vehiculo"));
+            vehiculo.setTotalconsumo(0.0);
+            vehiculo.setTotalkm(0.0);
+            vehiculo.setTotalviajes(0);
+            vehiculo.setEnreparacion("no");
             return true;
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());

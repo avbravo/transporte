@@ -104,7 +104,7 @@ public class ViajeController implements Serializable, IController {
     //List
     List<Viaje> viajeList = new ArrayList<>();
     List<Conductor> suggestionsConductor = new ArrayList<>();
-       List<Vehiculo> suggestions = new ArrayList<>();
+    List<Vehiculo> suggestions = new ArrayList<>();
     List<Vehiculo> vehiculoList = new ArrayList<>();
     List<Conductor> conductorList = new ArrayList<>();
     List<Solicitud> solicitudList = new ArrayList<>();
@@ -128,7 +128,7 @@ public class ViajeController implements Serializable, IController {
     @Inject
     AutoincrementableServices autoincrementableServices;
     @Inject
-    VistoBuenoServices vistoBuenoServices; 
+    VistoBuenoServices vistoBuenoServices;
     @Inject
     ConductorServices conductorServices;
     @Inject
@@ -221,9 +221,9 @@ public class ViajeController implements Serializable, IController {
 //            Optional<Vehiculo> v = vehiculoRepository.findFirst(new Document("activo","si"));
 //            Vehiculo b = v.get();
 //            viaje.setVehiculo(new Vehiculo());
-if(solicitud.getPasajeros() > vehiculo.getPasajeros()){
-       JsfUtil.warningMessage(rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
-}
+            if (solicitud.getPasajeros() > viaje.getVehiculo().getPasajeros()) {
+                JsfUtil.warningMessage(rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
+            }
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -409,8 +409,8 @@ if(solicitud.getPasajeros() > vehiculo.getPasajeros()){
                     } else {
                         solicitudScheduleModel.addEvent(
                                 new DefaultScheduleEvent(
-                                        "# " + a.getIdsolicitud() + " : ("+
-                                        a.getUsuario().get(0).getNombre() + " " + a.getUsuario().get(0).getCedula()
+                                        "# " + a.getIdsolicitud() + " : ("
+                                        + a.getUsuario().get(0).getNombre() + " " + a.getUsuario().get(0).getCedula()
                                         + "Tipo vehiculo " + tipovehiculo
                                         + "Solicitud " + a.getTiposolicitud().getIdtiposolicitud()
                                         + " Destino " + a.getLugarllegada()
@@ -572,7 +572,7 @@ if(solicitud.getPasajeros() > vehiculo.getPasajeros()){
      */
     public List<Vehiculo> completeVehiculo(String query) {
 //        List<Vehiculo> suggestions = new ArrayList<>();
-suggestions = new ArrayList<>();
+        suggestions = new ArrayList<>();
         List<Vehiculo> temp = new ArrayList<>();
 
         try {
@@ -591,11 +591,11 @@ suggestions = new ArrayList<>();
                 List<Vehiculo> validos = new ArrayList<>();
                 if (noHayCambioFechaHoras()) {
                     validos = temp.stream()
-                            .filter(x -> isVehiculoActivoDisponible(x)).collect(Collectors.toList());
+                            .filter(x -> viajeServices.isVehiculoActivoDisponible(x, solicitud, viaje)).collect(Collectors.toList());
 
                 } else {
                     validos = temp.stream()
-                            .filter(x -> isVehiculoActivoDisponibleExcluyendoMismoViaje(x)).collect(Collectors.toList());
+                            .filter(x -> viajeServices.isVehiculoActivoDisponibleExcluyendoMismoViaje(x, solicitud, viaje)).collect(Collectors.toList());
                     //si cambia el vehiculo
 
                 }
@@ -623,21 +623,9 @@ suggestions = new ArrayList<>();
                         }
                     });
 //                  //Agrega solo los que tienen el tipo de datos  
-                  
-                    
 
                 }
-                
-                //revisar aqui cuando filtra por el tipo de vehiculo
-                 List<Vehiculo> list = new ArrayList<>();
-                    for(Vehiculo v:suggestions){
-                        if(v.getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())){
-                           list.add(v);
-                        }
-                    }
-                  suggestions = new ArrayList<>();
-                    suggestions = list;
-                    
+
             }
 
         } catch (Exception e) {
@@ -814,28 +802,6 @@ suggestions = new ArrayList<>();
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="isVehiculoActivoDisponible(Vehiculo vehiculo)">
-    public Boolean isVehiculoActivoDisponible(Vehiculo vehiculo) {
-        Boolean valid = false;
-        try {
-            if(vehiculo.getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())){
-                return valid;
-            }
-            if (vehiculo.getActivo().equals("no") && vehiculo.getEnreparacion().equals("si") ) {
-
-            } else {
-                if (viajeServices.vehiculoDisponible(vehiculo, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva())) {
-                    valid = true;
-                }
-            }
-
-        } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return valid;
-    }
-
-    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="isSolicitudActivoDisponible(Solicitud solicitud)">
     /**
      *
@@ -857,29 +823,6 @@ suggestions = new ArrayList<>();
 
         } catch (Exception e) {
             errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
-        }
-        return valid;
-    }
-
-    // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="isVehiculoActivoDisponibleExcluyendoMismoViaje(Vehiculo vehiculo)">
-    public Boolean isVehiculoActivoDisponibleExcluyendoMismoViaje(Vehiculo vehiculo) {
-        Boolean valid = false;
-        try {
-             if(vehiculo.getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())){
-                return valid;
-            }
-
-            if (vehiculo.getActivo().equals("no") && vehiculo.getEnreparacion().equals("si")) {
-
-            } else {
-                if (viajeServices.vehiculoDisponibleExcluyendoMismoViaje(vehiculo, viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva(), viaje.getIdviaje())) {
-                    valid = true;
-                }
-            }
-
-        } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isVehiculoValid()", e.getLocalizedMessage());
         }
         return valid;
     }
@@ -968,7 +911,7 @@ suggestions = new ArrayList<>();
     public String save() {
         try {
             viaje.setActivo("si");
-            viaje.setAsientosdisponibles(vehiculo.getPasajeros());
+            viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros() - solicitud.getPasajeros());
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
@@ -987,13 +930,34 @@ suggestions = new ArrayList<>();
                     return null;
                 }
             }
-if(solicitud.getPasajeros() > vehiculo.getPasajeros()){
-       JsfUtil.warningMessage(rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
-       return "";
-}
-
-  if(vehiculo.getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())){
-        JsfUtil.warningMessage(rf.getMessage("warning.tipovehiculonocoincideconeltipodelasolicitud"));
+            if (solicitud.getPasajeros() > viaje.getVehiculo().getPasajeros()) {
+                JsfUtil.warningMessage(rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
+                return "";
+            }
+List<Viaje> viajeList = new ArrayList<>();
+            switch(viaje.getTipoviaje()){
+                case "ida/regreso":
+                    viajeList.add(viaje);
+                    viajeList.add(viaje);
+                    
+                    break;
+                case "ida":
+                    viajeList.add(viaje);
+                    break;
+//                case "regreso":
+//                    if(viajeList.size()==0){
+//                        JsfUtil.warningMessage(rf.getMessage("warning.notieneasignadoviajedeida"));
+//                return "";
+//                    }
+//
+//                    break;
+                default:
+                      JsfUtil.warningMessage(rf.getMessage("warning.indiquetipoviaje"));
+                return "";
+            }
+         
+            if (!viaje.getVehiculo().getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())) {
+                JsfUtil.warningMessage(rf.getMessage("warning.tipovehiculonocoincideconeltipodelasolicitud"));
                 return "";
             }
             Integer idviaje = autoincrementableServices.getContador("viaje");
@@ -1055,9 +1019,9 @@ if(solicitud.getPasajeros() > vehiculo.getPasajeros()){
     public void handleSelectCopiarDesde(SelectEvent event) {
         try {
 
-           // solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
+            // solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
             viaje.setMision(solicitud.getMision());
-         viaje.setComentarios("Responsable "+solicitud.getUsuario().get(1).getNombre() + " Destino "+solicitud.getLugarllegada());
+            viaje.setComentarios("Responsable " + solicitud.getUsuario().get(1).getNombre() + " Destino " + solicitud.getLugarllegada());
             viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
             viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
             viaje.setLugarpartida(solicitud.getLugarpartida());
@@ -1088,7 +1052,7 @@ if(solicitud.getPasajeros() > vehiculo.getPasajeros()){
             if (optional.isPresent()) {
                 solicitud = optional.get();
                 viaje.setMision(solicitud.getMision());
-                viaje.setComentarios("Responsable "+solicitud.getUsuario().get(1).getNombre() + " Destino "+solicitud.getLugarllegada());
+                viaje.setComentarios("Responsable " + solicitud.getUsuario().get(1).getNombre() + " Destino " + solicitud.getLugarllegada());
                 viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
                 viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
                 viaje.setLugarpartida(solicitud.getLugarpartida());
@@ -1097,15 +1061,14 @@ if(solicitud.getPasajeros() > vehiculo.getPasajeros()){
                 JsfUtil.updateJSFComponent(":form:panel");
                 JsfUtil.updateJSFComponent(":form:content");
             }
-JsfUtil.updateJSFComponent("solicitudDetallesPanel");
+            JsfUtil.updateJSFComponent("solicitudDetallesPanel");
         } catch (Exception e) {
 
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     } // </editor-fold>
-    
-      // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno()">
 
+    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno()">
     public String columnNameVistoBueno() {
         return vistoBuenoServices.columnNameVistoBueno(solicitud.getVistoBueno());
     }
