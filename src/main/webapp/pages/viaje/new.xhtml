@@ -235,22 +235,19 @@
 
 
 
-                    <p:outputLabel  value="#{msg['field.tipoviaje']}" >
+                    <p:outputLabel  value="#{msg['field.idestatusviaje']}" >
                         <i class="pi pi-download"></i>
                     </p:outputLabel>  
 
-                    <b:selectOneMenu id="tipoviaje" 
-
-                                     value="#{viajeController.viaje.tipoviaje}"  
-                                     required="true"  
-                                     requiredMessage="#{msg['field.tipoviaje']} #{app['info.required']}"
-                                     >
-
-                        <f:selectItem itemLabel="#{msg['viaje.idaregreso']}" itemValue="ida/regreso" />
-                        <f:selectItem itemLabel="#{msg['viaje.ida']}" itemValue="ida" />
-                        <f:selectItem itemLabel="#{msg['viaje.regreso']}" itemValue="regreso" rendered="false" />
-
-                    </b:selectOneMenu>
+            
+                    <jmoordbjsf:autocomplete converter="#{estatusViajeConverter}"
+                                             completeMethod="#{estatusViajeController.estatusViajeServices.complete}"
+                                             labeltip1="#{msg['field.estatusviaje']} #{p.idestatusviaje}" 
+                                             listener="#{viajeController.handleSelectEstatusViaje}"
+                                             value="#{viajeController.viaje.estatusViaje}"
+                                             itemLabel=" #{p.idestatusviaje}"
+                                             field="idestatusviaje"
+                                             update=""/>
 
                    
                  

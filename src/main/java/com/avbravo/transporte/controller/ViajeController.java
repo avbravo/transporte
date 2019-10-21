@@ -19,15 +19,18 @@ import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
+import com.avbravo.transporteejb.entity.Estatus;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.repository.ConductorRepository;
+import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.ConductorServices;
+import com.avbravo.transporteejb.services.EstatusViajeServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
@@ -113,6 +116,8 @@ public class ViajeController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="repository">
     //Repository
     @Inject
+    EstatusRepository estatusRepository;
+    @Inject
     ConductorRepository conductorRepository;
     @Inject
     RevisionHistoryRepository revisionHistoryRepository;
@@ -133,6 +138,8 @@ public class ViajeController implements Serializable, IController {
     ConductorServices conductorServices;
     @Inject
     ErrorInfoServices errorServices;
+    @Inject
+    EstatusViajeServices estatusViajeServices;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
     @Inject
@@ -934,28 +941,36 @@ public class ViajeController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
                 return "";
             }
-List<Viaje> viajeList = new ArrayList<>();
-            switch(viaje.getTipoviaje()){
-                case "ida/regreso":
+            List<Viaje> viajeList = new ArrayList<>();
+            switch (viaje.getEstatusViaje().getIdestatusviaje()) {
+                case "IDA/REGRESO":
                     viajeList.add(viaje);
                     viajeList.add(viaje);
-                    
+
                     break;
-                case "ida":
+                case "IDA":
                     viajeList.add(viaje);
                     break;
-//                case "regreso":
-//                    if(viajeList.size()==0){
-//                        JsfUtil.warningMessage(rf.getMessage("warning.notieneasignadoviajedeida"));
-//                return "";
-//                    }
+                case "REGRESO":
+                    if (solicitud.getViaje() == null || solicitud.getViaje().size() == 0) {
+                        JsfUtil.warningMessage(rf.getMessage("warning.solicitudnotieneviajeida"));
+                        return "";
+                    }
+                    viajeList = solicitud.getViaje();
+                    viajeList.add(viaje);
+                    break;
+                case "NO ASIGNADO":
+                    if (viajeList.size() == 0) {
+                        JsfUtil.warningMessage(rf.getMessage("warning.seleccioneunestatusviaje"));
+                        return "";
+                    }
 //
-//                    break;
+                    break;
                 default:
-                      JsfUtil.warningMessage(rf.getMessage("warning.indiquetipoviaje"));
-                return "";
+                    JsfUtil.warningMessage(rf.getMessage("warning.indiquetipoviaje"));
+                    return "";
             }
-         
+
             if (!viaje.getVehiculo().getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())) {
                 JsfUtil.warningMessage(rf.getMessage("warning.tipovehiculonocoincideconeltipodelasolicitud"));
                 return "";
@@ -972,8 +987,34 @@ List<Viaje> viajeList = new ArrayList<>();
                 //guarda el contenido anterior
                 revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), jmoordb_user.getUsername(),
                         "create", "viaje", viajeRepository.toDocument(viaje).toString()));
+                /**
+                 * //Actualizar los viajes  y el estatus  de la solicitud
+                 *
+                 */
+
+                solicitud.setViaje(viajeList);
+                solicitud.setEstatusViaje(viaje.getEstatusViaje());
+
+                Estatus estatus = new Estatus();
+                estatus.setIdestatus("APROBADO");
+                Optional<Estatus> optional = estatusRepository.findById(estatus);
+                if (!optional.isPresent()) {
+                    JsfUtil.warningMessage(rf.getMessage("warning.noexisteestatuscancelado"));
+                    return "";
+                }
+                estatus = optional.get();
+                solicitud.setEstatus(estatus);
+                
+                if(solicitudRepository.update(solicitud)){
+                     revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                        "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+                }else{
+                    JsfUtil.warningMessage(rf.getMessage("warning.solicitudnoactualizada"));
+                    return ""; 
+                }
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
+
                 reset();
             } else {
                 JsfUtil.successMessage("save() " + viajeRepository.getException().toString());
@@ -1073,5 +1114,14 @@ List<Viaje> viajeList = new ArrayList<>();
         return vistoBuenoServices.columnNameVistoBueno(solicitud.getVistoBueno());
     }
 // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="handleSelectCopiarDesde(SelectEvent event)">
+
+    public void handleSelectEstatusViaje(SelectEvent event) {
+        try {
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+    }// </editor-fold>
 
 }

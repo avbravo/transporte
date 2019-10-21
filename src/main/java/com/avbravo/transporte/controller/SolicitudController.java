@@ -751,7 +751,7 @@ public class SolicitudController implements Serializable, IController {
 
                 //Verifica si es un coordinador y le envia la notificacion
                 usuarioList.forEach((u) -> {
-                    System.out.println("===> Usuario: " + u.getUsername());
+                  
                     notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
 
                 });
