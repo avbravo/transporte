@@ -20,12 +20,14 @@ import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Estatus;
+import com.avbravo.transporteejb.entity.EstatusViaje;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.EstatusRepository;
+import com.avbravo.transporteejb.repository.EstatusViajeRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.repository.ViajeRepository;
@@ -117,6 +119,8 @@ public class ViajeController implements Serializable, IController {
     //Repository
     @Inject
     EstatusRepository estatusRepository;
+    @Inject
+    EstatusViajeRepository estatusViajeRepository;
     @Inject
     ConductorRepository conductorRepository;
     @Inject
@@ -210,11 +214,22 @@ public class ViajeController implements Serializable, IController {
             start();
             String action = getAction();
 
-            if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
+            if (action == null || action.equals("gonew") || action.equals("new")  ) {
                 //  inicializar();
+                  EstatusViaje estatusViaje = new EstatusViaje();
+                estatusViaje.setIdestatusviaje("IDA/REGRESO");
+                Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
+                if (!optional.isPresent()) {
+                  
+                }
+                estatusViaje = optional.get();
+               viaje.setEstatusViaje(estatusViaje);
             }
             if (action.equals("view")) {
                 view();
+            }
+            if(action.equals("golist")){
+                
             }
 
         } catch (Exception e) {

@@ -102,52 +102,52 @@
                         <p:outputLabel  value="#{msg['field.solicitud']}" >
                             <i class="pi pi-download"></i>
                         </p:outputLabel>
-                          <p:fieldset>
-                        <jmoordbjsf:autocompleteWithCalendarDateTime
-                            converter="#{solicitudConverter}"
-                            completeMethod="#{viajeController.completeSolicitudByEstatus}"    
-                            labeltip1="#{msg['field.idsolicitud']}"
-                            labelvalue1="#{p.idsolicitud}"   
-                            labeltip2="#{msg['field.solicitadopor']}" 
-                            labelvalue2="#{p.usuario.get(0).nombre}"
-                            labeltip3="#{msg['field.responsable']}"
-                            labelvalue3="#{p.usuario.get(1).nombre}"
-                            labeltip4="#{msg['field.objetivo']} "
-                            labelvalue4="#{p.objetivo}" 
-                            labeltip5="#{msg['field.lugares']}" 
-                            labelvalue5="#{p.lugares}"
-                            calendarsize="20"
-                            columnpaneltip="2"
-                            calendardatelabel1="#{msg['field.fechapartida']}" 
-                            calendardatevalue1="#{p.fechahorapartida}" 
+                        <p:fieldset>
+                            <jmoordbjsf:autocompleteWithCalendarDateTime
+                                converter="#{solicitudConverter}"
+                                completeMethod="#{viajeController.completeSolicitudByEstatus}"    
+                                labeltip1="#{msg['field.idsolicitud']}"
+                                labelvalue1="#{p.idsolicitud}"   
+                                labeltip2="#{msg['field.solicitadopor']}" 
+                                labelvalue2="#{p.usuario.get(0).nombre}"
+                                labeltip3="#{msg['field.responsable']}"
+                                labelvalue3="#{p.usuario.get(1).nombre}"
+                                labeltip4="#{msg['field.objetivo']} "
+                                labelvalue4="#{p.objetivo}" 
+                                labeltip5="#{msg['field.lugares']}" 
+                                labelvalue5="#{p.lugares}"
+                                calendarsize="20"
+                                columnpaneltip="2"
+                                calendardatelabel1="#{msg['field.fechapartida']}" 
+                                calendardatevalue1="#{p.fechahorapartida}" 
 
-                            calendartimelabel1="#{msg['field.horapartida']}"
-                            calendartimevalue1="#{p.fechahorapartida}"  
+                                calendartimelabel1="#{msg['field.horapartida']}"
+                                calendartimevalue1="#{p.fechahorapartida}"  
 
-                            calendardatelabel2="#{msg['field.fecharegreso']}" 
-                            calendardatevalue2="#{p.fechahoraregreso}"  
-
-
-                            calendartimelabel2="#{msg['field.horaregreso']}" 
-                            calendartimevalue2="#{p.fechahoraregreso}"  
+                                calendardatelabel2="#{msg['field.fecharegreso']}" 
+                                calendardatevalue2="#{p.fechahoraregreso}"  
 
 
-                            listener="#{viajeController.handleSelectCopiarDesde}"
-                            value="#{viajeController.solicitud}"
-                            itemLabel=" #{p.objetivo}"
-                            field="objetivo"
-                            dropdown="true"
-                            minQueryLength="0"
-                            update=":form:panel"
-                            multiple="false"
+                                calendartimelabel2="#{msg['field.horaregreso']}" 
+                                calendartimevalue2="#{p.fechahoraregreso}"  
 
-                            />
 
- <p:spacer width="25"/>
-                                                                                                                                                                                                                                                                                                                                                                
-                    <p:outputLabel  value="#{msg['field.pasajeros']} #{viajeController.solicitud.pasajeros} #{msg['field.tipovehiculo']} #{viajeController.solicitud.tipovehiculo.get(0).idtipovehiculo} " />
-                  
-  </p:fieldset>
+                                listener="#{viajeController.handleSelectCopiarDesde}"
+                                value="#{viajeController.solicitud}"
+                                itemLabel=" #{p.objetivo}"
+                                field="objetivo"
+                                dropdown="true"
+                                minQueryLength="0"
+                                update=":form:panel"
+                                multiple="false"
+
+                                />
+
+                            <p:spacer width="25"/>
+
+                            <p:outputLabel  value="#{msg['field.pasajeros']} #{viajeController.solicitud.pasajeros} #{msg['field.tipovehiculo']} #{viajeController.solicitud.tipovehiculo.get(0).idtipovehiculo} " />
+
+                        </p:fieldset>
 
                         <p:outputLabel value="#{msg['field.vehiculo']}"
                                        id="vehiculolabel" />
@@ -235,23 +235,26 @@
 
 
 
-                    <p:outputLabel  value="#{msg['field.idestatusviaje']}" >
-                        <i class="pi pi-download"></i>
-                    </p:outputLabel>  
+                        <p:outputLabel  value="#{msg['field.tipoviaje']}" >
+                            <i class="pi pi-download"></i>
+                        </p:outputLabel>  
 
-            
-                    <jmoordbjsf:autocomplete converter="#{estatusViajeConverter}"
-                                             completeMethod="#{estatusViajeController.estatusViajeServices.complete}"
-                                             labeltip1="#{msg['field.estatusviaje']} #{p.idestatusviaje}" 
-                                             listener="#{viajeController.handleSelectEstatusViaje}"
-                                             value="#{viajeController.viaje.estatusViaje}"
-                                             itemLabel=" #{p.idestatusviaje}"
-                                             field="idestatusviaje"
-                                             update=""/>
 
-                   
-                 
-                        
+                        <jmoordbjsf:autocomplete converter="#{estatusViajeConverter}"
+                                                 completeMethod="#{estatusViajeController.estatusViajeServices.complete}"
+                                                 labeltip1="#{msg['field.estatusviaje']} #{p.idestatusviaje}" 
+                                                 listener="#{viajeController.handleSelectEstatusViaje}"
+                                                 value="#{viajeController.viaje.estatusViaje}"
+                                                 itemLabel=" #{p.idestatusviaje}"
+                                                 field="idestatusviaje"
+                                                 dropdown="true"
+                                                 required="true"                                                                                                                                                                                                                                                                                                                                                                            
+                                                 minQueryLength="0"
+                                                 update=""/>
+
+
+
+
                         <jmoordbjsf:commandbuttonsave 
                             save="#{viajeController.save()}" />
                         <jmoordbjsf:commandbuttongolist   url = "/pages/viaje/list.xhtml"
@@ -305,27 +308,7 @@
 
                 </b:panelGrid>
             </p:dialog>
-            <p:dialog widgetVar="solicitudDialog" header="#{msg['dialogo.viajesolicitud']}" 
-                      width="850" height="450"
-                      styleClass="customDialog"
-
-                      responsive="true"
-
-                      showEffect="clip" hideEffect="clip">
-                <b:panelGrid id="solicitudDetails" colSpans="12" size="xs" > 
-                    <p:schedule id="solicitudSchedule"       
-                                rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
-                                value="#{viajeController.solicitudScheduleModel}" widgetVar="solicitudSchedule" timeZone="GMT-5" locale="es">
-                        <p:ajax  event="eventSelect"  listener="#{viajeController.onEventSelect}" 
-                                 update="solicitudDetallesPanel"  oncomplete="PF('solicitudDetallesDialog').show();"/>
-
-                    </p:schedule>
-                    <b:commandButton value="#{app['button.close']}"
-                                     iconAwesome="fa-close"
-                                     oncomplete="PF('solicitudDialog').hide();"/>
-
-                </b:panelGrid>
-            </p:dialog>
+            
             <p:dialog widgetVar="viajesDialog" header="#{msg['dialogo.viajes']}" 
                       width="850" height="450"
                       styleClass="customDialog"
@@ -348,6 +331,30 @@
             </p:dialog>
 
 
+            
+            
+            <p:dialog widgetVar="solicitudDialog" header="#{msg['dialogo.viajesolicitud']}" 
+                      width="850" height="450"
+                      styleClass="customDialog"
+
+                      responsive="true"
+
+                      showEffect="clip" hideEffect="clip">
+                <b:panelGrid id="solicitudDetails" colSpans="12" size="xs" > 
+                    <p:schedule id="solicitudSchedule"       
+                                rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
+                                value="#{viajeController.solicitudScheduleModel}" widgetVar="solicitudSchedule" timeZone="GMT-5" locale="es">
+                        <p:ajax  event="eventSelect"  listener="#{viajeController.onEventSelect}" 
+                                 update="solicitudDetallesPanel"  oncomplete="PF('solicitudDetallesDialog').show();"/>
+
+                    </p:schedule>
+                    <b:commandButton value="#{app['button.close']}"
+                                     iconAwesome="fa-close"
+                                     oncomplete="PF('solicitudDialog').hide();"/>
+
+                </b:panelGrid>
+            </p:dialog>
+            
             <p:dialog widgetVar="solicitudDetallesDialog" header="#{msg['dialogo.solicitud']}" 
                       width="650" height="450"
                       styleClass="customDialog"
@@ -356,6 +363,9 @@
 
                       showEffect="clip" hideEffect="clip">
                 <b:panelGrid id="solicitudDetallesPanel" colSpans="2,10" size="xs" > 
+                     
+                   
+                    
                     <p:outputLabel  value="#{msg['field.idsolicitud']}" />
                     <p:outputLabel  value="#{viajeController.solicitud.idsolicitud}" id="idsolicitud"   />
 
@@ -446,8 +456,8 @@
                     <p:chips disabled="true" value="#{viajeController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
 
 
-                    
-                    
+
+
 
 
                 </b:panelGrid>
