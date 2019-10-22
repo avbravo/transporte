@@ -657,7 +657,7 @@ public class ViajeController implements Serializable, IController {
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="List<Solicitud> completeSolicitud(String query)">
+    // <editor-fold defaultstate="collapsed" desc="List<Solicitud> completeSolicitudRangoFechas(String query)">
     /**
      * Se usa para los autocomplete filtrando
      *
