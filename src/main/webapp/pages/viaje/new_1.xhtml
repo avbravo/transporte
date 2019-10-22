@@ -58,7 +58,7 @@
                                 value="#{viajeController.viaje.fechahorainicioreserva}" 
                                 label="#{msg['field.fechahorainicioreserva']}"
                                 listener="#{viajeController.calendarChangeListener}"
-                                update=":form:vehiculo, , :form:conductor, :form:msg, :form:growl,:form:warningMessage"/>
+                                update=":form:vehiculo, , :form:conductor, :form:msg, :form:growl"/>
 
                             <p:spacer width="25"/>
                             <b:commandButton  look="success"
@@ -81,7 +81,7 @@
                                 value="#{viajeController.viaje.fechahorafinreserva}"
                                 label="#{msg['field.fechahorafinreserva']}" 
                                 listener="#{viajeController.calendarChangeListener}"
-                                update=":form:vehiculo,:form:conductor, :form:msg, :form:growl, :form:warningMessage"/>
+                                update=":form:vehiculo,:form:conductor, :form:msg, :form:growl"/>
 
                             <p:spacer width="25"/>
                             <b:commandButton  look="success"
@@ -105,7 +105,7 @@
                         <p:fieldset>
                             <jmoordbjsf:autocompleteWithCalendarDateTime
                                 converter="#{solicitudConverter}"
-                                completeMethod="#{viajeController.completeSolicitudRangoFechas}"    
+                                completeMethod="#{viajeController.completeSolicitudByEstatus}"    
                                 labeltip1="#{msg['field.idsolicitud']}"
                                 labelvalue1="#{p.idsolicitud}"   
                                 labeltip2="#{msg['field.solicitadopor']}" 
@@ -138,23 +138,15 @@
                                 field="objetivo"
                                 dropdown="true"
                                 minQueryLength="0"
-                                update=":form:panel,:form:commandButtonShowSolicitudDetalles, :form:warningMessage"
+                                update=":form:panel"
                                 multiple="false"
 
                                 />
 
                             <p:spacer width="25"/>
-                            <b:commandButton  look="success"
-                                              id="commandButtonShowSolicitudDetalles"
-                                              rendered="#{viajeController.showButtonSolicitudDetallesShow()}"
-                                              title="#{msg['label.detalles']}"
-                                              immediate="true"
-                                              iconAwesome="fa-file-code-o " 
-                                              update="solicitudDetallesPanel"
-                                              action="#{viajeController.prepareSolicitudDetallesShow()}"
-                                              oncomplete="PF('solicitudDetallesDialog').show();" />
 
-                            <p:staticMessage rendered="#{viajeController.mensajeWarning eq ''}" id="warningMessage" severity="warn" summary="#{viajeController.mensajeWarningTitle}" detail="#{viajeController.mensajeWarning}" />
+                            <p:outputLabel  value="#{msg['field.pasajeros']} #{viajeController.solicitud.pasajeros} #{msg['field.tipovehiculo']} #{viajeController.solicitud.tipovehiculo.get(0).idtipovehiculo} " />
+
                         </p:fieldset>
 
                         <p:outputLabel value="#{msg['field.vehiculo']}"
@@ -267,8 +259,7 @@
                             save="#{viajeController.save()}" />
                         <jmoordbjsf:commandbuttongolist   url = "/pages/viaje/list.xhtml"
                                                           controller="#{viajeController}" />
-                        <p:commandButton value="Test"
-                                         action="#{viajeController.test()}"/>
+
 
                     </b:panelGrid>
 
@@ -317,7 +308,7 @@
 
                 </b:panelGrid>
             </p:dialog>
-
+            
             <p:dialog widgetVar="viajesDialog" header="#{msg['dialogo.viajes']}" 
                       width="850" height="450"
                       styleClass="customDialog"
@@ -340,8 +331,8 @@
             </p:dialog>
 
 
-
-
+            
+            
             <p:dialog widgetVar="solicitudDialog" header="#{msg['dialogo.viajesolicitud']}" 
                       width="850" height="450"
                       styleClass="customDialog"
@@ -363,7 +354,7 @@
 
                 </b:panelGrid>
             </p:dialog>
-
+            
             <p:dialog widgetVar="solicitudDetallesDialog" header="#{msg['dialogo.solicitud']}" 
                       width="650" height="450"
                       styleClass="customDialog"
@@ -372,9 +363,9 @@
 
                       showEffect="clip" hideEffect="clip">
                 <b:panelGrid id="solicitudDetallesPanel" colSpans="2,10" size="xs" > 
-
-
-
+                     
+                   
+                    
                     <p:outputLabel  value="#{msg['field.idsolicitud']}" />
                     <p:outputLabel  value="#{viajeController.solicitud.idsolicitud}" id="idsolicitud"   />
 

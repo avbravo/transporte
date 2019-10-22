@@ -15,6 +15,7 @@ import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
+import com.avbravo.jmoordbutils.DateUtil;
 
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
@@ -77,6 +78,8 @@ public class ViajeController implements Serializable, IController {
     private Boolean writable = false;
     private Boolean validFechas = false;
     private ScheduleEvent event = new DefaultScheduleEvent();
+    private String mensajeWarning="";
+    private String mensajeWarningTitle="";
     //DataModel
     private ViajeDataModel viajeDataModel;
 
@@ -214,22 +217,24 @@ public class ViajeController implements Serializable, IController {
             start();
             String action = getAction();
 
-            if (action == null || action.equals("gonew") || action.equals("new")  ) {
+            if (action == null || action.equals("gonew") || action.equals("new")) {
                 //  inicializar();
-                  EstatusViaje estatusViaje = new EstatusViaje();
+                EstatusViaje estatusViaje = new EstatusViaje();
                 estatusViaje.setIdestatusviaje("IDA/REGRESO");
                 Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
                 if (!optional.isPresent()) {
-                  
+
                 }
                 estatusViaje = optional.get();
-               viaje.setEstatusViaje(estatusViaje);
+                viaje.setEstatusViaje(estatusViaje);
+                viaje.setFechahorainicioreserva(DateUtil.primerDiaDelMesEnFecha(DateUtil.getAnioActual(), DateUtil.mesActual()));
+                viaje.setFechahorafinreserva(DateUtil.ultimoDiaDelMesEnFecha(DateUtil.getAnioActual(), DateUtil.mesActual()));
             }
             if (action.equals("view")) {
                 view();
             }
-            if(action.equals("golist")){
-                
+            if (action.equals("golist")) {
+
             }
 
         } catch (Exception e) {
@@ -486,6 +491,31 @@ public class ViajeController implements Serializable, IController {
         }
         return "";
     }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String prepareSolicitudDetallesShow()">
+    public String prepareSolicitudDetallesShow() {
+        try {
+
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Boolean showButtonSolicitudDetallesShow()">
+    public Boolean showButtonSolicitudDetallesShow() {
+        try {
+            if (solicitud == null) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="prepareScheduleConductor()">
@@ -666,12 +696,37 @@ public class ViajeController implements Serializable, IController {
      */
     public List<Solicitud> completeSolicitudRangoFechas(String query) {
         List<Solicitud> suggestions = new ArrayList<>();
+
+        try {
+            if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
+                return suggestions;
+            }
+
+            suggestions = solicitudRepository.filterBetweenDate("estatus.idestatus", "SOLICITADO", "fechahorapartida", viaje.getFechahorainicioreserva(), "fechahoraregreso", viaje.getFechahorafinreserva(), new Document("fechahorapartida", 1));
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return suggestions;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="List<Solicitud> completeSolicitudRangoFechas(String query)">
+    /**
+     * Se usa para los autocomplete filtrando
+     *
+     * @param query
+     * @return
+     */
+    public List<Solicitud> completeSolicitudRangoFechasOld(String query) {
+        List<Solicitud> suggestions = new ArrayList<>();
         List<Solicitud> temp = new ArrayList<>();
 
         try {
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
                 return suggestions;
             }
+
             Boolean found = false;
             query = query.trim();
             if (iseditable && noHayCambioFechaHoras()) {
@@ -946,6 +1001,29 @@ public class ViajeController implements Serializable, IController {
                 return null;
             }
 
+            if (solicitud == null || solicitud.getIdsolicitud() == null) {
+                JsfUtil.warningMessage(rf.getMessage("warning.seleccioneunasolicitud"));
+                return null;
+            }
+
+            // List<Solicitud> list = solicitudRepository.filterBetweenDate("estatus.idestatus", "SOLICITADO", "fechahorapartida", viaje.getFechahorainicioreserva(), "fechahoraregreso", viaje.getFechahorafinreserva(), new Document("fechahorapartida", 1));
+            List<Solicitud> list = solicitudRepository.filterBetweenDate("idsolicitud", solicitud.getIdsolicitud(), "fechahorapartida", viaje.getFechahorainicioreserva(), "fechahoraregreso", viaje.getFechahorafinreserva(), new Document("fechahorapartida", 1));
+            if (list == null || list.isEmpty()) {
+                JsfUtil.warningMessage(rf.getMessage("warning.solicitudnoestaenelrangofechas"));
+                return null;
+            }
+            if (list.get(0).getEstatus().getIdestatus().equals("SOLICITADO")) {
+
+            } else {
+                JsfUtil.warningMessage(rf.getMessage("warning.solicitudebetenerestatusolocitado"));
+                return null;
+            }
+
+            if (!viajeServices.vehiculoDisponible(viaje)) {
+                JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
+                return null;
+            }
+
             if (viaje.getConductor().getEscontrol().equals("no")) {
                 if (!viajeServices.conductorDisponible(viaje)) {
                     JsfUtil.warningMessage(rf.getMessage("warning.conductoresenviajefechas"));
@@ -954,6 +1032,11 @@ public class ViajeController implements Serializable, IController {
             }
             if (solicitud.getPasajeros() > viaje.getVehiculo().getPasajeros()) {
                 JsfUtil.warningMessage(rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
+                return "";
+            }
+
+            if (DateUtil.diasEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso()) > 1) {
+                JsfUtil.warningMessage(rf.getMessage("warning.demasiadosdiasfechafinal"));
                 return "";
             }
             List<Viaje> viajeList = new ArrayList<>();
@@ -1003,7 +1086,7 @@ public class ViajeController implements Serializable, IController {
                 revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), jmoordb_user.getUsername(),
                         "create", "viaje", viajeRepository.toDocument(viaje).toString()));
                 /**
-                 * //Actualizar los viajes  y el estatus  de la solicitud
+                 * //Actualizar los viajes y el estatus de la solicitud
                  *
                  */
 
@@ -1019,13 +1102,13 @@ public class ViajeController implements Serializable, IController {
                 }
                 estatus = optional.get();
                 solicitud.setEstatus(estatus);
-                
-                if(solicitudRepository.update(solicitud)){
-                     revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
-                        "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
-                }else{
+
+                if (solicitudRepository.update(solicitud)) {
+                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                            "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+                } else {
                     JsfUtil.warningMessage(rf.getMessage("warning.solicitudnoactualizada"));
-                    return ""; 
+                    return "";
                 }
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
@@ -1057,7 +1140,29 @@ public class ViajeController implements Serializable, IController {
                 }
 
             }
-
+            
+                Integer diasinicio= DateUtil.diasEntreFechas(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida());
+        Integer diasfin =  DateUtil.diasEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
+ mensajeWarning="";
+        mensajeWarningTitle="";
+        if(diasinicio > 0 && diasinicio < 0){
+            mensajeWarning="Dias de diferencia de partida ("+diasinicio +")";
+            mensajeWarningTitle="Nota";
+        }
+        if(diasfin > 0 && diasinicio < 0){
+            if(mensajeWarning.equals("")){
+                mensajeWarning="Dias de diferencia al fin "+diasfin;
+                mensajeWarningTitle="Nota";
+            }else{
+                mensajeWarning+=" de partida ("+diasfin+")";
+            }
+            
+        }
+        if(mensajeWarning.equals("")){
+             JsfUtil.warningDialog(mensajeWarningTitle, mensajeWarning);
+        }
+       
+           JsfUtil.updateJSFComponent(":form::form:warningMessage");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1078,13 +1183,37 @@ public class ViajeController implements Serializable, IController {
             // solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
             viaje.setMision(solicitud.getMision());
             viaje.setComentarios("Responsable " + solicitud.getUsuario().get(1).getNombre() + " Destino " + solicitud.getLugarllegada());
-            viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
-            viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
+//            viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
+//            viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
             viaje.setLugarpartida(solicitud.getLugarpartida());
             viaje.setLugardestino(solicitud.getLugarllegada());
             completeVehiculo("");
             completeConductor("");
+           Integer diasinicio= DateUtil.diasEntreFechas(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida());
+        Integer diasfin =  DateUtil.diasEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
+        mensajeWarning="";
+        mensajeWarningTitle="";
+        if(diasinicio > 0 && diasinicio < 0){
+            mensajeWarning="Dias de diferencia de partida ("+diasinicio +")";
+            mensajeWarningTitle="Nota";
+        }
+        if(diasfin > 0 && diasinicio < 0){
+            if(mensajeWarning.equals("")){
+                mensajeWarning="Dias de diferencia al fin "+diasfin;
+                mensajeWarningTitle="Nota";
+            }else{
+                mensajeWarning+=" de partida ("+diasfin+")";
+            }
+            
+        }
+        if(mensajeWarning.equals("")){
+             JsfUtil.warningDialog(mensajeWarningTitle, mensajeWarning);
+        }
+
+           JsfUtil.updateJSFComponent(":form::form:warningMessage");
             JsfUtil.updateJSFComponent(":form:content");
+            JsfUtil.updateJSFComponent(":form:commandButtonShowSolicitudDetalles");
+            JsfUtil.updateJSFComponent(":form::form:warningMessage");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
