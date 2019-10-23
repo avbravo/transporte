@@ -154,7 +154,8 @@
                                               action="#{viajeController.prepareSolicitudDetallesShow()}"
                                               oncomplete="PF('solicitudDetallesDialog').show();" />
 
-                            <p:staticMessage rendered="#{viajeController.mensajeWarning eq ''}" id="warningMessage" severity="warn" summary="#{viajeController.mensajeWarningTitle}" detail="#{viajeController.mensajeWarning}" />
+                            <p:staticMessage  id="warningMessage" severity="warn" summary="#{viajeController.mensajeWarningTitle}" detail="#{viajeController.viaje.mensajeWarning}" />
+                            
                         </p:fieldset>
 
                         <p:outputLabel value="#{msg['field.vehiculo']}"
@@ -267,8 +268,7 @@
                             save="#{viajeController.save()}" />
                         <jmoordbjsf:commandbuttongolist   url = "/pages/viaje/list.xhtml"
                                                           controller="#{viajeController}" />
-                        <p:commandButton value="Test"
-                                         action="#{viajeController.test()}"/>
+                    
 
                     </b:panelGrid>
 

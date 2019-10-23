@@ -78,8 +78,10 @@ public class ViajeController implements Serializable, IController {
     private Boolean writable = false;
     private Boolean validFechas = false;
     private ScheduleEvent event = new DefaultScheduleEvent();
-    private String mensajeWarning="";
-    private String mensajeWarningTitle="";
+    private String mensajeWarning = "";
+    private String mensajeWarningTitle = "";
+     Integer diasinicio=0;
+              Integer diasfin=0;
     //DataModel
     private ViajeDataModel viajeDataModel;
 
@@ -226,6 +228,7 @@ public class ViajeController implements Serializable, IController {
 
                 }
                 estatusViaje = optional.get();
+                viaje.setMensajeWarning("");
                 viaje.setEstatusViaje(estatusViaje);
                 viaje.setFechahorainicioreserva(DateUtil.primerDiaDelMesEnFecha(DateUtil.getAnioActual(), DateUtil.mesActual()));
                 viaje.setFechahorafinreserva(DateUtil.ultimoDiaDelMesEnFecha(DateUtil.getAnioActual(), DateUtil.mesActual()));
@@ -988,13 +991,22 @@ public class ViajeController implements Serializable, IController {
     public String save() {
         try {
             viaje.setActivo("si");
+            
             viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros() - solicitud.getPasajeros());
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
-            if (!viajeServices.isValidDates(viaje, true)) {
+            if(DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), DateUtil.getFechaActual())){
+             if (!viajeServices.isValidDates(viaje, true)) {
                 return "";
+            }   
+            }else{
+               //Indica que es un viaje anterior que no se habia registrado 
+                if (!viajeServices.isValidDates(viaje, true,false)) {
+                return "";
+            } 
             }
+            
 
             if (!viajeServices.vehiculoDisponible(viaje)) {
                 JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
@@ -1003,6 +1015,10 @@ public class ViajeController implements Serializable, IController {
 
             if (solicitud == null || solicitud.getIdsolicitud() == null) {
                 JsfUtil.warningMessage(rf.getMessage("warning.seleccioneunasolicitud"));
+                return null;
+            }
+            if (diasinicio <= -1 || diasinicio >=2 || diasfin <=-1 || diasfin >=2) {
+                JsfUtil.warningMessage(rf.getMessage("warning.reviselasfechasdepartidayregreso"));
                 return null;
             }
 
@@ -1134,35 +1150,14 @@ public class ViajeController implements Serializable, IController {
 
             } else {
                 if (!viajeServices.isValidDates(viaje, false)) {
-                    return;
+                    //return;
                 } else {
                     validFechas = true;
                 }
 
             }
-            
-                Integer diasinicio= DateUtil.diasEntreFechas(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida());
-        Integer diasfin =  DateUtil.diasEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
- mensajeWarning="";
-        mensajeWarningTitle="";
-        if(diasinicio > 0 && diasinicio < 0){
-            mensajeWarning="Dias de diferencia de partida ("+diasinicio +")";
-            mensajeWarningTitle="Nota";
-        }
-        if(diasfin > 0 && diasinicio < 0){
-            if(mensajeWarning.equals("")){
-                mensajeWarning="Dias de diferencia al fin "+diasfin;
-                mensajeWarningTitle="Nota";
-            }else{
-                mensajeWarning+=" de partida ("+diasfin+")";
-            }
-            
-        }
-        if(mensajeWarning.equals("")){
-             JsfUtil.warningDialog(mensajeWarningTitle, mensajeWarning);
-        }
-       
-           JsfUtil.updateJSFComponent(":form::form:warningMessage");
+validarMensajesDias();
+           
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1189,31 +1184,13 @@ public class ViajeController implements Serializable, IController {
             viaje.setLugardestino(solicitud.getLugarllegada());
             completeVehiculo("");
             completeConductor("");
-           Integer diasinicio= DateUtil.diasEntreFechas(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida());
-        Integer diasfin =  DateUtil.diasEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
-        mensajeWarning="";
-        mensajeWarningTitle="";
-        if(diasinicio > 0 && diasinicio < 0){
-            mensajeWarning="Dias de diferencia de partida ("+diasinicio +")";
-            mensajeWarningTitle="Nota";
-        }
-        if(diasfin > 0 && diasinicio < 0){
-            if(mensajeWarning.equals("")){
-                mensajeWarning="Dias de diferencia al fin "+diasfin;
-                mensajeWarningTitle="Nota";
-            }else{
-                mensajeWarning+=" de partida ("+diasfin+")";
-            }
+            validarMensajesDias();
             
-        }
-        if(mensajeWarning.equals("")){
-             JsfUtil.warningDialog(mensajeWarningTitle, mensajeWarning);
-        }
 
-           JsfUtil.updateJSFComponent(":form::form:warningMessage");
+            JsfUtil.updateJSFComponent(":form::form:warningMessage");
             JsfUtil.updateJSFComponent(":form:content");
             JsfUtil.updateJSFComponent(":form:commandButtonShowSolicitudDetalles");
-            JsfUtil.updateJSFComponent(":form::form:warningMessage");
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1268,4 +1245,43 @@ public class ViajeController implements Serializable, IController {
         }
     }// </editor-fold>
 
+    
+    // <editor-fold defaultstate="collapsed" desc="validarMensajesDias()">
+    /**
+     * valida los mensajes para desplejar
+     */
+    private void validarMensajesDias(){
+        try {
+          diasinicio=0;
+             diasfin=0;
+       
+               diasinicio = DateUtil.diasEntreFechas(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida());
+       
+                 diasfin = DateUtil.diasEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
+            viaje.setMensajeWarning("");
+            mensajeWarning = "";
+            mensajeWarningTitle = "";
+            if (diasinicio > 0 || diasinicio < 0) {
+                viaje.setMensajeWarning("Dias de diferencia fecha de partida (" + diasinicio + ")");
+                mensajeWarningTitle = "Nota";
+            }
+            if (diasfin > 0 || diasfin < 0) {
+                if (viaje.getMensajeWarning().equals("")) {
+                   viaje.setMensajeWarning("Dias de diferencia fecha final " + diasfin);
+                    mensajeWarningTitle = "Nota";
+                } else {
+                    viaje.setMensajeWarning(viaje.getMensajeWarning() + " y fecha final (" + diasfin + ")");
+                }
+
+            }
+         //   if (!viaje.getMensajeWarning().equals("")) {
+          //      JsfUtil.warningMessage(viaje.getMensajeWarning() );
+         //   }
+
+            JsfUtil.updateJSFComponent(":form::form:warningMessage");
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());  
+        }
+    }
+    // </editor-fold>  
 }
