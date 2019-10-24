@@ -6,6 +6,7 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
+import com.avbravo.commonejb.entity.Carrera;
 import com.avbravo.jmoordb.configuration.JmoordbContext;
 import com.avbravo.jmoordb.configuration.JmoordbControllerEnvironment;
 import com.avbravo.jmoordb.interfaces.IController;
@@ -14,10 +15,14 @@ import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
+import com.avbravo.jmoordb.pojos.JmoordbEmailMaster;
+import com.avbravo.jmoordb.profiles.repository.JmoordbEmailMasterRepository;
+import com.avbravo.jmoordb.profiles.repository.JmoordbNotificationsRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.jmoordbutils.DateUtil;
 
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import com.avbravo.jmoordbutils.email.ManagerEmail;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Estatus;
@@ -31,10 +36,12 @@ import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.EstatusViajeRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
+import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.ConductorServices;
 import com.avbravo.transporteejb.services.EstatusViajeServices;
+import com.avbravo.transporteejb.services.NotificacionServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
@@ -47,10 +54,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.push.Push;
+import javax.faces.push.PushContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -84,6 +97,7 @@ public class ViajeController implements Serializable, IController {
     private String mensajeWarningTitle = "";
     Integer diasinicio = 0;
     Integer diasfin = 0;
+    Integer index = 0;
     //DataModel
     private ViajeDataModel viajeDataModel;
 
@@ -101,6 +115,7 @@ public class ViajeController implements Serializable, IController {
     Date fechaHoraFinReservaAnterior = new Date();
 
     //Entity
+    ManagerEmail managerEmail = new ManagerEmail();
     Viaje viaje = new Viaje();
     Viaje viajeSelected;
     Viaje viajeSearch = new Viaje();
@@ -120,6 +135,7 @@ public class ViajeController implements Serializable, IController {
     List<Vehiculo> vehiculoList = new ArrayList<>();
     List<Conductor> conductorList = new ArrayList<>();
     List<Solicitud> solicitudList = new ArrayList<>();
+    List<Usuario> usuarioList = new ArrayList<>();
 
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">
@@ -135,9 +151,13 @@ public class ViajeController implements Serializable, IController {
     @Inject
     SolicitudRepository solicitudRepository;
     @Inject
+    UsuarioRepository usuarioRepository;
+    @Inject
     VehiculoRepository vehiculoRepository;
     @Inject
     ViajeRepository viajeRepository;
+    @Inject
+    JmoordbEmailMasterRepository jmoordbEmailMasterRepository;
     // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="services">
     //Services
@@ -169,6 +189,16 @@ public class ViajeController implements Serializable, IController {
     //List of Relations
     //Repository of Relations
     // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="notifications()">
+    //Notification
+    @Inject
+    NotificacionServices notificacionServices;
+    @Inject
+    JmoordbNotificationsRepository jmoordbNotificationsRepository;
+    @Inject
+    @Push(channel = "notification")
+    private PushContext push;
+    // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="schedule">
     //Schedule
     private ScheduleModel vehiculoScheduleModel;
@@ -1163,6 +1193,30 @@ public class ViajeController implements Serializable, IController {
                 }
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
+                usuarioList = new ArrayList<>();
+                if (solicitud.getUsuario().get(0).getUsername().equals(solicitud.getUsuario().get(1).getUsername())) {
+                    usuarioList.add(solicitud.getUsuario().get(0));
+                    notificacionServices.saveNotification("Solicitud Aprobada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(0).getUsername(), "solicitudrechazada");
+                } else {
+                    notificacionServices.saveNotification("Solicitud Aprobada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(0).getUsername(), "solicitudrechazada");
+                    notificacionServices.saveNotification("Solicitud Aprobada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(1).getUsername(), "solicitudrechazada");
+                    usuarioList.add(solicitud.getUsuario().get(0));
+                    usuarioList.add(solicitud.getUsuario().get(1));
+                }
+
+//Notificacion al conductor
+                List<Usuario> usuarioConductorList = usuarioRepository.findBy(new Document("cedula", viaje.getConductor().getCedula()));
+                if (usuarioConductorList == null || usuarioConductorList.isEmpty()) {
+                    JsfUtil.warningMessage(rf.getAppMessage("warning.noexisteusuariocomoconductor"));
+                } else {
+                    notificacionServices.saveNotification("Viaje nuevo: " + viaje.getIdviaje() + "Fecha:" + viaje.getFechahorainicioreserva(), usuarioConductorList.get(0).getUsername(), "viaje nuevo");
+                    usuarioList.add(usuarioConductorList.get(0));
+                }
+
+                //Envia la notificacion.....
+                push.send("Solicitud Aprobada ");
+
+                sendEmail("Solicitud Aprobada", "SOLICITUDAPROBADA");
 
                 reset();
             } else {
@@ -1178,7 +1232,7 @@ public class ViajeController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="String rechazarSolicitud()">
     public String rechazarSolicitud() {
         try {
-
+            usuarioList = new ArrayList<>();
             if (solicitud == null || solicitud.getIdsolicitud() == null) {
                 JsfUtil.warningMessage(rf.getMessage("warning.seleccioneunasolicitud"));
                 return null;
@@ -1210,6 +1264,21 @@ public class ViajeController implements Serializable, IController {
 
                 JsfUtil.warningMessage(rf.getMessage("warning.solicitudrechazada"));
 
+                //Verifica si el usuario que hay que notificarle es el mismo que solicita y responsable
+                if (solicitud.getUsuario().get(0).getUsername().equals(solicitud.getUsuario().get(1).getUsername())) {
+                    usuarioList.add(solicitud.getUsuario().get(0));
+                    notificacionServices.saveNotification("Solicitud Rechazada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(0).getUsername(), "solicitudrechazada");
+                } else {
+                    notificacionServices.saveNotification("Solicitud Rechazada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(0).getUsername(), "solicitudrechazada");
+                    notificacionServices.saveNotification("Solicitud Rechazada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(1).getUsername(), "solicitudrechazada");
+                    usuarioList.add(solicitud.getUsuario().get(0));
+                    usuarioList.add(solicitud.getUsuario().get(1));
+                }
+
+                //Envia la notificacion.....
+                push.send("Solicitud Rechazada ");
+
+                sendEmail("Solicitud Rechazada", "SOLICITUDRECHAZADA");
                 reset();
                 return "";
             } else {
@@ -1422,19 +1491,176 @@ public class ViajeController implements Serializable, IController {
         }
         return false;
     }   // </editor-fold>  
-    
+
     // <editor-fold defaultstate="collapsed" desc="metodo()">
-    
-    public Boolean isSolicitudValida(){
+    public Boolean isSolicitudValida() {
         try {
-            if(solicitud == null || solicitud.getIdsolicitud()== null){
+            if (solicitud == null || solicitud.getIdsolicitud() == null) {
                 return false;
             }
             return true;
         } catch (Exception e) {
-              errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         return false;
     }
-     // </editor-fold> 
+    // </editor-fold> 
+
+    // <editor-fold defaultstate="collapsed" desc="sendEmail()">
+    private String sendEmail(String msg, String tipo) {
+        try {
+
+            /**
+             * Enviar un email al administrador y al mismo administrador
+             */
+            Solicitud s0 = solicitud;
+            String varFacultadName = "";
+            String varCarreraName = "";
+            String varRango = "";
+            varFacultadName = s0.getFacultad().stream().map((f) -> "" + f.getDescripcion()).reduce(varFacultadName, String::concat);
+            for (Carrera c : s0.getCarrera()) {
+                varCarreraName = "" + c.getDescripcion();
+            }
+            for (String r : s0.getRangoagenda()) {
+                varRango = "" + r;
+            }
+
+            String header = "\n Se aprobo la  solicitud:"+solicitud.getIdsolicitud()
+                    + "\nObjetivo : " + solicitud.getObjetivo()
+                    + "\nObservaciones: " + solicitud.getObservaciones()
+                    + "\nLugares: " + solicitud.getLugares()
+                    + "\nLugar de partida: " + solicitud.getLugarpartida()
+                    + "\nLugar de llegada: " + solicitud.getLugarllegada()
+                     + "\nRango: " + varRango
+                    + "\nEstatus: " + solicitud.getEstatus().getIdestatus() + "";
+
+            String texto = "\n___________________________VIAJE ASIGNADO___________________________________";
+            texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Vehiculo", "Conductor");
+
+         
+
+            texto += "\n" + String.format("%10d %20s %25s %10d %20s",
+                    viaje.getIdviaje(),
+                    DateUtil.dateFormatToString(viaje.getFechahorainicioreserva(), "dd/MM/yyyy hh:mm a"),
+                    DateUtil.dateFormatToString(viaje.getFechahorafinreserva(), "dd/MM/yyyy hh:mm a"),
+                    viaje.getVehiculo().getPlaca()+" "+viaje.getVehiculo().getMarca(),
+                    viaje.getConductor().getNombre());
+            texto += "\n________________________________________________________________________";
+
+             String mensaje="";  
+            switch (tipo) {
+                case "SOLICITUDAPROBADA":
+                      mensaje += "  APROBACION DE SOLICITUD"
+                    
+                    + "\n"
+                    + "\n " + header
+                    + texto
+                    + "\n Muchas gracias.";
+                    break;
+                case "SOLICITUDRECHAZADA":
+                      mensaje += "  SE RECHAZO LA SOLICITUD"
+                    
+                    + "\n"
+                    + "\n " + header
+                    + texto
+                    + "\n Muchas gracias.";
+                    break;
+                default:
+                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.tiposolicitudparaemailinvalida"));
+                    return "";
+            }
+
+       
+       
+
+            List<JmoordbEmailMaster> jmoordbEmailMasterList = jmoordbEmailMasterRepository.findBy(new Document("activo", "si"));
+            if (jmoordbEmailMasterList == null || jmoordbEmailMasterList.isEmpty()) {
+
+            } else {
+                JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
+                //enviar al administrativo
+
+             //   Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), "{Sistema de Transporte}", mensaje, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                //    Future<String> completableFuture = managerEmail.sendAsync(responsable.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+
+//String msg =completableFuture.get();
+                //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
+                if (usuarioList == null || usuarioList.isEmpty()) {
+
+                } else {
+
+//                    usuarioList.forEach((u) -> {
+//                        managerEmail.sendOutlook(u.getEmail(), "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+//                    });
+//Divide para las copias y bcc,cc
+                    Integer size = usuarioList.size();
+                    String[] to; // list of recipient email addresses
+                    String[] cc;
+                    String[] bcc;
+
+                    if (size <= 5) {
+                        to = new String[usuarioList.size()];
+                        cc = new String[0];
+                        bcc = new String[0];
+                    } else {
+                        if (size > 5 && size <= 10) {
+                            to = new String[4];
+                            cc = new String[4];
+                            bcc = new String[0];
+                        } else {
+                            to = new String[4];
+                            cc = new String[4];
+                            bcc = new String[size - 8];
+                        }
+                    }
+                    index = 0;
+                    usuarioList.forEach((u) -> {
+
+                        if (index <= 5) {
+                            to[index] = u.getEmail();
+                        } else {
+                            if (index > 5 && index <= 10) {
+                                cc[index] = u.getEmail();
+                            } else {
+
+                                bcc[index] = u.getEmail();
+
+                            }
+                        }
+                        index++;
+                    });
+
+                    Future<String> completableFutureCC = sendEmailCccBccAsync(to, cc, bcc, "{Sistema de Transporte}", mensaje, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+//                  Future<String> completableFutureCC = managerEmail.sendAsync(to, cc, bcc, "{Sistema de Transporte}", mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                }
+
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }
+    // </editor-fold>
+
+    //    // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
+//
+    public Future<String> sendEmailCccBccAsync(String[] to, String[] cc, String[] bcc, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
+
+        CompletableFuture<String> completableFuture
+                = new CompletableFuture<>();
+
+        Executors.newCachedThreadPool().submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+
+                managerEmail.sendOutlook(to, cc, bcc, titulo, mensaje, emailemisor, passwordemisor, false);
+                completableFuture.complete("enviado");
+
+                return null;
+            }
+        });
+
+        return completableFuture;
+    }// </editor-fold>
+
 }
