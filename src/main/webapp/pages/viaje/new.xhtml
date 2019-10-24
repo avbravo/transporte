@@ -140,7 +140,7 @@
                                 minQueryLength="0"
                                 update=":form:panel,:form:commandButtonShowSolicitudDetalles, :form:warningMessage"
                                 multiple="false"
-
+id="solicitudAutoComplete"
                                 />
 
                             <p:spacer width="25"/>
@@ -293,12 +293,30 @@
 
 
 
-                        <jmoordbjsf:commandbuttonsave 
-                            save="#{viajeController.save()}" />
-                        <jmoordbjsf:commandbuttongolist   url = "/pages/viaje/list.xhtml"
-                                                          controller="#{viajeController}" />
+                        <jmoordbjsf:commandbuttonsave    save="#{viajeController.save()}" />
 
+                        <p:fieldset>
+                            <jmoordbjsf:commandbuttongolist   url = "/pages/viaje/list.xhtml"
+                                                              controller="#{viajeController}" />
+                            <p:spacer width="25"/>
 
+                            <p:commandButton value="#{msg['button.rechazarsolicitud']}" 
+                                             rendered="#{viajeController.isSolicitudValida()}"
+                                             action="#{viajeController.rechazarSolicitud()}"
+                                             process="@this, solicitudAutoComplete"
+                                             icon="pi pi-trash"
+                                             update=":form:content">
+                                <p:confirm header="#{msg['info.doyouwantrechazarsolicitud']}"
+                                           message="#{msg['info.doyouwantrechazar']}" icon="pi pi-exclamation-triangle" />
+
+                            </p:commandButton>
+
+                        </p:fieldset>
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="#{app['button.yes']}"  type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                            <p:commandButton value="#{app['button.no']}"  type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                        </p:confirmDialog>    
                     </b:panelGrid>
 
 
@@ -489,19 +507,19 @@
 
 
                     </p:fieldset>
- <p:outputLabel value="#{msg['field.desde']}"/>
+                    <p:outputLabel value="#{msg['field.desde']}"/>
 
-                        <p:fieldset>
-                    
-                            <h:outputText value="#{viajeController.showDate(viajeController.solicitud.fechahorapartida)} #{viajeController.showHour(viajeController.solicitud.fechahorapartida)}"  />
-                            <p:spacer width="25"/>
-                            <p:outputLabel value="#{msg['field.fecharegreso']}"/>
-                            <p:spacer width="5"/>
-                            <h:outputText value="#{viajeController.showDate(viajeController.solicitud.fechahoraregreso)} #{viajeController.showHour(viajeController.solicitud.fechahoraregreso)}"  />
+                    <p:fieldset>
 
-                        </p:fieldset>
+                        <h:outputText value="#{viajeController.showDate(viajeController.solicitud.fechahorapartida)} #{viajeController.showHour(viajeController.solicitud.fechahorapartida)}"  />
+                        <p:spacer width="25"/>
+                        <p:outputLabel value="#{msg['field.fecharegreso']}"/>
+                        <p:spacer width="5"/>
+                        <h:outputText value="#{viajeController.showDate(viajeController.solicitud.fechahoraregreso)} #{viajeController.showHour(viajeController.solicitud.fechahoraregreso)}"  />
 
-                  
+                    </p:fieldset>
+
+
 
 
                     <p:outputLabel  value="#{msg['field.lugarpartida']}" />
@@ -512,7 +530,7 @@
                     <p:outputLabel value="#{viajeController.solicitud.lugarllegada}" id="lugarllegada"   />
 
 
-               
+
 
                     <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
                     <p:outputLabel  value="#{viajeController.solicitud.numerodevehiculos}" />

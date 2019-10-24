@@ -143,7 +143,7 @@ public class ViajeController implements Serializable, IController {
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;
-    
+
     @Inject
     ConductorServices conductorServices;
     @Inject
@@ -162,9 +162,9 @@ public class ViajeController implements Serializable, IController {
     JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
-@Inject
+    @Inject
     VistoBuenoServices vistoBuenoServices;
-@Inject
+    @Inject
     VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
     //List of Relations
     //Repository of Relations
@@ -1175,6 +1175,53 @@ public class ViajeController implements Serializable, IController {
         return "";
     }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="String rechazarSolicitud()">
+    public String rechazarSolicitud() {
+        try {
+
+            if (solicitud == null || solicitud.getIdsolicitud() == null) {
+                JsfUtil.warningMessage(rf.getMessage("warning.seleccioneunasolicitud"));
+                return null;
+            }
+
+            //Asignar el estatusViaje
+            Estatus estatus = new Estatus();
+            estatus.setIdestatus("RECHAZADO");
+            Optional<Estatus> optional = estatusRepository.findById(estatus);
+            if (optional.isPresent()) {
+                estatus = optional.get();
+            } else {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusrechazado"));
+                return "";
+            }
+            solicitud.setEstatus(estatus);
+
+            //Lo datos del usuario
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "rechazar"));
+            if (solicitudRepository.update(solicitud)) {
+                //guarda el contenido anterior
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                        "rechazar", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+                /**
+                 * //Actualizar los viajes y el estatus de la solicitud
+                 *
+                 */
+
+                JsfUtil.warningMessage(rf.getMessage("warning.solicitudrechazada"));
+
+                reset();
+                return "";
+            } else {
+                JsfUtil.successMessage("rechazarSolicitud() " + viajeRepository.getException().toString());
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return "";
+    }// </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc="calendarChangeListener(SelectEvent event)">
     public void calendarChangeListener(SelectEvent event) {
         try {
@@ -1298,6 +1345,7 @@ public class ViajeController implements Serializable, IController {
     }
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno()">
+
     public String columnNameVistoBuenoSecretarioAdministrativo() {
         return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSecretarioAdministrativo(solicitud.getVistoBuenoSecretarioAdministrativo());
     }
@@ -1374,4 +1422,19 @@ public class ViajeController implements Serializable, IController {
         }
         return false;
     }   // </editor-fold>  
+    
+    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    
+    public Boolean isSolicitudValida(){
+        try {
+            if(solicitud == null || solicitud.getIdsolicitud()== null){
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+              errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }
+     // </editor-fold> 
 }
