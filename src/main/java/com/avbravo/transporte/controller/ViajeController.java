@@ -1524,8 +1524,15 @@ public class ViajeController implements Serializable, IController {
             for (String r : s0.getRangoagenda()) {
                 varRango = "" + r;
             }
-
-            String header = "\n Se aprobo la  solicitud:"+solicitud.getIdsolicitud()
+String header="";
+String text="";
+if(tipo.equals("SOLICITUDAPROBADA")){
+   text="SOLICITUD APROBADA";
+}else{
+      text="SOLICITUD RECHAZADA";
+}
+           header = text+  
+                   "\nla  solicitud:"+solicitud.getIdsolicitud()
                     + "\nObjetivo : " + solicitud.getObjetivo()
                     + "\nObservaciones: " + solicitud.getObservaciones()
                     + "\nLugares: " + solicitud.getLugares()
