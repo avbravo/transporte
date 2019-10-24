@@ -22,6 +22,7 @@ import com.avbravo.transporteejb.datamodel.ViajeDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Estatus;
 import com.avbravo.transporteejb.entity.EstatusViaje;
+import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.Usuario;
@@ -80,8 +81,8 @@ public class ViajeController implements Serializable, IController {
     private ScheduleEvent event = new DefaultScheduleEvent();
     private String mensajeWarning = "";
     private String mensajeWarningTitle = "";
-     Integer diasinicio=0;
-              Integer diasfin=0;
+    Integer diasinicio = 0;
+    Integer diasfin = 0;
     //DataModel
     private ViajeDataModel viajeDataModel;
 
@@ -480,7 +481,8 @@ public class ViajeController implements Serializable, IController {
 
                     viajeScheduleModel.addEvent(
                             new DefaultScheduleEvent(
-                                    a.getVehiculo().getMarca()
+                                    "# " + a.getIdviaje() + " : "
+                                    + a.getVehiculo().getMarca()
                                     + "Placa " + a.getVehiculo().getPlaca()
                                     + "Conductor " + a.getConductor().getNombre()
                                     + " Destino " + a.getLugardestino(),
@@ -991,22 +993,21 @@ public class ViajeController implements Serializable, IController {
     public String save() {
         try {
             viaje.setActivo("si");
-            
+
             viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros() - solicitud.getPasajeros());
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
-            if(DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), DateUtil.getFechaActual())){
-             if (!viajeServices.isValidDates(viaje, true)) {
-                return "";
-            }   
-            }else{
-               //Indica que es un viaje anterior que no se habia registrado 
-                if (!viajeServices.isValidDates(viaje, true,false)) {
-                return "";
-            } 
+            if (DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), DateUtil.getFechaActual())) {
+                if (!viajeServices.isValidDates(viaje, true)) {
+                    return "";
+                }
+            } else {
+                //Indica que es un viaje anterior que no se habia registrado 
+                if (!viajeServices.isValidDates(viaje, true, false)) {
+                    return "";
+                }
             }
-            
 
             if (!viajeServices.vehiculoDisponible(viaje)) {
                 JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
@@ -1017,11 +1018,42 @@ public class ViajeController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getMessage("warning.seleccioneunasolicitud"));
                 return null;
             }
-            if (diasinicio <= -1 || diasinicio >=2 || diasfin <=-1 || diasfin >=2) {
+            if (diasinicio <= -1 || diasinicio >= 2 || diasfin <= -1 || diasfin >= 2) {
                 JsfUtil.warningMessage(rf.getMessage("warning.reviselasfechasdepartidayregreso"));
                 return null;
             }
+            if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
+                if (!isVistoBuenoCoordinador()) {
+                    JsfUtil.warningMessage(rf.getMessage("warning.faltavistobuenocoordinador"));
+                    return null;
+                }
+            }
 
+            if (!isVistoBuenoSecretarioAdministrativo()) {
+                Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+                //Verificar si tiene rol para cambiar el estatus
+                Rol jmoordb_rol = (Rol) JmoordbContext.get("jmoordb_rol");
+                Boolean allowed = false;
+                if (jmoordb_rol.getIdrol().equals("SECRETARIO ADMINISTRATIVO") || jmoordb_rol.getIdrol().equals("ADMINISTRADOR")) {
+                    allowed = true;
+                } else {
+                    //Verificar si este usuario tiene el rol de secretario administrativo o administrador
+                    for (Rol r : jmoordb_user.getRol()) {
+                        if (r.getIdrol().equals("SECRETARIO ADMINISTRATIVO") || r.getIdrol().equals("ADMINISTRADOR")) {
+                            allowed = true;
+                            break;
+                        }
+                    }
+                }
+                if (allowed) {
+                    //Cambia el estatus del visto bueno del secretario administrativo
+                    solicitud.getVistoBuenoSecretarioAdministrativo().setAprobado("si");
+                } else {
+                    JsfUtil.warningMessage(rf.getMessage("warning.faltavistobuenosecretarioadministativo"));
+                    return null;
+                }
+
+            }
             // List<Solicitud> list = solicitudRepository.filterBetweenDate("estatus.idestatus", "SOLICITADO", "fechahorapartida", viaje.getFechahorainicioreserva(), "fechahoraregreso", viaje.getFechahorafinreserva(), new Document("fechahorapartida", 1));
             List<Solicitud> list = solicitudRepository.filterBetweenDate("idsolicitud", solicitud.getIdsolicitud(), "fechahorapartida", viaje.getFechahorainicioreserva(), "fechahoraregreso", viaje.getFechahorafinreserva(), new Document("fechahorapartida", 1));
             if (list == null || list.isEmpty()) {
@@ -1156,8 +1188,8 @@ public class ViajeController implements Serializable, IController {
                 }
 
             }
-validarMensajesDias();
-           
+            validarMensajesDias();
+
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
@@ -1185,7 +1217,6 @@ validarMensajesDias();
             completeVehiculo("");
             completeConductor("");
             validarMensajesDias();
-            
 
             JsfUtil.updateJSFComponent(":form::form:warningMessage");
             JsfUtil.updateJSFComponent(":form:content");
@@ -1229,6 +1260,34 @@ validarMensajesDias();
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     } // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="onEventSelectViaje(SelectEvent selectEvent)">
+
+    public void onEventSelectViaje(SelectEvent selectEvent) {
+        try {
+
+            event = (ScheduleEvent) selectEvent.getObject();
+
+            String title = event.getTitle();
+            Integer i = title.indexOf(":");
+
+            Integer idviaje = 0;
+            if (i != -1) {
+                idviaje = Integer.parseInt(title.substring(1, i).trim());
+            }
+            viajeSelected.setIdviaje(idviaje);
+            Optional<Viaje> optional = viajeRepository.findById(viajeSelected);
+            if (optional.isPresent()) {
+                viajeSelected = optional.get();
+
+                JsfUtil.updateJSFComponent(":form:panel");
+                JsfUtil.updateJSFComponent(":form:content");
+            }
+            JsfUtil.updateJSFComponent("viajeDetallesPanel");
+        } catch (Exception e) {
+
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+    } // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno()">
     public String columnNameVistoBueno() {
@@ -1245,19 +1304,18 @@ validarMensajesDias();
         }
     }// </editor-fold>
 
-    
     // <editor-fold defaultstate="collapsed" desc="validarMensajesDias()">
     /**
      * valida los mensajes para desplejar
      */
-    private void validarMensajesDias(){
+    private void validarMensajesDias() {
         try {
-          diasinicio=0;
-             diasfin=0;
-       
-               diasinicio = DateUtil.diasEntreFechas(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida());
-       
-                 diasfin = DateUtil.diasEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
+            diasinicio = 0;
+            diasfin = 0;
+
+            diasinicio = DateUtil.diasEntreFechas(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida());
+
+            diasfin = DateUtil.diasEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
             viaje.setMensajeWarning("");
             mensajeWarning = "";
             mensajeWarningTitle = "";
@@ -1267,21 +1325,45 @@ validarMensajesDias();
             }
             if (diasfin > 0 || diasfin < 0) {
                 if (viaje.getMensajeWarning().equals("")) {
-                   viaje.setMensajeWarning("Dias de diferencia fecha final " + diasfin);
+                    viaje.setMensajeWarning("Dias de diferencia fecha final " + diasfin);
                     mensajeWarningTitle = "Nota";
                 } else {
                     viaje.setMensajeWarning(viaje.getMensajeWarning() + " y fecha final (" + diasfin + ")");
                 }
 
             }
-         //   if (!viaje.getMensajeWarning().equals("")) {
-          //      JsfUtil.warningMessage(viaje.getMensajeWarning() );
-         //   }
+            //   if (!viaje.getMensajeWarning().equals("")) {
+            //      JsfUtil.warningMessage(viaje.getMensajeWarning() );
+            //   }
 
             JsfUtil.updateJSFComponent(":form::form:warningMessage");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());  
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
     }
     // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="Boolean aprobadoCoordinador()">
+
+    public Boolean isVistoBuenoCoordinador() {
+        try {
+            if (solicitud.getVistoBueno().getAprobado().equals("si")) {
+                return true;
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }   // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="Boolean aprobadoCoordinador()">
+
+    public Boolean isVistoBuenoSecretarioAdministrativo() {
+        try {
+            if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("si")) {
+                return true;
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+        }
+        return false;
+    }   // </editor-fold>  
 }

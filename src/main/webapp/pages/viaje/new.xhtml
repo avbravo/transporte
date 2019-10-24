@@ -157,7 +157,22 @@
                             <p:staticMessage  id="warningMessage" severity="warn" summary="#{viajeController.mensajeWarningTitle}" detail="#{viajeController.viaje.mensajeWarning}" />
                             
                         </p:fieldset>
+                        
+                        <p:outputLabel value="#{msg['field.vistobueno']}"/>
+                            <p:fieldset title="VistoBueno">
+                        <p:outputLabel value="#{msg['field.coordinador']}" rendered="#{viajeController.solicitud.tiposolicitud.idtiposolicitud eq'DOCENTE'}"/>
+                         <p:spacer width="5"/>
+                         <p:toggleSwitch value="#{viajeController.isVistoBuenoCoordinador()}"  disabled="true" rendered="#{viajeController.solicitud.tiposolicitud.idtiposolicitud eq'DOCENTE'}"/>
+             
+                        
+                  <p:spacer width="25"/>
+                        <p:outputLabel value="#{msg['field.secretarioadministrativo']}"/>
+                        <p:spacer width="5"/>
+                        <p:toggleSwitch value="#{viajeController.isVistoBuenoSecretarioAdministrativo()}" disabled="true"  />
+                      
 
+                        </p:fieldset>
+                        
                         <p:outputLabel value="#{msg['field.vehiculo']}"
                                        id="vehiculolabel" />
                         <p:fieldset>
@@ -329,13 +344,93 @@
                     <p:schedule id="viajesSchedule"       
                                 rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
                                 value="#{viajeController.viajeScheduleModel}" widgetVar="viajesSchedule" timeZone="GMT-5" locale="es">
-
+   <p:ajax  event="eventSelect"  listener="#{viajeController.onEventSelectViaje}" 
+                                 update="viajesDetallesPanel"  oncomplete="PF('viajesDetallesDialog').show();"/>
 
                     </p:schedule>
                     <b:commandButton value="#{app['button.close']}"
                                      iconAwesome="fa-close"
                                      oncomplete="PF('viajesDialog').hide();"/>
 
+                </b:panelGrid>
+            </p:dialog>
+  <p:dialog widgetVar="viajesDetallesDialog" header="#{msg['dialogo.viajes']}" 
+                      width="650" height="450"
+                      styleClass="customDialog"
+
+                      responsive="true"
+
+                      showEffect="clip" hideEffect="clip">
+                <b:panelGrid id="viajesDetallesPanel" colSpans="2,10" size="xs" > 
+
+
+
+                    <p:outputLabel  value="#{msg['field.idviaje']}" />
+                    <p:outputLabel  value="#{viajeController.viajeSelected.idviaje}"   />
+
+                    <p:outputLabel  value="#{msg['field.placa']}" />
+                    <p:outputLabel  value="#{viajeController.viajeSelected.vehiculo.placa}"    />
+                    <p:outputLabel  value="#{msg['field.marca']}" />
+                    <p:outputLabel  value="#{viajeController.viajeSelected.vehiculo.marca}"    />
+                    <p:outputLabel  value="#{msg['field.modelo']}" />
+                    <p:outputLabel  value="#{viajeController.viajeSelected.vehiculo.modelo}"    />
+
+                    <p:outputLabel  value="#{msg['field.conductor']}" />
+                    <p:outputLabel  value="#{viajeController.viajeSelected.conductor.nombre}"   />
+
+                    <p:outputLabel value="#{msg['field.tipoviaje']}" />
+                    <p:outputLabel value="#{viajeController.viajeSelected.estatusViaje.idestatusviaje}" />
+                    <p:outputLabel value="#{msg['field.realizado']}" />
+                    <p:outputLabel value="#{viajeController.viajeSelected.realizado}" />
+
+
+
+                    <p:outputLabel  value="#{msg['field.fechapartida']}" />
+                    <p:fieldset >
+                        <p:calendar  disabled="true"                                   
+                                     style="background-color: grey;"
+                                     pattern="dd/MM/yyyy" value="#{viajeController.viajeSelected.fechahorainicioreserva}"  />
+ <p:spacer width="25"/>
+                        <p:outputLabel  value="#{msg['field.horapartida']}" />        
+                        <p:calendar  disabled="true"    
+                                    
+                                     pattern="HH:mm:ss a" value="#{viajeController.viajeSelected.fechahorainicioreserva}"  />
+
+
+                    </p:fieldset>
+                    
+
+                    <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+
+                    <p:outputLabel value="#{viajeController.viajeSelected.lugarpartida}"    />
+                    <p:outputLabel  value="#{msg['field.lugardestino']}" />
+
+                    <p:outputLabel value="#{viajeController.viajeSelected.lugardestino}"    />
+
+
+                    <p:outputLabel  value="#{msg['field.fecharegreso']}" />
+                    <p:fieldset >
+
+                        <p:calendar  disabled="true"                                    
+                                     style="background-color: grey;"
+                                     pattern="dd/MM/yyyy" value="#{viajeController.viajeSelected.fechahorafinreserva}"  />
+
+
+<p:spacer width="25"/>
+                        <p:outputLabel  value="#{msg['field.horaregreso']}" />
+                        <p:calendar  disabled="true"    
+                                     
+                                     pattern="HH:mm:ss a" value="#{viajeController.viajeSelected.fechahorafinreserva}"  />
+
+
+                    </p:fieldset>
+
+                    <p:outputLabel  value="#{msg['field.asientosdisponibles']}" />
+                    <p:outputLabel  value="#{viajeController.viajeSelected.asientosdisponibles}" />
+                    
+
+
+                  
                 </b:panelGrid>
             </p:dialog>
 
@@ -395,13 +490,13 @@
 
                     <p:outputLabel  value="#{msg['field.fechapartida']}" />
                     <p:fieldset >
-                        <p:calendar  disabled="true"  size="8"                                  
+                        <p:calendar  disabled="true"                                 
                                      style="background-color: grey;"
                                      pattern="dd/MM/yyyy" value="#{viajeController.solicitud.fechahorapartida}"  />
 
                         <p:outputLabel  value="#{msg['field.horapartida']}" />        
                         <p:calendar  disabled="true"    
-                                     size="8" 
+                                    
                                      pattern="HH:mm:ss a" value="#{viajeController.solicitud.fechahorapartida}"  />
 
 
@@ -419,7 +514,7 @@
                     <p:outputLabel  value="#{msg['field.fecharegreso']}" />
                     <p:fieldset >
 
-                        <p:calendar  disabled="true"  size="8"                                  
+                        <p:calendar  disabled="true"                                  
                                      style="background-color: grey;"
                                      pattern="dd/MM/yyyy" value="#{viajeController.solicitud.fechahoraregreso}"  />
 
@@ -427,7 +522,7 @@
 
                         <p:outputLabel  value="#{msg['field.horaregreso']}" />
                         <p:calendar  disabled="true"    
-                                     size="8" 
+                                    
                                      pattern="HH:mm:ss a" value="#{viajeController.solicitud.fechahoraregreso}"  />
 
 
