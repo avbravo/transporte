@@ -38,6 +38,7 @@ import com.avbravo.transporteejb.services.EstatusViajeServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
+import com.avbravo.transporteejb.services.VistoBuenoSecretarioAdministrativoServices;
 import com.avbravo.transporteejb.services.VistoBuenoServices;
 
 import java.util.ArrayList;
@@ -142,8 +143,7 @@ public class ViajeController implements Serializable, IController {
     //Services
     @Inject
     AutoincrementableServices autoincrementableServices;
-    @Inject
-    VistoBuenoServices vistoBuenoServices;
+    
     @Inject
     ConductorServices conductorServices;
     @Inject
@@ -162,7 +162,10 @@ public class ViajeController implements Serializable, IController {
     JmoordbResourcesFiles rf;
     @Inject
     Printer printer;
-
+@Inject
+    VistoBuenoServices vistoBuenoServices;
+@Inject
+    VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
     //List of Relations
     //Repository of Relations
     // </editor-fold>
@@ -1292,6 +1295,11 @@ public class ViajeController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno()">
     public String columnNameVistoBueno() {
         return vistoBuenoServices.columnNameVistoBueno(solicitud.getVistoBueno());
+    }
+// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno()">
+    public String columnNameVistoBuenoSecretarioAdministrativo() {
+        return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSecretarioAdministrativo(solicitud.getVistoBuenoSecretarioAdministrativo());
     }
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="handleSelectCopiarDesde(SelectEvent event)">
