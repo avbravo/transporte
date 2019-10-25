@@ -121,19 +121,11 @@
 
                     <p:outputLabel  value="#{msg['field.numerogrupos']}" />
                     <p:chips id="numerogrupo" disabled="true" value="#{solicitudController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
+                    
                     <p:outputLabel value="#{msg['field.idtipogira']}"/>
-                    <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
-                                             completeMethod="#{solicitudController.tipogiraServices.complete}" 
-                                             labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"  
-                                             listener="#{solicitudController.handleSelect}"
-                                             value="#{solicitudController.solicitud.tipogira}"
-                                             itemLabel=" #{p.idtipogira}"
-                                             field="idtipogira"
-                                             dropdown="true"
-                                             fromstart="true"
-                                             minQueryLength="0"
-                                             disabled="true"
-                                             update=""/>
+                     <p:outputLabel  value="#{solicitudController.solicitud.tipogira.idtipogira}" />
+                   
+                  
 
                     <p:outputLabel  value="#{msg['field.objetivo']}" />
                     <b:inputTextarea disabled="true" rows="2" span="8"  value="#{solicitudController.solicitud.objetivo}" id="objetivo"   />
