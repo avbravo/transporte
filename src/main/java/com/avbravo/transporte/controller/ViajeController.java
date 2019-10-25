@@ -666,7 +666,15 @@ public class ViajeController implements Serializable, IController {
         List<Vehiculo> temp = new ArrayList<>();
 
         try {
+            if(solicitud == null || solicitud.getIdsolicitud()==null){
+               JsfUtil.warningMessage(rf.getMessage("warning.indiquesolicitudprimero"));
+           JsfUtil.updateJSFComponent(":form:growl");
+                return suggestions;
+            }
+            
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
+                  JsfUtil.warningMessage(rf.getMessage("warning.seleccionefechas"));
+                     JsfUtil.updateJSFComponent(":form:growl");
                 return suggestions;
             }
             Boolean found = false;
@@ -830,7 +838,14 @@ public class ViajeController implements Serializable, IController {
         suggestionsConductor = new ArrayList<>();
         List<Conductor> temp = new ArrayList<>();
         try {
+              if(solicitud == null || solicitud.getIdsolicitud()==null){
+               JsfUtil.warningMessage(rf.getMessage("warning.indiquesolicitudprimero"));
+        JsfUtil.updateJSFComponent(":form:growl");
+                return suggestionsConductor;
+            }
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
+                 JsfUtil.warningMessage(rf.getMessage("warning.seleccionefechas"));
+                 JsfUtil.updateJSFComponent(":form:growl");
                 return suggestionsConductor;
             }
             Boolean found = false;
