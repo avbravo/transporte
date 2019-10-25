@@ -1253,7 +1253,7 @@ public class ViajeController implements Serializable, IController {
             //Lo datos del usuario
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             //solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "rechazar"));
-            solicitud =solicitudRepository.addUserInfoForEditMethod(solicitud,jmoordb_user.getUsername(), "rechazar");
+            solicitud = solicitudRepository.addUserInfoForEditMethod(solicitud, jmoordb_user.getUsername(), "rechazar");
             if (solicitudRepository.update(solicitud)) {
                 //guarda el contenido anterior
                 revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
@@ -1518,68 +1518,73 @@ public class ViajeController implements Serializable, IController {
             String varFacultadName = "";
             String varCarreraName = "";
             String varRango = "";
-            varFacultadName = s0.getFacultad().stream().map((f) -> "" + f.getDescripcion()).reduce(varFacultadName, String::concat);
-            for (Carrera c : s0.getCarrera()) {
-                varCarreraName = "" + c.getDescripcion();
-            }
+//            varFacultadName = s0.getFacultad().stream().map((f) -> "" + f.getDescripcion()).reduce(varFacultadName, String::concat);
+//            for (Carrera c : s0.getCarrera()) {
+//                varCarreraName = "" + c.getDescripcion();
+//            }
             for (String r : s0.getRangoagenda()) {
                 varRango = "" + r;
             }
-String header="";
-String text="";
-if(tipo.equals("SOLICITUDAPROBADA")){
-   text="SOLICITUD APROBADA";
-}else{
-      text="SOLICITUD RECHAZADA";
-}
-           header = text+  
-                   "\nla  solicitud:"+solicitud.getIdsolicitud()
+            String header = "";
+            String text = "";
+            String texto = "";
+            header = text
+                    + "\nla  solicitud:" + solicitud.getIdsolicitud()
                     + "\nObjetivo : " + solicitud.getObjetivo()
                     + "\nObservaciones: " + solicitud.getObservaciones()
                     + "\nLugares: " + solicitud.getLugares()
                     + "\nLugar de partida: " + solicitud.getLugarpartida()
                     + "\nLugar de llegada: " + solicitud.getLugarllegada()
-                     + "\nRango: " + varRango
+                    + "\nRango: " + varRango
                     + "\nEstatus: " + solicitud.getEstatus().getIdestatus() + "";
 
-            String texto = "\n___________________________VIAJE ASIGNADO___________________________________";
-            texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Vehiculo", "Conductor");
+            if (tipo.equals("SOLICITUDAPROBADA")) {
+                 text = "SOLICITUD APROBADA";
+                texto = "\n___________________________VIAJE ASIGNADO___________________________________";
+                texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Vehiculo", "Conductor");
 
-         
+               
+                texto += "\n" + String.format("%10d %20s %25s %10d %20s",
+                        viaje.getIdviaje(),
+                        DateUtil.dateFormatToString(viaje.getFechahorainicioreserva(), "dd/MM/yyyy hh:mm a"),
+                        DateUtil.dateFormatToString(viaje.getFechahorafinreserva(), "dd/MM/yyyy hh:mm a"),
+                        viaje.getVehiculo().getPlaca() + " " + viaje.getVehiculo().getMarca(),
+                        viaje.getConductor().getNombre());
+            } else {
+                text = "SOLICITUD RECHAZADA";
+                 texto = "\n___________________________SOLICITUD RECHAZADA___________________________________";
+                texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Mision", "Destino");
 
-            texto += "\n" + String.format("%10d %20s %25s %10d %20s",
-                    viaje.getIdviaje(),
-                    DateUtil.dateFormatToString(viaje.getFechahorainicioreserva(), "dd/MM/yyyy hh:mm a"),
-                    DateUtil.dateFormatToString(viaje.getFechahorafinreserva(), "dd/MM/yyyy hh:mm a"),
-                    viaje.getVehiculo().getPlaca()+" "+viaje.getVehiculo().getMarca(),
-                    viaje.getConductor().getNombre());
+                texto += "\n" + String.format("%10d %20s %25s %30s %20s",
+                        solicitud.getIdsolicitud(),
+                        DateUtil.dateFormatToString(solicitud.getFechahorapartida(), "dd/MM/yyyy hh:mm a"),
+                        DateUtil.dateFormatToString(solicitud.getFechahoraregreso(), "dd/MM/yyyy hh:mm a"),
+                        solicitud.getMision(),
+                        solicitud.getLugarllegada());
+            }
+
             texto += "\n________________________________________________________________________";
 
-             String mensaje="";  
+            String mensaje = "";
             switch (tipo) {
                 case "SOLICITUDAPROBADA":
-                      mensaje += "  APROBACION DE SOLICITUD"
-                    
-                    + "\n"
-                    + "\n " + header
-                    + texto
-                    + "\n Muchas gracias.";
+                    mensaje += "  APROBACION DE SOLICITUD"
+                            + "\n"
+                            + "\n " + header
+                            + texto
+                            + "\n Muchas gracias.";
                     break;
                 case "SOLICITUDRECHAZADA":
-                      mensaje += "  SE RECHAZO LA SOLICITUD"
-                    
-                    + "\n"
-                    + "\n " + header
-                    + texto
-                    + "\n Muchas gracias.";
+                    mensaje += "  SE RECHAZO LA SOLICITUD"
+                            + "\n"
+                            + "\n " + header
+                            + texto
+                            + "\n Muchas gracias.";
                     break;
                 default:
                     JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.tiposolicitudparaemailinvalida"));
                     return "";
             }
-
-       
-       
 
             List<JmoordbEmailMaster> jmoordbEmailMasterList = jmoordbEmailMasterRepository.findBy(new Document("activo", "si"));
             if (jmoordbEmailMasterList == null || jmoordbEmailMasterList.isEmpty()) {
@@ -1588,9 +1593,8 @@ if(tipo.equals("SOLICITUDAPROBADA")){
                 JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
                 //enviar al administrativo
 
-             //   Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), rf.getMessage("email.header"), mensaje, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                //   Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), rf.getMessage("email.header"), mensaje, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
                 //    Future<String> completableFuture = managerEmail.sendAsync(responsable.getEmail(), rf.getMessage("email.header"), mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
-
 //String msg =completableFuture.get();
                 //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
                 if (usuarioList == null || usuarioList.isEmpty()) {
