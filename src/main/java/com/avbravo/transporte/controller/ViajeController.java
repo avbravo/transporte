@@ -1252,7 +1252,8 @@ public class ViajeController implements Serializable, IController {
 
             //Lo datos del usuario
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "rechazar"));
+            //solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "rechazar"));
+            solicitud =solicitudRepository.addUserInfoForEditMethod(solicitud,jmoordb_user.getUsername(), "rechazar");
             if (solicitudRepository.update(solicitud)) {
                 //guarda el contenido anterior
                 revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
