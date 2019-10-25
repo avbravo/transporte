@@ -1206,7 +1206,20 @@ public class ViajeController implements Serializable, IController {
                     JsfUtil.warningMessage(rf.getMessage("warning.solicitudnoactualizada"));
                     return "";
                 }
+//Actualiza los total en el vehiculo
 
+                Vehiculo vehiculo = viaje.getVehiculo();
+                vehiculo.setTotalconsumo(vehiculo.getTotalconsumo()+viaje.getCostocombustible());
+                vehiculo.setTotalkm(vehiculo.getTotalkm()+viaje.getKmestimados());
+                vehiculo.setTotalviajes(vehiculo.getTotalviajes()+1);
+                 if (vehiculoRepository.update(vehiculo)) {
+                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), jmoordb_user.getUsername(),
+                            "update totales desde creacion de  viajes", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
+                } else {
+                    JsfUtil.warningMessage(rf.getMessage("warning.vehiculonoactualizado"));
+                    return "";
+                }
+                
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 usuarioList = new ArrayList<>();
                 if (solicitud.getUsuario().get(0).getUsername().equals(solicitud.getUsuario().get(1).getUsername())) {
