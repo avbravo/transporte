@@ -1277,7 +1277,7 @@ public class ViajeController implements Serializable, IController {
                 }
 
                 //Envia la notificacion.....
-                push.send("Solicitud Rechazada ");
+                push.send("Solicitud Rechazada");
 
                 sendEmail("Solicitud Rechazada", "SOLICITUDRECHAZADA");
                 reset();
