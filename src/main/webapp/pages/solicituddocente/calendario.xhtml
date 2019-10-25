@@ -86,19 +86,21 @@
                     <p:outputLabel value="#{msg['field.idestatus']}" />
                     <p:outputLabel value="#{solicitudController.solicitud.estatus.idestatus}" />
 
-                    <p:outputLabel  value="#{msg['field.fechapartida']}" />
-                    <p:fieldset >
-                        <p:calendar  disabled="true"                                   
-                                     style="background-color: grey;"
-                                     pattern="dd/MM/yyyy" value="#{solicitudController.solicitud.fechahorapartida}"  />
+                    
+                     <p:outputLabel value="#{msg['field.desde']}"/>
 
-                        <p:outputLabel  value="#{msg['field.horapartida']}" />        
-                        <p:calendar  disabled="true"    
-                                   
-                                     pattern="HH:mm:ss a" value="#{solicitudController.solicitud.fechahorapartida}"  />
+                    <p:fieldset>
 
+                        <h:outputText value="#{solicitudController.showDate(solicitudController.solicitud.fechahorapartida)} #{solicitudController.showHour(solicitudController.solicitud.fechahorapartida)}"  />
+                        <p:spacer width="25"/>
+                        <p:outputLabel value="#{msg['field.fecharegreso']}"/>
+                        <p:spacer width="5"/>
+                        <h:outputText value="#{solicitudController.showDate(solicitudController.solicitud.fechahoraregreso)} #{solicitudController.showHour(solicitudController.solicitud.fechahoraregreso)}"  />
 
                     </p:fieldset>
+
+                    
+                   
 
 
                     <p:outputLabel  value="#{msg['field.lugarpartida']}" />
@@ -109,22 +111,7 @@
                     <p:outputLabel value="#{solicitudController.solicitud.lugarllegada}" id="lugarllegada"   />
 
 
-                    <p:outputLabel  value="#{msg['field.fecharegreso']}" />
-                    <p:fieldset >
-
-                        <p:calendar  disabled="true"                                   
-                                     style="background-color: grey;"
-                                     pattern="dd/MM/yyyy" value="#{solicitudController.solicitud.fechahoraregreso}"  />
-
-
-
-                        <p:outputLabel  value="#{msg['field.horaregreso']}" />
-                        <p:calendar  disabled="true"    
-                                    
-                                     pattern="HH:mm:ss a" value="#{solicitudController.solicitud.fechahoraregreso}"  />
-
-
-                    </p:fieldset>
+                   
 
                     <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
                     <p:outputLabel  value="#{solicitudController.solicitud.numerodevehiculos}" />
