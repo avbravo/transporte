@@ -23,6 +23,7 @@ import com.avbravo.jmoordbutils.DateUtil;
 
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.jmoordbutils.email.ManagerEmail;
+import com.avbravo.jmoordbutils.pojos.Tiempo;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Estatus;
@@ -1464,6 +1465,11 @@ public class ViajeController implements Serializable, IController {
      */
     private void validarMensajesDias() {
         try {
+            Tiempo tiempoPartida = DateUtil.diferenciaEntreFechas(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida());
+            Tiempo tiempoRegreso = DateUtil.diferenciaEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
+            
+            aqui comparar el tiempo dias, horas minutos de diferencias
+                    
             diasinicio = 0;
             diasfin = 0;
 
