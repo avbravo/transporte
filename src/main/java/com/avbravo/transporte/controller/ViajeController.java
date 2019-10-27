@@ -96,8 +96,7 @@ public class ViajeController implements Serializable, IController {
     private ScheduleEvent event = new DefaultScheduleEvent();
     private String mensajeWarning = "";
     private String mensajeWarningTitle = "";
-    Integer diasinicio = 0;
-    Integer diasfin = 0;
+
     Integer index = 0;
     //DataModel
     private ViajeDataModel viajeDataModel;
@@ -667,15 +666,15 @@ public class ViajeController implements Serializable, IController {
         List<Vehiculo> temp = new ArrayList<>();
 
         try {
-            if(solicitud == null || solicitud.getIdsolicitud()==null){
-               JsfUtil.warningMessage(rf.getMessage("warning.indiquesolicitudprimero"));
-           JsfUtil.updateJSFComponent(":form:growl");
+            if (solicitud == null || solicitud.getIdsolicitud() == null) {
+                JsfUtil.warningMessage(rf.getMessage("warning.indiquesolicitudprimero"));
+                JsfUtil.updateJSFComponent(":form:growl");
                 return suggestions;
             }
-            
+
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
-                  JsfUtil.warningMessage(rf.getMessage("warning.seleccionefechas"));
-                     JsfUtil.updateJSFComponent(":form:growl");
+                JsfUtil.warningMessage(rf.getMessage("warning.seleccionefechas"));
+                JsfUtil.updateJSFComponent(":form:growl");
                 return suggestions;
             }
             Boolean found = false;
@@ -839,14 +838,14 @@ public class ViajeController implements Serializable, IController {
         suggestionsConductor = new ArrayList<>();
         List<Conductor> temp = new ArrayList<>();
         try {
-              if(solicitud == null || solicitud.getIdsolicitud()==null){
-               JsfUtil.warningMessage(rf.getMessage("warning.indiquesolicitudprimero"));
-        JsfUtil.updateJSFComponent(":form:growl");
+            if (solicitud == null || solicitud.getIdsolicitud() == null) {
+                JsfUtil.warningMessage(rf.getMessage("warning.indiquesolicitudprimero"));
+                JsfUtil.updateJSFComponent(":form:growl");
                 return suggestionsConductor;
             }
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
-                 JsfUtil.warningMessage(rf.getMessage("warning.seleccionefechas"));
-                 JsfUtil.updateJSFComponent(":form:growl");
+                JsfUtil.warningMessage(rf.getMessage("warning.seleccionefechas"));
+                JsfUtil.updateJSFComponent(":form:growl");
                 return suggestionsConductor;
             }
             Boolean found = false;
@@ -1047,6 +1046,16 @@ public class ViajeController implements Serializable, IController {
             if (!viajeServices.isValid(viaje)) {
                 return "";
             }
+
+            if (DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
+                JsfUtil.warningMessage(rf.getMessage("warning.fechahorainicioviajemayorfechainiciosolicitud"));
+                return "";
+            }
+            if (DateUtil.fechaMayor(solicitud.getFechahoraregreso(), viaje.getFechahorafinreserva())) {
+                JsfUtil.warningMessage(rf.getMessage("warning.fecharegresomayorfechainicioviaje"));
+                return null;
+            }
+
             if (DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), DateUtil.getFechaActual())) {
                 if (!viajeServices.isValidDates(viaje, true)) {
                     return "";
@@ -1067,8 +1076,16 @@ public class ViajeController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getMessage("warning.seleccioneunasolicitud"));
                 return null;
             }
-            if (diasinicio <= -1 || diasinicio >= 2 || diasfin <= -1 || diasfin >= 2) {
-                JsfUtil.warningMessage(rf.getMessage("warning.reviselasfechasdepartidayregreso"));
+            
+              Tiempo tiempoPartida = DateUtil.diferenciaEntreFechas(solicitud.getFechahorapartida(), viaje.getFechahorainicioreserva());
+            Tiempo tiempoRegreso = DateUtil.diferenciaEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
+
+            if (tiempoPartida.getDias() >0 || tiempoPartida.getHoras() > 4) {
+                JsfUtil.warningMessage(rf.getMessage("warning.fechahorapartdamuylejanadelasolicitud"));
+                return null;
+            }
+            if (tiempoRegreso.getDias() >0 || tiempoRegreso.getHoras() > 4) {
+                JsfUtil.warningMessage(rf.getMessage("warning.fechahoraregresoamuylejanadelasolicitud"));
                 return null;
             }
             if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
@@ -1210,17 +1227,17 @@ public class ViajeController implements Serializable, IController {
 //Actualiza los total en el vehiculo
 
                 Vehiculo vehiculo = viaje.getVehiculo();
-                vehiculo.setTotalconsumo(vehiculo.getTotalconsumo()+viaje.getCostocombustible());
-                vehiculo.setTotalkm(vehiculo.getTotalkm()+viaje.getKmestimados());
-                vehiculo.setTotalviajes(vehiculo.getTotalviajes()+1);
-                 if (vehiculoRepository.update(vehiculo)) {
+                vehiculo.setTotalconsumo(vehiculo.getTotalconsumo() + viaje.getCostocombustible());
+                vehiculo.setTotalkm(vehiculo.getTotalkm() + viaje.getKmestimados());
+                vehiculo.setTotalviajes(vehiculo.getTotalviajes() + 1);
+                if (vehiculoRepository.update(vehiculo)) {
                     revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), jmoordb_user.getUsername(),
                             "update totales desde creacion de  viajes", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
                 } else {
                     JsfUtil.warningMessage(rf.getMessage("warning.vehiculonoactualizado"));
                     return "";
                 }
-                
+
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 usuarioList = new ArrayList<>();
                 if (solicitud.getUsuario().get(0).getUsername().equals(solicitud.getUsuario().get(1).getUsername())) {
@@ -1465,37 +1482,41 @@ public class ViajeController implements Serializable, IController {
      */
     private void validarMensajesDias() {
         try {
-            Tiempo tiempoPartida = DateUtil.diferenciaEntreFechas(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida());
+
+            //  aqui comparar el tiempo dias, horas minutos de diferencias
+            if (DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
+                JsfUtil.warningMessage(rf.getMessage("warning.fechahorainicioviajemayorfechainiciosolicitud"));
+                return;
+            }
+            if (DateUtil.fechaMayor(solicitud.getFechahoraregreso(), viaje.getFechahorafinreserva())) {
+                JsfUtil.warningMessage(rf.getMessage("warning.fecharegresomayorfechainicioviaje"));
+                return;
+            }
+            Tiempo tiempoPartida = DateUtil.diferenciaEntreFechas(solicitud.getFechahorapartida(), viaje.getFechahorainicioreserva());
             Tiempo tiempoRegreso = DateUtil.diferenciaEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
-            
-            aqui comparar el tiempo dias, horas minutos de diferencias
-                    
-            diasinicio = 0;
-            diasfin = 0;
 
-            diasinicio = DateUtil.diasEntreFechas(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida());
-
-            diasfin = DateUtil.diasEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
             viaje.setMensajeWarning("");
             mensajeWarning = "";
             mensajeWarningTitle = "";
-            if (diasinicio > 0 || diasinicio < 0) {
-                viaje.setMensajeWarning("Dias de diferencia fecha de partida (" + diasinicio + ")");
-                mensajeWarningTitle = "Nota";
-            }
-            if (diasfin > 0 || diasfin < 0) {
-                if (viaje.getMensajeWarning().equals("")) {
-                    viaje.setMensajeWarning("Dias de diferencia fecha final " + diasfin);
-                    mensajeWarningTitle = "Nota";
-                } else {
-                    viaje.setMensajeWarning(viaje.getMensajeWarning() + " y fecha final (" + diasfin + ")");
-                }
+            String partida = "dias: " + tiempoPartida.getDias() + " horas:" + tiempoPartida.getHoras() + " minutos:" + tiempoPartida.getMinutos();
+            String llegada = "dias: " + tiempoRegreso.getDias() + " horas:" + tiempoRegreso.getHoras() + " minutos:" + tiempoRegreso.getMinutos();
+//            if (diasinicio > 0 || diasinicio < 0) {
 
-            }
+            viaje.setMensajeWarning("Diferencia fecha/hora de partida (" + partida + ")");
+            mensajeWarningTitle = "Nota";
+//            }
+//            if (diasfin > 0 || diasfin < 0) {
+//                if (viaje.getMensajeWarning().equals("")) {
+            viaje.setMensajeWarning(viaje.getMensajeWarning() + " Fecha/hora regreso ( " + llegada + ")");
+//                    mensajeWarningTitle = "Nota";
+//                } else {
+//                    viaje.setMensajeWarning(viaje.getMensajeWarning() + " y fecha final (" + diasfin + ")");
+//                }
+
+//            }
             //   if (!viaje.getMensajeWarning().equals("")) {
             //      JsfUtil.warningMessage(viaje.getMensajeWarning() );
             //   }
-
             JsfUtil.updateJSFComponent(":form::form:warningMessage");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1573,11 +1594,10 @@ public class ViajeController implements Serializable, IController {
                     + "\nEstatus: " + solicitud.getEstatus().getIdestatus() + "";
 
             if (tipo.equals("SOLICITUDAPROBADA")) {
-                 text = "SOLICITUD APROBADA";
+                text = "SOLICITUD APROBADA";
                 texto = "\n___________________________VIAJE ASIGNADO___________________________________";
                 texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Vehiculo", "Conductor");
 
-               
                 texto += "\n" + String.format("%10d %20s %25s %10d %20s",
                         viaje.getIdviaje(),
                         DateUtil.dateFormatToString(viaje.getFechahorainicioreserva(), "dd/MM/yyyy hh:mm a"),
@@ -1586,7 +1606,7 @@ public class ViajeController implements Serializable, IController {
                         viaje.getConductor().getNombre());
             } else {
                 text = "SOLICITUD RECHAZADA";
-                 texto = "\n___________________________SOLICITUD RECHAZADA___________________________________";
+                texto = "\n___________________________SOLICITUD RECHAZADA___________________________________";
                 texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Mision", "Destino");
 
                 texto += "\n" + String.format("%10d %20s %25s %30s %20s",
