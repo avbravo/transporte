@@ -1084,7 +1084,7 @@ public class ViajeController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getMessage("warning.fechahorapartdamuylejanadelasolicitud"));
                 return null;
             }
-            if (tiempoRegreso.getDias() >0 || tiempoRegreso.getHoras() > 4) {
+            if (tiempoRegreso.getDias() >0 || tiempoRegreso.getHoras() > 24) {
                 JsfUtil.warningMessage(rf.getMessage("warning.fechahoraregresoamuylejanadelasolicitud"));
                 return null;
             }
