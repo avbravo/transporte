@@ -75,6 +75,19 @@
                                                  disabled="true"
                                                  />
 
+                           <p:outputLabel value="#{msg['field.vistobueno']}"/>
+                    <p:fieldset>
+                        <p:spacer width="5"/>
+                        <p:outputLabel value="#{msg['field.coordinador']}" />
+                          <p:spacer width="5"/>
+                        <p:outputLabel value="#{solicitudController.columnNameVistoBueno(solicitudController.solicitud.vistoBueno)}" 
+                                       />
+                        <p:spacer width="25"/>
+                        <p:outputLabel value="#{msg['field.secretarioadministrativo']}" />
+                        <p:spacer width="5"/>
+                        <p:outputLabel value="#{solicitudController.columnNameVistoBuenoSecretarioAdministrativo(solicitudController.solicitud.vistoBuenoSecretarioAdministrativo)}" 
+                                       />
+                    </p:fieldset>
 
                         <p:outputLabel  value="#{msg['field.telefono']}" />
                         <jmoordbjsf:inputText span="4"  value="#{solicitudController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
