@@ -2128,7 +2128,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
      */
     public String goList(String ruta) {
         ruta = ruta.trim();
-        JmoordbContext.put("coordinador", "golist");
+        JmoordbContext.put("secretarioadministrativo", "golist");
         return "/pages/" + ruta + "/list.xhtml";
 
     }// </editor-fold>
