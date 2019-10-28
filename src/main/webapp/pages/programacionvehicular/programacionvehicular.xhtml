@@ -34,46 +34,7 @@
 
 
 
-                <b:row>
-                    <b:column medium-screen="25" >
-                        <b:panelGrid  columns="3" size="xs" colSpans="2,3,2,3,2"> 
-
-                            <p:outputLabel value="Desde"/>
-                            <p:calendar
-                                value="#{programacionVechicularController.fechaDesde}"
-                                required="false" 
-                                pattern="dd/MM/yyy"
-                                selectOtherMonths="true"
-                                navigator="true"
-                                >
-                                <p:ajax event="dateSelect" 
-                                        listener="#{programacionVechicularController.search()}"
-                                        update=":form:dataTable" />
-                            </p:calendar>
-
-                            <p:outputLabel value="Hasta"/>
-                            <p:calendar
-                                value="#{programacionVechicularController.fechaHasta}"
-                                required="false" 
-                                pattern="dd/MM/yyy"
-                                selectOtherMonths="true"
-                                navigator="true"
-                                >
-                                <p:ajax event="dateSelect" 
-                                        listener="#{programacionVechicularController.search()}"
-                                        update=":form:dataTable" />
-                            </p:calendar>
-                            <b:commandButton update=":form:dataTable"
-                                             look="info"
-                                             oncomplete="remotesearchBetweenDate()"
-                                             iconAwesome="fa-filter" 
-                                             rendered="true" 
-                                             title="#{app['button.search']}" 
-                                             action="#{programacionVechicularController.searchBetweenDate('_betweendates',programacionVechicularController.fechaDesde, programacionVechicularController.fechaHasta)}"/>
-                        </b:panelGrid>
-                    </b:column>
-
-                </b:row>
+                
                 
                 <b:row>
                     <b:column medium-screen="25" >
