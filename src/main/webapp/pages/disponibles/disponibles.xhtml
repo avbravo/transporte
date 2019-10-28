@@ -22,7 +22,7 @@
         </style>
 
 
-        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block" > 
@@ -30,11 +30,11 @@
 
 
 
-                <b:panel collapsible="false" title="#{msg['title.disponibles']}" look="primary" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" >
+                <b:panel collapsible="false" title="#{msg['title.disponibles']}" look="primary" >
 
 
 
-                    <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}"> 
+                    <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
 
 
 
@@ -248,7 +248,7 @@
 
 
         </b:form>
-        <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}"/>
+        <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO, SECRETARIA')}"/>
 
         <br/><br/><br/>
     </ui:define>
