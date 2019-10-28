@@ -107,7 +107,19 @@
                         <p:outputLabel value="#{msg['field.idestatus']}" />
                     <p:outputLabel value="#{coordinadorController.solicitud.estatus.idestatus}" />
                     
-                    
+                        <p:outputLabel value="#{msg['field.vistobueno']}"/>
+                    <p:fieldset>
+                        <p:spacer width="5"/>
+                        <p:outputLabel value="#{msg['field.coordinador']}" />
+                          <p:spacer width="5"/>
+                        <p:outputLabel value="#{coordinadorController.columnNameVistoBueno(coordinadorController.solicitud.vistoBueno)}" 
+                                       />
+                        <p:spacer width="25"/>
+                        <p:outputLabel value="#{msg['field.secretarioadministrativo']}" />
+                        <p:spacer width="5"/>
+                        <p:outputLabel value="#{coordinadorController.columnNameVistoBuenoSecretarioAdministrativo(coordinadorController.solicitud.vistoBuenoSecretarioAdministrativo)}" 
+                                       />
+                    </p:fieldset>
                     
                                <p:outputLabel value="#{msg['field.vistobueno']}" />
                       <p:outputLabel value="#{coordinadorController.columnNameVistoBueno()}"  />
