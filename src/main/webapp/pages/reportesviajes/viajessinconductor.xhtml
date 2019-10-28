@@ -39,12 +39,12 @@
 
 
                         <jmoordbjsf:searchBetweenDate 
-                            renderedMove="true"
+              
                             labelDesde="#{msg['field.fechainicio']}"
                             valueDesde="#{viajesSinConductorController.fechaDesde}"
                             labelHasta="#{msg['field.fechafin']}"
                             valueHasta="#{viajesSinConductorController.fechaHasta}"
-                            rendered="true"  
+               
                             search="#{viajesSinConductorController.searchBy('_betweendates',viajesSinConductorController.viaje)}"
                             update=":form:dataTable "
                             />

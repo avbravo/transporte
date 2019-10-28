@@ -55,12 +55,12 @@
 
 
                         <jmoordbjsf:searchBetweenDate 
-                            renderedMove="true"
+                          
                             labelDesde="#{msg['field.fechainicio']}"
                             valueDesde="#{solicitudesPorUsuariosController.fechaDesde}"
                             labelHasta="#{msg['field.fechafin']}"
                             valueHasta="#{solicitudesPorUsuariosController.fechaHasta}"
-                            rendered="true"  
+               
                             search="#{solicitudesPorUsuariosController.searchBy('_betweendates',solicitudesPorUsuariosController.solicitud)}"
                             update=":form:dataTable "
                             />

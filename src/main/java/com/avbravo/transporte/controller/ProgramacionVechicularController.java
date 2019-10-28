@@ -136,6 +136,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
     @PostConstruct
     public void init() {
         try {
+            
             fechaDesde = DateUtil.primerDiaDelMesEnFecha(DateUtil.anioActual(), DateUtil.mesActual());
             fechaHasta = DateUtil.ultimoDiaDelMesEnFecha(DateUtil.anioActual(), DateUtil.mesActual());
             /*
@@ -375,5 +376,11 @@ public class ProgramacionVechicularController implements Serializable, IControll
         return !programacionVehicular.isEmpty();
     }
     // </editor-fold>  
+    
+    public String search(){
+   searchBetweenDate("_betweendates",fechaDesde  ,fechaHasta);
+        move(page);
+        return "";
+    }
 
 }

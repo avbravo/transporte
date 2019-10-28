@@ -36,47 +36,6 @@
 
                 <b:row>
                     <b:column medium-screen="25" >
-                        <b:panelGrid  columns="3" size="xs" colSpans="2,3,2,3,2"> 
-
-                            <p:outputLabel value="Desde"/>
-                            <p:calendar
-                                value="#{programacionVechicularController.fechaDesde}"
-                                required="false" 
-                                pattern="dd/MM/yyy"
-                                selectOtherMonths="true"
-                                navigator="true"
-                                >
-                                <p:ajax event="dateSelect" 
-                                        listener="#{programacionVechicularController.search()}"
-                                        update=":form:dataTable" />
-                            </p:calendar>
-
-                            <p:outputLabel value="Hasta"/>
-                            <p:calendar
-                                value="#{programacionVechicularController.fechaHasta}"
-                                required="false" 
-                                pattern="dd/MM/yyy"
-                                selectOtherMonths="true"
-                                navigator="true"
-                                >
-                                <p:ajax event="dateSelect" 
-                                        listener="#{programacionVechicularController.search()}"
-                                        update=":form:dataTable" />
-                            </p:calendar>
-                            <b:commandButton update=":form:dataTable"
-                                             look="info"
-                                             oncomplete="remotesearchBetweenDate()"
-                                             iconAwesome="fa-filter" 
-                                             rendered="true" 
-                                             title="#{app['button.search']}" 
-                                             action="#{programacionVechicularController.searchBetweenDate('_betweendates',programacionVechicularController.fechaDesde, programacionVechicularController.fechaHasta)}"/>
-                        </b:panelGrid>
-                    </b:column>
-
-                </b:row>
-                
-                <b:row>
-                    <b:column medium-screen="25" >
 
 
                         <jmoordbjsf:searchBetweenDate 
@@ -85,6 +44,7 @@
                             valueDesde="#{programacionVechicularController.fechaDesde}"
                             labelHasta="#{msg['field.fechafin']}"
                             valueHasta="#{programacionVechicularController.fechaHasta}"
+                       
                             search="#{programacionVechicularController.searchBetweenDate('_betweendates',programacionVechicularController.fechaDesde, programacionVechicularController.fechaHasta)}"
                             update=":form:dataTable "
                             />
@@ -115,12 +75,12 @@
 
                     <f:facet name="header">
                         <p:outputLabel value="#{msg['titlelist.viajes']}"/>
-
+                   
                     </f:facet>
                     <p:column style="width:16px">
                         <p:rowToggler />
                     </p:column>
-
+                   
 
 
                     <p:column headerText="#{msg['field.fechapartida']}" style="width:130px">
@@ -144,7 +104,7 @@
 
                     <p:column headerText="#{msg['field.fecharegreso']}" style="width:100px">
                         <h:outputText value="#{programacionVechicularController.showDate(item.fechahoraregreso)} #{programacionVechicularController.showHour(item.fechahoraregreso)}" style="color: #{programacionVechicularController.columnColor(item.realizado,item.activo)}" />
-
+                        
                     </p:column>
                     <p:column headerText="#{msg['field.vehiculo']}"  >
 

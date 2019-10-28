@@ -68,15 +68,16 @@
                     <b:column medium-screen="25" >
 
 
-
                         <jmoordbjsf:searchBetweenDate
-                            renderedMove="true"
+                        
                             labelDesde="#{msg['field.fechainicio']}"
                             valueDesde="#{viajeController.fechaDesde}"
                             labelHasta="#{msg['field.fechafin']}"
                             valueHasta="#{viajeController.fechaHasta}"
                             
-                            search="#{viajeController.searchBetweenDate('_betweendates',fechaDesde, fechaHasta)}"
+                            search="#{viajeController.searchBetweenDate('_betweendates',viajeController.fechaDesde, viajeController.fechaHasta)}"
+                                             update=":form:dataTable "
+
                             />
                     </b:column>
                 </b:row>
