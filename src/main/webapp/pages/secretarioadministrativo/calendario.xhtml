@@ -189,6 +189,20 @@
 
 
 
+                       <p:outputLabel value="#{msg['field.vistobueno']}"/>
+                    <p:fieldset>
+                        <p:spacer width="5" rendered="#{secretarioAdministrativoController.solicitud.tiposolicitud.idtiposolicitud eq 'DOCENTE'}"/>
+                        <p:outputLabel value="#{msg['field.coordinador']}" rendered="#{secretarioAdministrativoController.solicitud.tiposolicitud.idtiposolicitud eq 'DOCENTE'}" />
+                        <p:spacer width="5" rendered="#{secretarioAdministrativoController.solicitud.tiposolicitud.idtiposolicitud eq 'DOCENTE'}"/>
+                        <p:outputLabel  rendered="#{secretarioAdministrativoController.solicitud.tiposolicitud.idtiposolicitud eq 'DOCENTE'}" value="#{secretarioAdministrativoController.columnNameVistoBueno(secretarioAdministrativoController.solicitud.vistoBueno)}" 
+                                       />
+                        <p:spacer width="25"/>
+                        <p:outputLabel value="#{msg['field.secretarioadministrativo']}" />
+                        <p:spacer width="5"/>
+                        <p:outputLabel value="#{secretarioAdministrativoController.columnNameVistoBuenoSecretarioAdministrativo(secretarioAdministrativoController.solicitud.vistoBuenoSecretarioAdministrativo)}" 
+                                       />
+                    </p:fieldset>
+                       
                     <p:outputLabel value="#{msg['field.vistobueno']}" />
                     <p:outputLabel value="#{secretarioAdministrativoController.columnNameVistoBueno()}"  />
 
