@@ -2128,7 +2128,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
      */
     public String goList(String ruta) {
         ruta = ruta.trim();
-        JmoordbContext.put("secretarioadministrativo", "golist");
+        setAction("golist");
+        //JmoordbContext.put("actionsecretarioadministrativoController", "golist");
         return "/pages/" + ruta + "/list.xhtml";
 
     }// </editor-fold>
