@@ -87,6 +87,16 @@
                     <p:outputLabel value="#{solicitudAdministrativoController.solicitud.estatus.idestatus}" />
 
                     
+                       <p:outputLabel value="#{msg['field.vistobueno']}"/>
+                    <p:fieldset>
+                       
+                        <p:outputLabel value="#{msg['field.secretarioadministrativo']}" />
+                        <p:spacer width="5"/>
+                        <p:outputLabel value="#{solicitudAdministrativoController.columnNameVistoBuenoSecretarioAdministrativo(solicitudAdministrativoController.solicitud.vistoBuenoSecretarioAdministrativo)}" 
+                                       />
+                    </p:fieldset>
+                    
+                    
                      <p:outputLabel value="#{msg['field.desde']}"/>
 
                     <p:fieldset>
