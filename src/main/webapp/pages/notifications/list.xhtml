@@ -98,7 +98,7 @@
 
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR, DOCENTE, ADMINISTRATIVO,SECRETARIA, SECRETARIO ADMINISTRATIVO, COORDINADOR')}"/>
+        <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('ADMINISTRADOR, DOCENTE, ADMINISTRATIVO,SECRETARIA, SECRETARIO ADMINISTRATIVO, COORDINADOR')}"/>
 
     </ui:define>
 </ui:composition>

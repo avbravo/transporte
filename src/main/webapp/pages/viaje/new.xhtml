@@ -571,7 +571,7 @@ id="solicitudAutoComplete"
             </p:dialog>
 
         </b:form>
-        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR, SECRETARIA, SECRETARIO ADMINISTRATIVO')}"  />
+        <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('ADMINISTRADOR, SECRETARIA, SECRETARIO ADMINISTRATIVO')}"  />
 
         <br/><br/><br/>
     </ui:define>

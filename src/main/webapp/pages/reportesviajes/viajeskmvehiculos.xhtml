@@ -121,6 +121,6 @@
             </b:panelGrid>
         </b:form>
 
-        <jmoordbjsf:denegado renderedcondition="#{!p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" />
+        <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO')}" />
     </ui:define>
 </ui:composition>
