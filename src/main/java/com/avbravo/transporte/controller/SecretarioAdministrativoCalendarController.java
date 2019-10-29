@@ -120,7 +120,7 @@ import org.primefaces.model.timeline.TimelineModel;
 
 @Setter
 
-public class SecretarioAdministrativoController implements Serializable, IController {
+public class SecretarioAdministrativoCalendarController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
@@ -318,7 +318,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
 //    
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public SecretarioAdministrativoController() {
+    public SecretarioAdministrativoCalendarController() {
     }
 
     // </editor-fold>
@@ -370,8 +370,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
             start();
             sugerenciaList = sugerenciaRepository.findBy("activo", "si");
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
-           // loadSchedule();
-           // loadScheduleViajes();
+            loadSchedule();
+            loadScheduleViajes();
         //    loadTimeLine();
         //    loadTimeLineConductor();
 
