@@ -87,6 +87,15 @@
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{vehiculoController.vehiculo.activo}" id="activo"  required="true"/>
 
+                          <p:outputLabel  value="#{msg['field.totalkm']}" />
+                         <p:outputLabel  value="#{vehiculoController.vehiculo.totalkm}"  />
+                          
+                         <p:outputLabel  value="#{msg['field.totalconsumo']}" />
+                          <p:outputLabel  value="#{vehiculoController.vehiculo.totalconsumo}" />
+                         <p:outputLabel  value="#{msg['field.totalviajes']}" />
+                         <p:outputLabel  value="#{vehiculoController.vehiculo.totalviajes}"  />
+
+                        
                     </b:panelGrid>
                     <jmoordbjsf:toolbarview 
                         renderedDelete="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"

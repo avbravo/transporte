@@ -1253,7 +1253,7 @@ public class ViajeController implements Serializable, IController {
 //Notificacion al conductor
                 List<Usuario> usuarioConductorList = usuarioRepository.findBy(new Document("cedula", viaje.getConductor().getCedula()));
                 if (usuarioConductorList == null || usuarioConductorList.isEmpty()) {
-                    JsfUtil.warningMessage(rf.getAppMessage("warning.noexisteusuariocomoconductor"));
+                    JsfUtil.warningMessage(rf.getMessage("warning.noexisteusuariocomoconductorparaviaje"));
                 } else {
                     notificacionServices.saveNotification("Viaje nuevo: " + viaje.getIdviaje() + "Fecha:" + viaje.getFechahorainicioreserva(), usuarioConductorList.get(0).getUsername(), "viaje nuevo");
                     usuarioList.add(usuarioConductorList.get(0));
