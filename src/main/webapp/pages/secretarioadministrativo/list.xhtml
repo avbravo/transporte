@@ -165,7 +165,14 @@
                     </p:column>
 
 
-                    <p:column headerText="#{msg['field.vistobueno']}"  >
+                    <p:column headerText="#{msg['field.vbcoordinador']}"  >
+                        <p:outputLabel value="#{secretarioAdministrativoController.columnNameVistoBueno(item.vistoBueno)}" 
+                                       rendered="#{item.tiposolicitud.idtiposolicitud eq 'DOCENTE'}"
+                                       style="color: #{secretarioAdministrativoController.columnColor(item.estatus)}" />
+                        
+                         <p:outputLabel value="#{msg['field.nonecesario']}" rendered="#{!item.tiposolicitud.idtiposolicitud eq 'DOCENTE'}" />
+                    </p:column>
+                    <p:column headerText="#{msg['field.vbsecretarioadministrativo']}"  >
                         <p:outputLabel value="#{secretarioAdministrativoController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}" 
                                        style="color: #{secretarioAdministrativoController.columnColor(item.estatus)}" />
                     </p:column>
