@@ -151,6 +151,7 @@ public class RolController implements Serializable, IController {
         }
     }// </editor-fold>
 
+   
     // <editor-fold defaultstate="collapsed" desc="Boolean afterSave(Boolean saved)">
     @Override
      public Boolean afterSave(Boolean saved) {
