@@ -1253,7 +1253,7 @@ public class ViajeController implements Serializable, IController {
 //Notificacion al conductor
                 List<Usuario> usuarioConductorList = usuarioRepository.findBy(new Document("cedula", viaje.getConductor().getCedula()));
                 if (usuarioConductorList == null || usuarioConductorList.isEmpty()) {
-                    JsfUtil.warningMessage(rf.getMessage("warning.noexisteusuariocomoconductorparaviaje"));
+                  //  JsfUtil.warningMessage(rf.getMessage("warning.noexisteusuariocomoconductorparaviaje"));
                 } else {
                     notificacionServices.saveNotification("Viaje nuevo: " + viaje.getIdviaje() + "Fecha:" + viaje.getFechahorainicioreserva(), usuarioConductorList.get(0).getUsername(), "viaje nuevo");
                     usuarioList.add(usuarioConductorList.get(0));
@@ -1354,7 +1354,12 @@ public class ViajeController implements Serializable, IController {
                 }
 
             }
-            validarMensajesDias();
+            if (solicitud.getFechahorapartida()== null || viaje.getFechahorafinreserva() == null) {
+
+            }else{
+                      validarMensajesDias();
+            }
+      
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1376,8 +1381,7 @@ public class ViajeController implements Serializable, IController {
             // solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
             viaje.setMision(solicitud.getMision());
             viaje.setComentarios("Responsable " + solicitud.getUsuario().get(1).getNombre() + " Destino " + solicitud.getLugarllegada());
-//            viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
-//            viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
+
             viaje.setLugarpartida(solicitud.getLugarpartida());
             viaje.setLugardestino(solicitud.getLugarllegada());
             completeVehiculo("");
@@ -1500,23 +1504,13 @@ public class ViajeController implements Serializable, IController {
             mensajeWarningTitle = "";
             String partida = "dias: " + tiempoPartida.getDias() + " horas:" + tiempoPartida.getHoras() + " minutos:" + tiempoPartida.getMinutos();
             String llegada = "dias: " + tiempoRegreso.getDias() + " horas:" + tiempoRegreso.getHoras() + " minutos:" + tiempoRegreso.getMinutos();
-//            if (diasinicio > 0 || diasinicio < 0) {
+
 
             viaje.setMensajeWarning("Diferencia fecha/hora de partida (" + partida + ")");
             mensajeWarningTitle = "Nota";
-//            }
-//            if (diasfin > 0 || diasfin < 0) {
-//                if (viaje.getMensajeWarning().equals("")) {
-            viaje.setMensajeWarning(viaje.getMensajeWarning() + " Fecha/hora regreso ( " + llegada + ")");
-//                    mensajeWarningTitle = "Nota";
-//                } else {
-//                    viaje.setMensajeWarning(viaje.getMensajeWarning() + " y fecha final (" + diasfin + ")");
-//                }
 
-//            }
-            //   if (!viaje.getMensajeWarning().equals("")) {
-            //      JsfUtil.warningMessage(viaje.getMensajeWarning() );
-            //   }
+            viaje.setMensajeWarning(viaje.getMensajeWarning() + " Fecha/hora regreso ( " + llegada + ")");
+
             JsfUtil.updateJSFComponent(":form::form:warningMessage");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
