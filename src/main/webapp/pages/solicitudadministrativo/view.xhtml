@@ -167,6 +167,17 @@
                         <p:outputLabel value="#{solicitudAdministrativoController.calcularTotalPasajeros()}" id="pasajeros"/>
 
 
+                         <p:outputLabel  value="#{msg['field.dias']}" />
+                        <p:selectCheckboxMenu id="multiple" value="#{solicitudAdministrativoController.diasSelected}" label="#{msg['field.dias']}" multiple="true"
+                                              required="true" 
+                                              requiredMessage="#{msg['field.dias']} #{app['info.required']}"
+                                              panelStyle="width:250px">
+                            <f:selectItems value="#{solicitudAdministrativoController.diasList}" />
+                            <p:ajax event="change" update=":form:datatableDisponibles"
+                                    listener="#{solicitudAdministrativoController.changeDaysViewAvailable()}"
+                                    process="@this,pasajeros"/>
+                        </p:selectCheckboxMenu>
+                        
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
                         <b:row>
                             <b:column medium-screen="4">
@@ -198,16 +209,7 @@
                             </b:column>
                         </b:row>
 
-                        <p:outputLabel  value="#{msg['field.dias']}" />
-                        <p:selectCheckboxMenu id="multiple" value="#{solicitudAdministrativoController.diasSelected}" label="#{msg['field.dias']}" multiple="true"
-                                              required="true" 
-                                              requiredMessage="#{msg['field.dias']} #{app['info.required']}"
-                                              panelStyle="width:250px">
-                            <f:selectItems value="#{solicitudAdministrativoController.diasList}" />
-                            <p:ajax event="change" update=":form:datatableDisponibles"
-                                    listener="#{solicitudAdministrativoController.changeDaysViewAvailable()}"
-                                    process="@this,pasajeros"/>
-                        </p:selectCheckboxMenu>
+                       
 
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />

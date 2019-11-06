@@ -26,7 +26,7 @@
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-    <p:growl id="growl"/>
+                <p:growl id="growl"/>
 
                 <b:panel collapsible="false" title="#{msg['title.solicituddocente']}" look="primary" rendered="#{p:ifGranted('DOCENTE')}" >
 
@@ -75,19 +75,19 @@
                                                  disabled="true"
                                                  />
 
-                           <p:outputLabel value="#{msg['field.vistobueno']}"/>
-                    <p:fieldset>
-                        <p:spacer width="5"/>
-                        <p:outputLabel value="#{msg['field.coordinador']}" />
-                          <p:spacer width="5"/>
-                        <p:outputLabel value="#{solicitudController.columnNameVistoBueno(solicitudController.solicitud.vistoBueno)}" 
-                                       />
-                        <p:spacer width="25"/>
-                        <p:outputLabel value="#{msg['field.secretarioadministrativo']}" />
-                        <p:spacer width="5"/>
-                        <p:outputLabel value="#{solicitudController.columnNameVistoBuenoSecretarioAdministrativo(solicitudController.solicitud.vistoBuenoSecretarioAdministrativo)}" 
-                                       />
-                    </p:fieldset>
+                        <p:outputLabel value="#{msg['field.vistobueno']}"/>
+                        <p:fieldset>
+                            <p:spacer width="5"/>
+                            <p:outputLabel value="#{msg['field.coordinador']}" />
+                            <p:spacer width="5"/>
+                            <p:outputLabel value="#{solicitudController.columnNameVistoBueno(solicitudController.solicitud.vistoBueno)}" 
+                                           />
+                            <p:spacer width="25"/>
+                            <p:outputLabel value="#{msg['field.secretarioadministrativo']}" />
+                            <p:spacer width="5"/>
+                            <p:outputLabel value="#{solicitudController.columnNameVistoBuenoSecretarioAdministrativo(solicitudController.solicitud.vistoBuenoSecretarioAdministrativo)}" 
+                                           />
+                        </p:fieldset>
 
                         <p:outputLabel  value="#{msg['field.telefono']}" />
                         <jmoordbjsf:inputText span="4"  value="#{solicitudController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
@@ -216,8 +216,8 @@
                         <p:outputLabel  value="#{msg['field.lugares']}" />
                         <p:chips required="true" value="#{solicitudController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
 
-                     
-                          <p:outputLabel value="#{msg['field.solicitud']}"/>
+
+                        <p:outputLabel value="#{msg['field.solicitud']}"/>
                         <p:dataTable id="datatableTipoVehiculo" var="item" value="#{solicitudController.tipoVehiculoCantidadBeansList}" 
                                      editable="true" editMode="cell" widgetVar="cellCars">
                             <f:facet name="header">
@@ -230,7 +230,7 @@
 
                             <p:column headerText="#{msg['field.idtipovehiculo']}">
                                 <h:outputText value="#{item.tipovehiculo.idtipovehiculo} (#{item.maximo})" />
-                                
+
                             </p:column>
 
                             <p:column  headerText="#{msg['field.vehiculos']}" style="width:150px">
@@ -254,7 +254,7 @@
 
 
 
-  <p:outputLabel value="#{msg['field.totaltipovehiculo']}" />
+                        <p:outputLabel value="#{msg['field.totaltipovehiculo']}" />
                         <p:outputLabel id="totalTipoVehiculoCantidad" value="#{solicitudController.calcularTotalVehiculo()}"/>
 
                         <p:outputLabel  value="#{msg['field.pasajeros']}" >
@@ -262,40 +262,6 @@
                         </p:outputLabel>
                         <p:outputLabel value="#{solicitudController.calcularTotalPasajeros()}" id="pasajeros"/>
 
-                      
-
-
-
-                        <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
-                         <b:row>
-                            <b:column medium-screen="4">
-                        <jmoordbjsf:calendar required="true"
-                                             pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}"
-                                             listener="#{solicitudController.calendarChangeListener}"
-                                            update=":form:msg , :form:growl :form:datatableDisponibles, :form:horapartida"
-                                             />
-                         </b:column>
-                            <b:column medium-screen="2">
-                                <p:outputLabel id="horapartida" value="#{solicitudController.showHour(solicitudController.solicitud.fechahorapartida)}"  />
-                            </b:column>
-                        </b:row>
-
-
-
-                        <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
-                             <b:row>
-                            <b:column medium-screen="4">
-                        <jmoordbjsf:calendar required="true" pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
-                                             listener="#{solicitudController.calendarChangeListener}"
-                                           update=":form:msg , :form:growl :form:datatableDisponibles :form:horaregreso"
-
-                                             label="#{msg['field.fechahoraregreso']}" />
-                        
-                         </b:column>
-                            <b:column medium-screen="2">
-                                <p:outputLabel id="horaregreso" value="#{solicitudController.showHour(solicitudController.solicitud.fechahoraregreso)}"  />
-                            </b:column>
-                        </b:row>
 
                         <p:outputLabel  value="#{msg['field.dias']}" />
                         <p:selectCheckboxMenu id="multiple" value="#{solicitudController.diasSelected}" label="#{msg['field.rangoagenda']}" multiple="true"
@@ -308,6 +274,40 @@
                                     listener="#{solicitudController.changeDaysViewAvailable()}"
                                     process="@this,pasajeros"/>
                         </p:selectCheckboxMenu>
+
+
+                        <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
+                        <b:row>
+                            <b:column medium-screen="4">
+                                <jmoordbjsf:calendar required="true"
+                                                     pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}"
+                                                     listener="#{solicitudController.calendarChangeListener}"
+                                                     update=":form:msg , :form:growl :form:datatableDisponibles, :form:horapartida"
+                                                     />
+                            </b:column>
+                            <b:column medium-screen="2">
+                                <p:outputLabel id="horapartida" value="#{solicitudController.showHour(solicitudController.solicitud.fechahorapartida)}"  />
+                            </b:column>
+                        </b:row>
+
+
+
+                        <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
+                        <b:row>
+                            <b:column medium-screen="4">
+                                <jmoordbjsf:calendar required="true" pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                                                     listener="#{solicitudController.calendarChangeListener}"
+                                                     update=":form:msg , :form:growl :form:datatableDisponibles :form:horaregreso"
+
+                                                     label="#{msg['field.fechahoraregreso']}" />
+
+                            </b:column>
+                            <b:column medium-screen="2">
+                                <p:outputLabel id="horaregreso" value="#{solicitudController.showHour(solicitudController.solicitud.fechahoraregreso)}"  />
+                            </b:column>
+                        </b:row>
+
+
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <jmoordbjsf:inputText required="true" span="8" value="#{solicitudController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
@@ -328,7 +328,7 @@
 
                     <b:row>
                         <b:column span="12">
-                         <p:dataTable value="#{solicitudController.disponiblesBeansList}" 
+                            <p:dataTable value="#{solicitudController.disponiblesBeansList}" 
                                          id="datatableDisponibles"
                                          var="item"  >
                                 <f:facet name="header">

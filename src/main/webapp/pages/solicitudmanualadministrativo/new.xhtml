@@ -199,6 +199,18 @@
                         </p:outputLabel>
                         <p:outputLabel value="#{solicitudManualAdministrativoController.calcularTotalPasajeros()}" id="pasajeros"/>
 
+                        
+                           <p:outputLabel  value="#{msg['field.dias']}" />
+                        <p:selectCheckboxMenu id="multiple" value="#{solicitudManualAdministrativoController.diasSelected}" label="#{msg['field.dias']}" multiple="true"
+                                              required="true" 
+                                              requiredMessage="#{msg['field.dias']} #{app['info.required']}"
+                                              panelStyle="width:250px">
+                            <f:selectItems value="#{solicitudManualAdministrativoController.diasList}" />
+                            <p:ajax event="change" update=":form:datatableDisponibles"
+                                    listener="#{solicitudManualAdministrativoController.changeDaysViewAvailable()}"
+                                    process="@this,pasajeros"/>
+                        </p:selectCheckboxMenu>
+
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
                         <b:row>
@@ -231,17 +243,7 @@
                             </b:column>
                         </b:row>
 
-                        <p:outputLabel  value="#{msg['field.dias']}" />
-                        <p:selectCheckboxMenu id="multiple" value="#{solicitudManualAdministrativoController.diasSelected}" label="#{msg['field.dias']}" multiple="true"
-                                              required="true" 
-                                              requiredMessage="#{msg['field.dias']} #{app['info.required']}"
-                                              panelStyle="width:250px">
-                            <f:selectItems value="#{solicitudManualAdministrativoController.diasList}" />
-                            <p:ajax event="change" update=":form:datatableDisponibles"
-                                    listener="#{solicitudManualAdministrativoController.changeDaysViewAvailable()}"
-                                    process="@this,pasajeros"/>
-                        </p:selectCheckboxMenu>
-
+                     
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <jmoordbjsf:pinputText required="true" size="60" value="#{solicitudManualAdministrativoController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
