@@ -1165,6 +1165,7 @@ String action = getAction();
             unidadList = new ArrayList<>();
             unidadList.add(jmoordb_user.getUnidad());
             solicitud.setUnidad(unidadList);
+          diasSelected[0]=diasList.get(0);
 
             Integer mes = DateUtil.mesDeUnaFecha(solicitud.getFecha());
 
