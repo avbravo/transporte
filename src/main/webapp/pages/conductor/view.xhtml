@@ -50,6 +50,14 @@
                          <p:outputLabel  value="#{msg['field.escontrol']}" />
                         <jmoordbjsf:noyes value="#{conductorController.conductor.escontrol}" id="escontrol"  required="true"/>
 
+                        
+                           <p:outputLabel  value="#{msg['field.totalkm']}" />
+                         <p:outputLabel  value="#{conductorController.conductor.totalkm}"  />
+                          
+                         <p:outputLabel  value="#{msg['field.totalconsumo']}" />
+                          <p:outputLabel  value="#{conductorController.conductor.totalconsumo}" />
+                         <p:outputLabel  value="#{msg['field.totalviajes']}" />
+                         <p:outputLabel  value="#{conductorController.conductor.totalviajes}"  />
                     </b:panelGrid>
                     <jmoordbjsf:toolbarview 
                         renderedDelete="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"

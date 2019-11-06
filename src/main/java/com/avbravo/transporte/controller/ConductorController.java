@@ -307,6 +307,9 @@ public class ConductorController implements Serializable, IController {
     public Boolean beforeSave() {
         try {
             conductor.setIdconductor(autoincrementableServices.getContador("conductor"));
+            conductor.setTotalconsumo(0.0);
+            conductor.setTotalkm(0.0);
+            conductor.setTotalviajes(0);
             return true;
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());

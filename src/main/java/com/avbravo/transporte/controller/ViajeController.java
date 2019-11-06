@@ -1224,7 +1224,7 @@ public class ViajeController implements Serializable, IController {
                     JsfUtil.warningMessage(rf.getMessage("warning.solicitudnoactualizada"));
                     return "";
                 }
-//Actualiza los total en el vehiculo
+//Actualiza los totales en el vehiculo
 
                 Vehiculo vehiculo = viaje.getVehiculo();
                 vehiculo.setTotalconsumo(vehiculo.getTotalconsumo() + viaje.getCostocombustible());
@@ -1237,7 +1237,23 @@ public class ViajeController implements Serializable, IController {
                     JsfUtil.warningMessage(rf.getMessage("warning.vehiculonoactualizado"));
                     return "";
                 }
+//Actualiza los totales en el conductor
 
+                Conductor conductor = viaje.getConductor();
+                conductor.setTotalconsumo(conductor.getTotalconsumo() + viaje.getCostocombustible());
+                conductor.setTotalkm(conductor.getTotalkm() + viaje.getKmestimados());
+                conductor.setTotalviajes(conductor.getTotalviajes() + 1);
+                if (conductorRepository.update(conductor)) {
+                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getCedula(), jmoordb_user.getUsername(),
+                            "update totales desde creacion de  conductor", "conductor", conductorRepository.toDocument(conductor).toString()));
+                } else {
+                    JsfUtil.warningMessage(rf.getMessage("warning.conductornoactualizado"));
+                    return "";
+                }
+
+                
+                
+                
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 usuarioList = new ArrayList<>();
                 if (solicitud.getUsuario().get(0).getUsername().equals(solicitud.getUsuario().get(1).getUsername())) {
@@ -1388,7 +1404,7 @@ public class ViajeController implements Serializable, IController {
             completeConductor("");
             validarMensajesDias();
 
-            JsfUtil.updateJSFComponent(":form::form:warningMessage");
+            JsfUtil.updateJSFComponent(":form:form:warningMessage");
             JsfUtil.updateJSFComponent(":form:content");
             JsfUtil.updateJSFComponent(":form:commandButtonShowSolicitudDetalles");
 
@@ -1511,7 +1527,7 @@ public class ViajeController implements Serializable, IController {
 
             viaje.setMensajeWarning(viaje.getMensajeWarning() + " Fecha/hora regreso ( " + llegada + ")");
 
-            JsfUtil.updateJSFComponent(":form::form:warningMessage");
+            JsfUtil.updateJSFComponent(":form:form:warningMessage");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }

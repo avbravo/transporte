@@ -202,8 +202,8 @@
                         <p:outputLabel  value="#{msg['field.lugares']}" />
                         <p:chips required="true" value="#{coordinadorController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
 
-                     
-                          <p:outputLabel value="#{msg['field.solicitud']}"/>
+
+                        <p:outputLabel value="#{msg['field.solicitud']}"/>
                         <p:dataTable id="datatableTipoVehiculo" var="item" value="#{coordinadorController.tipoVehiculoCantidadBeansList}" 
                                      editable="true" editMode="cell" widgetVar="cellCars">
                             <f:facet name="header">
@@ -240,7 +240,7 @@
 
 
 
-  <p:outputLabel value="#{msg['field.totaltipovehiculo']}" />
+                        <p:outputLabel value="#{msg['field.totaltipovehiculo']}" />
                         <p:outputLabel id="totalTipoVehiculoCantidad" value="#{coordinadorController.calcularTotalVehiculo()}"/>
 
                         <p:outputLabel  value="#{msg['field.pasajeros']}" >
@@ -248,19 +248,19 @@
                         </p:outputLabel>
                         <p:outputLabel value="#{coordinadorController.calcularTotalPasajeros()}" id="pasajeros"/>
 
-                      
+
 
 
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
-                         <b:row>
+                        <b:row>
                             <b:column medium-screen="4">
-                        <jmoordbjsf:calendar required="true"
-                                             pattern="dd/MM/yyyy HH:mm a" value="#{coordinadorController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}"
-                                             listener="#{coordinadorController.calendarChangeListener}"
-                                            update=":form:msg  :form:datatableDisponibles, :form:horapartida"
-                                             />
-                         </b:column>
+                                <jmoordbjsf:calendar required="true"
+                                                     pattern="dd/MM/yyyy HH:mm a" value="#{coordinadorController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}"
+                                                     listener="#{coordinadorController.calendarChangeListener}"
+                                                     update=":form:msg  :form:datatableDisponibles, :form:horapartida"
+                                                     />
+                            </b:column>
                             <b:column medium-screen="2">
                                 <p:outputLabel id="horapartida" value="#{coordinadorController.showHour(coordinadorController.solicitud.fechahorapartida)}"  />
                             </b:column>
@@ -269,15 +269,15 @@
 
 
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
-                             <b:row>
+                        <b:row>
                             <b:column medium-screen="4">
-                        <jmoordbjsf:calendar required="true" pattern="dd/MM/yyyy HH:mm a" value="#{coordinadorController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
-                                             listener="#{coordinadorController.calendarChangeListener}"
-                                           update=":form:msg  :form:datatableDisponibles :form:horaregreso"
+                                <jmoordbjsf:calendar required="true" pattern="dd/MM/yyyy HH:mm a" value="#{coordinadorController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                                                     listener="#{coordinadorController.calendarChangeListener}"
+                                                     update=":form:msg  :form:datatableDisponibles :form:horaregreso"
 
-                                             label="#{msg['field.fechahoraregreso']}" />
-                        
-                         </b:column>
+                                                     label="#{msg['field.fechahoraregreso']}" />
+
+                            </b:column>
                             <b:column medium-screen="2">
                                 <p:outputLabel id="horaregreso" value="#{coordinadorController.showHour(coordinadorController.solicitud.fechahoraregreso)}"  />
                             </b:column>
@@ -314,7 +314,7 @@
 
                     <b:row>
                         <b:column span="12">
-                         <p:dataTable value="#{coordinadorController.disponiblesBeansList}" 
+                            <p:dataTable value="#{coordinadorController.disponiblesBeansList}" 
                                          id="datatableDisponibles"
                                          var="item"  >
                                 <f:facet name="header">
