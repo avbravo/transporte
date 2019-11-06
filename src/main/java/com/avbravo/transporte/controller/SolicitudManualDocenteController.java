@@ -343,7 +343,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
           //  cargarSchedule();
      String  action = getAction();
-            System.out.println("Action "+action);
+         
 
             if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
                 inicializar();
@@ -751,7 +751,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
 
                 //Verifica si es un coordinador y le envia la notificacion
                 usuarioList.forEach((u) -> {
-                    System.out.println("===> Usuario: " + u.getUsername());
+                    
                     notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
 
                 });
@@ -1872,6 +1872,11 @@ public class SolicitudManualDocenteController implements Serializable, IControll
         try {
             Integer c = 0;
             diasconsecutivos = false;
+            if(diasSelected == null){
+                  JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.seleccionerangodias"));
+
+                return false;
+            }
             for (String d : diasSelected) {
                 if (d.equals("Dia/ Dias Consecutivo")) {
                     diasconsecutivos = true;

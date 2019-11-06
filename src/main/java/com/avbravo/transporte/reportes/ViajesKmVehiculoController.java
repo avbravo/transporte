@@ -339,8 +339,8 @@ table.addCell(ReportUtils.PdfCell("Placa", FontFactory.getFont("arial", 11, Font
            
            
             
-        } catch (Exception ex) {
-            System.out.println("Error " + ex.getMessage());
+        } catch (Exception e) {
+          errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         document.close();
 

@@ -224,7 +224,7 @@ public class TimeLineController implements Serializable, IError {
                                 case "SOLICITADO":
                                    availability="Solicitado";
                                    color =CSSTimeLine.azul;
-                                    System.out.println("id= "+s.getIdsolicitud());
+                               
                                    break;
                                 case "APROBADO":
                                      availability="Aprobado";
@@ -288,7 +288,7 @@ public class TimeLineController implements Serializable, IError {
                                 case "SOLICITADO":
                                    availability="Solicitado";
                                    color =CSSTimeLine.azul;
-                                    System.out.println("id= "+s.getIdsolicitud());
+                             
                                    break;
                                 case "APROBADO":
                                      availability="Aprobado";

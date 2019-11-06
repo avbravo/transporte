@@ -338,8 +338,8 @@ public class ViajesKmConductorController implements Serializable, IController {
            
            
             
-        } catch (Exception ex) {
-            System.out.println("Error " + ex.getMessage());
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         document.close();
 

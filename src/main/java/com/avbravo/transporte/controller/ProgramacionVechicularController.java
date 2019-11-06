@@ -361,8 +361,8 @@ public class ProgramacionVechicularController implements Serializable, IControll
 
             }
             document.add(table);
-        } catch (Exception ex) {
-            System.out.println("Error " + ex.getMessage());
+        } catch (Exception e) {
+       errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         document.close();
 

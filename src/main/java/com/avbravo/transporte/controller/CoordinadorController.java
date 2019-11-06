@@ -1442,7 +1442,7 @@ public class CoordinadorController implements Serializable, IController {
 
             }
 
-            System.out.println("solicitud " + solicitud.getVistoBueno().getAprobado());
+            
         } catch (Exception e) {
 
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
@@ -1939,6 +1939,11 @@ public class CoordinadorController implements Serializable, IController {
         try {
             Integer c = 0;
             diasconsecutivos = false;
+              if(diasSelected == null){
+                  JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.seleccionerangodias"));
+
+                return false;
+            }
             for (String d : diasSelected) {
                 if (d.equals("Dia/ Dias Consecutivo")) {
                     diasconsecutivos = true;

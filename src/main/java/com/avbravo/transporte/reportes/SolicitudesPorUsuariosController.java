@@ -191,7 +191,7 @@ public class SolicitudesPorUsuariosController implements Serializable, IControll
             this.page = page;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
             Document doc;
-            System.out.println("Usuario====> "+usuarioSearch.getUsername());
+        
          Bson filter = Filters.eq("usuario.username", usuarioSearch.getUsername());
           solicitudList = solicitudRepository.filterBetweenDateWithoutHours(filter,
                     "fechahorapartida", fechaDesde,
@@ -273,8 +273,8 @@ document.add(ReportUtils.paragraph("", FontFactory.getFont("arial", 12, Font.BOL
 
             }
             document.add(table);
-        } catch (Exception ex) {
-            System.out.println("Error " + ex.getMessage());
+        } catch (Exception e) {
+         errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
         }
         document.close();
 

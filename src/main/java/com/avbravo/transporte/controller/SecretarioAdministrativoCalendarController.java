@@ -2259,6 +2259,11 @@ public class SecretarioAdministrativoCalendarController implements Serializable,
         try {
             Integer c = 0;
             diasconsecutivos = false;
+              if(diasSelected == null){
+                  JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.seleccionerangodias"));
+
+                return false;
+            }
             for (String d : diasSelected) {
                 if (d.equals("Dia/ Dias Consecutivo")) {
                     diasconsecutivos = true;
