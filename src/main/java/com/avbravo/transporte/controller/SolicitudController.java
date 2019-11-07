@@ -344,8 +344,10 @@ public class SolicitudController implements Serializable, IController {
             cargarSchedule();
      String  action = getAction();
             
-
-            if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
+ if (action == null  || action.equals("golist")){
+             
+         }
+            if ( action.equals("gonew") || action.equals("new") ) {
                 inicializar();
 
             }
@@ -1262,6 +1264,7 @@ public class SolicitudController implements Serializable, IController {
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+              JsfUtil.updateJSFComponent(":form:growl");
         }
         return "";
     }

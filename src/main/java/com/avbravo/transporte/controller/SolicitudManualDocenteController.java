@@ -343,9 +343,11 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
           //  cargarSchedule();
      String  action = getAction();
-         
+         if (action == null  || action.equals("golist")){
+             
+         }
 
-            if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
+            if ( action.equals("gonew") || action.equals("new")) {
                 inicializar();
 
             }
@@ -1268,6 +1270,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+              JsfUtil.updateJSFComponent(":form:growl");
         }
         return "";
     }
