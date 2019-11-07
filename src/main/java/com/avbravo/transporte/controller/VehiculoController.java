@@ -144,7 +144,7 @@ public class VehiculoController implements Serializable, IController {
             start();
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -152,7 +152,7 @@ public class VehiculoController implements Serializable, IController {
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -219,7 +219,7 @@ public class VehiculoController implements Serializable, IController {
             vehiculoDataModel = new VehiculoDataModel(vehiculoList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
 
         }
 
@@ -232,7 +232,7 @@ public class VehiculoController implements Serializable, IController {
             vehiculo.setPlaca("");
             writable = false;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }
@@ -261,7 +261,7 @@ public class VehiculoController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
 
         return "";
@@ -291,7 +291,7 @@ public class VehiculoController implements Serializable, IController {
             vehiculoRepository.update(vehiculo);
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }// </editor-fold>
@@ -310,7 +310,7 @@ public class VehiculoController implements Serializable, IController {
             vehiculo.setEnreparacion("no");
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return false;
     }

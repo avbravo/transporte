@@ -129,7 +129,7 @@ public class TipogiraController implements Serializable, IController {
             start();
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -137,7 +137,7 @@ public class TipogiraController implements Serializable, IController {
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -183,7 +183,7 @@ public class TipogiraController implements Serializable, IController {
             tipogiraDataModel = new TipogiraDataModel(tipogiraList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
 
         }
 

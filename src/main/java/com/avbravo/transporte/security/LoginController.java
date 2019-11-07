@@ -402,7 +402,7 @@ public class LoginController implements Serializable, SecurityInterface {
             //-----------------------------
             //              return "/dashboard.xhtml?faces-redirect=true";
         } catch (Exception e) {
-            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }
@@ -442,7 +442,7 @@ public class LoginController implements Serializable, SecurityInterface {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }// </editor-fold>
@@ -459,7 +459,7 @@ public class LoginController implements Serializable, SecurityInterface {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }
@@ -537,7 +537,7 @@ public class LoginController implements Serializable, SecurityInterface {
             usuarioRepository.update(usuario);
             JsfUtil.successMessage(rf.getAppMessage("info.update"));
         } catch (Exception e) {
-            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return null;
     }

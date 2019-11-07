@@ -141,7 +141,7 @@ public class JmoordbNotificationsController implements Serializable, IController
             start();
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -149,7 +149,7 @@ public class JmoordbNotificationsController implements Serializable, IController
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -167,7 +167,7 @@ public class JmoordbNotificationsController implements Serializable, IController
 
             jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
 
         }
 
@@ -217,7 +217,7 @@ public class JmoordbNotificationsController implements Serializable, IController
             jmoordbNotificationsDataModel = new JmoordbNotificationsDataModel(jmoordbNotificationsList);
             JsfUtil.successMessage("Marcados como vistos");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }// </editor-fold>
@@ -249,7 +249,7 @@ public class JmoordbNotificationsController implements Serializable, IController
 
             PrimeFaces.current().ajax().update("dropMenuTop");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }// </editor-fold>

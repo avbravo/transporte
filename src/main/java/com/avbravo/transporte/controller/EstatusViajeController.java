@@ -143,7 +143,7 @@ public class EstatusViajeController implements Serializable, IController {
             start();
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -151,7 +151,7 @@ public class EstatusViajeController implements Serializable, IController {
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -197,7 +197,7 @@ public class EstatusViajeController implements Serializable, IController {
             estatusViajeDataModel = new EstatusViajeDataModel(estatusViajeList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
 
         }
 

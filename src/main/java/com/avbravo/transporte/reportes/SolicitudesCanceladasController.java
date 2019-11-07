@@ -166,7 +166,7 @@ public class SolicitudesCanceladasController implements Serializable, IControlle
 //            }
             setSearchAndValue("searchViajesSinConductorController", "_betweendates");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -174,7 +174,7 @@ public class SolicitudesCanceladasController implements Serializable, IControlle
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -199,7 +199,7 @@ public class SolicitudesCanceladasController implements Serializable, IControlle
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
 
         }
 
@@ -267,7 +267,7 @@ public class SolicitudesCanceladasController implements Serializable, IControlle
             }
             document.add(table);
         } catch (Exception e) {
-          errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+          errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         document.close();
 

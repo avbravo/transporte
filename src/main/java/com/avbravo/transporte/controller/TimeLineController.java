@@ -85,7 +85,7 @@ public class TimeLineController implements Serializable, IError {
 //    timelineModel.toString(); 
 //          timelineConductorModel.toString();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -137,7 +137,7 @@ public class TimeLineController implements Serializable, IError {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "/pages/timeline/timelinevehiculo.xhtml";
     }
@@ -188,7 +188,7 @@ public class TimeLineController implements Serializable, IError {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "/pages/timeline/timelineconductor.xhtml";
     }
@@ -249,7 +249,7 @@ public class TimeLineController implements Serializable, IError {
             
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "/pages/timeline/timelinesolicitud.xhtml";
     }
@@ -314,7 +314,7 @@ public class TimeLineController implements Serializable, IError {
             
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "/pages/timeline/timelineusuario.xhtml";
     }

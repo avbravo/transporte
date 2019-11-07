@@ -170,7 +170,7 @@ public class SolicitudesPorUsuariosController implements Serializable, IControll
 //            }
             setSearchAndValue("searchViajesSinConductorController", "_betweendates");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -178,7 +178,7 @@ public class SolicitudesPorUsuariosController implements Serializable, IControll
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -203,7 +203,7 @@ public class SolicitudesPorUsuariosController implements Serializable, IControll
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
 
         }
 
@@ -274,7 +274,7 @@ document.add(ReportUtils.paragraph("", FontFactory.getFont("arial", 12, Font.BOL
             }
             document.add(table);
         } catch (Exception e) {
-         errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+         errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         document.close();
 

@@ -167,7 +167,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
 
            // setSearchAndValue("ProgramacionVehicularController", "_betweendates");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -175,7 +175,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -281,7 +281,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
             viajeDataModel = new ViajeDataModel(viajeList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
 
         }
 
@@ -362,7 +362,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
             }
             document.add(table);
         } catch (Exception e) {
-       errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+       errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         document.close();
 

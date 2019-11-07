@@ -181,7 +181,7 @@ public class ViajesSinSolicitudController implements Serializable, IController {
 //            }
             setSearchAndValue("searchViajesSinConductorController", "_betweendates");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -189,7 +189,7 @@ public class ViajesSinSolicitudController implements Serializable, IController {
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -297,7 +297,7 @@ public class ViajesSinSolicitudController implements Serializable, IController {
             viajeDataModel = new ViajeDataModel(viajeList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
 
         }
 
@@ -378,7 +378,7 @@ public class ViajesSinSolicitudController implements Serializable, IController {
             }
             document.add(table);
         } catch (Exception e) {
-      errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+      errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         document.close();
 

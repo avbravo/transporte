@@ -182,7 +182,7 @@ public class ViajesKmVehiculoController implements Serializable, IController {
 //            }
             setSearchAndValue("searchViajesSinConductorController", "_betweendates");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -190,7 +190,7 @@ public class ViajesKmVehiculoController implements Serializable, IController {
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -254,7 +254,7 @@ public class ViajesKmVehiculoController implements Serializable, IController {
             vehiculoDataModel = new VehiculoDataModel(vehiculoList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
 
         }
 
@@ -340,7 +340,7 @@ table.addCell(ReportUtils.PdfCell("Placa", FontFactory.getFont("arial", 11, Font
            
             
         } catch (Exception e) {
-          errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+          errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         document.close();
 

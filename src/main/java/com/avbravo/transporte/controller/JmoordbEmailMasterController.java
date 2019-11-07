@@ -133,7 +133,7 @@ public class JmoordbEmailMasterController implements Serializable, IController {
             outlook();
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -141,7 +141,7 @@ public class JmoordbEmailMasterController implements Serializable, IController {
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -178,7 +178,7 @@ public class JmoordbEmailMasterController implements Serializable, IController {
             jmoordbEmailMasterDataModel = new JmoordbEmailMasterDataModel(jmoordbEmailMasterList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
 
         }
 
@@ -201,7 +201,7 @@ public class JmoordbEmailMasterController implements Serializable, IController {
             jmoordbEmailMaster.setPassword(JsfUtil.encriptar(jmoordbEmailMaster.getPassword()));
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return false;
     }// </editor-fold>
@@ -222,7 +222,7 @@ jmoordbEmailMaster.setPassword(JsfUtil.encriptar(jmoordbEmailMaster.getPassword(
         
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return false;
     }
@@ -237,7 +237,7 @@ jmoordbEmailMaster.setPassword(JsfUtil.encriptar(jmoordbEmailMaster.getPassword(
             jmoordbEmailMaster.setMail_smtp_port("587");
             jmoordbEmailMaster.setMail_smtp_starttls_enable("true");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }
@@ -252,7 +252,7 @@ jmoordbEmailMaster.setPassword(JsfUtil.encriptar(jmoordbEmailMaster.getPassword(
             jmoordbEmailMaster.setMail_smtp_port("587");
             jmoordbEmailMaster.setMail_smtp_starttls_enable("true");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }
@@ -280,7 +280,7 @@ jmoordbEmailMaster.setPassword(JsfUtil.encriptar(jmoordbEmailMaster.getPassword(
             }
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return false;
     }    // </editor-fold>

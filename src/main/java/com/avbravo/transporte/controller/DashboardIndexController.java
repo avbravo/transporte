@@ -303,7 +303,7 @@ public class DashboardIndexController implements Serializable {
             totalVehiculosActivos -= totalVehiculosEnReparacion;
 
         } catch (Exception e) {
-            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage());
+            errorServices.errorMessage(JsfUtil.nameOfClass(), JsfUtil.nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }
     // </editor-fold>
