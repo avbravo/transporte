@@ -22,7 +22,7 @@
         </style>
 
 
-        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA, DOCENTE, ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block" > 
@@ -40,13 +40,13 @@
 
 
                         <p:outputLabel value="#{msg['field.solicitud']}"/>
-                        <p:dataTable id="datatableTipoVehiculo" var="item" value="#{solicitudController.tipoVehiculoCantidadBeansList}" 
+                        <p:dataTable id="datatableTipoVehiculo" var="item" value="#{disponiblesController.tipoVehiculoCantidadBeansList}" 
                                      editable="true" editMode="cell" widgetVar="cellCars">
                             <f:facet name="header">
 
                             </f:facet>
 
-                            <p:ajax event="cellEdit" listener="#{solicitudController.onCellEdit}" 
+                            <p:ajax event="cellEdit" listener="#{disponiblesController.onCellEdit}" 
                                     update=":form:msg, :form:pasajeros, :form:datatableTipoVehiculo,:form:datatableDisponibles, :form:totalTipoVehiculoCantidad" />
 
 
@@ -74,13 +74,13 @@
 
 
                         <p:outputLabel value="#{msg['field.totaltipovehiculo']}" />
-                        <p:outputLabel id="totalTipoVehiculoCantidad" value="#{solicitudController.calcularTotalVehiculo()}"/>
+                        <p:outputLabel id="totalTipoVehiculoCantidad" value="#{disponiblesController.calcularTotalVehiculo()}"/>
 
 
                         <p:outputLabel  value="#{msg['field.pasajeros']}" >
                             <i class="pi pi-users"></i>
                         </p:outputLabel>
-                        <p:outputLabel value="#{solicitudController.calcularTotalPasajeros()}" id="pasajeros"/>
+                        <p:outputLabel value="#{disponiblesController.calcularTotalPasajeros()}" id="pasajeros"/>
 
 
 
@@ -91,13 +91,13 @@
                         <b:row>
                             <b:column medium-screen="4">
                                 <jmoordbjsf:calendar required="true"
-                                                     pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
-                                                     listener="#{solicitudController.calendarChangeListener}"
+                                                     pattern="dd/MM/yyyy HH:mm a" value="#{disponiblesController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
+                                                     listener="#{disponiblesController.calendarChangeListener}"
                                                      update=":form:msg :form:datatableDisponibles, :form:horapartida"
                                                      />
                             </b:column>
                             <b:column medium-screen="2">
-                                <p:outputLabel id="horapartida" value="#{solicitudController.showHour(solicitudController.solicitud.fechahorapartida)}"  />
+                                <p:outputLabel id="horapartida" value="#{disponiblesController.showHour(disponiblesController.solicitud.fechahorapartida)}"  />
                             </b:column>
                         </b:row>
 
@@ -112,37 +112,26 @@
                         <b:row>
                             <b:column medium-screen="4">
                                 <jmoordbjsf:calendar required="true"
-                                                     pattern="dd/MM/yyyy HH:mm a" value="#{solicitudController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                                                     pattern="dd/MM/yyyy HH:mm a" value="#{disponiblesController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
 
                                                      label="#{msg['field.fechahoraregreso']}"
-                                                     listener="#{solicitudController.calendarChangeListener}"
+                                                     listener="#{disponiblesController.calendarChangeListener}"
                                                      update=":form:msg  :form:datatableDisponibles :form:horaregreso"
                                                      />
                             </b:column>
                             <b:column medium-screen="2">
-                                <p:outputLabel id="horaregreso" value="#{solicitudController.showHour(solicitudController.solicitud.fechahoraregreso)}"  />
+                                <p:outputLabel id="horaregreso" value="#{disponiblesController.showHour(disponiblesController.solicitud.fechahoraregreso)}"  />
                             </b:column>
                         </b:row>
 
 
 
 
-                        <p:outputLabel  value="#{msg['field.dias']}" />
-                        <p:selectCheckboxMenu id="multiple" value="#{solicitudController.diasSelected}" label="#{msg['field.dias']}" multiple="true"
-                                              required="true" 
-                                              requiredMessage="#{msg['field.dias']} #{app['info.required']}"
-                                              panelStyle="width:250px">
-                            <f:selectItems value="#{solicitudController.diasList}" />
-                            <p:ajax event="change" update=":form:datatableDisponibles"
-                                    listener="#{solicitudController.changeDaysViewAvailable()}"
-                                    process="@this,pasajeros"/>
-                        </p:selectCheckboxMenu>
-
-
+                       
                     </b:panelGrid>
                     <b:row>
                         <b:column span="12">
-                            <p:dataTable value="#{solicitudController.disponiblesBeansList}" 
+                            <p:dataTable value="#{disponiblesController.disponiblesBeansList}" 
                                          id="datatableDisponibles"
                                          var="item"  >
                                 <f:facet name="header">
@@ -178,33 +167,33 @@
                                 <p:column style="width:95px">
 
                                     <p:rowToggler />
-                                    <h:outputText value="#{solicitudController.showDate(item.fechahorainicio)}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
+                                   <h:outputText value="#{disponiblesController.showDate(item.fechahorainicio)}" style="color: #{disponiblesController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
-
+ 
                                 <p:column headerText="#{msg['field.tipovehiculo']}" style="width:95px">
-                                    <h:outputText value="#{item.vehiculo.get(0).tipovehiculo.idtipovehiculo}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
+                                    <h:outputText value="#{item.vehiculo.get(0).tipovehiculo.idtipovehiculo}" style="color: #{disponiblesController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
 
                                 <p:column headerText="#{msg['field.disponible']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroBuses}" style="color: #{solicitudController.columnColorDisponibles(item)}" />
+                                    <p:outputLabel value="#{item.numeroBuses}" style="color: #{disponiblesController.columnColorDisponibles(item)}" />
                                 </p:column>
                                 <p:column headerText="#{msg['field.pasajeros']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroPasajeros}" style="color: #{solicitudController.columnColorDisponibles(item)}" />
+                                    <p:outputLabel value="#{item.numeroPasajeros}" style="color: #{disponiblesController.columnColorDisponibles(item)}" />
                                 </p:column>
 
 
 
                                 <p:column headerText="#{msg['field.solicitado']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroVehiculosSolicitados}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
+                                    <p:outputLabel value="#{item.numeroVehiculosSolicitados}" style="color: #{disponiblesController.columnColorDisponibles(item)}"  />
                                 </p:column>
                                 <p:column headerText="#{msg['field.pasajeros']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroPasajerosSolicitados}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
+                                    <p:outputLabel value="#{item.numeroPasajerosSolicitados}" style="color: #{disponiblesController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
                                 <p:column headerText="#{msg['field.vehiculosRecomendados']}" style="width:75px">
-                                    <p:outputLabel value="#{item.busesRecomendados}" style="color: #{solicitudController.columnColorDisponibles(item)}"  />
+                                    <p:outputLabel value="#{item.busesRecomendados}" style="color: #{disponiblesController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
 
@@ -248,7 +237,7 @@
 
 
         </b:form>
-        <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO, SECRETARIA')}"/>
+        <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA,DOCENTE, ADMINISTRATIVO')}"/>
 
         <br/><br/><br/>
     </ui:define>

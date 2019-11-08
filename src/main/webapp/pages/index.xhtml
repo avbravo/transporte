@@ -45,12 +45,12 @@
                     <b:badge rendered="#{dashboardIndexController.totalSolicitado == 0} " style="margin-left:10px; background-color:#5cb85c" value="#{msg['label.sinsolicitudes']}"  />
                     <b:badge rendered="#{dashboardIndexController.totalSolicitado > 0}" style="margin-left:10px; background-color:#7f0055" value="#{msg['label.pendientes']}"  />
                 </f:facet>
-                <b:row rendered="#{p:ifAnyGranted('COORDINADOR, SECRETARIO ADMINISTRATIVO')}">
+                <b:row rendered="#{p:ifAnyGranted('COORDINADOR,SUBDIRECTORADMINISTRATIVO')}">
                     <b:column span="12">
                        <p:outputLabel value="#{msg['label.vistobueno']}"/>
                     </b:column>
                 </b:row>
-                <b:row rendered="#{p:ifAnyGranted('COORDINADOR, SECRETARIO ADMINISTRATIVO')}">
+                <b:row rendered="#{p:ifAnyGranted('COORDINADOR,SUBDIRECTORADMINISTRATIVO')}">
 
                     <b:column span="2">
                         <h5><p:outputLabel value="#{msg['label.pendiente']}"/></h5>
@@ -84,7 +84,7 @@
                     </b:column>
                 </b:row>
                 
-                  <b:row rendered="#{p:ifAnyGranted('COORDINADOR, SECRETARIO ADMINISTRATIVO')}">
+                  <b:row rendered="#{p:ifAnyGranted('COORDINADOR,SUBDIRECTORADMINISTRATIVO')}">
                     <b:column span="6">
                         <p:chart id="totalporvistobueno" widgetVar="chartTotalVistoBueno"
                                  type="pie" model="#{dashboardIndexController.pieModelVistoBueno}"  />
@@ -164,7 +164,7 @@
 
             </b:panel>
 
-            <b:panel collapsible="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA,SECRETARIO ADMINISTRATIVO')}">
+            <b:panel collapsible="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA,SUBDIRECTORADMINISTATIVO')}">
                 <f:facet name="heading">
                     <i class="fa fa-car" style="padding-right:20px" />
                     <h:outputText value="#{msg['title.vehiculos']}" />

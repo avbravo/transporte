@@ -120,7 +120,7 @@ import org.primefaces.model.timeline.TimelineModel;
 
 @Setter
 
-public class SecretarioAdministrativoController implements Serializable, IController {
+public class SubdirectorAdministrativoCalendarController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
@@ -318,7 +318,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
 //    
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public SecretarioAdministrativoController() {
+    public SubdirectorAdministrativoCalendarController() {
     }
 
     // </editor-fold>
@@ -370,8 +370,8 @@ public class SecretarioAdministrativoController implements Serializable, IContro
             start();
             sugerenciaList = sugerenciaRepository.findBy("activo", "si");
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
-           // loadSchedule();
-           // loadScheduleViajes();
+            loadSchedule();
+            loadScheduleViajes();
         //    loadTimeLine();
         //    loadTimeLineConductor();
 
@@ -879,7 +879,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                 if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
                     //visto bueno del coordinador
                     if (solicitud.getVistoBueno().getAprobado().equals("si")) {
-                        //visto bueno  o pendiente del secretario administrativo
+                        //visto bueno  o pendiente del SUBDIRECTORADMINISTRATIVO
                         if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
                             valid = true;
                         }
@@ -910,7 +910,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
                 if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
                     //visto bueno del coordinador
                     if (solicitud.getVistoBueno().getAprobado().equals("si")) {
-                        //visto bueno  o pendiente del secretario administrativo
+                        //visto bueno  o pendiente del SUBDIRECTORADMINISTRATIVO
                         if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
                             valid = true;
                         }
@@ -2929,7 +2929,7 @@ public class SecretarioAdministrativoController implements Serializable, IContro
             Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
             RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
             repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
-                    "update vistobueno secretario administrativo", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+                    "update vistobueno subdirector administrativo", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             //Obtiene la lista de usuarios para notificar
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);

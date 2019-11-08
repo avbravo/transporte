@@ -1100,19 +1100,19 @@ public class ViajeController implements Serializable, IController {
                 //Verificar si tiene rol para cambiar el estatus
                 Rol jmoordb_rol = (Rol) JmoordbContext.get("jmoordb_rol");
                 Boolean allowed = false;
-                if (jmoordb_rol.getIdrol().equals("SECRETARIO ADMINISTRATIVO") || jmoordb_rol.getIdrol().equals("ADMINISTRADOR")) {
+                if (jmoordb_rol.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") || jmoordb_rol.getIdrol().equals("ADMINISTRADOR")) {
                     allowed = true;
                 } else {
-                    //Verificar si este usuario tiene el rol de secretario administrativo o administrador
+                    //Verificar si este usuario tiene el rol de SUBDIRECTORADMINISTRATIVO o administrador
                     for (Rol r : jmoordb_user.getRol()) {
-                        if (r.getIdrol().equals("SECRETARIO ADMINISTRATIVO") || r.getIdrol().equals("ADMINISTRADOR")) {
+                        if (r.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") || r.getIdrol().equals("ADMINISTRADOR")) {
                             allowed = true;
                             break;
                         }
                     }
                 }
                 if (allowed) {
-                    //Cambia el estatus del visto bueno del secretario administrativo
+                    //Cambia el estatus del visto bueno del SUBDIRECTORADMINISTRATIVO
                     solicitud.getVistoBuenoSecretarioAdministrativo().setAprobado("si");
                 } else {
                     JsfUtil.warningMessage(rf.getMessage("warning.faltavistobuenosecretarioadministativo"));

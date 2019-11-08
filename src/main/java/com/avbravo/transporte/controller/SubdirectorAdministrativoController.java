@@ -36,6 +36,7 @@ import com.avbravo.transporte.beans.DisponiblesBeans;
 import com.avbravo.transporte.beans.TipoVehiculoCantidadBeans;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.datamodel.SugerenciaDataModel;
+import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Estatus;
 import com.avbravo.transporteejb.entity.EstatusViaje;
 import com.avbravo.transporteejb.entity.Lugares;
@@ -50,6 +51,7 @@ import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.VistoBueno;
 import com.avbravo.transporteejb.entity.VistoBuenoSecretarioAdministrativo;
+import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.EstatusViajeRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
@@ -58,6 +60,7 @@ import com.avbravo.transporteejb.repository.TipovehiculoRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
+import com.avbravo.transporteejb.repository.ViajeRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.NotificacionServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
@@ -72,6 +75,7 @@ import com.avbravo.transporteejb.services.VistoBuenoServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -102,6 +106,8 @@ import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
+import org.primefaces.model.timeline.TimelineEvent;
+import org.primefaces.model.timeline.TimelineModel;
 // </editor-fold>
 
 /**
@@ -114,20 +120,27 @@ import org.primefaces.model.ScheduleModel;
 
 @Setter
 
-public class SolicitudAdministrativoController implements Serializable, IController {
+public class SubdirectorAdministrativoController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
-
+    private TimelineModel timelineModel;
+    private TimelineModel timelineConductorModel;
     String messages = "";
-
+    Boolean coordinadorvalido = false;
+    Boolean escoordinador = false;
     Integer index = 0;
     Integer pasajerosDisponibles = 0;
     ManagerEmail managerEmail = new ManagerEmail();
     private Boolean writable = false;
     private Boolean leyoSugerencias = false;
     Boolean diasconsecutivos = false;
+    private Date fechaDesde = new Date();
+    private Date fechaHasta = new Date();
+
     private String vistoBuenoSearch = "no";
+    private String vistoBuenoSecretarioAdministrativoSearch = "no";
+    private String viajeSecretarioAdministrativoSearch = "no";
     //DataModel
     private SolicitudDataModel solicitudDataModel;
     private SugerenciaDataModel sugerenciaDataModel;
@@ -138,7 +151,15 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     private Integer totalAprobado = 0;
     private Integer totalSolicitado = 0;
     private Integer totalRechazadoCancelado = 0;
+    private Integer totalPendienteVistoBueno = 0;
+    private Integer totalAprobadoVistoBueno = 0;
+    private Integer totalNoAprobadoVistoBueno = 0;
+    private Integer totalViajesNoRealizado = 0;
+    private Integer totalViajesRealizados = 0;
+    private Integer totalViajesCancelados = 0;
+
     private Integer totalViajes = 0;
+
     /**
      * se usan para obtener los lugares y asignarselo a los atributos lugres de
      * partida y llegada de la solicitud
@@ -147,7 +168,9 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     Lugares lugaresLlegada = new Lugares();
 
     private ScheduleModel eventModel;
+    private ScheduleModel eventModelViajes;
     private ScheduleEvent event = new DefaultScheduleEvent();
+    private ScheduleEvent eventViajes = new DefaultScheduleEvent();
     Integer page = 1;
     Integer rowPage = 25;
     private String stmpPort = "25";
@@ -159,16 +182,23 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
     //Entity
     Solicitud solicitud = new Solicitud();
+    Viaje viaje = new Viaje();
+    Conductor conductor = new Conductor();
+    Vehiculo vehiculo = new Vehiculo();
     Solicitud solicitudSelected;
-    Solicitud solicitudSearch = new Solicitud();
+
     Solicitud solicitudOld = new Solicitud();
-    Estatus estatusSearch = new Estatus();
+
     Usuario solicita = new Usuario();
     Usuario solicitaOld = new Usuario();
     Usuario responsable = new Usuario();
     Usuario responsableOld = new Usuario();
 
     Solicitud solicitudCopiar = new Solicitud();
+    //
+    Solicitud solicitudSearch = new Solicitud();
+    Estatus estatusSearch = new Estatus();
+    Tiposolicitud tiposolicitudSearch = new Tiposolicitud();
 
     //List
     List<Solicitud> solicitudGuardadasList = new ArrayList<>();
@@ -196,6 +226,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
     //Repository
     @Inject
+    ConductorRepository conductorRepository;
+    @Inject
     RevisionHistoryRepository revisionHistoryRepository;
     @Inject
     CarreraRepository carreraRepository;
@@ -219,7 +251,9 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     UsuarioRepository usuarioRepository;
     @Inject
     RevisionHistoryServices revisionHistoryServices;
-    // </editor-fold>  
+    @Inject
+    ViajeRepository viajeRepository;
+// </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="services">
     //Services
     @Inject
@@ -234,7 +268,6 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     VistoBuenoServices vistoBuenoServices;
     @Inject
     VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
-
     @Inject
     SemestreServices semestreServices;
     @Inject
@@ -285,7 +318,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 //    
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public SolicitudAdministrativoController() {
+    public SubdirectorAdministrativoController() {
     }
 
     // </editor-fold>
@@ -295,8 +328,11 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         try {
 
             eventModel = new DefaultScheduleModel();
-            // eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", DateUtil.fechaHoraActual(), DateUtil.fechaHoraActual()));
+            eventModelViajes = new DefaultScheduleModel();
+            timelineModel = new TimelineModel();
+            timelineConductorModel = new TimelineModel();
 
+            // eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", DateUtil.fechaHoraActual(), DateUtil.fechaHoraActual()));
             diasList = new ArrayList<String>();
             diasList.add("Dia/ Dias Consecutivo");
             diasList.add("Lunes");
@@ -324,35 +360,36 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     .withNameFieldOfRowPage("rowPage")
                     .withTypeKey("primary")
                     .withSearchLowerCase(false)
-                    .withPathReportDetail("/resources/reportes/solicitudadministrativo/details.jasper")
-                    .withPathReportAll("/resources/reportes/solicitudadministrativo/all.jasper")
+                    .withPathReportDetail("/resources/reportes/secretarioadministrativo/details.jasper")
+                    .withPathReportAll("/resources/reportes/secretarioadministrativo/all.jasper")
                     .withparameters(parameters)
-                    .withResetInSave(false)
-                    .withAction("golist")
+                    .withResetInSave(false) 
+                  .withAction("golist")
                     .build();
 
             start();
             sugerenciaList = sugerenciaRepository.findBy("activo", "si");
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
-            cargarSchedule();
-            String action = getAction();
-           
+           // loadSchedule();
+           // loadScheduleViajes();
+        //    loadTimeLine();
+        //    loadTimeLineConductor();
 
-            if (action == null || action.equals("golist") || action.equals("gonew") || action.equals("new")) {
+            String action = "gonew";
+            if (getAction() != null) {
+                action = getAction();
+            }
+
+            if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
                 inicializar();
 
             }
             if (action.equals("view")) {
                 view();
-            } else {
-                if (action.equals("list")) {
-                    move(page);
-                }
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
-
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -413,7 +450,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
 
         return true;
@@ -424,56 +461,114 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
+    }// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="handleSelectPorSolicitado(SelectEvent event) ">
+
+    public void handleSelectPorSolicitado(SelectEvent event) {
+        try {
+
+         setSearchAndValue("porsolicitado", solicita);
+
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+
+    }// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="handleSelectPorResponsable(SelectEvent event)">
+
+    public void handleSelectPorResponsable(SelectEvent event) {
+        try {
+            setSearchAndValue("porresponsable", responsable);
+
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+
     }// </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="move(Integer page)">
     @Override
     public void move(Integer page) {
         try {
+
             this.page = page;
             solicitudDataModel = new SolicitudDataModel(solicitudList);
-            Document doc;
+
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+
+            String descripcion = jmoordb_user.getUnidad().getIdunidad();
+            Document doc = new Document("activo", "si");
 
             switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
 
-                    doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
 
                 case "idsolicitud":
                     if (getValueSearch() != null) {
-                        solicitudSearch.setIdsolicitud((Integer) getValueSearch());
-                        doc = new Document("idsolicitud", solicitudSearch.getIdsolicitud()).append("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
                         solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
                     } else {
-                        solicitudList = solicitudRepository.findPagination(page, rowPage);
+                        solicitudList = solicitudRepository.findPagination(doc, page, rowPage);
                     }
 
                     break;
 
                 case "estatus":
                     Estatus estatus = new Estatus();
-                    estatus = (Estatus) getValueSearch();
-                    doc = new Document("estatus.idestatus", estatus.getIdestatus()).append("activo", "si").append("usuario.username", jmoordb_user.getUsername());
+                    estatus = (Estatus) getValueSearch() ;
+                    doc.append("estatus.idestatus", estatus.getIdestatus());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
 
-                case "vistobueno":
-                    String vistoBueno = (String) getValueSearch();
-                    doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
-                    doc.append("vistoBuenoSecretarioAdministrativo.aprobado", vistoBueno);
+                case "_betweendates":
+
+                    solicitudList = solicitudRepository.filterBetweenDatePaginationWithoutHours("activo", "si",
+                            "fechahorapartida", fechaDesde,
+                            "fechahoraregreso", fechaHasta,
+                            page, rowPage, new Document("idsolicitud", -1));
+                    break;
+                case "vistobuenocoordinador":
+
+                    String vistoBueno = (String) getValueSearch() ;
+                    doc = new Document("activo", "si");
+                    doc.append("vistoBueno.aprobado", vistoBueno);
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
+                    break;
+                case "vistobuenosecretarioadministrativo":
+
+                    String vistoBuenoSecretarioAdministrativo = (String) getValueSearch() ;
+                    doc = new Document("activo", "si");
+                    doc.append("vistoBuenoSecretarioAdministrativo.aprobado", vistoBuenoSecretarioAdministrativo);
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
+                    break;
+                case "porsolicitado":
+
+                    Usuario solicita = (Usuario)getValueSearch() ;
+                    doc = new Document("activo", "si");
+                    doc.append("usuario.0.username", solicita.getUsername());
+                    solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
+
+                    break;
+                case "porresponsable":
+
+                    Usuario responsable = (Usuario) getValueSearch() ;
+                    doc = new Document("activo", "si");
+                    doc.append("usuario.1.username", responsable.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
                 default:
-                    doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si").append("usuario.username", jmoordb_user.getUsername());
+
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
@@ -482,7 +577,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
 
         }
 
@@ -518,10 +613,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             solicitud.setFechaestatus(DateUtil.fechaActual());
             solicitud.setActivo("si");
 
-            String textsearch = "ADMINISTRATIVO";
+            String textsearch = "DOCENTE";
             Rol rol = (Rol) JmoordbContext.get("jmoordb_rol");
-            if (rol.getIdrol().toUpperCase().equals("ADMINISTRATIVO")) {
-                textsearch = "ADMINISTRATIVO";
+            if (rol.getIdrol().toUpperCase().equals("DOCENTE")) {
+                textsearch = "DOCENTE";
             }
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
             if (!solicitudServices.isValid(solicitud)) {
@@ -548,7 +643,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return false;
     }// </editor-fold>
@@ -569,6 +664,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             //Lo datos del usuario
             List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
 
+//            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
             tipovehiculoList.add(tipovehiculo);
             solicitud.setTipovehiculo(tipovehiculoList);
             solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
@@ -590,7 +686,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return false;
     }// </editor-fold>
@@ -607,12 +703,14 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 }
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return valid;
     }
 
     // </editor-fold>
+   
+
     // <editor-fold defaultstate="collapsed" desc="String save()">
     @Override
     public String save() {
@@ -664,8 +762,18 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             solicitud.setSolicitudpadre(0);
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
+
+            //Obtiene la lista de usuarios para notificar
+            usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
+            //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
+            Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
+
+            //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
+            if (vistoBuenoAprobado) {
+                usuarioList = usuarioServices.removerUsuarioLista(usuarioList, jmoordb_user);
+            }
+
             //Guarda la solicitud
-            Boolean vistoBuenoSecretarioAdministrativo = usuarioServices.esElSecretarioAdministrativoQuienSolicita(jmoordb_user);
             for (DisponiblesBeans db : disponiblesBeansList) {
                 for (int i = 0; i < db.getBusesRecomendados(); i++) {
 
@@ -675,11 +783,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     solicitud.setFechahorapartida(db.getFechahorainicio());
                     solicitud.setFechahoraregreso(db.getFechahorafin());
                     solicitud.setNumerodevehiculos(1);
-                    solicitud.setVistoBueno(vistoBuenoServices.inicializarPendiente(jmoordb_user));
-                    if (vistoBuenoSecretarioAdministrativo) {
-                        solicitud.setVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativoServices.inicializarAprobado(jmoordb_user));
+                    if (vistoBuenoAprobado) {
+                        solicitud.setVistoBueno(vistoBuenoServices.inicializarAprobado(jmoordb_user));
                     } else {
-                        solicitud.setVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativoServices.inicializarPendiente(jmoordb_user));
+                        solicitud.setVistoBueno(vistoBuenoServices.inicializarPendiente(jmoordb_user));
                     }
 
                     if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
@@ -695,15 +802,18 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 }
             }
 
-            //  Guardar las notificaciones
-            usuarioList = usuarioServices.usuariosParaNotificar();
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
+                //Verifica si es un coordinador y le envia la notificacion
+
                 usuarioList.forEach((u) -> {
-                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicitudadministrativo");
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
 
                 });
-                push.send("Nueva solicitud Administrativo ");
+
+                //Envia la notificacion.....
+                push.send("Nueva solicitud Docente ");
+
             }
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
             /**
@@ -717,25 +827,127 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             inicializar();
             return "";
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }
 
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="String columnColor(Estatus estatus)">
+    // <editor-fold defaultstate="collapsed" desc="String columnColor(Estatus estatus">
     public String columnColor(Estatus estatus) {
         String color = "black";
         try {
             color = estatusServices.columnColor(estatus);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return color;
     }
 // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="columnColorDisponibles(DisponiblesBeans disponiblesBeans) ">
+    // <editor-fold defaultstate="collapsed" desc="String columnColor(Estatus estatus">
 
+    public String columnColorVistoBueno(VistoBueno vistoBueno) {
+        String color = "black";
+        try {
+            color = vistoBuenoServices.columnColor(vistoBueno);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return color;
+    }
+// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
+
+    public String columnNameVistoBueno(VistoBueno vistoBueno) {
+        return vistoBuenoServices.columnNameVistoBueno(vistoBueno);
+    }
+// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno()">
+
+    public String columnNameVistoBueno() {
+        return vistoBuenoServices.columnNameVistoBueno(solicitud.getVistoBueno());
+    }
+// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean isVistoBuenoCoordinadorYSecretarioAprobadoOPendiente(Estatus estatus, Solicitud solicitud)">
+    public Boolean isVistoBuenoCoordinadorYSecretarioAprobadoOPendiente(Estatus estatus, Solicitud solicitud) {
+        Boolean valid = false;
+        try {
+            Boolean solicitado = estatusServices.isSolicitado(estatus);
+            if (solicitado) {
+                //verifica que tenga visto bueno del coordinador
+                if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
+                    //visto bueno del coordinador
+                    if (solicitud.getVistoBueno().getAprobado().equals("si")) {
+                        //visto bueno  o pendiente del SUBDIRECTORADMINISTRATIVO
+                        if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                            valid = true;
+                        }
+
+                    }
+                } else {
+                    if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                        valid = true;
+                    }
+
+                }
+
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return valid;
+    } // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean isSolicitadoConVistoBuenoNoAprobadoOPendienteCoordinador(Estatus estatus, Solicitud solicitud)">
+    public Boolean noVistoBuenoCoordinadorYSecretarioAprobadoOPendiente(Estatus estatus, Solicitud solicitud) {
+        Boolean valid = false;
+        try {
+            Boolean solicitado = estatusServices.isSolicitado(estatus);
+            if (solicitado) {
+                //verifica que tenga visto bueno del coordinador
+                if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
+                    //visto bueno del coordinador
+                    if (solicitud.getVistoBueno().getAprobado().equals("si")) {
+                        //visto bueno  o pendiente del SUBDIRECTORADMINISTRATIVO
+                        if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                            valid = true;
+                        }
+
+                    }
+                } else {
+                    if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                        valid = true;
+                    }
+
+                }
+
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return valid;
+    } // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Boolean isVistoBuenoCoordinador( Solicitud solicitud)">
+    public Boolean isVistoBuenoCoordinador(Solicitud solicitud) {
+        Boolean valid = false;
+        try {
+
+            //verifica que tenga visto bueno del coordinador
+            if (solicitud.getVistoBueno().getAprobado().equals("si")) {
+                valid = true;
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return valid;
+    } // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="columnColorDisponibles(DisponiblesBeans disponiblesBeans) ">
     public String columnColorDisponibles(DisponiblesBeans disponiblesBeans) {
         String color = "black";
         try {
@@ -747,11 +959,11 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 //            }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return color;
     } // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="columnColorDisponibles(DisponiblesBeans disponiblesBeans) ">
+    // <editor-fold defaultstate="collapsed" desc="Boolean columnTieneBusesDisponibles(DisponiblesBeans disponiblesBeans)">
 
     /**
      * Indica si los buses disponibles coindicen con los recomendados
@@ -766,14 +978,14 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 disponible = false;
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return disponible;
     } // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="completeSolicitudParaCopiar(String query)">
     public List<Solicitud> completeSolicitudParaCopiar(String query) {
-        return solicitudServices.completeSolicitudParaCopiar(query, "ADMINISTRATIVO");
+        return solicitudServices.completeSolicitudParaCopiar(query, "DOCENTE");
 
     }
     // </editor-fold>
@@ -806,7 +1018,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return suggestionsUnidad;
     }// </editor-fold>
@@ -840,7 +1052,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return suggestionsFacultad;
     }// </editor-fold>
@@ -869,7 +1081,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 }
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return suggestionsCarrera;
     }// </editor-fold>
@@ -897,7 +1109,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             });
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return list;
     }
@@ -911,7 +1123,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -929,7 +1141,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return _found;
     }
@@ -947,7 +1159,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 _found = false;
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return _found;
     }
@@ -966,7 +1178,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return _found;
     }
@@ -979,7 +1191,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 suggestionsFacultad.add(facultad);
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return false;
     }
@@ -992,7 +1204,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 suggestionsCarrera.add(carrera);
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return false;
     }
@@ -1005,7 +1217,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 suggestionsUnidad.add(unidad);
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return false;
     }
@@ -1026,7 +1238,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return editable;
     } // </editor-fold>
@@ -1036,12 +1248,13 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         try {
             if (DateUtil.fechaMenor(solicitud.getFechahoraregreso(), solicitud.getFechahorapartida())) {
 
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
+//                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.fecharegresomenorquefechapartida"));
+                JsfUtil.warningMessage(rf.getMessage("warning.fecharegresomenorquefechapartida"));
                 return "";
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
 
@@ -1074,7 +1287,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return suggestionsTipovehiculo;
     }// </editor-fold>
@@ -1086,7 +1299,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 suggestionsTipovehiculo.add(tipovehiculo);
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return false;
     }
@@ -1106,7 +1319,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return _found;
     }
@@ -1176,10 +1389,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
             solicitud.setEstatus(estatusServices.findById("SOLICITADO"));
 
-            String textsearch = "ADMINISTRATIVO";
+            String textsearch = "DOCENTE";
             Rol rol = (Rol) JmoordbContext.get("jmoordb_rol");
-            if (rol.getIdrol().toUpperCase().equals("ADMINISTRATIVO")) {
-                textsearch = "ADMINISTRATIVO";
+            if (rol.getIdrol().toUpperCase().equals("DOCENTE")) {
+                textsearch = "DOCENTE";
             }
             //
 //            diasSelected = new String[0];           
@@ -1204,8 +1417,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
-              JsfUtil.updateJSFComponent(":form:growl");
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }
@@ -1220,21 +1432,106 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             facultadList = solicitud.getFacultad();
             carreraList = solicitud.getCarrera();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="cargarSchedule()">
-    public void cargarSchedule() {
+    // <editor-fold defaultstate="collapsed" desc="String loadTimeLine()">
+    public String loadTimeLine() {
         try {
+            timelineModel = new TimelineModel();
+            // groups  
+            List<Vehiculo> list = vehiculoRepository.findBy(new Document("activo", "si"));
+
+            if (list == null || list.isEmpty()) {
+
+            } else {
+                for (Vehiculo v : list) {
+                    fechaDesde = DateUtil.primeraFechaAnio();
+                    fechaHasta = DateUtil.ultimaFechaAnio();
+//            Date end = new Date(fechaDesde.getTime() - 12 * 60 * 60 * 1000);  
+                    Document doc = new Document("activo", "si").append("vehiculo.idvehiculo", v.getIdvehiculo());
+                    List<Viaje> viajeList = viajeRepository.findBy(doc, new Document("idviaje", -1));
+                    if (viajeList == null || viajeList.isEmpty()) {
+
+                    } else {
+                        for (Viaje vi : viajeList) {
+                            String availability = (vi.getRealizado().equals("si") ? "Realizado" : (vi.getRealizado().equals("no") ? "NoRealizado" : "Cancelado"));
+                            TimelineEvent event = new TimelineEvent(availability, vi.getFechahorainicioreserva(), vi.getFechahorafinreserva(), true, v.getMarca() + " " + v.getPlaca(), availability.toLowerCase());
+                            timelineModel.add(event);
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return "";
+    }
+
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="loadTimeLineConductor()">
+    public String loadTimeLineConductor() {
+        try {
+            timelineConductorModel = new TimelineModel();
+            // groups  
+            List<Conductor> list = conductorRepository.findBy(new Document("activo", "si"));
+
+            if (list == null || list.isEmpty()) {
+
+            } else {
+                for (Conductor c : list) {
+                    fechaDesde = DateUtil.primeraFechaAnio();
+                    fechaHasta = DateUtil.ultimaFechaAnio();
+//            Date end = new Date(fechaDesde.getTime() - 12 * 60 * 60 * 1000);  
+                    Document doc = new Document("activo", "si").append("conductor.idconductor", c.getIdconductor());
+                    List<Viaje> viajeList = viajeRepository.findBy(doc, new Document("idviaje", -1));
+                    if (viajeList == null || viajeList.isEmpty()) {
+
+                    } else {
+                        for (Viaje vi : viajeList) {
+                            String availability = (vi.getRealizado().equals("si") ? "Realizado" : (vi.getRealizado().equals("no") ? "NoRealizado" : "Cancelado"));
+                            TimelineEvent event = new TimelineEvent(availability, vi.getFechahorainicioreserva(), vi.getFechahorafinreserva(), true, c.getNombre() + " " + c.getCedula(), availability.toLowerCase());
+                            timelineConductorModel.add(event);
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return "";
+    }
+
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="loadSchedule(Document...doc)">
+    public void loadSchedule(Document... doc) {
+        try {
+            Document docSearch = new Document();
+            if (doc.length != 0) {
+                docSearch = doc[0];
+
+            } else {
+                docSearch = new Document("activo", "si");
+            }
             totalAprobado = 0;
             totalSolicitado = 0;
             totalRechazadoCancelado = 0;
             totalViajes = 0;
-            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            Document doc = new Document("usuario.0.username", jmoordb_user.getUsername());
 
-            List<Solicitud> list = solicitudRepository.findBy(doc, new Document("idsolicitud", -1));
+            totalPendienteVistoBueno = 0;
+            totalAprobadoVistoBueno = 0;
+            totalNoAprobadoVistoBueno = 0;
+
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            String descripcion = jmoordb_user.getUnidad().getIdunidad();
+            List<Solicitud> list = new ArrayList<>();
+
+//                list = solicitudRepository.findBy("activo","si", new Document("idsolicitud", -1));
+            list = solicitudRepository.findBy(docSearch, new Document("idsolicitud", -1));
+
             eventModel = new DefaultScheduleModel();
             if (!list.isEmpty()) {
                 list.forEach((a) -> {
@@ -1268,25 +1565,98 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                             tema = "schedule-red";
                             break;
                     }
+
+                    switch (a.getVistoBueno().getAprobado().trim()) {
+                        case "no":
+                            totalNoAprobadoVistoBueno++;
+                            break;
+                        case "si":
+                            totalAprobadoVistoBueno++;
+                            break;
+                        case "pe":
+                            totalPendienteVistoBueno++;
+                            break;
+                    }
+
                     String texto = nameOfCarrera + " " + viajest;
-//                    eventModel.addEvent(
-                    //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " Mision:" + a.getMision() + " Responsable: " + a.getUsuario().get(1).getNombre() + " " + a.getEstatus().getIdestatus(), a.getFechahorapartida(), a.getFechahoraregreso())
-                    //                    );
+
                     eventModel
                             .addEvent(
-                                    new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ")  " + a.getObjetivo() + " "
+                                    new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ")  " + "  {" + a.getVistoBueno().getAprobado().substring(0, 1).toUpperCase() + "}  " + a.getObjetivo() + " "
                                             + texto,
                                             a.getFechahorapartida(), a.getFechahoraregreso(), tema)
-                            //                            new DefaultScheduleEvent("# " + a.getIdsolicitud() + " : (" + a.getEstatus().getIdestatus().substring(0, 1) + ") Mision: " + a.getObjetivo()+ " Responsable: " + a.getUsuario().get(1).getNombre() + " "
-                            //                                    + texto,
-                            //                                    a.getFechahorapartida(), a.getFechahoraregreso(), tema)
-                            //                  
                             );
                 });
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="loadScheduleViajes(Document...doc) ">
+
+    public void loadScheduleViajes(Document... doc) {
+        try {
+            Document docSearch = new Document();
+            if (doc.length != 0) {
+                docSearch = doc[0];
+
+            } else {
+                docSearch = new Document("activo", "si");
+            }
+
+            totalViajes = 0;
+            totalViajesCancelados = 0;
+            totalViajesNoRealizado = 0;
+            totalViajesRealizados = 0;
+
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            String descripcion = jmoordb_user.getUnidad().getIdunidad();
+            List<Viaje> list = new ArrayList<>();
+
+            list = viajeRepository.findBy(docSearch, new Document("idviaje", -1));
+
+            eventModelViajes = new DefaultScheduleModel();
+            if (!list.isEmpty()) {
+                list.forEach((a) -> {
+                    String nameOfConductor = "";
+                    String nameOfVehiculo = a.getVehiculo().getPlaca() + " " + a.getVehiculo().getMarca() + " " + a.getVehiculo().getModelo();
+                    String viajest = "";
+                    nameOfConductor = a.getConductor().getNombre();
+                    String tipoVehiculo = "{ ";
+                    tipoVehiculo = a.getVehiculo().getTipovehiculo().getIdtipovehiculo();
+                    tipoVehiculo += " }";
+                    String tema = "schedule-blue";
+                    switch (a.getRealizado()) {
+                        case "si":
+                            totalViajesRealizados++;
+                            tema = "schedule-orange";
+                            break;
+                        case "no":
+                            totalViajesNoRealizado++;
+
+                            tema = "schedule-green";
+                            break;
+                        case "ca":
+                            totalViajesCancelados++;
+                            tema = "schedule-red";
+                            break;
+
+                    }
+
+                    totalViajes += totalViajesCancelados + totalViajesNoRealizado + totalViajesRealizados;
+                    String texto = nameOfVehiculo + " " + nameOfConductor;
+                    eventModelViajes
+                            .addEvent(
+                                    new DefaultScheduleEvent("# " + a.getIdviaje() + " : (" + a.getRealizado().substring(0, 1) + ")  " + " "
+                                            + texto,
+                                            a.getFechahorainicioreserva(), a.getFechahorainicioreserva(), tema)
+                            );
+                });
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     }// </editor-fold>
 
@@ -1319,7 +1689,33 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
         } catch (Exception e) {
 
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+    } // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="onEventSelect(SelectEvent selectEvent)">
+
+    public void onEventSelectViaje(SelectEvent selectEvent) {
+        try {
+
+            eventViajes = (ScheduleEvent) selectEvent.getObject();
+
+            String title = eventViajes.getTitle();
+            Integer i = title.indexOf(":");
+
+            Integer idviaje = 0;
+            if (i != -1) {
+                idviaje = Integer.parseInt(title.substring(1, i).trim());
+            }
+            viaje.setIdviaje(idviaje);
+            Optional<Viaje> optional = viajeRepository.findById(viaje);
+            if (optional.isPresent()) {
+                viaje = optional.get();
+
+            }
+
+        } catch (Exception e) {
+
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
     } // </editor-fold>
 
@@ -1385,7 +1781,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!solicitudServices.isValidDates(solicitud, false)) {
+                if (!solicitudServices.isValidDates(solicitud, true)) {
                     return;
                 }
                 changeDaysViewAvailable();
@@ -1407,7 +1803,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
 
     }// </editor-fold>
@@ -1437,7 +1833,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     .reversed());
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return vehiculoList;
     }// </editor-fold>
@@ -1456,7 +1852,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return valid;
     }
@@ -1476,7 +1872,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return valid;
     }
@@ -1545,6 +1941,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
              * se creara una solicitud para cada vehiculos solicitado
              */
             solicitudRepository.update(solicitud);
+
+            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
             //guarda el contenido anterior
             JmoordbConfiguration jmc = new JmoordbConfiguration();
             Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
@@ -1552,17 +1950,26 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
-            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
-
+            usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
             //  Guardar las notificaciones
-            usuarioList = usuarioServices.usuariosParaNotificar();
+
+            //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
+            Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
+
+            //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
+            if (vistoBuenoAprobado) {
+
+                usuarioList = usuarioServices.removerUsuarioLista(usuarioList, jmoordb_user);
+            }
+
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
+
                 usuarioList.forEach((u) -> {
-                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicitudadministrativo");
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
 
                 });
-                push.send("Edicicion de solicitud administrativo ");
+                push.send("Edicicion de solicitud docente ");
             }
 
             /**
@@ -1572,7 +1979,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
             return "";
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }
@@ -1593,23 +2000,98 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return false;
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="handleSelect">
-    public String handleAutocompleteOfListXhtml(SelectEvent event) {
+    // <editor-fold defaultstate="collapsed" desc="hString handleAutocompleteEstatus(SelectEvent event)">
+    
+    public String handleAutocompleteEstatus(SelectEvent event) {
         try {
-            setSearchAndValue("estatus", estatusSearch);
+          setSearchAndValue("estatus",estatusSearch);
 
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="String handleAutocompleteEstatusForSchedule(SelectEvent event)">
+    /**
+     * Actualiza el schedule en base al filtro del autocomplete
+     *
+     * @param event
+     * @return
+     */
+    public String handleAutocompleteEstatusForSchedule(SelectEvent event) {
+        try {
+            Document doc = new Document("activo", "si").append("estatus.idestatus", estatusSearch.getIdestatus());
+            loadSchedule(doc);
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return "";
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String handleAutocompleteTipoSolicitudForSchedule(SelectEvent event)">
+
+    /**
+     * Actualiza el schedule en base al filtro del autocomplete
+     *
+     * @param event
+     * @return
+     */
+    public String handleAutocompleteTipoSolicitudForSchedule(SelectEvent event) {
+        try {
+            Document doc = new Document("activo", "si").append("tiposolicitud.idtiposolicitud", tiposolicitudSearch.getIdtiposolicitud());
+            loadSchedule(doc);
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return "";
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String handleAutocompleteSolicitaForSchedule(SelectEvent event)">
+
+    /**
+     * Actualiza el schedule en base al filtro del autocomplete
+     *
+     * @param event
+     * @return
+     */
+    public String handleAutocompleteSolicitaForSchedule(SelectEvent event) {
+        try {
+            Document doc = new Document("activo", "si").append("usuario.0.username", solicita.getUsername());
+            loadSchedule(doc);
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return "";
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String handleAutocompleteSolicitaForSchedule(SelectEvent event)">
+
+    /**
+     * Actualiza el schedule en base al filtro del autocomplete
+     *
+     * @param event
+     * @return
+     */
+    public String handleAutocompleteResponsableForSchedule(SelectEvent event) {
+        try {
+            Document doc = new Document("activo", "si").append("usuario.1.username", responsable.getUsername());
+            loadSchedule(doc);
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return "";
+    }// </editor-fold>
+
+  
 
     // <editor-fold defaultstate="collapsed" desc="enviarMensajesDirectos()">
     public String enviarMensajesDirectos() {
@@ -1621,18 +2103,18 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
             //  Guardar las notificaciones
 
-            List<Usuario> usuarioList = usuarioServices.usuariosParaNotificar();
+            usuarioList = usuarioServices.usuariosParaNotificar();
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    notificacionServices.saveNotification(messages, u.getUsername(), "solicitudadministrativo");
+                    notificacionServices.saveNotification(messages, u.getUsername(), "solicituddocente");
 
                 });
-                push.send("Mensaje de administrativo ");
+                push.send("Mensaje de docente ");
             }
             JsfUtil.infoDialog("Informacion", "Se envio la notifacion a los administradores");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }
@@ -1646,11 +2128,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
      */
     public String goList(String ruta) {
         ruta = ruta.trim();
-
         setAction("golist");
-
+        //JmoordbContext.put("actionsecretarioadministrativoController", "golist");
         return "/pages/" + ruta + "/list.xhtml";
-//        return "/pages/solicitudadministrativo/list.xhtml";
+
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="String changeDaysViewAvailable()">
@@ -1761,7 +2242,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
 
         return "";
@@ -1778,8 +2259,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         try {
             Integer c = 0;
             diasconsecutivos = false;
-            if (diasSelected == null) {
-                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.seleccionerangodias"));
+              if(diasSelected == null){
+                  JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.seleccionerangodias"));
 
                 return false;
             }
@@ -1799,7 +2280,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
             valid = true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return valid;
     }// </editor-fold>
@@ -1810,17 +2291,17 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         try {
             disponiblesBeansList = new ArrayList<>();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return true;
     }
     // </editor-fold>
 
-// <editor-fold defaultstate="collapsed" desc="sendEmail()">
+// <editor-fold defaultstate="collapsed" desc="String sendEmail(String msg)">
     private String sendEmail(String msg) {
         try {
             /**
-             * Enviar un email al administrativo y al mismo administrador
+             * Enviar un email al administrador y al mismo administrador
              */
             Solicitud s0 = solicitudGuardadasList.get(0);
 
@@ -1840,8 +2321,8 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                     + "\nLugares: " + s0.getLugares()
                     + "\nLugar de partida: " + s0.getLugarpartida()
                     + "\nLugar de llegada: " + s0.getLugarllegada()
-                    //                    + "\nFacultad: " + varFacultadName
-                    //                    + "\nCarrera: " + varCarreraName
+                    + "\nFacultad: " + varFacultadName
+                    + "\nCarrera: " + varCarreraName
                     + "\nRango: " + varRango
                     + "\nEstatus: " + s0.getEstatus().getIdestatus() + "";
 
@@ -1885,7 +2366,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
                 //enviar al administrativo
 
-                Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), rf.getMessage("email.header"), mensaje, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), rf.getMessage("email.header"), mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
                 //    Future<String> completableFuture = managerEmail.sendAsync(responsable.getEmail(), rf.getMessage("email.header"), mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
 
 //String msg =completableFuture.get();
@@ -1941,7 +2422,124 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return "";
+    }
+
+    // </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="String sendEmail(String msg)">
+    private String sendEmailVistoBueno(Solicitud solicitud, String aprobado) {
+        try {
+            /**
+             * Enviar un email al administrador y al mismo administrador
+             */
+            Solicitud s0 = solicitud;
+
+            String varFacultadName = "";
+            String varCarreraName = "";
+            String varRango = "";
+            varFacultadName = s0.getFacultad().stream().map((f) -> "" + f.getDescripcion()).reduce(varFacultadName, String::concat);
+            for (Carrera c : s0.getCarrera()) {
+                varCarreraName = "" + c.getDescripcion();
+            }
+            for (String r : s0.getRangoagenda()) {
+                varRango = "" + r;
+            }
+            String header = "\n Detalle de la solicitud:"
+                    + "\nObjetivo : " + s0.getObjetivo()
+                    + "\nObservaciones: " + s0.getObservaciones()
+                    + "\nLugares: " + s0.getLugares()
+                    + "\nLugar de partida: " + s0.getLugarpartida()
+                    + "\nLugar de llegada: " + s0.getLugarllegada()
+                    + "\nFacultad: " + varFacultadName
+                    + "\nCarrera: " + varCarreraName
+                    + "\nRango: " + varRango
+                    + "\nEstatus: " + s0.getEstatus().getIdestatus() + "";
+
+            String texto = "\n___________________________SOLICITUDES___________________________________";
+            texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Pasajeros", "Vehiculo");
+
+            texto += "\n" + String.format("%10d %20s %25s %10d %20s",
+                    solicitud.getIdsolicitud(),
+                    DateUtil.dateFormatToString(solicitud.getFechahorapartida(), "dd/MM/yyyy hh:mm a"),
+                    DateUtil.dateFormatToString(solicitud.getFechahoraregreso(), "dd/MM/yyyy hh:mm a"),
+                    solicitud.getPasajeros(),
+                    solicitud.getTipovehiculo().get(0).getIdtipovehiculo());
+            texto += "\n________________________________________________________________________";
+
+            String text = "El coordinador ";
+            if (aprobado.toLowerCase().equals("si")) {
+                text += " Aprobo  el visto bueno para la solicitud " + solicitud.getIdsolicitud();
+                ;
+            } else {
+                text += " Rechazo el visto bueno para la solicitud " + solicitud.getIdsolicitud();
+            }
+            String mensajeAdmin = text + "   de :" + solicitud.getUsuario().get(0).getNombre()
+                    + "\nemail:" + solicitud.getUsuario().get(0).getEmail()
+                    + "\n" + header
+                    + "\n" + texto
+                    + "\n Por favor ingrese al sistema de transporte para verificarlas.";
+
+            List<JmoordbEmailMaster> jmoordbEmailMasterList = jmoordbEmailMasterRepository.findBy(new Document("activo", "si"));
+            if (jmoordbEmailMasterList == null || jmoordbEmailMasterList.isEmpty()) {
+
+            } else {
+                JmoordbEmailMaster jmoordbEmailMaster = jmoordbEmailMasterList.get(0);
+                //enviar al administrativo
+
+                Future<String> completableFuture = sendEmailAsync(responsable.getEmail(), rf.getMessage("email.header"), mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+
+                //BUSCA LOS USUARIOS QUE SON ADMINISTRADORES O SECRETARIA
+                if (usuarioList == null || usuarioList.isEmpty()) {
+
+                } else {
+
+//Divide para las copias y bcc,cc
+                    Integer size = usuarioList.size();
+                    String[] to; // list of recipient email addresses
+                    String[] cc;
+                    String[] bcc;
+
+                    if (size <= 5) {
+                        to = new String[usuarioList.size()];
+                        cc = new String[0];
+                        bcc = new String[0];
+                    } else {
+                        if (size > 5 && size <= 10) {
+                            to = new String[4];
+                            cc = new String[4];
+                            bcc = new String[0];
+                        } else {
+                            to = new String[4];
+                            cc = new String[4];
+                            bcc = new String[size - 8];
+                        }
+                    }
+                    index = 0;
+                    usuarioList.forEach((u) -> {
+
+                        if (index <= 5) {
+                            to[index] = u.getEmail();
+                        } else {
+                            if (index > 5 && index <= 10) {
+                                cc[index] = u.getEmail();
+                            } else {
+
+                                bcc[index] = u.getEmail();
+
+                            }
+                        }
+                        index++;
+                    });
+
+                    Future<String> completableFutureCC = sendEmailCccBccAsync(to, cc, bcc, rf.getMessage("email.header"), mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+//                  Future<String> completableFutureCC = managerEmail.sendAsync(to, cc, bcc, rf.getMessage("email.header"), mensajeAdmin, jmoordbEmailMaster.getEmail(), JsfUtil.desencriptar(jmoordbEmailMaster.getPassword()));
+                }
+
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }
@@ -1956,7 +2554,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             Integer numeroPasajeros = 0;
 
             List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
-            fechasValidasList = DateUtil.validarRangoFechas(fechaPartidaDescompuesta.getYear(), fechaPartidaDescompuesta.getNameOfMonth(), varFechaHoraPartida, varFechaHoraRegreso);
+            fechasValidasList = DateUtil.validarRangoFechas(fechaPartidaDescompuesta.getYear(), fechaPartidaDescompuesta.getNameOfMonth(),varFechaHoraPartida, varFechaHoraRegreso);
             //recorre todos los vehiculos 
 
             Integer pasajerosPendientes = solicitud.getPasajeros();
@@ -1972,7 +2570,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }//isEmpty
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return false;
 
@@ -1989,7 +2587,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 if (fechaPartidaDescompuesta.getYear().equals(fechaRegresoDescompuesta.getYear())) {
                     Integer m = fechaPartidaDescompuesta.getMonth() + i;
                     String nameOfMohth = DateUtil.nombreMes(m);
-                    List<FechaDiaUtils> list = DateUtil.validarRangoFechas(fechaPartidaDescompuesta.getYear(), nameOfMohth, varFechaHoraPartida, varFechaHoraRegreso);
+                    List<FechaDiaUtils> list = DateUtil.validarRangoFechas(fechaPartidaDescompuesta.getYear(), nameOfMohth,varFechaHoraPartida,varFechaHoraRegreso);
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                     if (list == null || list.isEmpty()) {
                         JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes;" + nameOfMohth);
@@ -2019,7 +2617,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
                     String nameOfMohth = DateUtil.nombreMes(m);
 
-                    List<FechaDiaUtils> list = DateUtil.validarRangoFechas(varAnio, nameOfMohth, varFechaHoraPartida, varFechaHoraRegreso);
+                    List<FechaDiaUtils> list = DateUtil.validarRangoFechas(varAnio, nameOfMohth,varFechaHoraPartida ,varFechaHoraRegreso);
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                     if (list == null || list.isEmpty()) {
                         JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohaydiasvalidosenesosrangos") + " Mes: " + nameOfMohth);
@@ -2041,7 +2639,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return false;
 
@@ -2107,11 +2705,15 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return false;
     }
     // </editor-fold>
+
+    
+   
+   
 
     // <editor-fold defaultstate="collapsed" desc="String  cancel()">
     public String cancel() {
@@ -2125,7 +2727,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return "";
     }
@@ -2174,7 +2776,6 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
             List<Viaje> viajeList = new ArrayList<>();
             solicitud.setViaje(viajeList);
-
 //Remuevo los viajes que tenga asignados
             if (solicitudRepository.update(solicitud)) {
                 JsfUtil.infoDialog("Mensaje", rf.getMessage("info.cancelacionsolicitudes"));
@@ -2190,12 +2791,20 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.cancelacionsolicitudesfallida"));
             }
 
-            //  Guardar las notificaciones
-            List<Usuario> usuarioList = usuarioServices.usuariosParaNotificar();
+            usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
+//            //  Guardar las notificaciones
+//Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
+            Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
+
+            //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
+            if (vistoBuenoAprobado) {
+//                    usuarioList.remove(jmoordb_user);
+                usuarioList = usuarioServices.removerUsuarioLista(usuarioList, jmoordb_user);
+            }
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
                 usuarioList.forEach((u) -> {
-                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicitudadministrativo");
+                    notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
 
                 });
                 push.send("Se cancelo una solicitud ");
@@ -2208,7 +2817,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             sendEmail(" cancelada(s) ");
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
 
         return "";
@@ -2260,7 +2869,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
             solicitud.setNumerodevehiculos(total);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return total;
     }
@@ -2277,7 +2886,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
             solicitud.setPasajeros(totalpasajeros);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return totalpasajeros;
     }
@@ -2300,47 +2909,108 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
         return valid;
     }
     // </editor-fold>  
 
-//    // <editor-fold defaultstate="collapsed" desc="String clear() ">
-//    @Override
-//    public String clear() {
-//        try {
-//            setSearchAndValue("searchSolicitudController", "_init");
-//           
-//            move(page);
-//        } catch (Exception e) {
-//            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
-//        }
-//        return "";
-//    }// </editor-fold>
-//    
-    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
-    public String columnNameVistoBueno(VistoBueno vistoBueno) {
-        return vistoBuenoServices.columnNameVistoBueno(vistoBueno);
-    }
-// </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
+    // <editor-fold defaultstate="collapsed" desc="String aceptarVistoBueno(Solicitud solicitud, String aprobado) ">
+    public String aceptarVistoBuenoSecretarioAdministrativo(Solicitud solicitud, String aprobado) {
+        try {
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
+            solicitud.setVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativoServices.aprobar(jmoordb_user, aprobado));
+
+            solicitudRepository.update(solicitud);
+            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editado"));
+            //guarda el contenido anterior
+            JmoordbConfiguration jmc = new JmoordbConfiguration();
+            Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
+            RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
+            repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                    "update vistobueno subdirector administrativo", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+
+            //Obtiene la lista de usuarios para notificar
+            usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
+            //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
+            Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);
+
+            //Si es el mismo usuario el coordinador removerlo para no enviarle notificaciones
+            if (vistoBuenoAprobado) {
+                usuarioList = usuarioServices.removerUsuarioLista(usuarioList, jmoordb_user);
+            } else {
+                //Agrega el docente para que se le envie la notificacion
+                usuarioList.add(solicitud.getUsuario().get(0));
+            }
+            if (usuarioList == null || usuarioList.isEmpty()) {
+            } else {
+                //Verifica si es un coordinador y le envia la notificacion
+
+//incluir quien la solicito que no sea el administrador
+                usuarioList.forEach((u) -> {
+                    String messages = "";
+                    if (aprobado.toLowerCase().equals("si")) {
+                        messages = "Se aprobo el visto bueno de la solicitud No, " + solicitud.getIdsolicitud() + " por " + jmoordb_user.getNombre();
+                    } else {
+                        messages = "Se rechazo el visto bueno de la solicitud No, " + solicitud.getIdsolicitud() + " por " + jmoordb_user.getNombre();
+                    }
+
+                    notificacionServices.saveNotification(messages, u.getUsername(), "vistobuenosolicitud");
+
+                });
+
+                //Envia la notificacion.....
+                push.send("Nueva solicitud Docente ");
+
+                sendEmailVistoBueno(solicitud, aprobado);
+            }
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return "";
+    }
+    // </editor-fold>  
+
+    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChange()">
+    public String onVistoBuenoChange() {
+        try {
+             setSearchAndValue("vistobuenocoordinador", vistoBuenoSearch);
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return "";
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSecretarioAdministrativo()">
+
+    public String onVistoBuenoChangeSecretarioAdministrativo() {
+        try {
+            setSearchAndValue("vistobuenosecretarioadministrativo", vistoBuenoSecretarioAdministrativoSearch);
+           
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return "";
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSecretarioAdministrativo()">
+
+    public String onRealizadoCalenadarioViajes() {
+        try {
+            Document doc = new Document("activo", "si").append("realizado", viajeSecretarioAdministrativoSearch);
+            loadScheduleViajes(doc);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return "";
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
     public String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSecretarioAdministrativo vistoBuenoSecretarioAdministrativo) {
         return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativo);
     }
 // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="handleSelect">
-    public String onVistoBuenoChange() {
-        try {
-            setSearchAndValue("vistobueno", vistoBuenoSearch);
-
-            move(page);
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
-        }
-        return "";
-    }// </editor-fold>
 
 }

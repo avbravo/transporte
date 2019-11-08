@@ -879,7 +879,7 @@ public class AdministradorController implements Serializable, IController {
                 if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
                     //visto bueno del coordinador
                     if (solicitud.getVistoBueno().getAprobado().equals("si")) {
-                        //visto bueno  o pendiente del secretario administrativo
+                        //visto bueno  o pendiente del SUBDIRECTORADMINISTRATIVO
                         if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
                             valid = true;
                         }
@@ -910,7 +910,7 @@ public class AdministradorController implements Serializable, IController {
                 if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
                     //visto bueno del coordinador
                     if (solicitud.getVistoBueno().getAprobado().equals("si")) {
-                        //visto bueno  o pendiente del secretario administrativo
+                        //visto bueno  o pendiente del SUBDIRECTORADMINISTRATIVO
                         if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
                             valid = true;
                         }
@@ -2928,7 +2928,7 @@ public class AdministradorController implements Serializable, IController {
             Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
             RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
             repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
-                    "update vistobueno secretario administrativo", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+                    "update vistobueno subdirector administrativo", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             //Obtiene la lista de usuarios para notificar
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);

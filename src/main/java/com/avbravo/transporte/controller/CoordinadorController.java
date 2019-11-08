@@ -2470,6 +2470,28 @@ public class CoordinadorController implements Serializable, IController {
             }
 
             usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
+            //Obtiene los administrativos
+            List<Usuario> usuarioAdministrativosParaNotificacionList =usuarioServices.usuariosParaNotificar();
+            List<Usuario> usuarioRemoveList = new ArrayList<>();
+            Boolean found=false;
+            //Verifica si ya estan en la lista
+            if(!usuarioAdministrativosParaNotificacionList.isEmpty()){
+                 found=false;
+                 for(Usuario u:usuarioAdministrativosParaNotificacionList){
+                     found=false;
+                     for(Usuario u1:usuarioList){
+                        if(u.getUsername().equals(u1.getUsername())){
+                            found =true;
+                        }
+                     }
+                     if(!found){
+                         //Agrega el usuario administrativo para ser notificado
+                         usuarioList.add(u);
+                     }
+                 }
+               
+               //  usuarioList = usuarioServices.removerUsuarioLista(usuarioList, jmoordb_user);
+            }
 //            //  Guardar las notificaciones
 //Verifica si es el mismo coordinador quien hace la solicitud, si es asi colocar aprobado directamente
             Boolean vistoBuenoAprobado = usuarioServices.esElCoordinadorQuienSolicita(usuarioList, jmoordb_user);

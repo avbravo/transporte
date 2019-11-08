@@ -216,7 +216,7 @@ public class DashboardIndexController implements Serializable {
                     totalCancelado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "CANCELADO"));
 
                     break;
-                case "SECRETARIO ADMINISTRATIVO":
+                case "SUBDIRECTORADMINISTRATIVO":
                     totalSolicitado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "SOLICITADO"));
                     totalAprobado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "APROBADO"));
                     totalRechazado = solicitudRepository.count(new Document("activo", "si").append("estatus.idestatus", "RECHAZADO"));

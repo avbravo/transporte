@@ -110,7 +110,7 @@
                             labelHasta="#{msg['field.fechafin']}"
                             valueHasta="#{coordinadorController.fechaHasta}"
                            
-                            search="#{coordinadorController.searchBy('coordinador','_betweendates',secretarioAdministrativoController.solicitud)}"
+                            search="#{coordinadorController.searchBy('coordinador','_betweendates',subdirectorAdministrativoController.solicitud)}"
                             />
                     </b:column>
                 </b:row>
@@ -151,7 +151,7 @@
                     </p:column>
 
                     <p:column headerText="#{msg['field.solicita']}" style="width:140px">
-                        <h:outputText value="#{item.usuario.get(0).nombre}" style="font-size: 10; color: #{solicitudController.columnColor(item.estatus)}" />
+                        <h:outputText value="#{item.usuario.get(0).nombre}" style="font-size: 10; color: #{solicitudDocenteController.columnColor(item.estatus)}" />
                     </p:column>
 <!--                    <p:column headerText="#{msg['field.lugarllegada']}"  >
                         <p:outputLabel value="#{item.lugarllegada}"   style="color: #{coordinadorController.columnColor(item.estatus)}" />

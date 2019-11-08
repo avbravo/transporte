@@ -38,9 +38,9 @@
 
                 <p:schedule id="schedule"  
                             rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
-                            value="#{solicitudController.eventModel}"
+                            value="#{solicitudDocenteController.eventModel}"
                             widgetVar="myschedule" timeZone="GMT-5" locale="es">
-                    <p:ajax  event="eventSelect"  listener="#{solicitudController.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                    <p:ajax  event="eventSelect"  listener="#{solicitudDocenteController.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
 
                 </p:schedule>
 
@@ -48,16 +48,16 @@
                     <b:row >
 
                         <b:column span="3">
-                            <p:outputLabel value="#{msg['label.solicitado']} #{solicitudController.totalSolicitado}" style="color:orange"/>
+                            <p:outputLabel value="#{msg['label.solicitado']} #{solicitudDocenteController.totalSolicitado}" style="color:orange"/>
                         </b:column>
                         <b:column span="3">
-                            <p:outputLabel value="#{msg['label.aprobado']} #{solicitudController.totalAprobado}" style="color:green"/>
+                            <p:outputLabel value="#{msg['label.aprobado']} #{solicitudDocenteController.totalAprobado}" style="color:green"/>
                         </b:column>
                         <b:column span="3">
-                            <p:outputLabel value="#{msg['label.rechazadocancelado']} #{solicitudController.totalRechazadoCancelado}" style="color:red"/>
+                            <p:outputLabel value="#{msg['label.rechazadocancelado']} #{solicitudDocenteController.totalRechazadoCancelado}" style="color:red"/>
                         </b:column>
                         <b:column span="3">
-                            <p:outputLabel value="#{msg['label.viaje']} #{solicitudController.totalViajes}" style="color:blue"/>
+                            <p:outputLabel value="#{msg['label.viaje']} #{solicitudDocenteController.totalViajes}" style="color:blue"/>
 
                         </b:column>
 
@@ -81,22 +81,22 @@
                       showEffect="clip" hideEffect="clip">
                 <b:panelGrid id="eventDetails" colSpans="2,10" size="xs" > 
                     <p:outputLabel  value="#{msg['field.idsolicitud']}" />
-                    <p:outputLabel  value="#{solicitudController.solicitud.idsolicitud}" id="idsolicitud"   />
+                    <p:outputLabel  value="#{solicitudDocenteController.solicitud.idsolicitud}" id="idsolicitud"   />
 
                     <p:outputLabel value="#{msg['field.idestatus']}" />
-                    <p:outputLabel value="#{solicitudController.solicitud.estatus.idestatus}" />
+                    <p:outputLabel value="#{solicitudDocenteController.solicitud.estatus.idestatus}" />
 
                     <p:outputLabel value="#{msg['field.vistobueno']}"/>
                     <p:fieldset>
                         <p:spacer width="5"/>
                         <p:outputLabel value="#{msg['field.coordinador']}" />
                         <p:spacer width="5"/>
-                        <p:outputLabel value="#{solicitudController.columnNameVistoBueno(solicitudController.solicitud.vistoBueno)}" 
+                        <p:outputLabel value="#{solicitudDocenteController.columnNameVistoBueno(solicitudDocenteController.solicitud.vistoBueno)}" 
                                        />
                         <p:spacer width="25"/>
                         <p:outputLabel value="#{msg['field.secretarioadministrativo']}" />
                         <p:spacer width="5"/>
-                        <p:outputLabel value="#{solicitudController.columnNameVistoBuenoSecretarioAdministrativo(solicitudController.solicitud.vistoBuenoSecretarioAdministrativo)}" 
+                        <p:outputLabel value="#{solicitudDocenteController.columnNameVistoBuenoSecretarioAdministrativo(solicitudDocenteController.solicitud.vistoBuenoSecretarioAdministrativo)}" 
                                        />
                     </p:fieldset>
 
@@ -104,11 +104,11 @@
 
                     <p:fieldset>
 
-                        <h:outputText value="#{solicitudController.showDate(solicitudController.solicitud.fechahorapartida)} #{solicitudController.showHour(solicitudController.solicitud.fechahorapartida)}"  />
+                        <h:outputText value="#{solicitudDocenteController.showDate(solicitudDocenteController.solicitud.fechahorapartida)} #{solicitudDocenteController.showHour(solicitudDocenteController.solicitud.fechahorapartida)}"  />
                         <p:spacer width="25"/>
                         <p:outputLabel value="#{msg['field.fecharegreso']}"/>
                         <p:spacer width="5"/>
-                        <h:outputText value="#{solicitudController.showDate(solicitudController.solicitud.fechahoraregreso)} #{solicitudController.showHour(solicitudController.solicitud.fechahoraregreso)}"  />
+                        <h:outputText value="#{solicitudDocenteController.showDate(solicitudDocenteController.solicitud.fechahoraregreso)} #{solicitudDocenteController.showHour(solicitudDocenteController.solicitud.fechahoraregreso)}"  />
 
                     </p:fieldset>
 
@@ -118,35 +118,35 @@
 
                     <p:outputLabel  value="#{msg['field.lugarpartida']}" />
 
-                    <p:outputLabel value="#{solicitudController.solicitud.lugarpartida}" id="lugarpartida"   />
+                    <p:outputLabel value="#{solicitudDocenteController.solicitud.lugarpartida}" id="lugarpartida"   />
                     <p:outputLabel  value="#{msg['field.lugarllegada']}" />
 
-                    <p:outputLabel value="#{solicitudController.solicitud.lugarllegada}" id="lugarllegada"   />
+                    <p:outputLabel value="#{solicitudDocenteController.solicitud.lugarllegada}" id="lugarllegada"   />
 
 
 
 
                     <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
-                    <p:outputLabel  value="#{solicitudController.solicitud.numerodevehiculos}" />
+                    <p:outputLabel  value="#{solicitudDocenteController.solicitud.numerodevehiculos}" />
                     <p:outputLabel  value="#{msg['field.pasajeros']}" />
-                    <p:outputLabel  value="#{solicitudController.solicitud.pasajeros}" />
+                    <p:outputLabel  value="#{solicitudDocenteController.solicitud.pasajeros}" />
 
 
                     <p:outputLabel  value="#{msg['field.numerogrupos']}" />
-                    <p:chips id="numerogrupo" disabled="true" value="#{solicitudController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
+                    <p:chips id="numerogrupo" disabled="true" value="#{solicitudDocenteController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
 
                     <p:outputLabel value="#{msg['field.idtipogira']}"/>
-                    <p:outputLabel  value="#{solicitudController.solicitud.tipogira.idtipogira}" />
+                    <p:outputLabel  value="#{solicitudDocenteController.solicitud.tipogira.idtipogira}" />
 
 
 
                     <p:outputLabel  value="#{msg['field.objetivo']}" />
-                    <b:inputTextarea disabled="true" rows="2" span="8"  value="#{solicitudController.solicitud.objetivo}" id="objetivo"   />
+                    <b:inputTextarea disabled="true" rows="2" span="8"  value="#{solicitudDocenteController.solicitud.objetivo}" id="objetivo"   />
 
 
 
                     <p:outputLabel  value="#{msg['field.lugares']}" />
-                    <p:chips disabled="true" value="#{solicitudController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
+                    <p:chips disabled="true" value="#{solicitudDocenteController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
 
 
                 </b:panelGrid>

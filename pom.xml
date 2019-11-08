@@ -4,7 +4,7 @@
 
     <groupId>com.avbravo</groupId>
     <artifactId>transporte</artifactId>
-    <version>21.0</version>
+    <version>21.3</version>
     <packaging>war</packaging>
 
     <name>transporte</name>
@@ -59,9 +59,14 @@
             <version>0.36</version>
         </dependency>
         <dependency>
+	    <groupId>com.github.avbravo</groupId>
+	    <artifactId>jmoordbutils</artifactId>
+	    <version>0.36</version>
+	</dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>transporteejb</artifactId>
-            <version>23.2</version>
+            <version>23.5</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

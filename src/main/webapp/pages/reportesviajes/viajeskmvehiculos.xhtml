@@ -21,7 +21,7 @@
             } 
         </style>
 
-        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
@@ -121,6 +121,6 @@
             </b:panelGrid>
         </b:form>
 
-        <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('ADMINISTRADOR,  SECRETARIO ADMINISTRATIVO, SECRETARIA')}" />
+        <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" />
     </ui:define>
 </ui:composition>

@@ -82,7 +82,7 @@ JAVA EE 8 API SECURITY
             <role-name>ADMINISTRATIVO</role-name>
             <role-name>SECRETARIA</role-name>
             <role-name>COORDINADOR</role-name>
-            <role-name>SECRETARIO ADMINISTRATIVO</role-name>
+            <role-name>SUBDIRECTORADMINISTRATIVO</role-name>
         </auth-constraint>
     </security-constraint>
     
@@ -106,7 +106,7 @@ JAVA EE 8 API SECURITY
         <role-name>COORDINADOR</role-name>
     </security-role>
     <security-role>
-        <role-name>SECRETARIO ADMINISTRATIVO</role-name>
+        <role-name>SUBDIRECTORADMINISTRATIVO</role-name>
     </security-role>
     
     <!--

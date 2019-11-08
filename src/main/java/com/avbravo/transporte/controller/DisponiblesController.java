@@ -115,7 +115,7 @@ import org.primefaces.model.ScheduleModel;
 
 @Setter
 
-public class SolicitudController implements Serializable, IController {
+public class DisponiblesController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
@@ -292,7 +292,7 @@ public class SolicitudController implements Serializable, IController {
 //    
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public SolicitudController() {
+    public DisponiblesController() {
     }
 
     // </editor-fold>
@@ -341,13 +341,11 @@ public class SolicitudController implements Serializable, IController {
             start();
             sugerenciaList = sugerenciaRepository.findBy("activo", "si");
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
-            cargarSchedule();
+          //  cargarSchedule();
      String  action = getAction();
             
- if (action == null  || action.equals("golist")){
-             
-         }
-            if ( action.equals("gonew") || action.equals("new") ) {
+
+            if (action == null  || action.equals("golist") || action.equals("gonew") || action.equals("new") ) {
                 inicializar();
 
             }
@@ -1205,8 +1203,16 @@ public class SolicitudController implements Serializable, IController {
             solicitud.setUsuario(usuarioList);
 
             solicitud.setPeriodoacademico(DateUtil.getAnioActual().toString());
-            solicitud.setFechahorapartida(solicitud.getFecha());
-            solicitud.setFechahoraregreso(solicitud.getFecha());
+//            solicitud.setFechahorapartida(DateUtil.primerDiaDelMesEnFecha(DateUtil.anioActual(), DateUtil.mesActual()));
+//            solicitud.setFechahoraregreso(DateUtil.ultimoDiaDelMesEnFecha(DateUtil.anioActual(), DateUtil.mesActual()));
+//            
+//            solicitud.setFechahorapartida(DateUtil.insertHoursMinutesSecondsToDate(solicitud.getFechahorapartida(),0,0, 0));
+//            solicitud.setFechahoraregreso(DateUtil.insertHoursMinutesSecondsToDate(solicitud.getFechahoraregreso(),23,59, 0));
+//            
+            solicitud.setFechahorapartida(DateUtil.primerDiaDelMesActualConPrimeraHoraDelDia());
+            solicitud.setFechahoraregreso(DateUtil.ultimoDiaDelMesActualConHoraFinal());
+            
+            
             unidadList = new ArrayList<>();
             unidadList.add(jmoordb_user.getUnidad());
             solicitud.setUnidad(unidadList);
@@ -1241,8 +1247,16 @@ public class SolicitudController implements Serializable, IController {
                 textsearch = "DOCENTE";
             }
             //
-//            diasSelected = new String[0];           
-//            diasSelected[0] = "Dia/ Dias Consecutivo";
+           // diasSelected = new String[8];           
+          // diasSelected[0] = "Dia/ Dias Consecutivo";
+//           diasSelected[0] = "Lunes";
+//           diasSelected[1] = "Martes";
+//           diasSelected[2] = "Miercoles";
+//           diasSelected[3] = "Jueves";
+//           diasSelected[4] = "Viernes";
+//           diasSelected[6] = "Sabado";
+//           diasSelected[7] = "Domingo";
+           
 
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
             solicitudSelected = solicitud;
@@ -1256,12 +1270,12 @@ public class SolicitudController implements Serializable, IController {
                 Integer maximo = 0;
                 for (Tipovehiculo tv : list) {
                     maximo = vehiculoServices.cantidadVehiculosPorTipo(tv);
-                    TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans = new TipoVehiculoCantidadBeans(tv, 0, maximo, 0);
+                    TipoVehiculoCantidadBeans tipoVehiculoCantidadBeans = new TipoVehiculoCantidadBeans(tv, 1, maximo, 0);
                     tipoVehiculoCantidadBeansList.add(tipoVehiculoCantidadBeans);
                 }
 
             }
-
+changeDaysViewAvailable();
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
               JsfUtil.updateJSFComponent(":form:growl");
@@ -1442,7 +1456,9 @@ public class SolicitudController implements Serializable, IController {
 //verifica si hay buses disponibles
 
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
+    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.verificarfechas"));
 
+                        return;
             } else {
                 if (!solicitudServices.isValidDates(solicitud, false)) {
                     return;
@@ -1458,10 +1474,10 @@ public class SolicitudController implements Serializable, IController {
                     }
                 }
 
-                if (!solicitudServices.solicitudDisponible(solicitud, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
-                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yatienesolicitudenesasfechas"));
-
-                }
+//                if (!solicitudServices.solicitudDisponible(solicitud, solicitud.getFechahorapartida(), solicitud.getFechahoraregreso())) {
+//                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yatienesolicitudenesasfechas"));
+//
+//                }
 
             }
 
@@ -1756,9 +1772,17 @@ public class SolicitudController implements Serializable, IController {
             Integer iddisponible = 0;
             disponiblesBeansList = new ArrayList<>();
             rangoAgenda = new ArrayList<>();
-            if (!isValidDiasConsecutivos()) {
-                return "";
-            }
+//            if (!isValidDiasConsecutivos()) {
+//                return "";
+//            }
+             diasconsecutivos = false;
+            rangoAgenda.add("Lunes");
+            rangoAgenda.add("Martes");
+            rangoAgenda.add("Miercoles");
+            rangoAgenda.add("Jueves");
+            rangoAgenda.add("Viernes");
+            rangoAgenda.add("Sabado");
+            rangoAgenda.add("Domingo");
             solicitud.setRangoagenda(rangoAgenda);
             List<Vehiculo> vehiculoFreeList = new ArrayList<>();
             varFechaHoraPartida = solicitud.getFechahorapartida();

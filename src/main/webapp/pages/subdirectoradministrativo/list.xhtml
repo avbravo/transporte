@@ -28,7 +28,7 @@
         <jmoordbjsf:cssschedule/>  
         <jmoordbjsf:jsschedule/>
 
-        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('SUBDIRECTORADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
@@ -151,17 +151,17 @@
                         <p:rowToggler />
                     </p:column>
                     <p:column headerText="#{msg['field.idsolicitud']}" style="width:75px">
-                        <h:outputText value="#{item.idsolicitud}" style="color: #{solicitudController.columnColor(item.estatus)}" />
+                        <h:outputText value="#{item.idsolicitud}" style="color: #{solicitudDocenteController.columnColor(item.estatus)}" />
                     </p:column>
 
                     <p:column headerText="#{msg['field.fechapartida']}" style="width:150px">
-                        <h:outputText value="#{solicitudController.showDate(item.fechahorapartida)} #{solicitudController.showHour(item.fechahorapartida)}" style="color: #{solicitudController.columnColor(item.estatus)}" />
+                        <h:outputText value="#{solicitudDocenteController.showDate(item.fechahorapartida)} #{solicitudDocenteController.showHour(item.fechahorapartida)}" style="color: #{solicitudDocenteController.columnColor(item.estatus)}" />
                     </p:column>
                     <p:column headerText="#{msg['field.fecharegreso']}" style="width:150px">
-                        <h:outputText value="#{solicitudController.showDate(item.fechahoraregreso)} #{solicitudController.showHour(item.fechahoraregreso)}" style="color: #{solicitudController.columnColor(item.estatus)}" />
+                        <h:outputText value="#{solicitudDocenteController.showDate(item.fechahoraregreso)} #{solicitudDocenteController.showHour(item.fechahoraregreso)}" style="color: #{solicitudDocenteController.columnColor(item.estatus)}" />
                     </p:column>
                     <p:column headerText="#{msg['field.solicita']}" style="width:150px">
-                        <h:outputText value="#{item.usuario.get(0).nombre}" style="color: #{solicitudController.columnColor(item.estatus)}" />
+                        <h:outputText value="#{item.usuario.get(0).nombre}" style="color: #{solicitudDocenteController.columnColor(item.estatus)}" />
                     </p:column>
 
 
@@ -202,7 +202,7 @@
 
                     <p:rowExpansion>
 
-                        <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('SECRETARIO ADMINISTRATIVO')}"> 
+                        <b:panelGrid id="panel" colSpans="2,10" size="sm" rendered="#{p:ifGranted('SUBDIRECTORADMINISTRATIVO')}"> 
 
                             <p:outputLabel value="#{msg['field.fecharegreso']}" />
                             <p:outputLabel value="#{secretarioAdministrativoController.showDate(item.fechahoraregreso)}"  />
@@ -260,11 +260,11 @@
 
 
                             <p:outputLabel  value="#{msg['field.coordinador']}"  />
-                            <p:outputLabel value="#{secretarioAdministrativoController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
+                            <p:outputLabel value="#{secretarioAdministrativoController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{solicitudDocenteController.columnColor(item.estatus)}" />
 
 
                             <p:outputLabel  value="#{msg['field.secadministrativo']}" />
-                            <p:outputLabel value="#{secretarioAdministrativoController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudController.columnColor(item.estatus)}" />
+                            <p:outputLabel value="#{secretarioAdministrativoController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudDocenteController.columnColor(item.estatus)}" />
 
 
 
@@ -375,6 +375,6 @@
             </p:dialog>
         </b:form>
 
-        <jmoordbjsf:denegado rendered="#{!p:ifGranted('SECRETARIO ADMINISTRATIVO')}"/>
+        <jmoordbjsf:denegado rendered="#{!p:ifGranted('SUBDIRECTORADMINISTRATIVO')}"/>
     </ui:define>
 </ui:composition>
