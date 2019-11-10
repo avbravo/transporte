@@ -2618,7 +2618,11 @@ public class CoordinadorController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="String aceptarVistoBueno(Solicitud solicitud, String aprobado) ">
     public String aceptarVistoBueno(Solicitud solicitud, String aprobado) {
         try {
+            //habilitar esta linea para probar el guardar el error
+           usuarioList = usuarioServices.usuariosParaNotificar(facultadList);
+           
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            
             solicitud.setVistoBueno(vistoBuenoServices.aprobar(jmoordb_user, aprobado));
 
             solicitudRepository.update(solicitud);
