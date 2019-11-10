@@ -11,40 +11,27 @@ import com.avbravo.jmoordb.configuration.JmoordbControllerEnvironment;
 import com.avbravo.jmoordb.interfaces.IController;
 import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
-import com.avbravo.jmoordb.interfaces.IControllerOld;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
-import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
-import com.avbravo.jmoordb.services.RevisionHistoryServices;
-import com.avbravo.transporte.security.LoginController;
  
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.transporteejb.datamodel.EstatusViajeDataModel;
 import com.avbravo.transporteejb.entity.EstatusViaje;
-
-import com.avbravo.transporte.util.LookupServices;
-import com.avbravo.transporteejb.datamodel.EstatusViajeDataModel;
-import com.avbravo.transporteejb.entity.EstatusViaje;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.repository.EstatusViajeRepository;
-import com.avbravo.transporteejb.repository.EstatusViajeRepository;
-import com.avbravo.transporteejb.services.EstatusViajeServices;
 import com.avbravo.transporteejb.services.EstatusViajeServices;
 
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.faces.context.FacesContext;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
-import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 // </editor-fold>
 
