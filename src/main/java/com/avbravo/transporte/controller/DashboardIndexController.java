@@ -224,9 +224,9 @@ public class DashboardIndexController implements Serializable {
                     totalVistoBuenoAprobado = 0;
                     totalVistoBuenoCancelado = 0;
                     totalVistoBuenoPendiente = 0;
-                     totalVistoBuenoAprobado = solicitudRepository.count(new Document("activo", "si").append("vistoBuenoSecretarioAdministrativo.aprobado", "si"));;
-                        totalVistoBuenoCancelado = solicitudRepository.count(new Document("activo", "si").append("vistoBuenoSecretarioAdministrativo.aprobado", "no"));
-                        totalVistoBuenoPendiente = solicitudRepository.count(new Document("activo", "si").append("vistoBuenoSecretarioAdministrativo.aprobado", "pe"));
+                     totalVistoBuenoAprobado = solicitudRepository.count(new Document("activo", "si").append("vistoBuenoSubdirectorAdministrativo.aprobado", "si"));;
+                        totalVistoBuenoCancelado = solicitudRepository.count(new Document("activo", "si").append("vistoBuenoSubdirectorAdministrativo.aprobado", "no"));
+                        totalVistoBuenoPendiente = solicitudRepository.count(new Document("activo", "si").append("vistoBuenoSubdirectorAdministrativo.aprobado", "pe"));
 
                     break;
                 case "COORDINADOR":

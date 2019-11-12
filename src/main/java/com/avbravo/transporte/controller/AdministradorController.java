@@ -50,7 +50,7 @@ import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.VistoBueno;
-import com.avbravo.transporteejb.entity.VistoBuenoSecretarioAdministrativo;
+import com.avbravo.transporteejb.entity.VistoBuenoSubdirectorAdministrativo;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.EstatusViajeRepository;
@@ -70,7 +70,7 @@ import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
-import com.avbravo.transporteejb.services.VistoBuenoSecretarioAdministrativoServices;
+import com.avbravo.transporteejb.services.VistoBuenoSubdirectorAdministrativoServices;
 import com.avbravo.transporteejb.services.VistoBuenoServices;
 
 import java.util.ArrayList;
@@ -139,8 +139,8 @@ public class AdministradorController implements Serializable, IController {
     private Date fechaHasta = new Date();
 
     private String vistoBuenoSearch = "no";
-    private String vistoBuenoSecretarioAdministrativoSearch = "no";
-    private String viajeSecretarioAdministrativoSearch = "no";
+    private String vistoBuenoSubdirectorAdministrativoSearch = "no";
+    private String viajeSubdirectorAdministrativoSearch = "no";
     //DataModel
     private SolicitudDataModel solicitudDataModel;
     private SugerenciaDataModel sugerenciaDataModel;
@@ -267,7 +267,7 @@ public class AdministradorController implements Serializable, IController {
     @Inject
     VistoBuenoServices vistoBuenoServices;
     @Inject
-    VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
+    VistoBuenoSubdirectorAdministrativoServices vistoBuenoSubdirectorAdministrativoServices;
     @Inject
     SemestreServices semestreServices;
     @Inject
@@ -543,14 +543,15 @@ public class AdministradorController implements Serializable, IController {
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
-                case "vistobuenosecretarioadministrativo":
+                case "vistobuenosubdirectoradministrativo":
 
-                    String vistoBuenoSecretarioAdministrativo = (String) getValueSearch() ;
+                    String vistoBuenoSubdirectorAdministrativo = (String) getValueSearch() ;
                     doc = new Document("activo", "si");
-                    doc.append("vistoBuenoSecretarioAdministrativo.aprobado", vistoBuenoSecretarioAdministrativo);
+                    doc.append("vistoBuenoSubdirectorAdministrativo.aprobado", vistoBuenoSubdirectorAdministrativo);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
+
                 case "porsolicitado":
 
                     Usuario solicita = (Usuario)getValueSearch() ;
@@ -869,8 +870,8 @@ public class AdministradorController implements Serializable, IController {
     }
 // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Boolean isVistoBuenoCoordinadorYSecretarioAprobadoOPendiente(Estatus estatus, Solicitud solicitud)">
-    public Boolean isVistoBuenoCoordinadorYSecretarioAprobadoOPendiente(Estatus estatus, Solicitud solicitud) {
+    // <editor-fold defaultstate="collapsed" desc="Boolean isVistoBuenoCoordinadorYSubdirectorAprobadoOPendiente(Estatus estatus, Solicitud solicitud)">
+    public Boolean isVistoBuenoCoordinadorYSubdirectorAprobadoOPendiente(Estatus estatus, Solicitud solicitud) {
         Boolean valid = false;
         try {
             Boolean solicitado = estatusServices.isSolicitado(estatus);
@@ -880,13 +881,13 @@ public class AdministradorController implements Serializable, IController {
                     //visto bueno del coordinador
                     if (solicitud.getVistoBueno().getAprobado().equals("si")) {
                         //visto bueno  o pendiente del SUBDIRECTORADMINISTRATIVO
-                        if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                        if (solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("pe")) {
                             valid = true;
                         }
 
                     }
                 } else {
-                    if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                    if (solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("pe")) {
                         valid = true;
                     }
 
@@ -900,8 +901,8 @@ public class AdministradorController implements Serializable, IController {
         return valid;
     } // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Boolean isSolicitadoConVistoBuenoNoAprobadoOPendienteCoordinador(Estatus estatus, Solicitud solicitud)">
-    public Boolean noVistoBuenoCoordinadorYSecretarioAprobadoOPendiente(Estatus estatus, Solicitud solicitud) {
+    // <editor-fold defaultstate="collapsed" desc="Boolean noVistoBuenoCoordinadorYSubdirectorAprobadoOPendiente(Estatus estatus, Solicitud solicitud)">
+    public Boolean noVistoBuenoCoordinadorYSubdirectorAprobadoOPendiente(Estatus estatus, Solicitud solicitud) {
         Boolean valid = false;
         try {
             Boolean solicitado = estatusServices.isSolicitado(estatus);
@@ -911,13 +912,13 @@ public class AdministradorController implements Serializable, IController {
                     //visto bueno del coordinador
                     if (solicitud.getVistoBueno().getAprobado().equals("si")) {
                         //visto bueno  o pendiente del SUBDIRECTORADMINISTRATIVO
-                        if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                        if (solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("pe")) {
                             valid = true;
                         }
 
                     }
                 } else {
-                    if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                    if (solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("pe")) {
                         valid = true;
                     }
 
@@ -2914,12 +2915,12 @@ public class AdministradorController implements Serializable, IController {
     }
     // </editor-fold>  
 
-    // <editor-fold defaultstate="collapsed" desc="String aceptarVistoBueno(Solicitud solicitud, String aprobado) ">
-    public String aceptarVistoBuenoSecretarioAdministrativo(Solicitud solicitud, String aprobado) {
+    // <editor-fold defaultstate="collapsed" desc="String aceptarVistoBuenoSubdirectorAdministrativo(Solicitud solicitud, String aprobado) ">
+    public String aceptarVistoBuenoSubdirectorAdministrativo(Solicitud solicitud, String aprobado) {
         try {
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
-            solicitud.setVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativoServices.aprobar(jmoordb_user, aprobado));
+            solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativoServices.aprobar(jmoordb_user, aprobado));
 
             solicitudRepository.update(solicitud);
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editado"));
@@ -2982,11 +2983,11 @@ public class AdministradorController implements Serializable, IController {
         }
         return "";
     }// </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSecretarioAdministrativo()">
+    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSubdirectorAdministrativo()">
 
-    public String onVistoBuenoChangeSecretarioAdministrativo() {
+    public String onVistoBuenoChangeSubdirectorAdministrativo() {
         try {
-            setSearchAndValue("vistobuenosecretarioadministrativo", vistoBuenoSecretarioAdministrativoSearch);
+            setSearchAndValue("vistobuenosubdirectoradministrativo", vistoBuenoSubdirectorAdministrativoSearch);
            
             move(page);
         } catch (Exception e) {
@@ -2994,11 +2995,11 @@ public class AdministradorController implements Serializable, IController {
         }
         return "";
     }// </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSecretarioAdministrativo()">
+    // <editor-fold defaultstate="collapsed" desc="String onRealizadoCalenadarioViajes()">
 
     public String onRealizadoCalenadarioViajes() {
         try {
-            Document doc = new Document("activo", "si").append("realizado", viajeSecretarioAdministrativoSearch);
+            Document doc = new Document("activo", "si").append("realizado", viajeSubdirectorAdministrativoSearch);
             loadScheduleViajes(doc);
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
@@ -3006,9 +3007,9 @@ public class AdministradorController implements Serializable, IController {
         return "";
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
-    public String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSecretarioAdministrativo vistoBuenoSecretarioAdministrativo) {
-        return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativo);
+    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBuenoSubdirectorAdministrativo(VistoBueno vistoBueno) ">
+    public String columnNameVistoBuenoSubdirectorAdministrativo(VistoBuenoSubdirectorAdministrativo vistoBuenoSubdirectorAdministrativo) {
+        return vistoBuenoSubdirectorAdministrativoServices.columnNameVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativo);
     }
 // </editor-fold>
 

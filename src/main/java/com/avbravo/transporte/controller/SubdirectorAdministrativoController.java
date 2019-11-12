@@ -50,7 +50,7 @@ import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.VistoBueno;
-import com.avbravo.transporteejb.entity.VistoBuenoSecretarioAdministrativo;
+import com.avbravo.transporteejb.entity.VistoBuenoSubdirectorAdministrativo;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.EstatusViajeRepository;
@@ -70,7 +70,7 @@ import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
-import com.avbravo.transporteejb.services.VistoBuenoSecretarioAdministrativoServices;
+import com.avbravo.transporteejb.services.VistoBuenoSubdirectorAdministrativoServices;
 import com.avbravo.transporteejb.services.VistoBuenoServices;
 
 import java.util.ArrayList;
@@ -267,7 +267,7 @@ public class SubdirectorAdministrativoController implements Serializable, IContr
     @Inject
     VistoBuenoServices vistoBuenoServices;
     @Inject
-    VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
+    VistoBuenoSubdirectorAdministrativoServices vistoBuenoSubdirectorAdministrativoServices;
     @Inject
     SemestreServices semestreServices;
     @Inject
@@ -547,7 +547,7 @@ public class SubdirectorAdministrativoController implements Serializable, IContr
 
                     String vistoBuenoSecretarioAdministrativo = (String) getValueSearch() ;
                     doc = new Document("activo", "si");
-                    doc.append("vistoBuenoSecretarioAdministrativo.aprobado", vistoBuenoSecretarioAdministrativo);
+                    doc.append("vistoBuenoSubdirectorAdministrativo.aprobado", vistoBuenoSecretarioAdministrativo);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
@@ -880,13 +880,13 @@ public class SubdirectorAdministrativoController implements Serializable, IContr
                     //visto bueno del coordinador
                     if (solicitud.getVistoBueno().getAprobado().equals("si")) {
                         //visto bueno  o pendiente del SUBDIRECTORADMINISTRATIVO
-                        if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                        if (solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("pe")) {
                             valid = true;
                         }
 
                     }
                 } else {
-                    if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                    if (solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("si") || solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("pe")) {
                         valid = true;
                     }
 
@@ -911,13 +911,13 @@ public class SubdirectorAdministrativoController implements Serializable, IContr
                     //visto bueno del coordinador
                     if (solicitud.getVistoBueno().getAprobado().equals("si")) {
                         //visto bueno  o pendiente del SUBDIRECTORADMINISTRATIVO
-                        if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                        if (solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("pe")) {
                             valid = true;
                         }
 
                     }
                 } else {
-                    if (solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSecretarioAdministrativo().getAprobado().equals("pe")) {
+                    if (solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("no") || solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("pe")) {
                         valid = true;
                     }
 
@@ -2920,7 +2920,8 @@ public class SubdirectorAdministrativoController implements Serializable, IContr
         try {
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
-            solicitud.setVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativoServices.aprobar(jmoordb_user, aprobado));
+            solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativoServices.aprobar(jmoordb_user, aprobado));
+     
 
             solicitudRepository.update(solicitud);
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editado"));
@@ -3008,8 +3009,8 @@ public class SubdirectorAdministrativoController implements Serializable, IContr
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
-    public String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSecretarioAdministrativo vistoBuenoSecretarioAdministrativo) {
-        return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativo);
+    public String columnNameVistoBuenoSubdirectorAdministrativo(VistoBuenoSubdirectorAdministrativo vistoBuenoSubdirectorAdministrativo) {
+        return vistoBuenoSubdirectorAdministrativoServices.columnNameVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativo);
     }
 // </editor-fold>
 

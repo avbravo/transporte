@@ -51,7 +51,7 @@ import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.VistoBueno;
-import com.avbravo.transporteejb.entity.VistoBuenoSecretarioAdministrativo;
+import com.avbravo.transporteejb.entity.VistoBuenoSubdirectorAdministrativo;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.EstatusViajeRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
@@ -69,7 +69,7 @@ import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
-import com.avbravo.transporteejb.services.VistoBuenoSecretarioAdministrativoServices;
+import com.avbravo.transporteejb.services.VistoBuenoSubdirectorAdministrativoServices;
 import com.avbravo.transporteejb.services.VistoBuenoServices;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.or;
@@ -239,7 +239,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
     @Inject
     VistoBuenoServices vistoBuenoServices;
     @Inject
-    VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
+    VistoBuenoSubdirectorAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
 
     @Inject
     SemestreServices semestreServices;
@@ -473,7 +473,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
                 case "vistobueno":
                     String vistoBueno = (String) getValueSearch();
                     doc = new Document("tiposolicitud.idtiposolicitud", "ADMINISTRATIVO").append("activo", "si");
-                    doc.append("vistoBuenoSecretarioAdministrativo.aprobado", vistoBueno);
+                    doc.append("vistoBuenoSubdirectorAdministrativo.aprobado", vistoBueno);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
@@ -683,9 +683,9 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
                     solicitud.setNumerodevehiculos(1);
                     solicitud.setVistoBueno(vistoBuenoServices.inicializarPendiente(jmoordb_user));
                     if (vistoBuenoSecretarioAdministrativo) {
-                        solicitud.setVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativoServices.inicializarAprobado(jmoordb_user));
+                        solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSecretarioAdministrativoServices.inicializarAprobado(jmoordb_user));
                     } else {
-                        solicitud.setVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativoServices.inicializarPendiente(jmoordb_user));
+                        solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSecretarioAdministrativoServices.inicializarPendiente(jmoordb_user));
                     }
 
                     if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
@@ -2341,8 +2341,8 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
 
-    public String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSecretarioAdministrativo vistoBuenoSecretarioAdministrativo) {
-        return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativo);
+    public String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSubdirectorAdministrativo vistoBuenoSecretarioAdministrativo) {
+        return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSubdirectorAdministrativo(vistoBuenoSecretarioAdministrativo);
     }
 // </editor-fold>
 

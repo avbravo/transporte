@@ -49,7 +49,7 @@ import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.VistoBueno;
-import com.avbravo.transporteejb.entity.VistoBuenoSecretarioAdministrativo;
+import com.avbravo.transporteejb.entity.VistoBuenoSubdirectorAdministrativo;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.EstatusViajeRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
@@ -67,7 +67,7 @@ import com.avbravo.transporteejb.services.TipovehiculoServices;
 import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
-import com.avbravo.transporteejb.services.VistoBuenoSecretarioAdministrativoServices;
+import com.avbravo.transporteejb.services.VistoBuenoSubdirectorAdministrativoServices;
 import com.avbravo.transporteejb.services.VistoBuenoServices;
 
 import java.util.ArrayList;
@@ -262,7 +262,7 @@ public class CoordinadorController implements Serializable, IController {
     @Inject
     NotificacionServices notificacionServices;
     @Inject
-    VistoBuenoSecretarioAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
+    VistoBuenoSubdirectorAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
     @Inject
     JmoordbResourcesFiles rf;
     @Inject
@@ -2626,6 +2626,7 @@ public class CoordinadorController implements Serializable, IController {
             solicitud.setVistoBueno(vistoBuenoServices.aprobar(jmoordb_user, aprobado));
 
             solicitudRepository.update(solicitud);
+            
             JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editado"));
             //guarda el contenido anterior
             JmoordbConfiguration jmc = new JmoordbConfiguration();
@@ -2703,8 +2704,8 @@ public class CoordinadorController implements Serializable, IController {
     
      // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSecretarioAdministrativo vistoBuenoSecretarioAdministrativo) ">
 
-    public String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSecretarioAdministrativo vistoBuenoSecretarioAdministrativo) {
-        return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSecretarioAdministrativo(vistoBuenoSecretarioAdministrativo);
+    public String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSubdirectorAdministrativo vistoBuenoSecretarioAdministrativo) {
+        return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSubdirectorAdministrativo(vistoBuenoSecretarioAdministrativo);
     }
 // </editor-fold>
 }
