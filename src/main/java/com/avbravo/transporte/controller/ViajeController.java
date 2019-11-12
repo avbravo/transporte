@@ -1094,7 +1094,7 @@ public class ViajeController implements Serializable, IController {
                 }
             }
 
-            if (!isvistoBuenoSubdirectorAdministrativo()) {
+            if (!isVistoBuenoSubdirectorAdministrativo()) {
                 Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
                 //Verificar si tiene rol para cambiar el estatus
                 Rol jmoordb_rol = (Rol) JmoordbContext.get("jmoordb_rol");
