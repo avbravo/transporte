@@ -2916,7 +2916,7 @@ public class SubdirectorAdministrativoController implements Serializable, IContr
     // </editor-fold>  
 
     // <editor-fold defaultstate="collapsed" desc="String aceptarVistoBueno(Solicitud solicitud, String aprobado) ">
-    public String aceptarvistoBuenoSubdirectorAdministrativo(Solicitud solicitud, String aprobado) {
+    public String aceptarVistoBuenoSubdirectorAdministrativo(Solicitud solicitud, String aprobado) {
         try {
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
