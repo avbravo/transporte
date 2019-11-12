@@ -133,7 +133,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     Boolean diasconsecutivos = false;
 
     private String vistoBuenoSearch = "no";
-    private String vistoBuenoSecretarioAdministrativoSearch = "no";
+    private String vistoBuenoSubdirectorAdministrativoSearch = "no";
     //DataModel
     private SolicitudDataModel solicitudDataModel;
     private SugerenciaDataModel sugerenciaDataModel;
@@ -476,11 +476,11 @@ public class SolicitudDocenteController implements Serializable, IController {
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
-                case "vistobuenosecretarioadministrativo":
+                case "vistoBuenoSubdirectorAdministrativo":
 
-                    String vistoBuenoSecretarioAdministrativo = (String) getValueSearch();
+                    String vistoBuenoSubdirectorAdministrativo = (String) getValueSearch();
                     doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
-                    doc.append("vistoBuenoSubdirectorAdministrativo.aprobado", vistoBuenoSecretarioAdministrativo);
+                    doc.append("vistoBuenoSubdirectorAdministrativo.aprobado", vistoBuenoSubdirectorAdministrativo);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
@@ -695,7 +695,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 usuarioList = usuarioServices.removerUsuarioLista(usuarioList, jmoordb_user);
             }
 
-            Boolean vistoBuenoSecretarioAdministrativo = usuarioServices.esElSecretarioAdministrativoQuienSolicita(jmoordb_user);
+            Boolean vistoBuenoSubdirectorAdministrativo = usuarioServices.esElSubdirectorAdministrativoQuienSolicita(jmoordb_user);
 
             //Guarda la solicitud
             for (DisponiblesBeans db : disponiblesBeansList) {
@@ -713,7 +713,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                         solicitud.setVistoBueno(vistoBuenoServices.inicializarPendiente(jmoordb_user));
                     }
 
-                    if (vistoBuenoSecretarioAdministrativo) {
+                    if (vistoBuenoSubdirectorAdministrativo) {
                         solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativoServices.inicializarAprobado(jmoordb_user));
                     } else {
                         solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativoServices.inicializarPendiente(jmoordb_user));
@@ -1768,7 +1768,8 @@ public class SolicitudDocenteController implements Serializable, IController {
                 return "";
             }
             if (calcularTotalVehiculo() == 0) {
-                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.indiquelacantidaddevehiculosportipo"));
+//                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.indiquelacantidaddevehiculosportipo"));
+                JsfUtil.warningMessage( rf.getMessage("warning.indiquelacantidaddevehiculosportipo"));
                 return "";
             }
             //Genero para cada fecha y cada tipo
@@ -2443,10 +2444,10 @@ public class SolicitudDocenteController implements Serializable, IController {
         return vistoBuenoServices.columnNameVistoBueno(vistoBueno);
     }
 // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSecretarioAdministrativo vistoBuenoSecretarioAdministrativo) ">
+    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativo vistoBuenoSubdirectorAdministrativo) ">
 
-    public String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSubdirectorAdministrativo vistoBuenoSecretarioAdministrativo) {
-        return vistoBuenoSubdirectorAdministrativoServices.columnNameVistoBuenoSubdirectorAdministrativo(vistoBuenoSecretarioAdministrativo);
+    public String columnNameVistoBuenoSubdirectorAdministrativo(VistoBuenoSubdirectorAdministrativo vistoBuenoSubdirectorAdministrativo) {
+        return vistoBuenoSubdirectorAdministrativoServices.columnNameVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativo);
     }
 // </editor-fold>
 
@@ -2461,11 +2462,11 @@ public class SolicitudDocenteController implements Serializable, IController {
         }
         return "";
     }// </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSecretarioAdministrativo()">
+    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSubdirectorAdministrativo()">
 
-    public String onVistoBuenoChangeSecretarioAdministrativo() {
+    public String onVistoBuenoChangeSubdirectorAdministrativo() {
         try {
-            setSearchAndValue("vistobuenosecretarioadministrativo", vistoBuenoSecretarioAdministrativoSearch);
+            setSearchAndValue("vistoBuenoSubdirectorAdministrativo", vistoBuenoSubdirectorAdministrativoSearch);
 
             move(page);
         } catch (Exception e) {

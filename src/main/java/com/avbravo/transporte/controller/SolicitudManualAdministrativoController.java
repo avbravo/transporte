@@ -239,7 +239,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
     @Inject
     VistoBuenoServices vistoBuenoServices;
     @Inject
-    VistoBuenoSubdirectorAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
+    VistoBuenoSubdirectorAdministrativoServices vistoBuenoSubdirectorAdministrativoServices;
 
     @Inject
     SemestreServices semestreServices;
@@ -671,7 +671,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
             varFechaHoraPartida = solicitud.getFechahorapartida();
             varFechaHoraRegreso = solicitud.getFechahoraregreso();
             //Guarda la solicitud
-            Boolean vistoBuenoSecretarioAdministrativo = usuarioServices.esElSecretarioAdministrativoQuienSolicita(jmoordb_user);
+            Boolean vistoBuenoSubdirectorAdministrativo = usuarioServices.esElSubdirectorAdministrativoQuienSolicita(jmoordb_user);
             for (DisponiblesBeans db : disponiblesBeansList) {
                 for (int i = 0; i < db.getBusesRecomendados(); i++) {
 
@@ -682,10 +682,10 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
                     solicitud.setFechahoraregreso(db.getFechahorafin());
                     solicitud.setNumerodevehiculos(1);
                     solicitud.setVistoBueno(vistoBuenoServices.inicializarPendiente(jmoordb_user));
-                    if (vistoBuenoSecretarioAdministrativo) {
-                        solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSecretarioAdministrativoServices.inicializarAprobado(jmoordb_user));
+                    if (vistoBuenoSubdirectorAdministrativo) {
+                        solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativoServices.inicializarAprobado(jmoordb_user));
                     } else {
-                        solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSecretarioAdministrativoServices.inicializarPendiente(jmoordb_user));
+                        solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativoServices.inicializarPendiente(jmoordb_user));
                     }
 
                     if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
@@ -1693,7 +1693,8 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
                 return "";
             }
             if (calcularTotalVehiculo() == 0) {
-                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.indiquelacantidaddevehiculosportipo"));
+//                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.indiquelacantidaddevehiculosportipo"));
+                JsfUtil.warningMessage(rf.getMessage("warning.indiquelacantidaddevehiculosportipo"));
                 return "";
             }
             //Genero para cada fecha y cada tipo
@@ -2341,8 +2342,8 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno(VistoBueno vistoBueno) ">
 
-    public String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSubdirectorAdministrativo vistoBuenoSecretarioAdministrativo) {
-        return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSubdirectorAdministrativo(vistoBuenoSecretarioAdministrativo);
+    public String columnNameVistoBuenoSubdirectorAdministrativo(VistoBuenoSubdirectorAdministrativo vistoBuenoSubdirectorAdministrativo) {
+        return vistoBuenoSubdirectorAdministrativoServices.columnNameVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativo);
     }
 // </editor-fold>
 

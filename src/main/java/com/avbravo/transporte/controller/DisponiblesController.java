@@ -133,7 +133,7 @@ public class DisponiblesController implements Serializable, IController {
     Boolean diasconsecutivos = false;
 
     private String vistoBuenoSearch = "no";
-    private String vistoBuenoSecretarioAdministrativoSearch = "no";
+    private String vistoBuenoSubdirectorAdministrativoSearch = "no";
     //DataModel
     private SolicitudDataModel solicitudDataModel;
     private SugerenciaDataModel sugerenciaDataModel;
@@ -240,7 +240,7 @@ public class DisponiblesController implements Serializable, IController {
     @Inject
     VistoBuenoServices vistoBuenoServices;
     @Inject
-    VistoBuenoSubdirectorAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
+    VistoBuenoSubdirectorAdministrativoServices vistoBuenoSubdirectorAdministrativoServices;
 
     @Inject
     SemestreServices semestreServices;
@@ -475,14 +475,15 @@ public class DisponiblesController implements Serializable, IController {
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
-                case "vistobuenosecretarioadministrativo":
+                case "vistobuenosubdirectoradministrativo":
 
-                    String vistoBuenoSecretarioAdministrativo = (String) getValueSearch();
+                    String vistoBuenoSubdirectorAdministrativo = (String) getValueSearch();
                     doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si");
-                    doc.append("vistoBuenoSubdirectorAdministrativo.aprobado", vistoBuenoSecretarioAdministrativo);
+                    doc.append("vistoBuenoSubdirectorAdministrativo.aprobado", vistoBuenoSubdirectorAdministrativo);
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
 
                     break;
+
                 default:
                     doc = new Document("usuario.username", jmoordb_user.getUsername()).append("activo", "si").append("usuario.username", jmoordb_user.getUsername());
                     solicitudList = solicitudRepository.findPagination(doc, page, rowPage, new Document("idsolicitud", -1));
@@ -694,7 +695,7 @@ public class DisponiblesController implements Serializable, IController {
                 usuarioList = usuarioServices.removerUsuarioLista(usuarioList, jmoordb_user);
             }
 
-            Boolean vistoBuenoSecretarioAdministrativo = usuarioServices.esElSecretarioAdministrativoQuienSolicita(jmoordb_user);
+            Boolean vistoBuenoSubdirectorAdministrativo = usuarioServices.esElSubdirectorAdministrativoQuienSolicita(jmoordb_user);
 
             //Guarda la solicitud
             for (DisponiblesBeans db : disponiblesBeansList) {
@@ -712,10 +713,10 @@ public class DisponiblesController implements Serializable, IController {
                         solicitud.setVistoBueno(vistoBuenoServices.inicializarPendiente(jmoordb_user));
                     }
 
-                    if (vistoBuenoSecretarioAdministrativo) {
-                        solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSecretarioAdministrativoServices.inicializarAprobado(jmoordb_user));
+                    if (vistoBuenoSubdirectorAdministrativo) {
+                        solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativoServices.inicializarAprobado(jmoordb_user));
                     } else {
-                        solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSecretarioAdministrativoServices.inicializarPendiente(jmoordb_user));
+                        solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativoServices.inicializarPendiente(jmoordb_user));
                     }
                     if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
                         solicitudesGuardadas++;
@@ -1801,7 +1802,7 @@ changeDaysViewAvailable();
                 if (tipoVehiculoCantidadBeans.getCantidad() > 0) {
                     vehiculoList = vehiculosActivo(tipoVehiculoCantidadBeans.getTipovehiculo());
                     if (vehiculoList == null || vehiculoList.isEmpty()) {
-                        JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayvehiculosactivosconesascondiciones"));
+                     //   JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayvehiculosactivosconesascondiciones"));
                         return "";
                     }
                     vehiculoFreeList = new ArrayList<>();
@@ -2468,10 +2469,10 @@ changeDaysViewAvailable();
         return vistoBuenoServices.columnNameVistoBueno(vistoBueno);
     }
 // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSecretarioAdministrativo vistoBuenoSecretarioAdministrativo) ">
+    // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBuenoSubdirectorAdministrativo(VistoBuenoSubdirectorAdministrativo vistoBuenoSubdirectorAdministrativo) ">
 
-    public String columnNameVistoBuenoSecretarioAdministrativo(VistoBuenoSubdirectorAdministrativo vistoBuenoSecretarioAdministrativo) {
-        return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSubdirectorAdministrativo(vistoBuenoSecretarioAdministrativo);
+    public String columnNameVistoBuenoSubdirectorAdministrativo(VistoBuenoSubdirectorAdministrativo vistoBuenoSubdirectorAdministrativo) {
+        return vistoBuenoSubdirectorAdministrativoServices.columnNameVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativo);
     }
 // </editor-fold>
 
@@ -2486,11 +2487,11 @@ changeDaysViewAvailable();
         }
         return "";
     }// </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSecretarioAdministrativo()">
+    // <editor-fold defaultstate="collapsed" desc="String onVistoBuenoChangeSubdirectorAdministrativo()">
 
-    public String onVistoBuenoChangeSecretarioAdministrativo() {
+    public String onVistoBuenoChangeSubdirectorAdministrativo() {
         try {
-            setSearchAndValue("vistobuenosecretarioadministrativo", vistoBuenoSecretarioAdministrativoSearch);
+            setSearchAndValue("vistobuenosubdirectoradministrativo", vistoBuenoSubdirectorAdministrativoSearch);
 
             move(page);
         } catch (Exception e) {

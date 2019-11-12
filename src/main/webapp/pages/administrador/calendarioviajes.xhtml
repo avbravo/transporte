@@ -37,7 +37,7 @@
                         <p:outputLabel value="#{msg['field.viaje']}"/>
                     </b:column>
                     <b:column span="4"> 
-                        <p:selectOneMenu id="secretarioadministrativo" value="#{administradorController.viajeSecretarioAdministrativoSearch}" style="width:150px">
+                        <p:selectOneMenu id="subdirectoradministrativo" value="#{administradorController.viajeSubdirectorAdministrativoSearch}" style="width:150px">
                             <p:ajax listener="#{administradorController.onRealizadoCalenadarioViajes}"
                                     update=":form:schedule" />
                             <f:selectItem itemLabel="#{msg['selectitem.seleccione']}" itemValue="" noSelectionOption="true" />

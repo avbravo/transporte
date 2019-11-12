@@ -184,7 +184,7 @@ public class ViajeController implements Serializable, IController {
     @Inject
     VistoBuenoServices vistoBuenoServices;
     @Inject
-    VistoBuenoSubdirectorAdministrativoServices vistoBuenoSecretarioAdministrativoServices;
+    VistoBuenoSubdirectorAdministrativoServices vistoBuenoSubdirectorAdministrativoServices;
     //List of Relations
     //Repository of Relations
     // </editor-fold>
@@ -1094,7 +1094,7 @@ public class ViajeController implements Serializable, IController {
                 }
             }
 
-            if (!isVistoBuenoSecretarioAdministrativo()) {
+            if (!isvistoBuenoSubdirectorAdministrativo()) {
                 Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
                 //Verificar si tiene rol para cambiar el estatus
                 Rol jmoordb_rol = (Rol) JmoordbContext.get("jmoordb_rol");
@@ -1114,7 +1114,7 @@ public class ViajeController implements Serializable, IController {
                     //Cambia el estatus del visto bueno del SUBDIRECTORADMINISTRATIVO
                     solicitud.getVistoBuenoSubdirectorAdministrativo().setAprobado("si");
                 } else {
-                    JsfUtil.warningMessage(rf.getMessage("warning.faltavistobuenosecretarioadministativo"));
+                    JsfUtil.warningMessage(rf.getMessage("warning.faltavistobuenoSubdirectoradministativo"));
                     return null;
                 }
 
@@ -1481,8 +1481,8 @@ public class ViajeController implements Serializable, IController {
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String columnNameVistoBueno()">
 
-    public String columnNameVistoBuenoSecretarioAdministrativo() {
-        return vistoBuenoSecretarioAdministrativoServices.columnNameVistoBuenoSubdirectorAdministrativo(solicitud.getVistoBuenoSubdirectorAdministrativo());
+    public String columnNameVistoBuenoSubdirectorAdministrativo() {
+        return vistoBuenoSubdirectorAdministrativoServices.columnNameVistoBuenoSubdirectorAdministrativo(solicitud.getVistoBuenoSubdirectorAdministrativo());
     }
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="handleSelectCopiarDesde(SelectEvent event)">
@@ -1546,7 +1546,7 @@ public class ViajeController implements Serializable, IController {
     }   // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="Boolean aprobadoCoordinador()">
 
-    public Boolean isVistoBuenoSecretarioAdministrativo() {
+    public Boolean isVistoBuenoSubdirectorAdministrativo() {
         try {
             if (solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("si")) {
                 return true;

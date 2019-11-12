@@ -62,9 +62,9 @@
 
                     </p:selectOneMenu>
 
-                    <p:outputLabel value="#{msg['field.secretarioadministrativo']}"/>
-                    <p:selectOneMenu id="secretarioadministrativo" value="#{solicitudDocenteController.vistoBuenoSecretarioAdministrativoSearch}" style="width:150px">
-                        <p:ajax listener="#{solicitudDocenteController.onVistoBuenoChangeSecretarioAdministrativo}" update=":form:dataTable" />
+                    <p:outputLabel value="#{msg['field.subdirectoradministrativo']}"/>
+                    <p:selectOneMenu id="subdirectoradministrativo" value="#{solicitudDocenteController.vistoBuenoSubdirectorAdministrativoSearch}" style="width:150px">
+                        <p:ajax listener="#{solicitudDocenteController.onVistoBuenoChangeSubdirectorAdministrativo}" update=":form:dataTable" />
                         <f:selectItem itemLabel="#{msg['selectitem.seleccione']}" itemValue="" noSelectionOption="true" />
                         <f:selectItem itemLabel="#{msg['selectitem.pendiente']}" itemValue="pe" />
                         <f:selectItem itemLabel="#{msg['selectitem.aprobado']}" itemValue="si" />
@@ -118,10 +118,10 @@
                     <p:column headerText="#{msg['field.vbcoordinador']}"  >
                         <p:outputLabel value="#{solicitudDocenteController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{solicitudDocenteController.columnColor(item.estatus)}" />
                     </p:column>
-                    <p:column headerText="#{msg['field.vbsecretarioadministrativo']}"  >
-                        <p:outputLabel value="#{solicitudDocenteController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudDocenteController.columnColor(item.estatus)}" />
+                    <p:column headerText="#{msg['field.vbsubdirectoradministrativo']}"  >
+                        <p:outputLabel value="#{solicitudDocenteController.columnNameVistoBuenoSubdirectorAdministrativo(item.vistoBuenoSubdirectorAdministrativo)}"   style="color: #{solicitudDocenteController.columnColor(item.estatus)}" />
                     </p:column>
-
+                  
 
 
                     <p:column headerText="#{msg['field.estatus']}" style="width:100px">
@@ -199,7 +199,7 @@
                         <p:outputLabel value="#{solicitudDocenteController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{solicitudDocenteController.columnColor(item.estatus)}" />
               
                    <p:outputLabel value="#{msg['field.secadministrativo']}"  />
-                        <p:outputLabel value="#{solicitudDocenteController.columnNameVistoBuenoSecretarioAdministrativo(item.vistoBuenoSecretarioAdministrativo)}"   style="color: #{solicitudDocenteController.columnColor(item.estatus)}" />
+                        <p:outputLabel value="#{solicitudDocenteController.columnNameVistoBuenoSubdirectorAdministrativo(item.vistoBuenoSubdirectorAdministrativo)}"   style="color: #{solicitudDocenteController.columnColor(item.estatus)}" />
                    
                             <p:outputLabel value="#{msg['field.estatus']}" />
                             <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{solicitudDocenteController.columnColor(item.estatus)}" />
