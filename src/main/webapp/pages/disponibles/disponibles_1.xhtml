@@ -172,7 +172,7 @@
 
  
                                 <p:column headerText="#{msg['field.tipovehiculo']}" style="width:95px">
-                                    <h:outputText  value="#{disponiblesController.showTipoVehiculo(item)}" style="color: #{disponiblesController.columnColorDisponibles(item)}"  />
+                                    <h:outputText value="#{item.vehiculo.get(0).tipovehiculo.idtipovehiculo}" style="color: #{disponiblesController.columnColorDisponibles(item)}"  />
                                 </p:column>
 
 

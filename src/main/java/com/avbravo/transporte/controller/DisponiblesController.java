@@ -1401,6 +1401,18 @@ changeDaysViewAvailable();
     public String showDate(Date date) {
         return solicitudServices.showDate(date);
     }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
+    public String showTipoVehiculo(DisponiblesBeans disponiblesBeans) {
+        try {
+            if(disponiblesBeans.getVehiculo() == null  || disponiblesBeans.getVehiculo().isEmpty()){
+                return "";
+            }
+            return disponiblesBeans.getVehiculo().get(0).getTipovehiculo().getIdtipovehiculo();
+        } catch (Exception e) {
+               errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return "";
+    }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String showHour(Date date)">
 
     public String showHour(Date date) {
@@ -2239,6 +2251,9 @@ changeDaysViewAvailable();
     private Integer pasajerosRecomendados(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros) {
         Integer pasajerosPendientes = pasajeros;
         try {
+            if(vehiculoDisponiblesList == null || vehiculoDisponiblesList.isEmpty()){
+                return pasajerosPendientes;
+            }
             Integer mayorCapacidad = vehiculoDisponiblesList.get(0).getPasajeros();
             for (Vehiculo v : vehiculoDisponiblesList) {
 
