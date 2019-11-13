@@ -105,6 +105,10 @@ public class ViajeController implements Serializable, IController {
     List<Integer> pages = new ArrayList<>();
     Date fechaDesde = new Date();
     Date fechaHasta = new Date();
+    
+    Date fechaInicialParaSolicitud = new Date();
+    Date fechaFinalParaSolicitud = new Date();
+    
     String lugarDestino = "";
     String comentarios = "";
     String activo = "";
@@ -261,6 +265,8 @@ public class ViajeController implements Serializable, IController {
 
                 }
                 estatusViaje = optional.get();
+                fechaInicialParaSolicitud = DateUtil.primerDiaDelMesActualConHoraMinutosSegundos(0, 1, 0);
+                fechaFinalParaSolicitud = DateUtil.ultimoDiaDelMesActualConHoraMinutoSegundo(23, 59, 0);
                 viaje.setMensajeWarning("");
                 viaje.setEstatusViaje(estatusViaje);
                 viaje.setFechahorainicioreserva(DateUtil.primerDiaDelMesActualConHoraMinutosSegundos(0, 1, 0));
@@ -744,11 +750,11 @@ public class ViajeController implements Serializable, IController {
         List<Solicitud> suggestions = new ArrayList<>();
 
         try {
-            if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
+            if (fechaInicialParaSolicitud == null || fechaFinalParaSolicitud == null) {
                 return suggestions;
             }
 
-            suggestions = solicitudRepository.filterBetweenDate("estatus.idestatus", "SOLICITADO", "fechahorapartida", viaje.getFechahorainicioreserva(), "fechahoraregreso", viaje.getFechahorafinreserva(), new Document("fechahorapartida", 1));
+            suggestions = solicitudRepository.filterBetweenDate("estatus.idestatus", "SOLICITADO", "fechahorapartida", fechaInicialParaSolicitud, "fechahoraregreso", fechaFinalParaSolicitud, new Document("fechahorapartida", 1));
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
@@ -1409,6 +1415,16 @@ public class ViajeController implements Serializable, IController {
         try {
 
             updateChangeDate();
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+
+    }// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="calendarChangeListener(SelectEvent event)">
+    public void calendarFechaSolicitudesChangeListener(SelectEvent event) {
+        try {
+
+ 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }

@@ -46,28 +46,19 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" > 
 
 
-
-
-                        <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
+   <p:outputLabel  value="#{msg['field.solicitudesdesde']}"/>
 
                         <p:fieldset >
 
                             <jmoordbjsf:calendar
                                 required="true"
                                 pattern="dd/MM/yyyy HH:mm a" 
-                                value="#{viajeController.viaje.fechahorainicioreserva}" 
+                                value="#{viajeController.fechaInicialParaSolicitud}" 
                                 label="#{msg['field.fechahorainicioreserva']}"
-                                listener="#{viajeController.calendarChangeListener}"
+                                listener="#{viajeController.calendarFechaSolicitudesChangeListener}"
                                 update=":form:vehiculo, , :form:conductor, :form:msg, :form:growl,:form:warningMessage"/>
 
-                            <p:spacer width="25"/>
-                            <b:commandButton  look="success"
-                                              title="#{msg['label.solicitudpendiente']}"
-                                              immediate="true"
-                                                iconAwesome="fa-calendar" 
-                                              update="solicitudDetails"
-                                              action="#{viajeController.prepareScheduleSolicitud()}"
-                                              oncomplete="PF('solicitudDialog').show();" />
+                           
                             <p:spacer width="25"/>
                             <b:commandButton  look="primary"
                                               process="@this"
@@ -81,25 +72,18 @@
 
                         </p:fieldset>
 
-
-                        <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
+   
+    <p:outputLabel  value="#{msg['field.solicitudeshasta']}"  />
                         <p:fieldset >
                             <jmoordbjsf:calendar
                                 pattern="dd/MM/yyyy HH:mm a" 
                                 required="true"
-                                value="#{viajeController.viaje.fechahorafinreserva}"
+                                value="#{viajeController.fechaFinalParaSolicitud}"
                                 label="#{msg['field.fechahorafinreserva']}" 
-                                listener="#{viajeController.calendarChangeListener}"
+                                listener="#{viajeController.calendarFechaSolicitudesChangeListener}"
                                 update=":form:vehiculo,:form:conductor, :form:msg, :form:growl, :form:warningMessage"/>
 
-                            <p:spacer width="25"/>
-                            <b:commandButton  look="success"
-                                              title="#{msg['label.viajes']}"
-                                              immediate="true"
-                                              iconAwesome="fa-calendar" 
-                                              update="viajesDetails"
-                                              action="#{viajeController.prepareScheduleViajes()}"
-                                              oncomplete="PF('viajesDialog').show();" />
+                          
                             
                              <p:spacer width="25"/>
                             <b:commandButton  look="primary"
@@ -112,6 +96,8 @@
 
                         </p:fieldset>   
 
+
+                      
 
 
 
@@ -172,6 +158,24 @@
                                               action="#{viajeController.prepareSolicitudDetallesShow()}"
                                               oncomplete="PF('solicitudDetallesDialog').show();" />
 
+                            
+                             <p:spacer width="25"/>
+                            <b:commandButton  look="success"
+                                              title="#{msg['label.solicitudpendiente']}"
+                                              immediate="true"
+                                                iconAwesome="fa-calendar" 
+                                              update="solicitudDetails"
+                                              action="#{viajeController.prepareScheduleSolicitud()}"
+                                              oncomplete="PF('solicitudDialog').show();" />
+                            
+                              <p:spacer width="25"/>
+                            <b:commandButton  look="success"
+                                              title="#{msg['label.viajes']}"
+                                              immediate="true"
+                                              iconAwesome="fa-calendar" 
+                                              update="viajesDetails"
+                                              action="#{viajeController.prepareScheduleViajes()}"
+                                              oncomplete="PF('viajesDialog').show();" />
                             <p:staticMessage  id="warningMessage" severity="warn" summary="#{viajeController.mensajeWarningTitle}" detail="#{viajeController.viaje.mensajeWarning}" />
 
                         </p:fieldset>
@@ -189,6 +193,55 @@
 
                         </p:fieldset>
 
+                          <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
+
+                        <p:fieldset >
+
+                            <jmoordbjsf:calendar
+                                required="true"
+                                pattern="dd/MM/yyyy HH:mm a" 
+                                value="#{viajeController.viaje.fechahorainicioreserva}" 
+                                label="#{msg['field.fechahorainicioreserva']}"
+                                listener="#{viajeController.calendarChangeListener}"
+                                update=":form:vehiculo, , :form:conductor, :form:msg, :form:growl,:form:warningMessage"/>
+
+                            <p:spacer width="25"/>
+                            <b:commandButton  look="success"
+                                              title="#{msg['label.solicitudpendiente']}"
+                                              immediate="true"
+                                                iconAwesome="fa-calendar" 
+                                              update="solicitudDetails"
+                                              action="#{viajeController.prepareScheduleSolicitud()}"
+                                              oncomplete="PF('solicitudDialog').show();" />
+                          
+
+
+                        </p:fieldset>
+
+
+                        <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
+                        <p:fieldset >
+                            <jmoordbjsf:calendar
+                                pattern="dd/MM/yyyy HH:mm a" 
+                                required="true"
+                                value="#{viajeController.viaje.fechahorafinreserva}"
+                                label="#{msg['field.fechahorafinreserva']}" 
+                                listener="#{viajeController.calendarChangeListener}"
+                                update=":form:vehiculo,:form:conductor, :form:msg, :form:growl, :form:warningMessage"/>
+
+                            <p:spacer width="25"/>
+                            <b:commandButton  look="success"
+                                              title="#{msg['label.viajes']}"
+                                              immediate="true"
+                                              iconAwesome="fa-calendar" 
+                                              update="viajesDetails"
+                                              action="#{viajeController.prepareScheduleViajes()}"
+                                              oncomplete="PF('viajesDialog').show();" />
+                            
+                          
+                        </p:fieldset>   
+
+                        
 
                         <p:outputLabel value="#{msg['field.vistobueno']}"/>
                         <p:fieldset title="VistoBueno">
