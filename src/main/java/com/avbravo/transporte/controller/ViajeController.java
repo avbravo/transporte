@@ -263,8 +263,9 @@ public class ViajeController implements Serializable, IController {
                 estatusViaje = optional.get();
                 viaje.setMensajeWarning("");
                 viaje.setEstatusViaje(estatusViaje);
-                viaje.setFechahorainicioreserva(DateUtil.primerDiaDelMesEnFecha(DateUtil.getAnioActual(), DateUtil.mesActual()));
-                viaje.setFechahorafinreserva(DateUtil.ultimoDiaDelMesEnFecha(DateUtil.getAnioActual(), DateUtil.mesActual()));
+                viaje.setFechahorainicioreserva(DateUtil.primerDiaDelMesActualConHoraMinutosSegundos(0, 1, 0));
+                viaje.setFechahorafinreserva(DateUtil.ultimoDiaDelMesActualConHoraMinutoSegundo(23, 59, 0));
+
             }
             if (action.equals("view")) {
                 view();
@@ -274,7 +275,7 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -288,7 +289,7 @@ public class ViajeController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -340,7 +341,7 @@ public class ViajeController implements Serializable, IController {
 
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
 
     }// </editor-fold>
@@ -353,7 +354,7 @@ public class ViajeController implements Serializable, IController {
 
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
 
     }// </editor-fold>
@@ -439,7 +440,7 @@ public class ViajeController implements Serializable, IController {
             viajeDataModel = new ViajeDataModel(viajeList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
 
         }
 
@@ -486,7 +487,7 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -524,7 +525,7 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -535,7 +536,7 @@ public class ViajeController implements Serializable, IController {
         try {
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -549,7 +550,7 @@ public class ViajeController implements Serializable, IController {
             }
             return true;
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -597,7 +598,7 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -646,7 +647,7 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -726,7 +727,7 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return suggestions;
     }
@@ -750,7 +751,7 @@ public class ViajeController implements Serializable, IController {
             suggestions = solicitudRepository.filterBetweenDate("estatus.idestatus", "SOLICITADO", "fechahorapartida", viaje.getFechahorainicioreserva(), "fechahoraregreso", viaje.getFechahorafinreserva(), new Document("fechahorapartida", 1));
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return suggestions;
     }
@@ -820,7 +821,7 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return suggestions;
     }
@@ -891,7 +892,7 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
 
         }
         return suggestionsConductor;
@@ -925,7 +926,7 @@ public class ViajeController implements Serializable, IController {
 
         } catch (Exception e) {
 //            errorServices.errorMessage(nameOfClass(),nameOfMethod(), e.getLocalizedMessage());
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isVehiculoValid()", e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isVehiculoValid()", e.getLocalizedMessage(), e);
         }
         return valid;
     }
@@ -951,7 +952,7 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return valid;
     }
@@ -972,7 +973,7 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isSolicitudActivoDisponibleExcluyendoMismoViaje()", e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isSolicitudActivoDisponibleExcluyendoMismoViaje()", e.getLocalizedMessage(), e);
         }
         return valid;
     }
@@ -991,7 +992,7 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isConductorActivoDisponible", e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), "isConductorActivoDisponible", e.getLocalizedMessage(), e);
         }
         return valid;
     }
@@ -1010,7 +1011,7 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return valid;
     }
@@ -1029,7 +1030,7 @@ public class ViajeController implements Serializable, IController {
             writable = true;
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
 
         }
         return "";
@@ -1075,15 +1076,15 @@ public class ViajeController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getMessage("warning.seleccioneunasolicitud"));
                 return null;
             }
-            
-              Tiempo tiempoPartida = DateUtil.diferenciaEntreFechas(solicitud.getFechahorapartida(), viaje.getFechahorainicioreserva());
+
+            Tiempo tiempoPartida = DateUtil.diferenciaEntreFechas(solicitud.getFechahorapartida(), viaje.getFechahorainicioreserva());
             Tiempo tiempoRegreso = DateUtil.diferenciaEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
 
-            if (tiempoPartida.getDias() >0 || tiempoPartida.getHoras() > 4) {
+            if (tiempoPartida.getDias() > 0 || tiempoPartida.getHoras() > 4) {
                 JsfUtil.warningMessage(rf.getMessage("warning.fechahorapartdamuylejanadelasolicitud"));
                 return null;
             }
-            if (tiempoRegreso.getDias() >0 || tiempoRegreso.getHoras() > 4) {
+            if (tiempoRegreso.getDias() > 0 || tiempoRegreso.getHoras() > 4) {
                 JsfUtil.warningMessage(rf.getMessage("warning.fechahoraregresoamuylejanadelasolicitud"));
                 return null;
             }
@@ -1250,9 +1251,6 @@ public class ViajeController implements Serializable, IController {
                     return "";
                 }
 
-                
-                
-                
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 usuarioList = new ArrayList<>();
                 if (solicitud.getUsuario().get(0).getUsername().equals(solicitud.getUsuario().get(1).getUsername())) {
@@ -1268,7 +1266,7 @@ public class ViajeController implements Serializable, IController {
 //Notificacion al conductor
                 List<Usuario> usuarioConductorList = usuarioRepository.findBy(new Document("cedula", viaje.getConductor().getCedula()));
                 if (usuarioConductorList == null || usuarioConductorList.isEmpty()) {
-                  //  JsfUtil.warningMessage(rf.getMessage("warning.noexisteusuariocomoconductorparaviaje"));
+                    //  JsfUtil.warningMessage(rf.getMessage("warning.noexisteusuariocomoconductorparaviaje"));
                 } else {
                     notificacionServices.saveNotification("Viaje nuevo: " + viaje.getIdviaje() + "Fecha:" + viaje.getFechahorainicioreserva(), usuarioConductorList.get(0).getUsername(), "viaje nuevo");
                     usuarioList.add(usuarioConductorList.get(0));
@@ -1285,7 +1283,7 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }// </editor-fold>
@@ -1348,15 +1346,39 @@ public class ViajeController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="calendarChangeListener(SelectEvent event)">
-    public void calendarChangeListener(SelectEvent event) {
+    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    public String primerDia() {
         try {
+            viaje.setFechahorainicioreserva(DateUtil.primerDiaDelMesActualConHoraMinutosSegundos(0, 1, 0));
 
+            updateChangeDate();
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return "";
+    }
+
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    public String ultimoDia() {
+        try {
+            viaje.setFechahorafinreserva(DateUtil.ultimoDiaDelMesActualConHoraMinutoSegundo(23, 59, 0));
+            updateChangeDate();
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return "";
+    }
+    // </editor-fold>  
+
+    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    public String updateChangeDate() {
+        try {
             validFechas = false;
 
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
@@ -1369,15 +1391,26 @@ public class ViajeController implements Serializable, IController {
                 }
 
             }
-            if (solicitud.getFechahorapartida()== null || viaje.getFechahorafinreserva() == null) {
+            if (solicitud.getFechahorapartida() == null || viaje.getFechahorafinreserva() == null) {
 
-            }else{
-                      validarMensajesDias();
+            } else {
+                validarMensajesDias();
             }
-      
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return "";
+    }
+    // </editor-fold>  
+
+    // <editor-fold defaultstate="collapsed" desc="calendarChangeListener(SelectEvent event)">
+    public void calendarChangeListener(SelectEvent event) {
+        try {
+
+            updateChangeDate();
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
 
     }// </editor-fold>
@@ -1396,7 +1429,8 @@ public class ViajeController implements Serializable, IController {
             // solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
             viaje.setMision(solicitud.getMision());
             viaje.setComentarios("Responsable " + solicitud.getUsuario().get(1).getNombre() + " Destino " + solicitud.getLugarllegada());
-
+viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
+viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
             viaje.setLugarpartida(solicitud.getLugarpartida());
             viaje.setLugardestino(solicitud.getLugarllegada());
             completeVehiculo("");
@@ -1408,7 +1442,7 @@ public class ViajeController implements Serializable, IController {
             JsfUtil.updateJSFComponent(":form:commandButtonShowSolicitudDetalles");
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -1442,7 +1476,7 @@ public class ViajeController implements Serializable, IController {
             JsfUtil.updateJSFComponent("solicitudDetallesPanel");
         } catch (Exception e) {
 
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     } // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="onEventSelectViaje(SelectEvent selectEvent)">
@@ -1470,7 +1504,7 @@ public class ViajeController implements Serializable, IController {
             JsfUtil.updateJSFComponent("viajeDetallesPanel");
         } catch (Exception e) {
 
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     } // </editor-fold>
 
@@ -1491,7 +1525,7 @@ public class ViajeController implements Serializable, IController {
         try {
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -1517,18 +1551,17 @@ public class ViajeController implements Serializable, IController {
             viaje.setMensajeWarning("");
             mensajeWarning = "";
             mensajeWarningTitle = "";
-            String partida = "dias: " + tiempoPartida.getDias() + " horas:" + tiempoPartida.getHoras() + " minutos:" + tiempoPartida.getMinutos();
-            String llegada = "dias: " + tiempoRegreso.getDias() + " horas:" + tiempoRegreso.getHoras() + " minutos:" + tiempoRegreso.getMinutos();
+            String partida = "dias: " + tiempoPartida.getDias() + " horas:" + tiempoPartida.getHoras();
+            String llegada = "dias: " + tiempoRegreso.getDias() + " horas:" + tiempoRegreso.getHoras();
 
-
-            viaje.setMensajeWarning("Diferencia fecha/hora de partida (" + partida + ")");
+            viaje.setMensajeWarning("Diferencia Partida (" + partida + ")");
             mensajeWarningTitle = "Nota";
 
-            viaje.setMensajeWarning(viaje.getMensajeWarning() + " Fecha/hora regreso ( " + llegada + ")");
+            viaje.setMensajeWarning(viaje.getMensajeWarning() + " Regreso ( " + llegada + ")");
 
             JsfUtil.updateJSFComponent(":form:form:warningMessage");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }
     // </editor-fold>  
@@ -1540,7 +1573,7 @@ public class ViajeController implements Serializable, IController {
                 return true;
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }   // </editor-fold>  
@@ -1552,7 +1585,7 @@ public class ViajeController implements Serializable, IController {
                 return true;
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }   // </editor-fold>  
@@ -1565,7 +1598,7 @@ public class ViajeController implements Serializable, IController {
             }
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -1711,7 +1744,7 @@ public class ViajeController implements Serializable, IController {
 
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }

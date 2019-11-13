@@ -64,10 +64,19 @@
                             <b:commandButton  look="success"
                                               title="#{msg['label.solicitudpendiente']}"
                                               immediate="true"
-                                              iconAwesome="fa-calendar" 
+                                                iconAwesome="fa-calendar" 
                                               update="solicitudDetails"
                                               action="#{viajeController.prepareScheduleSolicitud()}"
                                               oncomplete="PF('solicitudDialog').show();" />
+                            <p:spacer width="25"/>
+                            <b:commandButton  look="primary"
+                                              process="@this"
+                                              title="#{msg['label.iniciomes']}"
+                 
+                                              iconAwesome="fa-battery-empty"                                             
+                                             update=":form:content"
+                                              action="#{viajeController.primerDia()}"
+                                              />
 
 
                         </p:fieldset>
@@ -91,6 +100,15 @@
                                               update="viajesDetails"
                                               action="#{viajeController.prepareScheduleViajes()}"
                                               oncomplete="PF('viajesDialog').show();" />
+                            
+                             <p:spacer width="25"/>
+                            <b:commandButton  look="primary"
+                                              title="#{msg['label.finmes']}"
+                                             process="@this"
+                                              iconAwesome="fa-battery-full" 
+                                            
+                                              update=":form:content"
+                                              action="#{viajeController.ultimoDia()}"/>
 
                         </p:fieldset>   
 
@@ -134,13 +152,13 @@
 
                                 listener="#{viajeController.handleSelectCopiarDesde}"
                                 value="#{viajeController.solicitud}"
-                                itemLabel=" #{p.objetivo}"
+                                itemLabel="# #{p.idsolicitud} - #{p.objetivo}"
                                 field="objetivo"
                                 dropdown="true"
                                 minQueryLength="0"
                                 update=":form:panel,:form:commandButtonShowSolicitudDetalles, :form:warningMessage"
                                 multiple="false"
-id="solicitudAutoComplete"
+                                id="solicitudAutoComplete"
                                 />
 
                             <p:spacer width="25"/>
@@ -192,8 +210,8 @@ id="solicitudAutoComplete"
                         <p:fieldset>
                             <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
                                                      completeMethod="#{viajeController.completeVehiculo}"
-                                                   
-                                                     
+
+
                                                      labeltip1="#{msg['field.tipovehiculo']} #{p.tipovehiculo.idtipovehiculo}" 
                                                      labeltip2="#{msg['field.pasajeros']} #{p.pasajeros}" 
                                                      listener="#{viajeController.handleSelect}"
