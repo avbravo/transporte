@@ -1385,7 +1385,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!solicitudServices.isValidDates(solicitud, false)) {
+                if (!solicitudServices.isValidDates(solicitud, false,false)) {
                     return;
                 }
                 changeDaysViewAvailable();

@@ -1782,7 +1782,7 @@ public class AdministradorController implements Serializable, IController {
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!solicitudServices.isValidDates(solicitud, true)) {
+                if (!solicitudServices.isValidDates(solicitud, true,true)) {
                     return;
                 }
                 changeDaysViewAvailable();

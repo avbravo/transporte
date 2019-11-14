@@ -1400,7 +1400,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!solicitudServices.isValidDates(solicitud, false)) {
+                if (!solicitudServices.isValidDates(solicitud, false,true)) {
                     return;
                 }
                 changeDaysViewAvailable();

@@ -73,6 +73,7 @@ import com.avbravo.transporteejb.services.VistoBuenoServices;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -341,11 +342,10 @@ public class DisponiblesController implements Serializable, IController {
             start();
             sugerenciaList = sugerenciaRepository.findBy("activo", "si");
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
-          //  cargarSchedule();
-     String  action = getAction();
-            
+            //  cargarSchedule();
+            String action = getAction();
 
-            if (action == null  || action.equals("golist") || action.equals("gonew") || action.equals("new") ) {
+            if (action == null || action.equals("golist") || action.equals("gonew") || action.equals("new")) {
                 inicializar();
 
             }
@@ -354,7 +354,7 @@ public class DisponiblesController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -415,7 +415,7 @@ public class DisponiblesController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
 
         return true;
@@ -426,7 +426,7 @@ public class DisponiblesController implements Serializable, IController {
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -494,7 +494,7 @@ public class DisponiblesController implements Serializable, IController {
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
 
         }
 
@@ -560,7 +560,7 @@ public class DisponiblesController implements Serializable, IController {
 
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }// </editor-fold>
@@ -580,7 +580,6 @@ public class DisponiblesController implements Serializable, IController {
             }
             //Lo datos del usuario
             List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
-
 
             tipovehiculoList.add(tipovehiculo);
             solicitud.setTipovehiculo(tipovehiculoList);
@@ -603,7 +602,7 @@ public class DisponiblesController implements Serializable, IController {
             }
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }// </editor-fold>
@@ -620,7 +619,7 @@ public class DisponiblesController implements Serializable, IController {
                 }
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return valid;
     }
@@ -752,7 +751,7 @@ public class DisponiblesController implements Serializable, IController {
 
                 //Verifica si es un coordinador y le envia la notificacion
                 usuarioList.forEach((u) -> {
-                  
+
                     notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
 
                 });
@@ -773,7 +772,7 @@ public class DisponiblesController implements Serializable, IController {
             inicializar();
             return "";
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -785,7 +784,7 @@ public class DisponiblesController implements Serializable, IController {
         try {
             color = estatusServices.columnColor(estatus);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return color;
     }
@@ -803,7 +802,7 @@ public class DisponiblesController implements Serializable, IController {
 //            }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return color;
     } // </editor-fold>
@@ -822,7 +821,7 @@ public class DisponiblesController implements Serializable, IController {
                 disponible = false;
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return disponible;
     } // </editor-fold>
@@ -862,7 +861,7 @@ public class DisponiblesController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return suggestionsUnidad;
     }// </editor-fold>
@@ -896,7 +895,7 @@ public class DisponiblesController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return suggestionsFacultad;
     }// </editor-fold>
@@ -925,7 +924,7 @@ public class DisponiblesController implements Serializable, IController {
                 }
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return suggestionsCarrera;
     }// </editor-fold>
@@ -953,7 +952,7 @@ public class DisponiblesController implements Serializable, IController {
             });
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return list;
     }
@@ -967,7 +966,7 @@ public class DisponiblesController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -985,7 +984,7 @@ public class DisponiblesController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return _found;
     }
@@ -1003,7 +1002,7 @@ public class DisponiblesController implements Serializable, IController {
                 _found = false;
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return _found;
     }
@@ -1022,7 +1021,7 @@ public class DisponiblesController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return _found;
     }
@@ -1035,7 +1034,7 @@ public class DisponiblesController implements Serializable, IController {
                 suggestionsFacultad.add(facultad);
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -1048,7 +1047,7 @@ public class DisponiblesController implements Serializable, IController {
                 suggestionsCarrera.add(carrera);
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -1061,7 +1060,7 @@ public class DisponiblesController implements Serializable, IController {
                 suggestionsUnidad.add(unidad);
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -1082,7 +1081,7 @@ public class DisponiblesController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return editable;
     } // </editor-fold>
@@ -1098,7 +1097,7 @@ public class DisponiblesController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
 
@@ -1131,7 +1130,7 @@ public class DisponiblesController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return suggestionsTipovehiculo;
     }// </editor-fold>
@@ -1143,7 +1142,7 @@ public class DisponiblesController implements Serializable, IController {
                 suggestionsTipovehiculo.add(tipovehiculo);
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -1163,7 +1162,7 @@ public class DisponiblesController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return _found;
     }
@@ -1204,16 +1203,10 @@ public class DisponiblesController implements Serializable, IController {
             solicitud.setUsuario(usuarioList);
 
             solicitud.setPeriodoacademico(DateUtil.getAnioActual().toString());
-//            solicitud.setFechahorapartida(DateUtil.primerDiaDelMesEnFecha(DateUtil.anioActual(), DateUtil.mesActual()));
-//            solicitud.setFechahoraregreso(DateUtil.ultimoDiaDelMesEnFecha(DateUtil.anioActual(), DateUtil.mesActual()));
-//            
-//            solicitud.setFechahorapartida(DateUtil.insertHoursMinutesSecondsToDate(solicitud.getFechahorapartida(),0,0, 0));
-//            solicitud.setFechahoraregreso(DateUtil.insertHoursMinutesSecondsToDate(solicitud.getFechahoraregreso(),23,59, 0));
 //            
             solicitud.setFechahorapartida(DateUtil.primerDiaDelMesActualConPrimeraHoraDelDia());
             solicitud.setFechahoraregreso(DateUtil.ultimoDiaDelMesActualConHoraFinal());
-            
-            
+
             unidadList = new ArrayList<>();
             unidadList.add(jmoordb_user.getUnidad());
             solicitud.setUnidad(unidadList);
@@ -1248,16 +1241,6 @@ public class DisponiblesController implements Serializable, IController {
                 textsearch = "DOCENTE";
             }
             //
-           // diasSelected = new String[8];           
-          // diasSelected[0] = "Dia/ Dias Consecutivo";
-//           diasSelected[0] = "Lunes";
-//           diasSelected[1] = "Martes";
-//           diasSelected[2] = "Miercoles";
-//           diasSelected[3] = "Jueves";
-//           diasSelected[4] = "Viernes";
-//           diasSelected[6] = "Sabado";
-//           diasSelected[7] = "Domingo";
-           
 
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
             solicitudSelected = solicitud;
@@ -1276,10 +1259,10 @@ public class DisponiblesController implements Serializable, IController {
                 }
 
             }
-changeDaysViewAvailable();
+            changeDaysViewAvailable();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
-              JsfUtil.updateJSFComponent(":form:growl");
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            JsfUtil.updateJSFComponent(":form:growl");
         }
         return "";
     }
@@ -1294,7 +1277,7 @@ changeDaysViewAvailable();
             facultadList = solicitud.getFacultad();
             carreraList = solicitud.getCarrera();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -1360,7 +1343,7 @@ changeDaysViewAvailable();
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -1393,7 +1376,7 @@ changeDaysViewAvailable();
 
         } catch (Exception e) {
 
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     } // </editor-fold>
 
@@ -1402,16 +1385,18 @@ changeDaysViewAvailable();
         return solicitudServices.showDate(date);
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String showDate(Date date)">
+
     public String showTipoVehiculo(DisponiblesBeans disponiblesBeans) {
         try {
-            if(disponiblesBeans.getVehiculo() == null  || disponiblesBeans.getVehiculo().isEmpty()){
-                return "";
+            if (disponiblesBeans.getVehiculo() == null || disponiblesBeans.getVehiculo().isEmpty()) {
+                return rf.getMessage("warning.nohaydisponibles");
+
             }
             return disponiblesBeans.getVehiculo().get(0).getTipovehiculo().getIdtipovehiculo();
         } catch (Exception e) {
-               errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
-        return "";
+        return rf.getMessage("warning.nohaydisponibles");
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String showHour(Date date)">
 
@@ -1469,11 +1454,11 @@ changeDaysViewAvailable();
 //verifica si hay buses disponibles
 
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
-    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.verificarfechas"));
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.verificarfechas"));
 
-                        return;
+                return;
             } else {
-                if (!solicitudServices.isValidDates(solicitud, false)) {
+                if (!solicitudServices.isValidDates(solicitud, false, false)) {
                     return;
                 }
                 changeDaysViewAvailable();
@@ -1491,11 +1476,10 @@ changeDaysViewAvailable();
 //                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.yatienesolicitudenesasfechas"));
 //
 //                }
-
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
 
     }// </editor-fold>
@@ -1525,7 +1509,7 @@ changeDaysViewAvailable();
                     .reversed());
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return vehiculoList;
     }// </editor-fold>
@@ -1544,7 +1528,7 @@ changeDaysViewAvailable();
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return valid;
     }
@@ -1564,7 +1548,7 @@ changeDaysViewAvailable();
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return valid;
     }
@@ -1664,7 +1648,7 @@ changeDaysViewAvailable();
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
 
-                 //Agrega los adminisradores
+                //Agrega los adminisradores
                 if (usuarioAdministradoreslist == null || usuarioAdministradoreslist.isEmpty()) {
                 } else {
                     //Agrega el administrador a la lista
@@ -1694,7 +1678,7 @@ changeDaysViewAvailable();
 
             return "";
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -1715,7 +1699,7 @@ changeDaysViewAvailable();
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -1728,7 +1712,7 @@ changeDaysViewAvailable();
 
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }// </editor-fold>
@@ -1754,7 +1738,7 @@ changeDaysViewAvailable();
             }
             JsfUtil.infoDialog("Informacion", "Se envio la notifacion a los administradores");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -1785,10 +1769,8 @@ changeDaysViewAvailable();
             Integer iddisponible = 0;
             disponiblesBeansList = new ArrayList<>();
             rangoAgenda = new ArrayList<>();
-//            if (!isValidDiasConsecutivos()) {
-//                return "";
-//            }
-             diasconsecutivos = false;
+
+            diasconsecutivos = false;
             rangoAgenda.add("Lunes");
             rangoAgenda.add("Martes");
             rangoAgenda.add("Miercoles");
@@ -1814,7 +1796,7 @@ changeDaysViewAvailable();
                 if (tipoVehiculoCantidadBeans.getCantidad() > 0) {
                     vehiculoList = vehiculosActivo(tipoVehiculoCantidadBeans.getTipovehiculo());
                     if (vehiculoList == null || vehiculoList.isEmpty()) {
-                     //   JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayvehiculosactivosconesascondiciones"));
+                        //   JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nohayvehiculosactivosconesascondiciones"));
                         return "";
                     }
                     vehiculoFreeList = new ArrayList<>();
@@ -1849,7 +1831,12 @@ changeDaysViewAvailable();
                         disponiblesBeans.setPasajerosPorViaje(vehiculoServices.generarPasajerosPorViajes(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
                         disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
                         disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
-                        disponiblesBeansList.add(disponiblesBeans);
+                        if(disponiblesBeans.getVehiculo() == null || disponiblesBeans.getVehiculo().isEmpty()){
+                         
+                        }else{
+                             disponiblesBeansList.add(disponiblesBeans);
+                        }
+                       
 
                     } else {
 
@@ -1887,9 +1874,24 @@ changeDaysViewAvailable();
                     }// no son consecutivos
                 }
             }
+            if(disponiblesBeansList == null || disponiblesBeansList.isEmpty()){
+                
+            }else{
+                
+                Collections.sort(disponiblesBeansList, new Comparator<DisponiblesBeans>() { 
+    public int compare(DisponiblesBeans o1, DisponiblesBeans o2) { 
+     if (o1.getFechahorainicio()== null || o2.getFechahorainicio()== null) 
+     return 0; 
+     return o1.getFechahorainicio().compareTo(o2.getFechahorainicio()); 
+    } 
+    
+}); 
+            //       disponiblesBeansList.sort(Comparator.comparingDouble(DisponiblesBeans::getFechahorainicio)
+              //                  .reversed());
+            }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
 
         return "";
@@ -1906,8 +1908,8 @@ changeDaysViewAvailable();
         try {
             Integer c = 0;
             diasconsecutivos = false;
-              if(diasSelected == null){
-                  JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.seleccionerangodias"));
+            if (diasSelected == null) {
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.seleccionerangodias"));
 
                 return false;
             }
@@ -1927,7 +1929,7 @@ changeDaysViewAvailable();
             }
             valid = true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return valid;
     }// </editor-fold>
@@ -1938,7 +1940,7 @@ changeDaysViewAvailable();
         try {
             disponiblesBeansList = new ArrayList<>();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return true;
     }
@@ -2069,7 +2071,7 @@ changeDaysViewAvailable();
 
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -2100,7 +2102,7 @@ changeDaysViewAvailable();
             }//isEmpty
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
 
@@ -2169,7 +2171,7 @@ changeDaysViewAvailable();
             }
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
 
@@ -2228,14 +2230,19 @@ changeDaysViewAvailable();
                         disponiblesBeans.setPasajerosPorViaje(vehiculoServices.generarPasajerosPorViajes(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
                         disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
                         disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
-                        disponiblesBeansList.add(disponiblesBeans);
+                         if(disponiblesBeans.getVehiculo() == null || disponiblesBeans.getVehiculo().isEmpty()){
+                         
+                        }else{
+                             disponiblesBeansList.add(disponiblesBeans);
+                        }
+                     //   disponiblesBeansList.add(disponiblesBeans);
                     }
                 }
 
             }
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -2251,7 +2258,7 @@ changeDaysViewAvailable();
     private Integer pasajerosRecomendados(List<Vehiculo> vehiculoDisponiblesList, Integer pasajeros) {
         Integer pasajerosPendientes = pasajeros;
         try {
-            if(vehiculoDisponiblesList == null || vehiculoDisponiblesList.isEmpty()){
+            if (vehiculoDisponiblesList == null || vehiculoDisponiblesList.isEmpty()) {
                 return pasajerosPendientes;
             }
             Integer mayorCapacidad = vehiculoDisponiblesList.get(0).getPasajeros();
@@ -2267,7 +2274,7 @@ changeDaysViewAvailable();
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return pasajerosPendientes;
     }
@@ -2286,7 +2293,7 @@ changeDaysViewAvailable();
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -2381,7 +2388,7 @@ changeDaysViewAvailable();
             sendEmail(" cancelada(s) ");
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
 
         return "";
@@ -2433,7 +2440,7 @@ changeDaysViewAvailable();
             }
             solicitud.setNumerodevehiculos(total);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return total;
     }
@@ -2450,7 +2457,7 @@ changeDaysViewAvailable();
             }
             solicitud.setPasajeros(totalpasajeros);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return totalpasajeros;
     }
@@ -2473,7 +2480,7 @@ changeDaysViewAvailable();
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return valid;
     }
@@ -2498,7 +2505,7 @@ changeDaysViewAvailable();
 
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }// </editor-fold>
@@ -2510,15 +2517,9 @@ changeDaysViewAvailable();
 
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }// </editor-fold>
-    
-  
-    
-  
-   
-
 
 }

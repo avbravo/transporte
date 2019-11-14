@@ -1443,7 +1443,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!solicitudServices.isValidDates(solicitud, false)) {
+                if (!solicitudServices.isValidDates(solicitud, false,true)) {
                     return;
                 }
                 changeDaysViewAvailable();
