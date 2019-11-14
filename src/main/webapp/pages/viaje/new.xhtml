@@ -205,15 +205,7 @@
                                 listener="#{viajeController.calendarChangeListener}"
                                 update=":form:vehiculo, , :form:conductor, :form:msg, :form:growl,:form:warningMessage"/>
 
-                            <p:spacer width="25"/>
-                            <b:commandButton  look="success"
-                                              title="#{msg['label.solicitudpendiente']}"
-                                              immediate="true"
-                                                iconAwesome="fa-calendar" 
-                                              update="solicitudDetails"
-                                              action="#{viajeController.prepareScheduleSolicitud()}"
-                                              oncomplete="PF('solicitudDialog').show();" />
-                          
+                         
 
 
                         </p:fieldset>
@@ -229,15 +221,7 @@
                                 listener="#{viajeController.calendarChangeListener}"
                                 update=":form:vehiculo,:form:conductor, :form:msg, :form:growl, :form:warningMessage"/>
 
-                            <p:spacer width="25"/>
-                            <b:commandButton  look="success"
-                                              title="#{msg['label.viajes']}"
-                                              immediate="true"
-                                              iconAwesome="fa-calendar" 
-                                              update="viajesDetails"
-                                              action="#{viajeController.prepareScheduleViajes()}"
-                                              oncomplete="PF('viajesDialog').show();" />
-                            
+                          
                           
                         </p:fieldset>   
 
