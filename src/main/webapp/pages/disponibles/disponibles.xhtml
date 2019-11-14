@@ -93,7 +93,7 @@
                                 <jmoordbjsf:calendar required="true"
                                                      pattern="dd/MM/yyyy HH:mm a" value="#{disponiblesController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}" 
                                                      listener="#{disponiblesController.calendarChangeListener}"
-                                                     update=":form:msg :form:datatableDisponibles, :form:horapartida"
+                                                     update=":form:content :form:msg :form:datatableDisponibles, :form:horapartida"
                                                      />
                             </b:column>
                             <b:column medium-screen="2">
@@ -116,7 +116,7 @@
 
                                                      label="#{msg['field.fechahoraregreso']}"
                                                      listener="#{disponiblesController.calendarChangeListener}"
-                                                     update=" :form:msg  :form:datatableDisponibles :form:horaregreso"
+                                                     update=" :form:content :form:msg  :form:datatableDisponibles :form:horaregreso"
                                                      />
                             </b:column>
                             <b:column medium-screen="2">

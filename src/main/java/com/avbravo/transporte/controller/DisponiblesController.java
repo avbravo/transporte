@@ -1458,7 +1458,7 @@ public class DisponiblesController implements Serializable, IController {
 
                 return;
             } else {
-                if (!solicitudServices.isValidDates(solicitud, false, false)) {
+                if (!solicitudServices.isValidDates(solicitud, false, false,false)) {
                     return;
                 }
                 changeDaysViewAvailable();
