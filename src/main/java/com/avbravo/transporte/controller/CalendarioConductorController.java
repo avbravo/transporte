@@ -257,7 +257,7 @@ public class CalendarioConductorController implements Serializable, IController 
             
             
             prepareScheduleConductor();
-//           prepareScheduleVehiculo()
+
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
