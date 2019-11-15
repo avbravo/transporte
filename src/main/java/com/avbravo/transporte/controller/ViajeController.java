@@ -1049,7 +1049,7 @@ public class ViajeController implements Serializable, IController {
             viaje.setActivo("si");
 
             viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros() - solicitud.getPasajeros());
-            if (!viajeServices.isValid(viaje)) {
+            if (!viajeServices.isValid(viaje,false)) {
                 return "";
             }
 
@@ -1094,6 +1094,8 @@ public class ViajeController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getMessage("warning.fechahoraregresoamuylejanadelasolicitud"));
                 return null;
             }
+            
+            
             if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
                 if (!isVistoBuenoCoordinador()) {
                     JsfUtil.warningMessage(rf.getMessage("warning.faltavistobuenocoordinador"));
@@ -1106,12 +1108,14 @@ public class ViajeController implements Serializable, IController {
                 //Verificar si tiene rol para cambiar el estatus
                 Rol jmoordb_rol = (Rol) JmoordbContext.get("jmoordb_rol");
                 Boolean allowed = false;
-                if (jmoordb_rol.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") || jmoordb_rol.getIdrol().equals("ADMINISTRADOR")) {
+//                if (jmoordb_rol.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") || jmoordb_rol.getIdrol().equals("ADMINISTRADOR")) {
+                if (jmoordb_rol.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") ) {
                     allowed = true;
                 } else {
                     //Verificar si este usuario tiene el rol de SUBDIRECTORADMINISTRATIVO o administrador
                     for (Rol r : jmoordb_user.getRol()) {
-                        if (r.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") || r.getIdrol().equals("ADMINISTRADOR")) {
+//                        if (r.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") || r.getIdrol().equals("ADMINISTRADOR")) {
+                        if (r.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") ) {
                             allowed = true;
                             break;
                         }
@@ -1449,6 +1453,8 @@ viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
 viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
             viaje.setLugarpartida(solicitud.getLugarpartida());
             viaje.setLugardestino(solicitud.getLugarllegada());
+            viaje.setCostocombustible(0.0);
+            viaje.setKmestimados(0.0);
             completeVehiculo("");
             completeConductor("");
             validarMensajesDias();
@@ -1456,7 +1462,17 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
             JsfUtil.updateJSFComponent(":form:form:warningMessage");
             JsfUtil.updateJSFComponent(":form:content");
             JsfUtil.updateJSFComponent(":form:commandButtonShowSolicitudDetalles");
+            if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
+                 if (!isVistoBuenoCoordinador()) {
+                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"),rf.getMessage("warning.faltavistobuenocoordinador"));
+              
+                }
+            }
 
+  if (!isVistoBuenoSubdirectorAdministrativo()) {
+    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"),rf.getMessage("warning.faltavistobuenoSubdirectoradministativo"));
+                    
+  }
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
@@ -1597,6 +1613,9 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
 
     public Boolean isVistoBuenoSubdirectorAdministrativo() {
         try {
+            if(solicitud == null || solicitud.getVistoBuenoSubdirectorAdministrativo()== null){
+                return false;
+            }
             if (solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("si")) {
                 return true;
             }
@@ -1656,7 +1675,7 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
                 texto = "\n___________________________VIAJE ASIGNADO___________________________________";
                 texto += "\n" + String.format("%10s %25s %30s %30s %20s", "#", "Partida", "Regreso", "Vehiculo", "Conductor");
 
-                texto += "\n" + String.format("%10d %20s %25s %10d %20s",
+                texto += "\n" + String.format("%10d %20s %25s %30s %20s",
                         viaje.getIdviaje(),
                         DateUtil.dateFormatToString(viaje.getFechahorainicioreserva(), "dd/MM/yyyy hh:mm a"),
                         DateUtil.dateFormatToString(viaje.getFechahorafinreserva(), "dd/MM/yyyy hh:mm a"),

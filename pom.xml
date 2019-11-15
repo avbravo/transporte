@@ -4,7 +4,7 @@
 
     <groupId>com.avbravo</groupId>
     <artifactId>transporte</artifactId>
-    <version>22.5</version>
+    <version>22.7</version>
     <packaging>war</packaging>
 
     <name>transporte</name>
@@ -56,7 +56,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>transporteejb</artifactId>
-            <version>24.2</version>
+            <version>24.5</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
@@ -94,15 +94,16 @@
         <!--
                   websocket
         -->
-        <dependency>
+      <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbjsf</artifactId>
-            <version>0.37</version>
+            <version>0.38</version>
         </dependency>
-          <dependency>
+      
+        <dependency>
 	    <groupId>com.github.avbravo</groupId>
 	    <artifactId>jmoordbutils</artifactId>
-	    <version>0.39</version>
+	    <version>0.40</version>
 	</dependency>
         <dependency>
             <groupId>javax.websocket</groupId>
