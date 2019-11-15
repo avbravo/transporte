@@ -51,9 +51,6 @@
                         <jmoordbjsf:inputText value="#{vehiculoController.vehiculo.pasajeros}" id="pasajeros" span="4" label="#{msg['field.pasajeros']}" />
 
                         <p:outputLabel  value="#{msg['field.tipovehiculo']}" />
-
-
-
                         <jmoordbjsf:autocomplete converter="#{tipovehiculoConverter}"
                                                  completeMethod="#{vehiculoController.tipovehiculoServices.complete}" 
                                                  labeltip1="#{msg['field.idtipovehiculo']} #{p.idtipovehiculo}"         listener="#{vehiculoController.handleSelect}"
