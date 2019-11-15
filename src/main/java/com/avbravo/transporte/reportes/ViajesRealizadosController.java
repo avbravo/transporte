@@ -177,7 +177,7 @@ public class ViajesRealizadosController implements Serializable, IController {
 //            if (action.equals("view")) {
 //                //view
 //            }
-            setSearchAndValue("searchViajesPendientesController", "_betweendates");
+            setSearchAndValue("_betweendates","dates");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }

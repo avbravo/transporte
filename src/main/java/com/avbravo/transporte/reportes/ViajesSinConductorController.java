@@ -201,27 +201,7 @@ public class ViajesSinConductorController implements Serializable, IController {
             viajeDataModel = new ViajeDataModel(viajeList);
             Document doc;
 
-//            switch (getSearch()) {
-//                case "_init":
-//                case "_autocomplete":
-//                    viajeList = viajeRepository.findPagination(page, rowPage);
-//                    break;
-//
-//                case "activo":
-//                    if (getValueSearch() != null) {
-//                        viajeSearch.setActivo(getValueSearch().toString());
-//                        doc = new Document("activo", viajeSearch.getActivo());
-//                        viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("fechahorainicioreserva", -1));
-//                    } else {
-//                        viajeList = viajeRepository.findPagination(page, rowPage);
-//                    }
-//                    break;
-//
-//                case "_betweendates":
-//            viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("activo", "si",
-//                    "fechahorainicioreserva", fechaDesde,
-//                    "fechahorafinreserva", fechaHasta,
-//                    page, rowPage, new Document("fechahorainicioreserva", -1));
+
             
                Bson filter = Filters.eq("activo","si");    
             viajeList = viajeRepository.filterBetweenDateWithoutHours(filter,
@@ -244,7 +224,7 @@ public class ViajesSinConductorController implements Serializable, IController {
 // esta cancelado
                     } else {
                         //CONDUCTOR PENDIENTE
-                        if (v.getConductor().getIdconductor() == 5) {
+                        if (v.getConductor().getEscontrol().equals("si")) {
 
                             ProgramacionVehicular pv = new ProgramacionVehicular();
                             pv.setConductor(v.getConductor().getNombre());

@@ -234,7 +234,7 @@ public class ViajesSinSolicitudController implements Serializable, IController {
 // esta cancelado
                         } else {
                             //CONDUCTOR PENDIENTE
-                            if (v.getConductor().getIdconductor() == 5) {
+                            if (v.getConductor().getEscontrol().equals("si")) {
 
                                 ProgramacionVehicular pv = new ProgramacionVehicular();
                                 pv.setConductor(v.getConductor().getNombre());
