@@ -46,7 +46,7 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" > 
 
 
-   <p:outputLabel  value="#{msg['field.solicitudesdesde']}"/>
+                        <p:outputLabel  value="#{msg['field.solicitudesdesde']}"/>
 
                         <p:fieldset >
 
@@ -58,22 +58,22 @@
                                 listener="#{viajeController.calendarFechaSolicitudesChangeListener}"
                                 update=":form:vehiculo, , :form:conductor, :form:msg, :form:growl,:form:warningMessage"/>
 
-                           
+
                             <p:spacer width="25"/>
                             <b:commandButton  look="primary"
                                               process="@this"
                                               title="#{msg['label.iniciomes']}"
-                 
+
                                               iconAwesome="fa-battery-empty"                                             
-                                             update=":form:content"
+                                              update=":form:content"
                                               action="#{viajeController.primerDia()}"
                                               />
 
 
                         </p:fieldset>
 
-   
-    <p:outputLabel  value="#{msg['field.solicitudeshasta']}"  />
+
+                        <p:outputLabel  value="#{msg['field.solicitudeshasta']}"  />
                         <p:fieldset >
                             <jmoordbjsf:calendar
                                 pattern="dd/MM/yyyy HH:mm a" 
@@ -83,21 +83,21 @@
                                 listener="#{viajeController.calendarFechaSolicitudesChangeListener}"
                                 update=":form:vehiculo,:form:conductor, :form:msg, :form:growl, :form:warningMessage"/>
 
-                          
-                            
-                             <p:spacer width="25"/>
+
+
+                            <p:spacer width="25"/>
                             <b:commandButton  look="primary"
                                               title="#{msg['label.finmes']}"
-                                             process="@this"
+                                              process="@this"
                                               iconAwesome="fa-battery-full" 
-                                            
+
                                               update=":form:content"
                                               action="#{viajeController.ultimoDia()}"/>
 
                         </p:fieldset>   
 
 
-                      
+
 
 
 
@@ -158,17 +158,17 @@
                                               action="#{viajeController.prepareSolicitudDetallesShow()}"
                                               oncomplete="PF('solicitudDetallesDialog').show();" />
 
-                            
-                             <p:spacer width="25"/>
+
+                            <p:spacer width="25"/>
                             <b:commandButton  look="success"
                                               title="#{msg['label.solicitudpendiente']}"
                                               immediate="true"
-                                                iconAwesome="fa-calendar" 
+                                              iconAwesome="fa-calendar" 
                                               update="solicitudDetails"
                                               action="#{viajeController.prepareScheduleSolicitud()}"
                                               oncomplete="PF('solicitudDialog').show();" />
-                            
-                              <p:spacer width="25"/>
+
+                            <p:spacer width="25"/>
                             <b:commandButton  look="success"
                                               title="#{msg['label.viajes']}"
                                               immediate="true"
@@ -193,7 +193,7 @@
 
                         </p:fieldset>
 
-                          <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
+                        <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
 
                         <p:fieldset >
 
@@ -205,7 +205,7 @@
                                 listener="#{viajeController.calendarChangeListener}"
                                 update=":form:vehiculo, , :form:conductor, :form:msg, :form:growl,:form:warningMessage"/>
 
-                         
+
 
 
                         </p:fieldset>
@@ -221,11 +221,11 @@
                                 listener="#{viajeController.calendarChangeListener}"
                                 update=":form:vehiculo,:form:conductor, :form:msg, :form:growl, :form:warningMessage"/>
 
-                          
-                          
+
+
                         </p:fieldset>   
 
-                        
+
 
                         <p:outputLabel value="#{msg['field.vistobueno']}"/>
                         <p:fieldset title="VistoBueno">
@@ -241,10 +241,15 @@
 
 
                         </p:fieldset>
-                        
-                           <p:outputLabel  value="#{msg['field.tipovehiculo']}" />
-                           <p:outputLabel       value="#{viajeController.solicitud.tipovehiculo.get(0).idtipovehiculo}"/>
 
+                        <p:outputLabel  value="#{msg['field.tipovehiculo']}" />
+                        <p:fieldset>
+                            <p:outputLabel       value="#{viajeController.solicitud.tipovehiculo.get(0).idtipovehiculo}"/>
+                            <p:spacer width="25"/>
+                            <p:outputLabel  value="#{msg['field.pasajeros']}" />
+                             <p:spacer width="2"/>
+                            <p:outputLabel       value="#{viajeController.solicitud.pasajeros}"/>
+                        </p:fieldset>
                         <p:outputLabel value="#{msg['field.vehiculo']}"
                                        id="vehiculolabel" />
                         <p:fieldset>
@@ -254,7 +259,7 @@
 
                                                      labeltip1="#{msg['field.tipovehiculo']} #{p.tipovehiculo.idtipovehiculo}" 
                                                      labeltip2="#{msg['field.pasajeros']} #{p.pasajeros}" 
-                                                     listener="#{viajeController.handleSelect}"
+                                                     listener="#{viajeController.handleSelectVehiculo}"
                                                      dropdown="true"
                                                      required="true"                                                                                                                                                                                                                                                                                                                                                                            
                                                      minQueryLength="0"

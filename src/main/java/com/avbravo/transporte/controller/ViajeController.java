@@ -298,6 +298,16 @@ public class ViajeController implements Serializable, IController {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="handleSelectVehiculo">
+    public void handleSelectVehiculo(SelectEvent event) {
+        try {
+ if (solicitud.getPasajeros() > viaje.getVehiculo().getPasajeros()) {
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"),rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+    }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Boolean beforeDelete()">
     @Override
