@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
+    <ui:define name="content">
+
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            } 
+
+        </style>
+
+        <jmoordbjsf:cssschedule/>  
+        <jmoordbjsf:jsschedule/>
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('SECRETARIA ,ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+
+            <b:growl  id="msgs"/>
+
+            <b:panel collapsible="false" title="#{msg['titlelist.calendarioconductores']}" id="content"   look="primary" > 
+                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
+                <b:row>
+                    <b:column span="2"> 
+                        <p:outputLabel value="#{msg['field.viaje']}"/>
+                    </b:column>
+                    <b:column span="4"> 
+                        <p:selectOneMenu id="subdirectoradministrativo" value="#{administradorController.viajeSubdirectorAdministrativoSearch}" style="width:150px">
+                            <p:ajax listener="#{administradorController.onRealizadoCalenadarioViajes}"
+                                    update=":form:schedule" />
+                            <f:selectItem itemLabel="#{msg['selectitem.seleccione']}" itemValue="" noSelectionOption="true" />
+                            <f:selectItem itemLabel="#{msg['selectitem.realizado']}" itemValue="si" />
+                            <f:selectItem itemLabel="#{msg['selectitem.norealizado']}" itemValue="no" />
+                            <f:selectItem itemLabel="#{msg['selectitem.cancelado']}" itemValue="ca" />
+
+                        </p:selectOneMenu>
+                    </b:column>
+
+                    <b:column span="1"> 
+                        <p:commandButton value="#{app['button.print']}" type="button" icon="pi pi-print" style="display:block;margin-bottom: 20px">
+                            <p:printer target="schedule" />
+                        </p:commandButton>
+                    </b:column>
+                </b:row>
+
+
+
+
+
+                <p:schedule id="schedule"  
+                            rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
+                            value="#{administradorController.eventModelViajes}"
+                            widgetVar="myschedule" timeZone="GMT-5" locale="es">
+                    <p:ajax  event="eventSelect"  listener="#{administradorController.onEventSelectViaje}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+
+                </p:schedule>
+
+                
+            </b:panel>
+
+
+
+
+            <p:dialog widgetVar="eventDialog" header="#{msg['dialogo.viajes']}" 
+                      width="650" height="450"
+                      styleClass="customDialog"
+
+                      responsive="true"
+
+                      showEffect="clip" hideEffect="clip">
+                <b:panelGrid id="eventDetails" colSpans="2,10" size="xs" > 
+                    <p:outputLabel  value="#{msg['field.idsolicitud']}" />
+                    <p:outputLabel  value="#{administradorController.viaje.idviaje}" id="idviaje"   />
+
+                    <p:outputLabel  value="#{msg['field.placa']}" />
+                    <p:outputLabel  value="#{administradorController.viaje.vehiculo.placa}" id="placa"   />
+                    <p:outputLabel  value="#{msg['field.marca']}" />
+                    <p:outputLabel  value="#{administradorController.viaje.vehiculo.marca}" id="marca"   />
+                    <p:outputLabel  value="#{msg['field.modelo']}" />
+                    <p:outputLabel  value="#{administradorController.viaje.vehiculo.modelo}" id="modelo"   />
+
+                    <p:outputLabel  value="#{msg['field.conductor']}" />
+                    <p:outputLabel  value="#{administradorController.viaje.conductor.nombre}" id="nombre"   />
+                    <p:outputLabel  value="#{msg['field.cedula']}" />
+                    <p:outputLabel  value="#{administradorController.viaje.conductor.cedula}" id="cedula"   />
+
+
+
+                    <p:outputLabel  value="#{msg['field.fechapartida']}" />
+                    <p:fieldset >
+                        <p:calendar  disabled="true"                                    
+                                     style="background-color: grey;"
+                                     pattern="dd/MM/yyyy" value="#{administradorController.viaje.fechahorainicioreserva}"  />
+
+                        <p:outputLabel  value="#{msg['field.horapartida']}" />        
+                        <p:calendar  disabled="true"    
+                                     
+                                     pattern="HH:mm:ss a" value="#{administradorController.viaje.fechahorainicioreserva}"  />
+
+
+                    </p:fieldset>
+
+
+                    <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+
+                    <p:outputLabel value="#{administradorController.viaje.lugarpartida}" id="lugarpartida"   />
+                    <p:outputLabel  value="#{msg['field.lugarllegada']}" />
+
+                    <p:outputLabel value="#{administradorController.viaje.lugardestino}" id="lugardestino"   />
+
+
+                    <p:outputLabel  value="#{msg['field.fecharegreso']}" />
+                    <p:fieldset >
+
+                        <p:calendar  disabled="true"                                   
+                                     style="background-color: grey;"
+                                     pattern="dd/MM/yyyy" value="#{administradorController.viaje.fechahorafinreserva}"  />
+
+
+
+                        <p:outputLabel  value="#{msg['field.horaregreso']}" />
+                        <p:calendar  disabled="true"    
+                                  
+                                     pattern="HH:mm:ss a" value="#{administradorController.viaje.fechahorafinreserva}"  />
+
+
+                    </p:fieldset>
+
+
+                    <p:outputLabel  value="#{msg['field.realizado']}" />
+                    <b:inputTextarea disabled="true" rows="2" span="8"  value="#{administradorController.viaje.realizado}" id="realizado"   />
+
+
+
+                </b:panelGrid>
+            </p:dialog>
+        </b:form>
+
+        <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('SECRETARIA ,ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO')}"/>
+    </ui:define>
+</ui:composition>
