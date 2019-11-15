@@ -180,7 +180,7 @@ public class ViajesKmVehiculoController implements Serializable, IController {
 //            if (action.equals("view")) {
 //                //view
 //            }
-            setSearchAndValue("searchViajesSinConductorController", "_betweendates");
+         //   setSearchAndValue("_betweendates");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
