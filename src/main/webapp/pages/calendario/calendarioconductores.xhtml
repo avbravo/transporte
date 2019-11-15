@@ -32,40 +32,15 @@
 
             <b:panel collapsible="false" title="#{msg['titlelist.calendarioconductores']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-                <b:row>
-                    <b:column span="2"> 
-                        <p:outputLabel value="#{msg['field.viaje']}"/>
-                    </b:column>
-                    <b:column span="4"> 
-                        <p:selectOneMenu id="subdirectoradministrativo" value="#{administradorController.viajeSubdirectorAdministrativoSearch}" style="width:150px">
-                            <p:ajax listener="#{administradorController.onRealizadoCalenadarioViajes}"
-                                    update=":form:schedule" />
-                            <f:selectItem itemLabel="#{msg['selectitem.seleccione']}" itemValue="" noSelectionOption="true" />
-                            <f:selectItem itemLabel="#{msg['selectitem.realizado']}" itemValue="si" />
-                            <f:selectItem itemLabel="#{msg['selectitem.norealizado']}" itemValue="no" />
-                            <f:selectItem itemLabel="#{msg['selectitem.cancelado']}" itemValue="ca" />
-
-                        </p:selectOneMenu>
-                    </b:column>
-
-                    <b:column span="1"> 
-                        <p:commandButton value="#{app['button.print']}" type="button" icon="pi pi-print" style="display:block;margin-bottom: 20px">
-                            <p:printer target="schedule" />
-                        </p:commandButton>
-                    </b:column>
-                </b:row>
+            
 
 
+ <p:schedule id="schedule"       
+                                rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
+                                value="#{calendarioConductorController.conductorScheduleModel}" widgetVar="conductorSchedule" timeZone="GMT-5" locale="es">
 
 
-
-                <p:schedule id="schedule"  
-                            rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
-                            value="#{administradorController.eventModelViajes}"
-                            widgetVar="myschedule" timeZone="GMT-5" locale="es">
-                    <p:ajax  event="eventSelect"  listener="#{administradorController.onEventSelectViaje}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-
-                </p:schedule>
+                    </p:schedule>
 
                 
             </b:panel>
@@ -82,19 +57,19 @@
                       showEffect="clip" hideEffect="clip">
                 <b:panelGrid id="eventDetails" colSpans="2,10" size="xs" > 
                     <p:outputLabel  value="#{msg['field.idsolicitud']}" />
-                    <p:outputLabel  value="#{administradorController.viaje.idviaje}" id="idviaje"   />
+                    <p:outputLabel  value="#{calendarioConductorController.viaje.idviaje}" id="idviaje"   />
 
                     <p:outputLabel  value="#{msg['field.placa']}" />
-                    <p:outputLabel  value="#{administradorController.viaje.vehiculo.placa}" id="placa"   />
+                    <p:outputLabel  value="#{calendarioConductorController.viaje.vehiculo.placa}" id="placa"   />
                     <p:outputLabel  value="#{msg['field.marca']}" />
-                    <p:outputLabel  value="#{administradorController.viaje.vehiculo.marca}" id="marca"   />
+                    <p:outputLabel  value="#{calendarioConductorController.viaje.vehiculo.marca}" id="marca"   />
                     <p:outputLabel  value="#{msg['field.modelo']}" />
-                    <p:outputLabel  value="#{administradorController.viaje.vehiculo.modelo}" id="modelo"   />
+                    <p:outputLabel  value="#{calendarioConductorController.viaje.vehiculo.modelo}" id="modelo"   />
 
                     <p:outputLabel  value="#{msg['field.conductor']}" />
-                    <p:outputLabel  value="#{administradorController.viaje.conductor.nombre}" id="nombre"   />
+                    <p:outputLabel  value="#{calendarioConductorController.viaje.conductor.nombre}" id="nombre"   />
                     <p:outputLabel  value="#{msg['field.cedula']}" />
-                    <p:outputLabel  value="#{administradorController.viaje.conductor.cedula}" id="cedula"   />
+                    <p:outputLabel  value="#{calendarioConductorController.viaje.conductor.cedula}" id="cedula"   />
 
 
 
@@ -102,12 +77,12 @@
                     <p:fieldset >
                         <p:calendar  disabled="true"                                    
                                      style="background-color: grey;"
-                                     pattern="dd/MM/yyyy" value="#{administradorController.viaje.fechahorainicioreserva}"  />
+                                     pattern="dd/MM/yyyy" value="#{calendarioConductorController.viaje.fechahorainicioreserva}"  />
 
                         <p:outputLabel  value="#{msg['field.horapartida']}" />        
                         <p:calendar  disabled="true"    
                                      
-                                     pattern="HH:mm:ss a" value="#{administradorController.viaje.fechahorainicioreserva}"  />
+                                     pattern="HH:mm:ss a" value="#{calendarioConductorController.viaje.fechahorainicioreserva}"  />
 
 
                     </p:fieldset>
@@ -115,10 +90,10 @@
 
                     <p:outputLabel  value="#{msg['field.lugarpartida']}" />
 
-                    <p:outputLabel value="#{administradorController.viaje.lugarpartida}" id="lugarpartida"   />
+                    <p:outputLabel value="#{calendarioConductorController.viaje.lugarpartida}" id="lugarpartida"   />
                     <p:outputLabel  value="#{msg['field.lugarllegada']}" />
 
-                    <p:outputLabel value="#{administradorController.viaje.lugardestino}" id="lugardestino"   />
+                    <p:outputLabel value="#{calendarioConductorController.viaje.lugardestino}" id="lugardestino"   />
 
 
                     <p:outputLabel  value="#{msg['field.fecharegreso']}" />
@@ -126,21 +101,21 @@
 
                         <p:calendar  disabled="true"                                   
                                      style="background-color: grey;"
-                                     pattern="dd/MM/yyyy" value="#{administradorController.viaje.fechahorafinreserva}"  />
+                                     pattern="dd/MM/yyyy" value="#{calendarioConductorController.viaje.fechahorafinreserva}"  />
 
 
 
                         <p:outputLabel  value="#{msg['field.horaregreso']}" />
                         <p:calendar  disabled="true"    
                                   
-                                     pattern="HH:mm:ss a" value="#{administradorController.viaje.fechahorafinreserva}"  />
+                                     pattern="HH:mm:ss a" value="#{calendarioConductorController.viaje.fechahorafinreserva}"  />
 
 
                     </p:fieldset>
 
 
                     <p:outputLabel  value="#{msg['field.realizado']}" />
-                    <b:inputTextarea disabled="true" rows="2" span="8"  value="#{administradorController.viaje.realizado}" id="realizado"   />
+                    <b:inputTextarea disabled="true" rows="2" span="8"  value="#{calendarioConductorController.viaje.realizado}" id="realizado"   />
 
 
 
