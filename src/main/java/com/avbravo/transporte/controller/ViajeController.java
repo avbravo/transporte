@@ -1104,7 +1104,14 @@ public class ViajeController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getMessage("warning.fechahoraregresoamuylejanadelasolicitud"));
                 return null;
             }
-            
+             if(viaje.getKmestimados() <0){
+                 JsfUtil.warningMessage(rf.getMessage("warning.kmmenorcero"));
+                return null;
+            }
+            if(viaje.getCostocombustible()<0){
+                 JsfUtil.warningMessage(rf.getMessage("warning.costocombustiblemenorcero"));
+                return null;
+            }
             
             if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
                 if (!isVistoBuenoCoordinador()) {
@@ -1246,30 +1253,17 @@ public class ViajeController implements Serializable, IController {
                 }
 //Actualiza los totales en el vehiculo
 
-                Vehiculo vehiculo = viaje.getVehiculo();
-                vehiculo.setTotalconsumo(vehiculo.getTotalconsumo() + viaje.getCostocombustible());
-                vehiculo.setTotalkm(vehiculo.getTotalkm() + viaje.getKmestimados());
-                vehiculo.setTotalviajes(vehiculo.getTotalviajes() + 1);
-                if (vehiculoRepository.update(vehiculo)) {
-                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), jmoordb_user.getUsername(),
-                            "update totales desde creacion de  viajes", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
-                } else {
-                    JsfUtil.warningMessage(rf.getMessage("warning.vehiculonoactualizado"));
-                    return "";
-                }
-//Actualiza los totales en el conductor
-
-                Conductor conductor = viaje.getConductor();
-                conductor.setTotalconsumo(conductor.getTotalconsumo() + viaje.getCostocombustible());
-                conductor.setTotalkm(conductor.getTotalkm() + viaje.getKmestimados());
-                conductor.setTotalviajes(conductor.getTotalviajes() + 1);
-                if (conductorRepository.update(conductor)) {
-                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getCedula(), jmoordb_user.getUsername(),
-                            "update totales desde creacion de  conductor", "conductor", conductorRepository.toDocument(conductor).toString()));
-                } else {
-                    JsfUtil.warningMessage(rf.getMessage("warning.conductornoactualizado"));
-                    return "";
-                }
+//                Vehiculo vehiculo = viaje.getVehiculo();
+//                vehiculo.setTotalconsumo(vehiculo.getTotalconsumo() + viaje.getCostocombustible());
+//                vehiculo.setTotalkm(vehiculo.getTotalkm() + viaje.getKmestimados());
+//                vehiculo.setTotalviajes(vehiculo.getTotalviajes() + 1);
+//                if (vehiculoRepository.update(vehiculo)) {
+//                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), jmoordb_user.getUsername(),
+//                            "update totales desde creacion de  viajes", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
+//                } else {
+//                    JsfUtil.warningMessage(rf.getMessage("warning.vehiculonoactualizado"));
+//                    return "";
+//                }
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 usuarioList = new ArrayList<>();

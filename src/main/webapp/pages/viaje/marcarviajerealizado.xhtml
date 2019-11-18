@@ -32,7 +32,7 @@
 
 
 
-                  
+
 
 
                     <p:outputLabel value="#{msg['field.conductor']}"/>
@@ -67,33 +67,33 @@
                 <b:row>
                     <b:column medium-screen="25" >
 
-                       
+
 
                         <jmoordbjsf:searchBetweenDate
-                        
+
                             labelDesde="#{msg['field.fechainicio']}"
                             valueDesde="#{viajeMarcarRealizadoController.fechaDesde}"
                             labelHasta="#{msg['field.fechafin']}"
                             valueHasta="#{viajeMarcarRealizadoController.fechaHasta}"
-                            
+
                             search="#{viajeMarcarRealizadoController.searchBetweenDate('_betweendates',viajeMarcarRealizadoController.fechaDesde, viajeMarcarRealizadoController.fechaHasta)}"
-                                             update=":form:dataTable "
+                            update=":form:dataTable "
 
                             />
                     </b:column>
                 </b:row>
 
 
-                
+
                 <b:row>
                     <b:column medium-screen="6" >
 
                         <jmoordbjsf:searchDate label="#{msg['field.fechapartida']}" 
-                                                value="#{viajeMarcarRealizadoController.fechaPartida}"
-                                                id="fechapartida"  
-                                             
-                                                search="#{viajeMarcarRealizadoController.searchBy('fechapartida',viajeMarcarRealizadoController.fechaPartida)}"
-                                                />
+                                               value="#{viajeMarcarRealizadoController.fechaPartida}"
+                                               id="fechapartida"  
+
+                                               search="#{viajeMarcarRealizadoController.searchBy('fechapartida',viajeMarcarRealizadoController.fechaPartida)}"
+                                               />
 
                     </b:column>
                 </b:row>
@@ -113,9 +113,9 @@
                 <p:dataTable  value="#{viajeMarcarRealizadoController.viajeDataModel}"
                               var="item"
                               id="dataTable2"
-                              
+
                               paginator="false"
-                         >
+                              >
                     <p:column style="width:35px">
                         <p:rowToggler />
                     </p:column>
@@ -153,7 +153,7 @@
 
 
 
-               
+
 
 
 
@@ -173,20 +173,20 @@
                             <p:outputLabel value="#{msg['field.kmestimados']}"/>
                             <p:inputText value="#{item.kmestimados}"/>
                             <p:outputLabel value="#{msg['field.costocombustible']}"/>
-                             <p:inputText  value="#{item.costocombustible}"/>
+                            <p:inputText  value="#{item.costocombustible}"/>
                             <p:outputLabel value="#{msg['field.realizado']}"/>
                             <p:outputLabel value="#{item.realizado}"/>
                             <p:outputLabel value="#{msg['field.activo']}"/>
                             <p:outputLabel value="#{item.activo}"/>
-                           
-                           <b:commandButton                          
-                         value="#{app['button.save']}"
-             
-                         title="#{app['button.save']}"
-                   
-                         action="#{viajeMarcarRealizadoController.marcarRealizado(item)}"
-                         update=":form:content" /> 
-                          
+
+                            <b:commandButton                          
+                                value="#{app['button.save']}"
+
+                                title="#{app['button.save']}"
+
+                                action="#{viajeMarcarRealizadoController.marcarRealizado(item)}"
+                                update=":form:msgs" /> 
+
                         </b:panelGrid>
                     </p:rowExpansion>
                 </p:dataTable>

@@ -386,35 +386,13 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
             switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
-                    viajeList = viajeRepository.findPagination(page, rowPage, new Document("idviaje", -1));
+                      doc = new Document("realizado", "no");
+                    viajeList = viajeRepository.findPagination(doc,page, rowPage, new Document("idviaje", -1));
                     break;
 
-                case "idviaje":
-                    if (getValueSearch() != null) {
-                        viajeSearch.setIdviaje(Integer.parseInt(getValueSearch().toString()));
-                        doc = new Document("idviaje", viajeSearch.getIdviaje()).append("realizado", "no");
-                        viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
-                    } else {
-                        doc = new Document("realizado", "no");
-                        viajeList = viajeRepository.findPagination(doc,page, rowPage, new Document("idviaje", -1));
-                    }
+             
 
-                    break;
-                case "activo":
-
-                    String activo = getValueSearch().toString();
-                    doc = new Document("activo", activo).append("realizado", "no");;
-                    viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
-
-                    break;
-
-                case "realizado":
-
-                    String realizado = (String) getValueSearch().toString();
-                    viajeList = viajeRepository.findPagination(new Document("realizado", realizado), page, rowPage, new Document("idviaje", -1));
-
-                    break;
-
+             
                 case "conductor":
 
                     Conductor conductor = (Conductor) getValueSearch();
@@ -432,25 +410,18 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
 
                     break;
                 case "_betweendates":
-                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("activo", "si", "fechahorainicioreserva", fechaDesde, "fechahorafinreserva", fechaHasta, page, rowPage, new Document("idviaje", -1));
+                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("realizado", "no", "fechahorainicioreserva", fechaDesde, "fechahorafinreserva", fechaHasta, page, rowPage, new Document("idviaje", -1));
 
                     break;
                 case "fechapartida":
 
-                    viajeList = viajeRepository.filterDayWithoutHourPagination("activo", "si", "fechahorainicioreserva", fechaPartida, page, rowPage, new Document("idviaje", -1));
+                    viajeList = viajeRepository.filterDayWithoutHourPagination("realizado", "no", "fechahorainicioreserva", fechaPartida, page, rowPage, new Document("idviaje", -1));
 
-                case "lugardestino":
-                    String lugarDestino = (String) getValueSearch();
-                    viajeList = viajeRepository.findRegexInTextPagination("lugardestino", lugarDestino, true, page, rowPage, new Document("idviaje", -1));
-
-                    break;
-                case "comentarios":
-                    String comentarios = (String) getValueSearch();
-                    viajeList = viajeRepository.findRegexInTextPagination("comentarios", comentarios, true, page, rowPage, new Document("idviaje", -1));
-
+              
                     break;
                 default:
-                    viajeList = viajeRepository.findPagination(page, rowPage, new Document("idviaje", -1));
+                       doc = new Document("realizado", "no");
+                                    viajeList = viajeRepository.findPagination(doc,page, rowPage, new Document("idviaje", -1));
                     break;
             }
 
@@ -1818,22 +1789,65 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
     }// </editor-fold>
 
     
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="String marcarRealizado(Viaje item)">
     public String marcarRealizado(Viaje item){
         try {
+            Viaje viaje = item;
+              if(viaje.getKmestimados() <0){
+                 JsfUtil.warningMessage(rf.getMessage("warning.kmmenorcero"));
+                return null;
+            }
+            if(viaje.getCostocombustible()<0){
+                 JsfUtil.warningMessage(rf.getMessage("warning.costocombustiblemenorcero"));
+                return null;
+            }
+          
             //Lo datos del usuario
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            Double kmdiferencias = viaje.getKmestimados() - item.getKmestimados();
+            Double costoCombustibleDiferencia = viaje.getCostocombustible() - item.getCostocombustible();
+          
+          
             viaje.setKmestimados(item.getKmestimados());
             viaje.setCostocombustible(item.getCostocombustible());
             viaje.setRealizado("si");
               if (viajeRepository.update(viaje)) {
                     revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), jmoordb_user.getUsername(),
-                            "update viajerealizado", "viaje", solicitudRepository.toDocument(solicitud).toString()));
+                            "update viajerealizado", "viaje", viajeRepository.toDocument(viaje).toString()));
                 } else {
                     JsfUtil.warningMessage(rf.getMessage("warning.noseactualizoelviaje"));
                     return "";
                 }
-                  JsfUtil.successMessage(rf.getAppMessage("info.edit"));
+              
+              //Actualizar el vehiculo
+                Vehiculo vehiculo = viaje.getVehiculo();
+                vehiculo.setTotalkm(item.getKmestimados());
+                vehiculo.setTotalconsumo(item.getCostocombustible());
+                 vehiculo.setTotalviajes(vehiculo.getTotalviajes() + 1);
+              if (vehiculoRepository.update(vehiculo)) {
+                     revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), jmoordb_user.getUsername(),
+                            "update totales desde viaje marcado como realizado", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
+                } else {
+                    JsfUtil.warningMessage(rf.getMessage("warning.noseactualizoelvehiculo"));
+                    return "";
+                }
+              
+                      //Actualiza los totales en el conductor
+
+                Conductor conductor = viaje.getConductor();
+                conductor.setTotalconsumo(conductor.getTotalconsumo() + viaje.getCostocombustible());
+                conductor.setTotalkm(conductor.getTotalkm() + viaje.getKmestimados());
+                conductor.setTotalviajes(conductor.getTotalviajes() + 1);
+                if (conductorRepository.update(conductor)) {
+                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getCedula(), jmoordb_user.getUsername(),
+                            "update totales desde  viaje marcado como realizado", "conductor", conductorRepository.toDocument(conductor).toString()));
+                } else {
+                    JsfUtil.successMessage(rf.getMessage("warning.conductornoactualizado"));
+                    return "";
+                }
+
+                  JsfUtil.infoDialog("Guardado",rf.getMessage("info.viajeeditado"));
+                  move(page);
         } catch (Exception e) {
              errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
