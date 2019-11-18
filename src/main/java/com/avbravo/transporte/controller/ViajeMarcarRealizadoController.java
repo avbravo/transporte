@@ -47,6 +47,8 @@ import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 import com.avbravo.transporteejb.services.VistoBuenoSubdirectorAdministrativoServices;
 import com.avbravo.transporteejb.services.VistoBuenoServices;
+import com.mongodb.client.model.Filters;
+import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -70,6 +72,7 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
@@ -386,7 +389,7 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
             switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
-                      doc = new Document("realizado", "no");
+                      doc = new Document("realizado", "no").append("activo","si");
                     viajeList = viajeRepository.findPagination(doc,page, rowPage, new Document("idviaje", -1));
                     break;
 
@@ -397,7 +400,7 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
 
                     Conductor conductor = (Conductor) getValueSearch();
                     doc = new Document("activo", "si");
-                    doc.append("conductor.idconductor", conductor.getIdconductor()).append("realizado", "no");;
+                    doc.append("conductor.idconductor", conductor.getIdconductor()).append("realizado", "no").append("activo","si");
                     viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
 
                     break;
@@ -405,22 +408,27 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
 
                     Vehiculo vehiculo = (Vehiculo) getValueSearch();
                     doc = new Document("activo", "si");
-                    doc.append("vehiculo.idvehiculo", vehiculo.getIdvehiculo()).append("realizado", "no");;
+                    doc.append("vehiculo.idvehiculo", vehiculo.getIdvehiculo()).append("realizado", "no").append("activo","si");
                     viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
 
                     break;
                 case "_betweendates":
-                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("realizado", "no", "fechahorainicioreserva", fechaDesde, "fechahorafinreserva", fechaHasta, page, rowPage, new Document("idviaje", -1));
+//                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("realizado", "no", "fechahorainicioreserva", fechaDesde, "fechahorafinreserva", fechaHasta, page, rowPage, new Document("idviaje", -1));
+                    Bson filter = Filters.and(eq("realizado","no"),eq("activo","si"));
+                    
+                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours(filter, "fechahorainicioreserva", fechaDesde, "fechahorafinreserva", fechaHasta, page, rowPage, new Document("idviaje", -1));
 
                     break;
                 case "fechapartida":
 
-                    viajeList = viajeRepository.filterDayWithoutHourPagination("realizado", "no", "fechahorainicioreserva", fechaPartida, page, rowPage, new Document("idviaje", -1));
+//                    viajeList = viajeRepository.filterDayWithoutHourPagination("realizado", "no", "fechahorainicioreserva", fechaPartida, page, rowPage, new Document("idviaje", -1));
+                      Bson filterFechaPartida = Filters.and(eq("realizado","no"),eq("activo","si"));
+                    viajeList = viajeRepository.filterDayWithoutHourPagination(filterFechaPartida, "fechahorainicioreserva", fechaPartida, page, rowPage, new Document("idviaje", -1));
 
               
                     break;
                 default:
-                       doc = new Document("realizado", "no");
+                       doc = new Document("realizado", "no").append("activo","si");
                                     viajeList = viajeRepository.findPagination(doc,page, rowPage, new Document("idviaje", -1));
                     break;
             }

@@ -386,16 +386,18 @@ public class ViajeController implements Serializable, IController {
             switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
-                    viajeList = viajeRepository.findPagination(page, rowPage, new Document("idviaje", -1));
+                   doc = new Document("activo","si");
+                    viajeList = viajeRepository.findPagination(doc,page, rowPage, new Document("idviaje", -1));
                     break;
 
                 case "idviaje":
                     if (getValueSearch() != null) {
                         viajeSearch.setIdviaje(Integer.parseInt(getValueSearch().toString()));
-                        doc = new Document("idviaje", viajeSearch.getIdviaje());
+                        doc = new Document("idviaje", viajeSearch.getIdviaje()).append("activo", "si");
                         viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
                     } else {
-                        viajeList = viajeRepository.findPagination(page, rowPage, new Document("idviaje", -1));
+                         doc = new Document("activo", "si");
+                        viajeList = viajeRepository.findPagination(doc,page, rowPage, new Document("idviaje", -1));
                     }
 
                     break;
@@ -408,14 +410,12 @@ public class ViajeController implements Serializable, IController {
                     break;
 
                 case "realizado":
-
                     String realizado = (String) getValueSearch().toString();
-                    viajeList = viajeRepository.findPagination(new Document("realizado", realizado), page, rowPage, new Document("idviaje", -1));
+                    viajeList = viajeRepository.findPagination(new Document("realizado", realizado).append("activo", "si"), page, rowPage, new Document("idviaje", -1));
 
                     break;
 
                 case "conductor":
-
                     Conductor conductor = (Conductor) getValueSearch();
                     doc = new Document("activo", "si");
                     doc.append("conductor.idconductor", conductor.getIdconductor());
@@ -423,7 +423,6 @@ public class ViajeController implements Serializable, IController {
 
                     break;
                 case "vehiculo":
-
                     Vehiculo vehiculo = (Vehiculo) getValueSearch();
                     doc = new Document("activo", "si");
                     doc.append("vehiculo.idvehiculo", vehiculo.getIdvehiculo());
@@ -435,7 +434,6 @@ public class ViajeController implements Serializable, IController {
 
                     break;
                 case "fechapartida":
-
                     viajeList = viajeRepository.filterDayWithoutHourPagination("activo", "si", "fechahorainicioreserva", fechaPartida, page, rowPage, new Document("idviaje", -1));
 
                 case "lugardestino":
@@ -449,7 +447,8 @@ public class ViajeController implements Serializable, IController {
 
                     break;
                 default:
-                    viajeList = viajeRepository.findPagination(page, rowPage, new Document("idviaje", -1));
+                    doc = new Document("activo","si");
+                    viajeList = viajeRepository.findPagination(doc,page, rowPage, new Document("idviaje", -1));
                     break;
             }
 
