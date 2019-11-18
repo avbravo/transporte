@@ -88,7 +88,7 @@ import org.primefaces.model.ScheduleModel;
 @ViewScoped
 @Getter
 @Setter
-public class ViajeMarcarRealizadoController implements Serializable, IController {
+public class ViajeCancelarController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
@@ -108,10 +108,10 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
     List<Integer> pages = new ArrayList<>();
     Date fechaDesde = new Date();
     Date fechaHasta = new Date();
-    
+
     Date fechaInicialParaSolicitud = new Date();
     Date fechaFinalParaSolicitud = new Date();
-    
+
     String lugarDestino = "";
     String comentarios = "";
     String activo = "";
@@ -221,7 +221,7 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public ViajeMarcarRealizadoController() {
+    public ViajeCancelarController() {
     }
 
     // </editor-fold>
@@ -302,10 +302,11 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelectVehiculo">
+
     public void handleSelectVehiculo(SelectEvent event) {
         try {
- if (solicitud.getPasajeros() > viaje.getVehiculo().getPasajeros()) {
-                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"),rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
+            if (solicitud.getPasajeros() > viaje.getVehiculo().getPasajeros()) {
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
             }
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
@@ -389,18 +390,15 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
             switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
-                      doc = new Document("realizado", "no").append("activo","si");
-                    viajeList = viajeRepository.findPagination(doc,page, rowPage, new Document("idviaje", -1));
+                    doc = new Document("activo", "si");
+                    viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
                     break;
 
-             
-
-             
                 case "conductor":
 
                     Conductor conductor = (Conductor) getValueSearch();
                     doc = new Document("activo", "si");
-                    doc.append("conductor.idconductor", conductor.getIdconductor()).append("realizado", "no").append("activo","si");
+                    doc.append("conductor.idconductor", conductor.getIdconductor()).append("activo", "si");
                     viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
 
                     break;
@@ -408,28 +406,27 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
 
                     Vehiculo vehiculo = (Vehiculo) getValueSearch();
                     doc = new Document("activo", "si");
-                    doc.append("vehiculo.idvehiculo", vehiculo.getIdvehiculo()).append("realizado", "no").append("activo","si");
+                    doc.append("vehiculo.idvehiculo", vehiculo.getIdvehiculo()).append("activo", "si");
                     viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
 
                     break;
                 case "_betweendates":
 //                    viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours("realizado", "no", "fechahorainicioreserva", fechaDesde, "fechahorafinreserva", fechaHasta, page, rowPage, new Document("idviaje", -1));
-                    Bson filter = Filters.and(eq("realizado","no"),eq("activo","si"));
-                    
+                    Bson filter = Filters.and(eq("activo", "si"));
+
                     viajeList = viajeRepository.filterBetweenDatePaginationWithoutHours(filter, "fechahorainicioreserva", fechaDesde, "fechahorafinreserva", fechaHasta, page, rowPage, new Document("idviaje", -1));
 
                     break;
                 case "fechapartida":
 
 //                    viajeList = viajeRepository.filterDayWithoutHourPagination("realizado", "no", "fechahorainicioreserva", fechaPartida, page, rowPage, new Document("idviaje", -1));
-                      Bson filterFechaPartida = Filters.and(eq("realizado","no"),eq("activo","si"));
+                    Bson filterFechaPartida = Filters.and(eq("activo", "si"));
                     viajeList = viajeRepository.filterDayWithoutHourPagination(filterFechaPartida, "fechahorainicioreserva", fechaPartida, page, rowPage, new Document("idviaje", -1));
 
-              
                     break;
                 default:
-                       doc = new Document("realizado", "no").append("activo","si");
-                                    viajeList = viajeRepository.findPagination(doc,page, rowPage, new Document("idviaje", -1));
+                    doc = new Document("activo", "si");
+                    viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
                     break;
             }
 
@@ -1039,7 +1036,7 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
             viaje.setActivo("si");
 
             viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros() - solicitud.getPasajeros());
-            if (!viajeServices.isValid(viaje,false)) {
+            if (!viajeServices.isValid(viaje, false)) {
                 return "";
             }
 
@@ -1084,8 +1081,7 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
                 JsfUtil.warningMessage(rf.getMessage("warning.fechahoraregresoamuylejanadelasolicitud"));
                 return null;
             }
-            
-            
+
             if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
                 if (!isVistoBuenoCoordinador()) {
                     JsfUtil.warningMessage(rf.getMessage("warning.faltavistobuenocoordinador"));
@@ -1099,13 +1095,13 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
                 Rol jmoordb_rol = (Rol) JmoordbContext.get("jmoordb_rol");
                 Boolean allowed = false;
 //                if (jmoordb_rol.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") || jmoordb_rol.getIdrol().equals("ADMINISTRADOR")) {
-                if (jmoordb_rol.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") ) {
+                if (jmoordb_rol.getIdrol().equals("SUBDIRECTORADMINISTRATIVO")) {
                     allowed = true;
                 } else {
                     //Verificar si este usuario tiene el rol de SUBDIRECTORADMINISTRATIVO o administrador
                     for (Rol r : jmoordb_user.getRol()) {
 //                        if (r.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") || r.getIdrol().equals("ADMINISTRADOR")) {
-                        if (r.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") ) {
+                        if (r.getIdrol().equals("SUBDIRECTORADMINISTRATIVO")) {
                             allowed = true;
                             break;
                         }
@@ -1415,10 +1411,10 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
 
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="calendarChangeListener(SelectEvent event)">
+
     public void calendarFechaSolicitudesChangeListener(SelectEvent event) {
         try {
 
- 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
@@ -1439,8 +1435,8 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
             // solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
             viaje.setMision(solicitud.getMision());
             viaje.setComentarios("Responsable " + solicitud.getUsuario().get(1).getNombre() + " Destino " + solicitud.getLugarllegada());
-viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
-viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
+            viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
+            viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
             viaje.setLugarpartida(solicitud.getLugarpartida());
             viaje.setLugardestino(solicitud.getLugarllegada());
             viaje.setCostocombustible(0.0);
@@ -1453,16 +1449,16 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
             JsfUtil.updateJSFComponent(":form:content");
             JsfUtil.updateJSFComponent(":form:commandButtonShowSolicitudDetalles");
             if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
-                 if (!isVistoBuenoCoordinador()) {
-                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"),rf.getMessage("warning.faltavistobuenocoordinador"));
-              
+                if (!isVistoBuenoCoordinador()) {
+                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.faltavistobuenocoordinador"));
+
                 }
             }
 
-  if (!isVistoBuenoSubdirectorAdministrativo()) {
-    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"),rf.getMessage("warning.faltavistobuenoSubdirectoradministativo"));
-                    
-  }
+            if (!isVistoBuenoSubdirectorAdministrativo()) {
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.faltavistobuenoSubdirectoradministativo"));
+
+            }
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
@@ -1603,7 +1599,7 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
 
     public Boolean isVistoBuenoSubdirectorAdministrativo() {
         try {
-            if(solicitud == null || solicitud.getVistoBuenoSubdirectorAdministrativo()== null){
+            if (solicitud == null || solicitud.getVistoBuenoSubdirectorAdministrativo() == null) {
                 return false;
             }
             if (solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("si")) {
@@ -1615,7 +1611,7 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
         return false;
     }   // </editor-fold>  
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="Boolean isSolicitudValida()">
     public Boolean isSolicitudValida() {
         try {
             if (solicitud == null || solicitud.getIdsolicitud() == null) {
@@ -1796,68 +1792,63 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
         return completableFuture;
     }// </editor-fold>
 
-    
-    // <editor-fold defaultstate="collapsed" desc="String marcarRealizado(Viaje item)">
-    public String marcarRealizado(Viaje item){
+    // <editor-fold defaultstate="collapsed" desc="String cancelarViaje(Viaje item) ">
+    public String cancelarViaje(Viaje item) {
         try {
             Viaje viaje = item;
-              if(viaje.getKmestimados() <0){
-                 JsfUtil.warningMessage(rf.getMessage("warning.kmmenorcero"));
-                return null;
-            }
-            if(viaje.getCostocombustible()<0){
-                 JsfUtil.warningMessage(rf.getMessage("warning.costocombustiblemenorcero"));
-                return null;
-            }
           
+
             //Lo datos del usuario
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
             Double kmdiferencias = viaje.getKmestimados() - item.getKmestimados();
             Double costoCombustibleDiferencia = viaje.getCostocombustible() - item.getCostocombustible();
-          
-          
-            viaje.setKmestimados(item.getKmestimados());
-            viaje.setCostocombustible(item.getCostocombustible());
-            viaje.setRealizado("si");
-              if (viajeRepository.update(viaje)) {
-                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), jmoordb_user.getUsername(),
-                            "update viajerealizado", "viaje", viajeRepository.toDocument(viaje).toString()));
-                } else {
-                    JsfUtil.warningMessage(rf.getMessage("warning.noseactualizoelviaje"));
-                    return "";
-                }
-              
-              //Actualizar el vehiculo
+
+            viaje.setRealizado("no");
+            if (viajeRepository.update(viaje)) {
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), jmoordb_user.getUsername(),
+                        "cancelar viaje", "viaje", viajeRepository.toDocument(viaje).toString()));
+            } else {
+                JsfUtil.warningMessage(rf.getMessage("warning.noseactualizoelviaje"));
+                return "";
+            }
+            if (item.getRealizado().equals("si")) {
+
+                //Actualizar el vehiculo
                 Vehiculo vehiculo = viaje.getVehiculo();
-                vehiculo.setTotalkm(vehiculo.getTotalkm()+item.getKmestimados());
-                vehiculo.setTotalconsumo(vehiculo.getTotalconsumo()+item.getCostocombustible());
-                 vehiculo.setTotalviajes(vehiculo.getTotalviajes() + 1);
-              if (vehiculoRepository.update(vehiculo)) {
-                     revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), jmoordb_user.getUsername(),
-                            "update totales desde viaje marcado como realizado", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
+                Double totalkm = vehiculo.getTotalkm() >viaje.getKmestimados()?vehiculo.getTotalkm()-viaje.getKmestimados():vehiculo.getTotalkm();
+                Double totalConsumo = vehiculo.getTotalconsumo()> viaje.getCostocombustible()?vehiculo.getTotalconsumo()-viaje.getCostocombustible():vehiculo.getTotalconsumo();
+               
+                vehiculo.setTotalkm(totalkm);
+                vehiculo.setTotalconsumo(totalConsumo);
+                vehiculo.setTotalviajes(vehiculo.getTotalviajes() -1);
+                if (vehiculoRepository.update(vehiculo)) {
+                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), jmoordb_user.getUsername(),
+                            "update totales desde cancelar viaje", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
                 } else {
                     JsfUtil.warningMessage(rf.getMessage("warning.noseactualizoelvehiculo"));
                     return "";
                 }
-              
-                      //Actualiza los totales en el conductor
 
+                //Actualiza los totales en el conductor
                 Conductor conductor = viaje.getConductor();
+                 Double totalKmConductor = conductor.getTotalkm() > viaje.getKmestimados()?vehiculo.getTotalkm()-viaje.getKmestimados():conductor.getTotalkm();
+                Double totalConsumoConductor =conductor.getTotalconsumo()> viaje.getCostocombustible()?conductor.getTotalconsumo()-viaje.getCostocombustible():conductor.getTotalconsumo();
+                
                 conductor.setTotalconsumo(conductor.getTotalconsumo() + viaje.getCostocombustible());
                 conductor.setTotalkm(conductor.getTotalkm() + viaje.getKmestimados());
-                conductor.setTotalviajes(conductor.getTotalviajes() + 1);
+                conductor.setTotalviajes(conductor.getTotalviajes() - 1);
                 if (conductorRepository.update(conductor)) {
                     revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getCedula(), jmoordb_user.getUsername(),
-                            "update totales desde  viaje marcado como realizado", "conductor", conductorRepository.toDocument(conductor).toString()));
+                            "update totales desde  cancelar viaje", "conductor", conductorRepository.toDocument(conductor).toString()));
                 } else {
                     JsfUtil.successMessage(rf.getMessage("warning.conductornoactualizado"));
                     return "";
                 }
-
-                  JsfUtil.infoDialog(rf.getAppMessage("info.editado"),rf.getMessage("info.viajeeditado"));
-                  move(page);
+            }
+            JsfUtil.infoDialog(rf.getAppMessage("info.cancel"), rf.getMessage("info.viajecancelado"));
+            move(page);
         } catch (Exception e) {
-             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }

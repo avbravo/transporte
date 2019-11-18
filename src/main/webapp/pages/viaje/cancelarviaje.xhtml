@@ -1,0 +1,209 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
+    <ui:define name="content">
+
+ <jmoordbjsf:csscommandbuttongreen/>
+        <style>
+
+
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            } 
+        </style>
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+
+            <b:growl  id="msgs"/>
+
+            <b:panel collapsible="false" title="#{msg['titlelist.viajecancelar']}" id="content"   look="primary" > 
+                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
+                <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
+
+
+
+
+
+
+                    <p:outputLabel value="#{msg['field.conductor']}"/>
+                    <jmoordbjsf:autocomplete converter="#{conductorConverter}"
+                                             completeMethod="#{viajeCancelarController.conductorServices.complete}"
+                                             labeltip1="#{msg['field.cedula']} #{p.cedula}"
+                                             labeltip2="#{msg['field.nombre']} #{p.nombre}" 
+                                             listener="#{viajeCancelarController.handleSelectedConductor}"
+                                             value="#{viajeCancelarController.conductor}"
+                                             itemLabel=" #{p.nombre}"
+                                             dropdown="true"
+                                             minQueryLength="0"
+                                             field="nombre"
+                                             update=" :form:dataTable"/>
+
+                    <p:outputLabel value="#{msg['field.vehiculo']}"/>
+                    <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
+                                             completeMethod="#{viajeCancelarController.vehiculoServices.complete}" 
+                                             labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
+                                             labeltip2="#{msg['field.marca']} #{p.marca}"
+                                             labeltip3="#{msg['field.modelo']} #{p.modelo}"  
+                                             listener="#{viajeCancelarController.handleSelectedVehiculo}"
+                                             value="#{viajeCancelarController.vehiculo}"
+                                             itemLabel=" #{p.marca}"
+                                             field="marca"
+                                             dropdown="true"
+                                             minQueryLength="0"
+                                             update=" :form:dataTable"/>
+
+
+                </b:panelGrid>
+                <b:row>
+                    <b:column medium-screen="25" >
+
+
+
+                        <jmoordbjsf:searchBetweenDate
+
+                            labelDesde="#{msg['field.fechainicio']}"
+                            valueDesde="#{viajeCancelarController.fechaDesde}"
+                            labelHasta="#{msg['field.fechafin']}"
+                            valueHasta="#{viajeCancelarController.fechaHasta}"
+
+                            search="#{viajeCancelarController.searchBetweenDate('_betweendates',viajeCancelarController.fechaDesde, viajeCancelarController.fechaHasta)}"
+                            update=":form:dataTable "
+
+                            />
+                    </b:column>
+                </b:row>
+
+
+
+                <b:row>
+                    <b:column medium-screen="6" >
+
+                        <jmoordbjsf:searchDate label="#{msg['field.fechapartida']}" 
+                                               value="#{viajeCancelarController.fechaPartida}"
+                                               id="fechapartida"  
+
+                                               search="#{viajeCancelarController.searchBy('fechapartida',viajeCancelarController.fechaPartida)}"
+                                               />
+
+                    </b:column>
+                </b:row>
+
+            </b:panel>
+            <b:panel collapsible="false" id="dataTable" look="primary">
+                <jmoordbjsf:paginator
+                    controller="#{viajeCancelarController}"                        
+                    rowPage="#{viajeCancelarController.rowPage}"                   
+                    page="#{viajeCancelarController.page}"
+                    pages="#{viajeCancelarController.pages}"
+                    skip="ajax:viajeCancelarController.skip()" 
+                    url = "/pages/viaje/new.xhtml"
+                    renderedNew="false"
+                    renderedPrint="false"
+                    />
+                <p:dataTable  value="#{viajeCancelarController.viajeDataModel}"
+                              var="item"
+                              id="dataTable2"
+
+                              paginator="false"
+                              >
+                    <p:column style="width:35px">
+                        <p:rowToggler />
+                    </p:column>
+
+                    <p:column headerText="#{msg['field.idviaje']}" style="width:75px">
+                        <h:outputText value="#{item.idviaje}" style="color: #{viajeCancelarController.columnColor(item.realizado,item.activo)}" />
+                    </p:column>
+
+
+
+
+                    <p:column headerText="#{msg['field.fechapartida']}" style="width:100px">
+                        <h:outputText value="#{viajeCancelarController.showDate(item.fechahorainicioreserva)} #{viajeCancelarController.showHour(item.fechahorainicioreserva)}" style="color: #{viajeCancelarController.columnColor(item.realizado,item.activo)}" />
+                    </p:column>
+                    <p:column headerText="#{msg['field.fecharegreso']}" style="width:100px">
+                        <h:outputText value="#{viajeCancelarController.showDate(item.fechahorafinreserva)} #{viajeCancelarController.showHour(item.fechahorafinreserva)}" style="color: #{viajeCancelarController.columnColor(item.realizado,item.activo)}" />
+                    </p:column>
+
+
+                    <p:column headerText="#{msg['field.vehiculos']}"  style="color: #{viajeCancelarController.columnColor(item.realizado,item.activo)}">
+
+                        <p:outputLabel value="#{item.vehiculo.marca} #{item.vehiculo.modelo}"/>
+
+                    </p:column>
+                    <p:column headerText="#{msg['field.conductores']}"  style="color: #{viajeCancelarController.columnColor(item.realizado,item.activo)}">
+
+                        <p:outputLabel value="#{item.conductor.nombre}"/>
+
+                    </p:column>
+
+                    <p:column headerText="#{msg['field.lugardestino']}" style="color: #{viajeCancelarController.columnColor(item.realizado,item.activo)}">
+                        <p:outputLabel value="#{item.lugardestino}"  />
+
+                    </p:column> 
+
+
+
+
+
+
+
+
+                    <p:rowExpansion>
+
+                        <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
+
+                            <p:outputLabel value="#{msg['field.mision']}"/>
+                            <p:outputLabel value="#{item.mision}"/>
+                            <p:outputLabel value="#{msg['field.lugarpartida']}"/>
+                            <p:outputLabel value="#{item.lugarpartida}"/>
+
+
+                            <p:outputLabel value="#{msg['field.comentarios']}"/>
+                            <p:outputLabel value="#{item.comentarios}"/>
+                            <p:outputLabel value="#{msg['field.kmestimados']}"/>
+                          <p:outputLabel value="#{item.kmestimados}"/>
+                            <p:outputLabel value="#{msg['field.costocombustible']}"/>
+                          <p:outputLabel value="#{item.costocombustible}"/>
+                            <p:outputLabel value="#{msg['field.realizado']}"/>
+                            <p:outputLabel value="#{item.realizado}"/>
+                            <p:outputLabel value="#{msg['field.activo']}"/>
+                            <p:outputLabel value="#{item.activo}"/>
+
+                            
+
+                            
+                            <p:commandButton 
+                         value="#{app['button.cancel']}"
+
+                                title="#{app['button.cancel']}"
+                             action="#{viajeCancelarController.cancelarViaje(item)}"
+                             update=":form:content">
+                <p:confirm header="#{app['info.doyouwantdelete']}"
+                           message="#{app['info.doyouwantdelete']}" icon="pi pi-exclamation-triangle" />
+            </p:commandButton>
+                            
+                        </b:panelGrid>
+                    </p:rowExpansion>
+                </p:dataTable>
+            </b:panel>
+ <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="#{app['button.yes']}"  type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="#{app['button.no']}"  type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+            </p:confirmDialog>    
+        </b:form>
+
+        <jmoordbjsf:denegado rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" />
+    </ui:define>
+</ui:composition>

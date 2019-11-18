@@ -760,7 +760,7 @@ public class DisponiblesController implements Serializable, IController {
                 push.send("Nueva solicitud Docente ");
 
             }
-            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
+            JsfUtil.infoDialog(rf.getAppMessage("info.mensaje"), rf.getMessage("info.savesolicitudes"));
             /**
              * Enviar un email al administrativo y al mismo administrador
              */
@@ -1624,7 +1624,7 @@ public class DisponiblesController implements Serializable, IController {
             repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
                     "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
-            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
+            JsfUtil.infoDialog(rf.getAppMessage("info.mensaje"), rf.getMessage("info.editsolicitudes"));
 
             //Buscar los administradores
             List<Usuario> usuarioAdministradoreslist = usuarioServices.usuariosParaNotificar();
@@ -1736,7 +1736,7 @@ public class DisponiblesController implements Serializable, IController {
                 });
                 push.send("Mensaje de docente ");
             }
-            JsfUtil.infoDialog("Informacion", "Se envio la notifacion a los administradores");
+            JsfUtil.infoDialog(rf.getAppMessage("info.informacion"), rf.getMessage("info.seenvioinformacionalosadministradores"));
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
@@ -2349,7 +2349,7 @@ public class DisponiblesController implements Serializable, IController {
 //                    "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 //Remuevo los viajes que tenga asignados
             if (solicitudRepository.update(solicitud)) {
-                JsfUtil.infoDialog("Mensaje", rf.getMessage("info.cancelacionsolicitudes"));
+                JsfUtil.infoDialog(rf.getAppMessage("info.mensaje"), rf.getMessage("info.cancelacionsolicitudes"));
                 //guarda el contenido anterior
                 JmoordbConfiguration jmc = new JmoordbConfiguration();
                 Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();

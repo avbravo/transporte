@@ -816,7 +816,8 @@ public class AdministradorController implements Serializable, IController {
                 push.send("Nueva solicitud Docente ");
 
             }
-            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.savesolicitudes"));
+ 
+            JsfUtil.infoDialog(rf.getAppMessage("info.mensaje"), rf.getMessage("info.savesolicitudes"));
             /**
              * Enviar un email al administrativo y al mismo administrador
              */
@@ -1943,7 +1944,7 @@ public class AdministradorController implements Serializable, IController {
              */
             solicitudRepository.update(solicitud);
 
-            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editsolicitudes"));
+            JsfUtil.infoDialog(rf.getAppMessage("info.mensaje"), rf.getMessage("info.editsolicitudes"));
             //guarda el contenido anterior
             JmoordbConfiguration jmc = new JmoordbConfiguration();
             Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
@@ -2113,7 +2114,8 @@ public class AdministradorController implements Serializable, IController {
                 });
                 push.send("Mensaje de docente ");
             }
-            JsfUtil.infoDialog("Informacion", "Se envio la notifacion a los administradores");
+             JsfUtil.infoDialog(rf.getAppMessage("info.informacion"), rf.getMessage("info.seenvioinformacionalosadministradores"));
+          
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
@@ -2778,7 +2780,7 @@ public class AdministradorController implements Serializable, IController {
             solicitud.setViaje(viajeList);
 //Remuevo los viajes que tenga asignados
             if (solicitudRepository.update(solicitud)) {
-                JsfUtil.infoDialog("Mensaje", rf.getMessage("info.cancelacionsolicitudes"));
+                JsfUtil.infoDialog(rf.getAppMessage("info.mensaje"), rf.getMessage("info.cancelacionsolicitudes"));
                 //guarda el contenido anterior
                 JmoordbConfiguration jmc = new JmoordbConfiguration();
                 Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
@@ -2923,7 +2925,7 @@ public class AdministradorController implements Serializable, IController {
             solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativoServices.aprobar(jmoordb_user, aprobado));
 
             solicitudRepository.update(solicitud);
-            JsfUtil.infoDialog("Mensaje", rf.getMessage("info.editado"));
+            JsfUtil.infoDialog(rf.getAppMessage("info.mensaje"), rf.getMessage("info.editado"));
             //guarda el contenido anterior
             JmoordbConfiguration jmc = new JmoordbConfiguration();
             Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
