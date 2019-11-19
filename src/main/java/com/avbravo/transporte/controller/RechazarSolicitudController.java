@@ -1361,7 +1361,7 @@ public class RechazarSolicitudController implements Serializable, IController {
         return "";
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="String primerDia()">
     public String primerDia() {
         try {
             viaje.setFechahorainicioreserva(DateUtil.primerDiaDelMesActualConHoraMinutosSegundos(0, 1, 0));
@@ -1374,7 +1374,7 @@ public class RechazarSolicitudController implements Serializable, IController {
     }
 
     // </editor-fold>  
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="String ultimoDia()">
     public String ultimoDia() {
         try {
             viaje.setFechahorafinreserva(DateUtil.ultimoDiaDelMesActualConHoraMinutoSegundo(23, 59, 0));
@@ -1386,7 +1386,7 @@ public class RechazarSolicitudController implements Serializable, IController {
     }
     // </editor-fold>  
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="String updateChangeDate()">
     public String updateChangeDate() {
         try {
             validFechas = false;
@@ -1625,7 +1625,7 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
         return false;
     }   // </editor-fold>  
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="Boolean isSolicitudValida()">
     public Boolean isSolicitudValida() {
         try {
             if (solicitud == null || solicitud.getIdsolicitud() == null) {

@@ -284,7 +284,7 @@ public class JmoordbNotificationsController implements Serializable, IController
         return 0;
     }// </editor-fold>
     
-  // <editor-fold defaultstate="collapsed" desc="metodo()">
+  // <editor-fold defaultstate="collapsed" desc="Usuario generateUsuario(String username)">
     public Usuario generateUsuario(String username){
   
         Usuario usuario = new Usuario();

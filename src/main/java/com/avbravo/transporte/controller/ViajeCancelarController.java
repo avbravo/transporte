@@ -1347,7 +1347,7 @@ public class ViajeCancelarController implements Serializable, IController {
         return "";
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="String primerDia()">
     public String primerDia() {
         try {
             viaje.setFechahorainicioreserva(DateUtil.primerDiaDelMesActualConHoraMinutosSegundos(0, 1, 0));
@@ -1360,7 +1360,7 @@ public class ViajeCancelarController implements Serializable, IController {
     }
 
     // </editor-fold>  
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="String ultimoDia() ">
     public String ultimoDia() {
         try {
             viaje.setFechahorafinreserva(DateUtil.ultimoDiaDelMesActualConHoraMinutoSegundo(23, 59, 0));
@@ -1372,7 +1372,7 @@ public class ViajeCancelarController implements Serializable, IController {
     }
     // </editor-fold>  
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="String updateChangeDate()">
     public String updateChangeDate() {
         try {
             validFechas = false;
@@ -1847,66 +1847,71 @@ public class ViajeCancelarController implements Serializable, IController {
             }
             //Quitar el viaje de las solocitudes
             List<Solicitud> list = solicitudServices.solicituPorViaje(viaje);
-//if(solicitudServices.actualizarSolicitudesConViajeCancelado(viaje,list)){
+             if (list == null || list.isEmpty()) {
+                 //No hay ninguna solicitud con ese viaje asignado.
+             }else{
+                   if (solicitudServices.actualizarSolicitudesConViajeCancelado(viaje, list, rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"))) {
 //    
-//}
-            if (list == null || list.isEmpty()) {
-                for (Solicitud s : list) {
-                    //Es el viaje de ida y regreso
-                    if (s.getViaje().get(0).equals(viaje.getIdviaje()) && s.getViaje().get(1).getIdviaje().equals(viaje.getIdviaje())) {
-                        List<Viaje> viajeList = new ArrayList<>();
-                        s.setViaje(viajeList);
-                        //cambiar el estatus del viaje a no asignado
-
-                        Optional<EstatusViaje> optional = estatusViajeServices.estatusViajeInicial();
-                        if (optional.isPresent()) {
-                            s.setEstatusViaje(optional.get());
-                        } else {
-                            JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
-                            return "";
-                        }
-
-                        solicitudRepository.update(s);
-
-                    } else {
-                        // Si el que se quita es el viaje de ida
-                        if (s.getViaje().get(0).equals(viaje.getIdviaje()) && !s.getViaje().get(1).getIdviaje().equals(viaje.getIdviaje())) {
-                            EstatusViaje estatusViaje = new EstatusViaje();
-                            estatusViaje.setIdestatusviaje("PENDIENTEIDA/REGRESOASIGNADO");
-                            Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
-                            if (optional.isPresent()) {
-                                estatusViaje = optional.get();
-                            } else {
-                                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
-                                return "";
-                            }
-                            s.setEstatusViaje(estatusViaje);
-
-                            //Removerlo 
-                            s.getViaje().remove(0);
-                            solicitudRepository.update(s);
-                        } else {
-                            //Remueve el viaje de regreso y si tiene viaje de ida
-                            if (s.getViaje().get(1).getIdviaje().equals(viaje.getIdviaje())) {
-                                EstatusViaje estatusViaje = new EstatusViaje();
-                                estatusViaje.setIdestatusviaje("PENDIENTEREGRESO/IDAASIGNADO");
-                                Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
-                                if (optional.isPresent()) {
-                                    estatusViaje = optional.get();
-                                } else {
-                                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
-                                    return "";
-                                }
-                                s.setEstatusViaje(estatusViaje);
-
-                                //Removerlo 
-                                s.getViaje().remove(0);
-                                solicitudRepository.update(s);
-                            }
-                        }
-                    }
-                }
             }
+             }
+          
+//            if (list == null || list.isEmpty()) {
+//                for (Solicitud s : list) {
+//                    //Es el viaje de ida y regreso
+//                    if (s.getViaje().get(0).equals(viaje.getIdviaje()) && s.getViaje().get(1).getIdviaje().equals(viaje.getIdviaje())) {
+//                        List<Viaje> viajeList = new ArrayList<>();
+//                        s.setViaje(viajeList);
+//                        //cambiar el estatus del viaje a no asignado
+//
+//                        Optional<EstatusViaje> optional = estatusViajeServices.estatusViajeInicial();
+//                        if (optional.isPresent()) {
+//                            s.setEstatusViaje(optional.get());
+//                        } else {
+//                            JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
+//                            return "";
+//                        }
+//
+//                        solicitudRepository.update(s);
+//
+//                    } else {
+//                        // Si el que se quita es el viaje de ida
+//                        if (s.getViaje().get(0).equals(viaje.getIdviaje()) && !s.getViaje().get(1).getIdviaje().equals(viaje.getIdviaje())) {
+//                            EstatusViaje estatusViaje = new EstatusViaje();
+//                            estatusViaje.setIdestatusviaje("PENDIENTEIDA/REGRESOASIGNADO");
+//                            Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
+//                            if (optional.isPresent()) {
+//                                estatusViaje = optional.get();
+//                            } else {
+//                                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
+//                                return "";
+//                            }
+//                            s.setEstatusViaje(estatusViaje);
+//
+//                            //Removerlo 
+//                            s.getViaje().remove(0);
+//                            solicitudRepository.update(s);
+//                        } else {
+//                            //Remueve el viaje de regreso y si tiene viaje de ida
+//                            if (s.getViaje().get(1).getIdviaje().equals(viaje.getIdviaje())) {
+//                                EstatusViaje estatusViaje = new EstatusViaje();
+//                                estatusViaje.setIdestatusviaje("PENDIENTEREGRESO/IDAASIGNADO");
+//                                Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
+//                                if (optional.isPresent()) {
+//                                    estatusViaje = optional.get();
+//                                } else {
+//                                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
+//                                    return "";
+//                                }
+//                                s.setEstatusViaje(estatusViaje);
+//
+//                                //Removerlo 
+//                                s.getViaje().remove(0);
+//                                solicitudRepository.update(s);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
 
             JsfUtil.infoDialog(rf.getAppMessage("info.cancel"), rf.getMessage("info.viajecancelado"));
             move(page);
