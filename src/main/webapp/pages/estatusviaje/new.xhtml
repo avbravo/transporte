@@ -40,6 +40,9 @@
                     <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{estatusViajeController.writable}"> 
 
 
+                        <p:outputLabel  value="#{msg['field.inicial']}" />
+                        <jmoordbjsf:noyes value="#{estatusViajeController.estatusViaje.inicial}" id="inicial"  required="true"/>
+                        
                         <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{estatusViajeController.estatusViaje.activo}" id="activo"  required="true"/>
 

@@ -149,8 +149,8 @@ public class EstatusViajeController implements Serializable, IController {
             this.page = page;
             estatusViajeDataModel = new EstatusViajeDataModel(estatusViajeList);
             Document doc;
+ switch (getSearch()) {
 
-            switch ((String) JmoordbContext.get("searchestatusViaje")) {
                 case "_init":
                 case "_autocomplete":
                     estatusViajeList = estatusViajeRepository.findPagination(page, rowPage);

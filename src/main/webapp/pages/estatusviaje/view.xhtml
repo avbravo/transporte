@@ -30,6 +30,9 @@
                         <p:outputLabel  value="#{msg['field.idestatusviaje']}" />
                         <p:outputLabel  value="#{estatusViajeController.estatusViaje.idestatusviaje}" id="idestatusViaje"   />
 
+                                     <p:outputLabel  value="#{msg['field.inicial']}" />
+                        <jmoordbjsf:noyes value="#{estatusViajeController.estatusViaje.inicial}" id="inicial"  required="true"/>
+                        
                      <p:outputLabel  value="#{msg['field.activo']}" />
                         <jmoordbjsf:yesno value="#{estatusViajeController.estatusViaje.activo}" id="activo"  required="true"/>
 
