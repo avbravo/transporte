@@ -1796,8 +1796,7 @@ public class ViajeCancelarController implements Serializable, IController {
     public String cancelarViaje(Viaje item) {
         try {
             Viaje viaje = new Viaje();
-             viaje=       item;
-          
+            viaje = item;
 
             //Lo datos del usuario
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
@@ -1816,12 +1815,12 @@ public class ViajeCancelarController implements Serializable, IController {
 
                 //Actualizar el vehiculo
                 Vehiculo vehiculo = viaje.getVehiculo();
-                Double totalkm = vehiculo.getTotalkm() >viaje.getKmestimados()?vehiculo.getTotalkm()-viaje.getKmestimados():vehiculo.getTotalkm();
-                Double totalConsumo = vehiculo.getTotalconsumo()> viaje.getCostocombustible()?vehiculo.getTotalconsumo()-viaje.getCostocombustible():vehiculo.getTotalconsumo();
-               
+                Double totalkm = vehiculo.getTotalkm() > viaje.getKmestimados() ? vehiculo.getTotalkm() - viaje.getKmestimados() : vehiculo.getTotalkm();
+                Double totalConsumo = vehiculo.getTotalconsumo() > viaje.getCostocombustible() ? vehiculo.getTotalconsumo() - viaje.getCostocombustible() : vehiculo.getTotalconsumo();
+
                 vehiculo.setTotalkm(totalkm);
                 vehiculo.setTotalconsumo(totalConsumo);
-                vehiculo.setTotalviajes(vehiculo.getTotalviajes() -1);
+                vehiculo.setTotalviajes(vehiculo.getTotalviajes() - 1);
                 if (vehiculoRepository.update(vehiculo)) {
                     revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), jmoordb_user.getUsername(),
                             "update totales desde cancelar viaje", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
@@ -1832,9 +1831,9 @@ public class ViajeCancelarController implements Serializable, IController {
 
                 //Actualiza los totales en el conductor
                 Conductor conductor = viaje.getConductor();
-                 Double totalKmConductor = conductor.getTotalkm() > viaje.getKmestimados()?vehiculo.getTotalkm()-viaje.getKmestimados():conductor.getTotalkm();
-                Double totalConsumoConductor =conductor.getTotalconsumo()> viaje.getCostocombustible()?conductor.getTotalconsumo()-viaje.getCostocombustible():conductor.getTotalconsumo();
-                
+                Double totalKmConductor = conductor.getTotalkm() > viaje.getKmestimados() ? vehiculo.getTotalkm() - viaje.getKmestimados() : conductor.getTotalkm();
+                Double totalConsumoConductor = conductor.getTotalconsumo() > viaje.getCostocombustible() ? conductor.getTotalconsumo() - viaje.getCostocombustible() : conductor.getTotalconsumo();
+
                 conductor.setTotalconsumo(conductor.getTotalconsumo() + viaje.getCostocombustible());
                 conductor.setTotalkm(conductor.getTotalkm() + viaje.getKmestimados());
                 conductor.setTotalviajes(conductor.getTotalviajes() - 1);
@@ -1846,6 +1845,69 @@ public class ViajeCancelarController implements Serializable, IController {
                     return "";
                 }
             }
+            //Quitar el viaje de las solocitudes
+            List<Solicitud> list = solicitudServices.solicituPorViaje(viaje);
+            
+            if (list == null || list.isEmpty()) {
+                for (Solicitud s : list) {
+                    //Es el viaje de ida y regreso
+                    if (s.getViaje().get(0).equals(viaje.getIdviaje()) && s.getViaje().get(1).getIdviaje().equals(viaje.getIdviaje())) {
+                        List<Viaje> viajeList = new ArrayList<>();
+                        s.setViaje(viajeList);
+                        //cambiar el estatus del viaje a no asignado
+
+                        EstatusViaje estatusViaje = new EstatusViaje();
+                        estatusViaje.setIdestatusviaje("NO ASIGNADO");
+                        Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
+                        if (optional.isPresent()) {
+                            estatusViaje = optional.get();
+                        } else {
+                            JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
+                            return "";
+                        }
+                        s.setEstatusViaje(estatusViaje);
+                        solicitudRepository.update(s);
+
+                    } else {
+                        // Si el que se quita es el viaje de ida
+                        if (s.getViaje().get(0).equals(viaje.getIdviaje()) && !s.getViaje().get(1).getIdviaje().equals(viaje.getIdviaje())) {
+                            EstatusViaje estatusViaje = new EstatusViaje();
+                            estatusViaje.setIdestatusviaje("PENDIENTEIDA/REGRESOASIGNADO");
+                            Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
+                            if (optional.isPresent()) {
+                                estatusViaje = optional.get();
+                            } else {
+                                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
+                                return "";
+                            }
+                            s.setEstatusViaje(estatusViaje);
+
+                            //Removerlo 
+                            s.getViaje().remove(0);
+                            solicitudRepository.update(s);
+                        } else {
+                            //Remueve el viaje de regreso y si tiene viaje de ida
+                            if (s.getViaje().get(1).getIdviaje().equals(viaje.getIdviaje())) {
+                                EstatusViaje estatusViaje = new EstatusViaje();
+                                estatusViaje.setIdestatusviaje("PENDIENTEREGRESO/IDAASIGNADO");
+                                Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
+                                if (optional.isPresent()) {
+                                    estatusViaje = optional.get();
+                                } else {
+                                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
+                                    return "";
+                                }
+                                s.setEstatusViaje(estatusViaje);
+
+                                //Removerlo 
+                                s.getViaje().remove(0);
+                                solicitudRepository.update(s);
+                            }
+                        }
+                    }
+                }
+            }
+
             JsfUtil.infoDialog(rf.getAppMessage("info.cancel"), rf.getMessage("info.viajecancelado"));
             move(page);
         } catch (Exception e) {
