@@ -151,7 +151,10 @@
                         </p:chips>
 
 
-   <p:outputLabel  value="#{msg['field.dias']}" />
+
+   <p:outputLabel  value="#{msg['field.dias']}" >
+                          <b:iconAwesome value="fa-book"/> 
+                          </p:outputLabel>
                         <p:selectCheckboxMenu id="multiple" value="#{solicitudAdministrativoController.diasSelected}" label="#{msg['field.dias']}" multiple="true"
                                               required="true" 
                                               requiredMessage="#{msg['field.dias']} #{app['info.required']}"

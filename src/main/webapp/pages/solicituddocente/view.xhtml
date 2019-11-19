@@ -216,7 +216,9 @@
                         <p:outputLabel  value="#{msg['field.lugares']}" />
                         <p:chips required="true" value="#{solicitudDocenteController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
 
-                          <p:outputLabel  value="#{msg['field.dias']}" />
+                          <p:outputLabel  value="#{msg['field.dias']}" >
+                          <b:iconAwesome value="fa-book"/> 
+                          </p:outputLabel>
                         <p:selectCheckboxMenu id="multiple" value="#{solicitudDocenteController.diasSelected}" label="#{msg['field.rangoagenda']}" multiple="true"
                                               required="true" 
                                               disabled="true"

@@ -59,6 +59,7 @@ import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
 import com.avbravo.transporteejb.services.EstatusServices;
+import com.avbravo.transporteejb.services.EstatusViajeServices;
 import com.avbravo.transporteejb.services.NotificacionServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
 import com.avbravo.transporteejb.services.TipogiraServices;
@@ -238,6 +239,8 @@ public class CoordinadorController implements Serializable, IController {
     ErrorInfoServices errorServices;
     @Inject
     EstatusServices estatusServices;
+     @Inject
+    EstatusViajeServices estatusViajeServices;
     @Inject
     VistoBuenoServices vistoBuenoServices;
 
@@ -683,16 +686,21 @@ public class CoordinadorController implements Serializable, IController {
             }
 
             //Asignar el estatusViaje
-            EstatusViaje estatusViaje = new EstatusViaje();
-            estatusViaje.setIdestatusviaje("NO ASIGNADO");
-            Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
+            
+            
+            
+            Optional<EstatusViaje> optional = estatusViajeServices.estatusViajeInicial();
             if (optional.isPresent()) {
-                estatusViaje = optional.get();
+          solicitud.setEstatusViaje(optional.get());
             } else {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
                 return "";
             }
-            solicitud.setEstatusViaje(estatusViaje);
+            
+           
+            
+            
+            
             /**
              * Habilitarlo si no deseamos guardar los que estan en rojo
              */

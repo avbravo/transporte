@@ -1847,7 +1847,9 @@ public class ViajeCancelarController implements Serializable, IController {
             }
             //Quitar el viaje de las solocitudes
             List<Solicitud> list = solicitudServices.solicituPorViaje(viaje);
-            
+//if(solicitudServices.actualizarSolicitudesConViajeCancelado(viaje,list)){
+//    
+//}
             if (list == null || list.isEmpty()) {
                 for (Solicitud s : list) {
                     //Es el viaje de ida y regreso
@@ -1856,16 +1858,14 @@ public class ViajeCancelarController implements Serializable, IController {
                         s.setViaje(viajeList);
                         //cambiar el estatus del viaje a no asignado
 
-                        EstatusViaje estatusViaje = new EstatusViaje();
-                        estatusViaje.setIdestatusviaje("NO ASIGNADO");
-                        Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
+                        Optional<EstatusViaje> optional = estatusViajeServices.estatusViajeInicial();
                         if (optional.isPresent()) {
-                            estatusViaje = optional.get();
+                            s.setEstatusViaje(optional.get());
                         } else {
                             JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
                             return "";
                         }
-                        s.setEstatusViaje(estatusViaje);
+
                         solicitudRepository.update(s);
 
                     } else {
