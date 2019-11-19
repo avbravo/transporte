@@ -1160,7 +1160,7 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
                     viajeList.add(viaje);
 
                     break;
-                case "IDA":
+                case "IDA PENDIENTE REGRESO":
                     viajeList.add(viaje);
                     break;
                 case "REGRESO":
