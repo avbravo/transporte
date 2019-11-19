@@ -11,7 +11,7 @@
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
     <ui:define name="content">
 
- <jmoordbjsf:csscommandbuttongreen/>
+        <jmoordbjsf:csscommandbuttongreen/>
         <style>
 
 
@@ -173,32 +173,32 @@
                             <p:outputLabel value="#{msg['field.comentarios']}"/>
                             <p:outputLabel value="#{item.comentarios}"/>
                             <p:outputLabel value="#{msg['field.kmestimados']}"/>
-                          <p:outputLabel value="#{item.kmestimados}"/>
+                            <p:outputLabel value="#{item.kmestimados}"/>
                             <p:outputLabel value="#{msg['field.costocombustible']}"/>
-                          <p:outputLabel value="#{item.costocombustible}"/>
+                            <p:outputLabel value="#{item.costocombustible}"/>
                             <p:outputLabel value="#{msg['field.realizado']}"/>
                             <p:outputLabel value="#{item.realizado}"/>
                             <p:outputLabel value="#{msg['field.activo']}"/>
                             <p:outputLabel value="#{item.activo}"/>
 
-                            
 
-                            
+
+
                             <p:commandButton 
-                         value="#{app['button.cancel']}"
+                                value="#{app['button.cancel']}"
 
                                 title="#{app['button.cancel']}"
-                             action="#{viajeCancelarController.cancelarViaje(item)}"
-                             update=":form:content">
-                <p:confirm header="#{app['info.doyouwantdelete']}"
-                           message="#{app['info.doyouwantdelete']}" icon="pi pi-exclamation-triangle" />
-            </p:commandButton>
-                            
+                                action="#{viajeCancelarController.cancelarViaje(item)}"
+                                update=":form:content, :form:msgs, :form:dataTable">
+                                <p:confirm header="#{app['info.doyouwantdelete']}"
+                                           message="#{app['info.doyouwantdelete']}" icon="pi pi-exclamation-triangle" />
+                            </p:commandButton>
+
                         </b:panelGrid>
                     </p:rowExpansion>
                 </p:dataTable>
             </b:panel>
- <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="#{app['button.yes']}"  type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
                 <p:commandButton value="#{app['button.no']}"  type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
             </p:confirmDialog>    

@@ -1795,7 +1795,8 @@ public class ViajeCancelarController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="String cancelarViaje(Viaje item) ">
     public String cancelarViaje(Viaje item) {
         try {
-            Viaje viaje = item;
+            Viaje viaje = new Viaje();
+             viaje=       item;
           
 
             //Lo datos del usuario
@@ -1803,7 +1804,7 @@ public class ViajeCancelarController implements Serializable, IController {
             Double kmdiferencias = viaje.getKmestimados() - item.getKmestimados();
             Double costoCombustibleDiferencia = viaje.getCostocombustible() - item.getCostocombustible();
 
-            viaje.setRealizado("no");
+            viaje.setActivo("no");
             if (viajeRepository.update(viaje)) {
                 revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), jmoordb_user.getUsername(),
                         "cancelar viaje", "viaje", viajeRepository.toDocument(viaje).toString()));
