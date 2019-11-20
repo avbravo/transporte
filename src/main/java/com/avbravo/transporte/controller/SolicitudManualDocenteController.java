@@ -1200,6 +1200,8 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             solicitud.setLugarpartida("UTP-AZUERO");
             solicitud.setNumerodevehiculos(1);
             solicitud.setPasajeros(0);
+             solicitud.setTieneAsignadoViajeIda("no");
+            solicitud.setTieneAsignadoViajeRegreso("no");
             solicitud.setFechaestatus(DateUtil.getFechaHoraActual());
             solicita = jmoordb_user;
             responsable = solicita;

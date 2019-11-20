@@ -1058,10 +1058,6 @@ public class ViajeController implements Serializable, IController {
         try {
             viaje.setActivo("si");
             
-//          if(!estatusViajeServices.isValidEstatusViajeInicial(viaje.getEstatusViaje())){
-//               JsfUtil.warningMessage(rf.getMessage("warning.seleccioneotroestatusviajeinicial"));
-//                return "";
-//          }
 
             viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros() - solicitud.getPasajeros());
             if (!viajeServices.isValid(viaje, rf.getMrb(), rf.getArb(),false)) {

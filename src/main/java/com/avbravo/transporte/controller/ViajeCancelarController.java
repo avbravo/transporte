@@ -1029,8 +1029,6 @@ public class ViajeCancelarController implements Serializable, IController {
         return "";
     }   // </editor-fold>
 
-    
-
     // <editor-fold defaultstate="collapsed" desc="String rechazarSolicitud()">
     public String rechazarSolicitud() {
         try {
@@ -1127,7 +1125,7 @@ public class ViajeCancelarController implements Serializable, IController {
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
 
             } else {
-                if (!viajeServices.isValidDates(viaje, false,rf.getMrb(), rf.getArb())) {
+                if (!viajeServices.isValidDates(viaje, false, rf.getMrb(), rf.getArb())) {
                     //return;
                 } else {
                     validFechas = true;
@@ -1594,14 +1592,14 @@ public class ViajeCancelarController implements Serializable, IController {
             }
             //Quitar el viaje de las solocitudes
             List<Solicitud> list = solicitudServices.solicituPorViaje(viaje);
-             if (list == null || list.isEmpty()) {
-                 //No hay ninguna solicitud con ese viaje asignado.
-             }else{
-                   if (solicitudServices.actualizarSolicitudesConViajeCancelado(viaje, list, rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"))) {
+            if (list == null || list.isEmpty()) {
+                //No hay ninguna solicitud con ese viaje asignado.
+            } else {
+                if (solicitudServices.actualizarSolicitudesConViajeCancelado(viaje, list, rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"))) {
 //    
+                }
             }
-             }
-          
+
 //            if (list == null || list.isEmpty()) {
 //                for (Solicitud s : list) {
 //                    //Es el viaje de ida y regreso
@@ -1659,7 +1657,6 @@ public class ViajeCancelarController implements Serializable, IController {
 //                    }
 //                }
 //            }
-
             JsfUtil.infoDialog(rf.getAppMessage("info.cancel"), rf.getMessage("info.viajecancelado"));
             move(page);
         } catch (Exception e) {
