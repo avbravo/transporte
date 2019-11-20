@@ -54,6 +54,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -1057,10 +1058,10 @@ public class ViajeController implements Serializable, IController {
         try {
             viaje.setActivo("si");
             
-          if(!estatusViajeServices.isValidEstatusViajeInicial(viaje.getEstatusViaje())){
-               JsfUtil.warningMessage(rf.getMessage("warning.seleccioneotroestatusviajeinicial"));
-                return "";
-          }
+//          if(!estatusViajeServices.isValidEstatusViajeInicial(viaje.getEstatusViaje())){
+//               JsfUtil.warningMessage(rf.getMessage("warning.seleccioneotroestatusviajeinicial"));
+//                return "";
+//          }
 
             viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros() - solicitud.getPasajeros());
             if (!viajeServices.isValid(viaje,false)) {
@@ -1184,35 +1185,22 @@ public class ViajeController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getMessage("warning.demasiadosdiasfechafinal"));
                 return "";
             }
-            List<Viaje> viajeList = new ArrayList<>();
-            switch (viaje.getEstatusViaje().getIdestatusviaje()) {
-                case "IDA/REGRESO":
-                    viajeList.add(viaje);
-                    viajeList.add(viaje);
-
-                    break;
-                case "IDA PENDIENTE REGRESO":
-                    viajeList.add(viaje);
-                    break;
-                case "REGRESO":
-                    if (solicitud.getViaje() == null || solicitud.getViaje().size() == 0) {
-                        JsfUtil.warningMessage(rf.getMessage("warning.solicitudnotieneviajeida"));
-                        return "";
+            
+            List<Object> objectList= viajeServices.asignarListViajesASolicitud(viaje,solicitud, rf.getMrb(), rf.getArb());
+            
+            for (Object o : list) {
+                if (o instanceof Solicitud) {
+                    solicitud =(Solicitud)o;
+                }else{
+                    if(o instanceof Boolean){
+                        if( !(Boolean)o){
+                           return""; 
+                        }
                     }
-                    viajeList = solicitud.getViaje();
-                    viajeList.add(viaje);
-                    break;
-                case "NO ASIGNADO":
-                    if (viajeList.size() == 0) {
-                        JsfUtil.warningMessage(rf.getMessage("warning.seleccioneunestatusviaje"));
-                        return "";
-                    }
-//
-                    break;
-                default:
-                    JsfUtil.warningMessage(rf.getMessage("warning.indiquetipoviaje"));
-                    return "";
+                }
+                
             }
+
 
             if (!viaje.getVehiculo().getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())) {
                 JsfUtil.warningMessage(rf.getMessage("warning.tipovehiculonocoincideconeltipodelasolicitud"));
@@ -1235,7 +1223,7 @@ public class ViajeController implements Serializable, IController {
                  *
                  */
 
-                solicitud.setViaje(viajeList);
+             //   solicitud.setViaje(viajeList);
                 solicitud.setEstatusViaje(viaje.getEstatusViaje());
 
                 Estatus estatus = new Estatus();
@@ -1255,19 +1243,6 @@ public class ViajeController implements Serializable, IController {
                     JsfUtil.warningMessage(rf.getMessage("warning.solicitudnoactualizada"));
                     return "";
                 }
-//Actualiza los totales en el vehiculo
-
-//                Vehiculo vehiculo = viaje.getVehiculo();
-//                vehiculo.setTotalconsumo(vehiculo.getTotalconsumo() + viaje.getCostocombustible());
-//                vehiculo.setTotalkm(vehiculo.getTotalkm() + viaje.getKmestimados());
-//                vehiculo.setTotalviajes(vehiculo.getTotalviajes() + 1);
-//                if (vehiculoRepository.update(vehiculo)) {
-//                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), jmoordb_user.getUsername(),
-//                            "update totales desde creacion de  viajes", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
-//                } else {
-//                    JsfUtil.warningMessage(rf.getMessage("warning.vehiculonoactualizado"));
-//                    return "";
-//                }
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 usuarioList = new ArrayList<>();

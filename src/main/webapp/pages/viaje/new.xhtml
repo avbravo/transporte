@@ -355,23 +355,12 @@
 
                         <jmoordbjsf:commandbuttonsave    save="#{viajeController.save()}" />
 
-                        <p:fieldset>
+                       
                             <jmoordbjsf:commandbuttongolist   url = "/pages/viaje/list.xhtml"
                                                               controller="#{viajeController}" />
-                            <p:spacer width="25"/>
+                            
 
-                            <p:commandButton value="#{msg['button.rechazarsolicitud']}" 
-                                             rendered="#{viajeController.isSolicitudValida()}"
-                                             action="#{viajeController.rechazarSolicitud()}"
-                                             process="@this, solicitudAutoComplete"
-                                             icon="pi pi-trash"
-                                             update=":form:content">
-                                <p:confirm header="#{msg['info.doyouwantrechazarsolicitud']}"
-                                           message="#{msg['info.doyouwantrechazar']}" icon="pi pi-exclamation-triangle" />
-
-                            </p:commandButton>
-
-                        </p:fieldset>
+               
 
                         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                             <p:commandButton value="#{app['button.yes']}"  type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
