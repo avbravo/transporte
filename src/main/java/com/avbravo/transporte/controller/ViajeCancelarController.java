@@ -1127,7 +1127,7 @@ public class ViajeCancelarController implements Serializable, IController {
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
 
             } else {
-                if (!viajeServices.isValidDates(viaje, false)) {
+                if (!viajeServices.isValidDates(viaje, false,rf.getMrb(), rf.getArb())) {
                     //return;
                 } else {
                     validFechas = true;

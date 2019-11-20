@@ -1064,7 +1064,7 @@ public class ViajeController implements Serializable, IController {
 //          }
 
             viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros() - solicitud.getPasajeros());
-            if (!viajeServices.isValid(viaje,false)) {
+            if (!viajeServices.isValid(viaje, rf.getMrb(), rf.getArb(),false)) {
                 return "";
             }
 
@@ -1078,12 +1078,12 @@ public class ViajeController implements Serializable, IController {
             }
 
             if (DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), DateUtil.getFechaActual())) {
-                if (!viajeServices.isValidDates(viaje, true)) {
+                if (!viajeServices.isValidDates(viaje, true,rf.getMrb(), rf.getArb())) {
                     return "";
                 }
             } else {
                 //Indica que es un viaje anterior que no se habia registrado 
-                if (!viajeServices.isValidDates(viaje, true, false)) {
+                if (!viajeServices.isValidDates(viaje, true, rf.getMrb(), rf.getArb(),false)) {
                     return "";
                 }
             }
@@ -1377,7 +1377,7 @@ public class ViajeController implements Serializable, IController {
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
 
             } else {
-                if (!viajeServices.isValidDates(viaje, false)) {
+                if (!viajeServices.isValidDates(viaje, false,rf.getMrb(), rf.getArb())) {
                     //return;
                 } else {
                     validFechas = true;

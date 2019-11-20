@@ -538,7 +538,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
                 textsearch = "DOCENTE";
             }
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
-            if (!solicitudServices.isValid(solicitud)) {
+            if (!solicitudServices.isValid(solicitud,rf.getMrb(), rf.getArb())) {
                 return false;
             }
 
@@ -1450,7 +1450,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!solicitudServices.isValidDates(solicitud, false,true)) {
+                if (!solicitudServices.isValidDates(solicitud, false,true,rf.getMrb(), rf.getArb())) {
                     return;
                 }
                 changeDaysViewAvailable();

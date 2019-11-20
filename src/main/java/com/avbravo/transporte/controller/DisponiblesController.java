@@ -539,7 +539,7 @@ public class DisponiblesController implements Serializable, IController {
                 textsearch = "DOCENTE";
             }
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
-            if (!solicitudServices.isValid(solicitud)) {
+            if (!solicitudServices.isValid(solicitud,rf.getMrb(), rf.getArb())) {
                 return false;
             }
 
@@ -1463,7 +1463,7 @@ public class DisponiblesController implements Serializable, IController {
 
                 return;
             } else {
-                if (!solicitudServices.isValidDates(solicitud, false, false,false)) {
+                if (!solicitudServices.isValidDates(solicitud, false, false,rf.getMrb(), rf.getArb(),false)) {
                     return;
                 }
                 changeDaysViewAvailable();

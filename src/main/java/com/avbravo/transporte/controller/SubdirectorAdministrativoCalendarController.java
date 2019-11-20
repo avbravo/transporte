@@ -622,7 +622,7 @@ public class SubdirectorAdministrativoCalendarController implements Serializable
                 textsearch = "DOCENTE";
             }
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
-            if (!solicitudServices.isValid(solicitud)) {
+            if (!solicitudServices.isValid(solicitud,rf.getMrb(), rf.getArb())) {
                 return false;
             }
 
@@ -1783,7 +1783,7 @@ public class SubdirectorAdministrativoCalendarController implements Serializable
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!solicitudServices.isValidDates(solicitud, true,true)) {
+                if (!solicitudServices.isValidDates(solicitud, true,true,rf.getMrb(), rf.getArb())) {
                     return;
                 }
                 changeDaysViewAvailable();

@@ -527,7 +527,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 textsearch = "ADMINISTRATIVO";
             }
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
-            if (!solicitudServices.isValid(solicitud)) {
+            if (!solicitudServices.isValid(solicitud,rf.getMrb(), rf.getArb())) {
                 return false;
             }
 
@@ -1389,7 +1389,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!solicitudServices.isValidDates(solicitud, false,false)) {
+                if (!solicitudServices.isValidDates(solicitud, false,false,rf.getMrb(), rf.getArb())) {
                     return;
                 }
                 changeDaysViewAvailable();
