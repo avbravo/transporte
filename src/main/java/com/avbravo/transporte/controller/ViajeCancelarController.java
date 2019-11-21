@@ -1595,9 +1595,10 @@ public class ViajeCancelarController implements Serializable, IController {
             if (list == null || list.isEmpty()) {
                 //No hay ninguna solicitud con ese viaje asignado.
             } else {
-                if (solicitudServices.actualizarSolicitudesConViajeCancelado(viaje, list, rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"))) {
-//    
+                if (viajeServices.actualizarSolicitudesConViajeCancelado(viaje, list, rf.getMrb(), rf.getArb())) {
+
                 }
+
             }
 
 //            if (list == null || list.isEmpty()) {

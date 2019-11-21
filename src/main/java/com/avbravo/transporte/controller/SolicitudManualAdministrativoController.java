@@ -574,6 +574,13 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
                 JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
                 return null;
             }
+            
+              //Viajes
+             List<Viaje> viajeList = new ArrayList<>();
+             viajeList.add(new Viaje());
+             viajeList.add(new Viaje());
+            solicitud.setViaje(viajeList);
+            
             //Lo datos del usuario
             List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
 
@@ -1152,6 +1159,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
             solicitud.setPasajeros(0);
              solicitud.setTieneAsignadoViajeIda("no");
             solicitud.setTieneAsignadoViajeRegreso("no");
+            solicitud.setFusionado("no");
             solicitud.setFechaestatus(DateUtil.getFechaHoraActual());
             solicita = jmoordb_user;
             responsable = solicita;
