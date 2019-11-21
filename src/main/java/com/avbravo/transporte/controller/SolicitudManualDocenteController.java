@@ -766,26 +766,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     }
 // </editor-fold>
    
-    // <editor-fold defaultstate="collapsed" desc="Boolean columnTieneBusesDisponibles(DisponiblesBeans disponiblesBeans) ">
-
-    /**
-     * Indica si los buses disponibles coindicen con los recomendados
-     *
-     * @param disponiblesBeans
-     * @return
-     */
-    public Boolean columnTieneBusesDisponibles(DisponiblesBeans disponiblesBeans) {
-        Boolean disponible = true;
-        try {
-            if (disponiblesBeans.getBusesRecomendados() > disponiblesBeans.getNumeroBuses()) {
-                disponible = false;
-            }
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
-        }
-        return disponible;
-    } // </editor-fold>
-
+   
     // <editor-fold defaultstate="collapsed" desc="completeSolicitudParaCopiar(String query)">
     public List<Solicitud> completeSolicitudParaCopiar(String query) {
         return solicitudServices.completeSolicitudParaCopiar(query, "DOCENTE");
