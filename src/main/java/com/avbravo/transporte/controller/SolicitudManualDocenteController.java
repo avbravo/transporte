@@ -567,56 +567,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
         return false;
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Boolean insert()">
-    public Boolean insert(Tipovehiculo tipovehiculo) {
-        try {
-            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            Integer idsolicitud = autoincrementableServices.getContador("solicitud");
-            solicitud.setIdsolicitud(idsolicitud);
-            //Se establece en 1 el numero de vehiculos solicitados a ser guardados
-            solicitud.setNumerodevehiculos(1);
-            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
-            if (optional.isPresent()) {
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return null;
-            }
-            
-              //Viajes
-             List<Viaje> viajeList = new ArrayList<>();
-             viajeList.add(new Viaje());
-             viajeList.add(new Viaje());
-            solicitud.setViaje(viajeList);
-            
-            //Lo datos del usuario
-            List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
-
-//            tipovehiculoList.add(tipovehiculoServices.findById("BUS"));
-            tipovehiculoList.add(tipovehiculo);
-            solicitud.setTipovehiculo(tipovehiculoList);
-            solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
-            if (solicitudRepository.save(solicitud)) {
-                Solicitud sol = new Solicitud();
-                sol = (Solicitud) JsfUtil.copyBeans(sol, solicitud);
-                solicitudGuardadasList.add(sol);
-
-                //guarda el contenido anterior
-                JmoordbConfiguration jmc = new JmoordbConfiguration();
-                Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
-                RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
-                repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
-                        "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
-
-            } else {
-                JsfUtil.successMessage("insert() " + solicitudRepository.getException().toString());
-                return false;
-            }
-            return true;
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
-        }
-        return false;
-    }// </editor-fold>
-
+    
     // <editor-fold defaultstate="collapsed" desc="Boolean isValidDayName(String name)">
     private Boolean isValidDayName(String name) {
         Boolean valid = false;
@@ -726,13 +677,26 @@ public class SolicitudManualDocenteController implements Serializable, IControll
                     } else {
                         solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativoServices.inicializarPendiente(jmoordb_user));
                     }
-                    if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
-                        solicitudesGuardadas++;
-
-                        if (solicitudesGuardadas.equals(1)) {
-                            idSolicitudPadre = solicitud.getIdsolicitud();
+                     List<Object> objectList = solicitudServices.insert(solicitud, db.getVehiculo().get(0).getTipovehiculo(), solicitudGuardadasList, rf.getMrb(), rf.getArb());
+                    for (Object o : objectList) {
+                        if (o instanceof Solicitud) {
+                            solicitud = (Solicitud) o;
                         } else {
-                            solicitud.setSolicitudpadre(idSolicitudPadre);
+                            if (o instanceof Boolean) {
+                                if ((Boolean) o) {
+                                    solicitudesGuardadas++;
+                                    if (solicitudesGuardadas.equals(1)) {
+                                        idSolicitudPadre = solicitud.getIdsolicitud();
+                                    } else {
+                                        solicitud.setSolicitudpadre(idSolicitudPadre);
+                                    }
+                                }
+                            } else {
+                                if (o instanceof List) {
+                                    solicitudGuardadasList = (List<Solicitud>) o;
+                                }
+                            }
+
                         }
 
                     }

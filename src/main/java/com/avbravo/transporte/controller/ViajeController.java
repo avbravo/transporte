@@ -1184,7 +1184,7 @@ public class ViajeController implements Serializable, IController {
             
             List<Object> objectList= viajeServices.asignarListViajesASolicitud(viaje,solicitud, rf.getMrb(), rf.getArb());
             
-            for (Object o : list) {
+            for (Object o : objectList) {
                 if (o instanceof Solicitud) {
                     solicitud =(Solicitud)o;
                 }else{

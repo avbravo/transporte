@@ -78,6 +78,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -339,7 +340,6 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
             cargarSchedule();
             String action = getAction();
-           
 
             if (action == null || action.equals("golist") || action.equals("gonew") || action.equals("new")) {
                 inicializar();
@@ -527,7 +527,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 textsearch = "ADMINISTRATIVO";
             }
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
-            if (!solicitudServices.isValid(solicitud,rf.getMrb(), rf.getArb())) {
+            if (!solicitudServices.isValid(solicitud, rf.getMrb(), rf.getArb())) {
                 return false;
             }
 
@@ -549,55 +549,6 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 return false;
             }
 
-            return true;
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
-        }
-        return false;
-    }// </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Boolean insert(Tipovehiculo tipovehiculo)">
-    public Boolean insert(Tipovehiculo tipovehiculo) {
-        try {
-            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            Integer idsolicitud = autoincrementableServices.getContador("solicitud");
-            solicitud.setIdsolicitud(idsolicitud);
-            //Se establece en 1 el numero de vehiculos solicitados a ser guardados
-            solicitud.setNumerodevehiculos(1);
-            Optional<Solicitud> optional = solicitudRepository.findById(solicitud);
-            if (optional.isPresent()) {
-                JsfUtil.warningMessage(rf.getAppMessage("warning.idexist"));
-                return null;
-            }
-            
-            //Viajes
-             List<Viaje> viajeList = new ArrayList<>();
-             viajeList.add(new Viaje());
-             viajeList.add(new Viaje());
-            solicitud.setViaje(viajeList);
-            
-            //Lo datos del usuario
-            List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
-
-            tipovehiculoList.add(tipovehiculo);
-            solicitud.setTipovehiculo(tipovehiculoList);
-            solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
-            if (solicitudRepository.save(solicitud)) {
-                Solicitud sol = new Solicitud();
-                sol = (Solicitud) JsfUtil.copyBeans(sol, solicitud);
-                solicitudGuardadasList.add(sol);
-
-                //guarda el contenido anterior
-                JmoordbConfiguration jmc = new JmoordbConfiguration();
-                Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
-                RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
-                repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
-                        "create", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
-
-            } else {
-                JsfUtil.successMessage("insert() " + solicitudRepository.getException().toString());
-                return false;
-            }
             return true;
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
@@ -644,21 +595,17 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             }
 
             //Asignar el estatusViaje
-            
-            
             Optional<EstatusViaje> optional = estatusViajeServices.estatusViajeInicial();
             if (optional.isPresent()) {
-          solicitud.setEstatusViaje(optional.get());
+                solicitud.setEstatusViaje(optional.get());
             } else {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
                 return "";
             }
-            
-          
+
             /**
              * Habilitarlo si no deseamos guardar los que estan en rojo
              */
-
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
 
             //si cambia el email o celular del responsable actualizar ese usuario
@@ -693,13 +640,26 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                         solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativoServices.inicializarPendiente(jmoordb_user));
                     }
 
-                    if (insert(db.getVehiculo().get(0).getTipovehiculo())) {
-                        solicitudesGuardadas++;
-
-                        if (solicitudesGuardadas.equals(1)) {
-                            idSolicitudPadre = solicitud.getIdsolicitud();
+                    List<Object> objectList = solicitudServices.insert(solicitud, db.getVehiculo().get(0).getTipovehiculo(), solicitudGuardadasList, rf.getMrb(), rf.getArb());
+                    for (Object o : objectList) {
+                        if (o instanceof Solicitud) {
+                            solicitud = (Solicitud) o;
                         } else {
-                            solicitud.setSolicitudpadre(idSolicitudPadre);
+                            if (o instanceof Boolean) {
+                                if ((Boolean) o) {
+                                    solicitudesGuardadas++;
+                                    if (solicitudesGuardadas.equals(1)) {
+                                        idSolicitudPadre = solicitud.getIdsolicitud();
+                                    } else {
+                                        solicitud.setSolicitudpadre(idSolicitudPadre);
+                                    }
+                                }
+                            } else {
+                                if (o instanceof List) {
+                                    solicitudGuardadasList = (List<Solicitud>) o;
+                                }
+                            }
+
                         }
 
                     }
@@ -732,9 +692,9 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         }
         return "";
     }
-
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String columnColor(Estatus estatus)">
+
     public String columnColor(Estatus estatus) {
         String color = "black";
         try {
@@ -1146,7 +1106,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             solicitud.setLugarpartida("UTP-AZUERO");
             solicitud.setNumerodevehiculos(1);
             solicitud.setPasajeros(0);
-             solicitud.setTieneAsignadoViajeIda("no");
+            solicitud.setTieneAsignadoViajeIda("no");
             solicitud.setTieneAsignadoViajeRegreso("no");
             solicitud.setFusionado("no");
             solicitud.setFechaestatus(DateUtil.getFechaHoraActual());
@@ -1219,7 +1179,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
-              JsfUtil.updateJSFComponent(":form:growl");
+            JsfUtil.updateJSFComponent(":form:growl");
         }
         return "";
     }
@@ -1399,7 +1359,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!solicitudServices.isValidDates(solicitud, false,false,rf.getMrb(), rf.getArb())) {
+                if (!solicitudServices.isValidDates(solicitud, false, false, rf.getMrb(), rf.getArb())) {
                     return;
                 }
                 changeDaysViewAvailable();
@@ -2357,9 +2317,5 @@ public class SolicitudAdministrativoController implements Serializable, IControl
         }
         return "";
     }// </editor-fold>
-    
-    
-    
-
 
 }
