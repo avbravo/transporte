@@ -123,32 +123,32 @@
                     </p:column>
 
                     <p:column headerText="#{msg['field.idviaje']}" style="width:75px">
-                        <h:outputText value="#{item.idviaje}" style="color: #{viajeCancelarController.columnColor(item.realizado,item.activo)}" />
+                        <h:outputText value="#{item.idviaje}" style="color: #{viajeCancelarController.viajeServices.columnColor(item.realizado,item.activo)}" />
                     </p:column>
 
 
 
 
                     <p:column headerText="#{msg['field.fechapartida']}" style="width:100px">
-                        <h:outputText value="#{viajeCancelarController.showDate(item.fechahorainicioreserva)} #{viajeCancelarController.showHour(item.fechahorainicioreserva)}" style="color: #{viajeCancelarController.columnColor(item.realizado,item.activo)}" />
+                        <h:outputText value="#{viajeCancelarController.viajeServices.showDate(item.fechahorainicioreserva)} #{viajeCancelarController.viajeServices.showHour(item.fechahorainicioreserva)}" style="color: #{viajeCancelarController.viajeServices.columnColor(item.realizado,item.activo)}" />
                     </p:column>
                     <p:column headerText="#{msg['field.fecharegreso']}" style="width:100px">
-                        <h:outputText value="#{viajeCancelarController.showDate(item.fechahorafinreserva)} #{viajeCancelarController.showHour(item.fechahorafinreserva)}" style="color: #{viajeCancelarController.columnColor(item.realizado,item.activo)}" />
+                        <h:outputText value="#{viajeCancelarController.viajeServices.showDate(item.fechahorafinreserva)} #{viajeCancelarController.viajeServices.showHour(item.fechahorafinreserva)}" style="color: #{viajeCancelarController.viajeServices.columnColor(item.realizado,item.activo)}" />
                     </p:column>
 
 
-                    <p:column headerText="#{msg['field.vehiculos']}"  style="color: #{viajeCancelarController.columnColor(item.realizado,item.activo)}">
+                    <p:column headerText="#{msg['field.vehiculos']}"  style="color: #{viajeCancelarController.viajeServices.columnColor(item.realizado,item.activo)}">
 
                         <p:outputLabel value="#{item.vehiculo.marca} #{item.vehiculo.modelo}"/>
 
                     </p:column>
-                    <p:column headerText="#{msg['field.conductores']}"  style="color: #{viajeCancelarController.columnColor(item.realizado,item.activo)}">
+                    <p:column headerText="#{msg['field.conductores']}"  style="color: #{viajeCancelarController.viajeServices.columnColor(item.realizado,item.activo)}">
 
                         <p:outputLabel value="#{item.conductor.nombre}"/>
 
                     </p:column>
 
-                    <p:column headerText="#{msg['field.lugardestino']}" style="color: #{viajeCancelarController.columnColor(item.realizado,item.activo)}">
+                    <p:column headerText="#{msg['field.lugardestino']}" style="color: #{viajeCancelarController.viajeServices.columnColor(item.realizado,item.activo)}">
                         <p:outputLabel value="#{item.lugardestino}"  />
 
                     </p:column> 

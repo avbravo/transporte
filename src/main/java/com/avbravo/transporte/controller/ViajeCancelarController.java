@@ -89,7 +89,6 @@ import org.primefaces.model.ScheduleModel;
 @Getter
 @Setter
 public class ViajeCancelarController implements Serializable, IController {
-
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
 
