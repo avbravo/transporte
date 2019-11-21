@@ -428,33 +428,33 @@
                                 <p:column style="width:95px">
 
                                     <p:rowToggler />
-                                    <h:outputText value="#{solicitudDocenteController.showDate(item.fechahorainicio)}" style="color: #{solicitudDocenteController.columnColorDisponibles(item)}"  />
+                                    <h:outputText value="#{solicitudDocenteController.showDate(item.fechahorainicio)}" style="color: #{solicitudDocenteController.disponiblesServices.columnColorDisponibles(item)}"  />
                                 </p:column>
 
 
                                 <p:column headerText="#{msg['field.tipovehiculo']}" style="width:95px">
-                                    <h:outputText value="#{item.vehiculo.get(0).tipovehiculo.idtipovehiculo}" style="color: #{solicitudDocenteController.columnColorDisponibles(item)}"  />
+                                    <h:outputText value="#{item.vehiculo.get(0).tipovehiculo.idtipovehiculo}" style="color: #{solicitudDocenteController.disponiblesServices.columnColorDisponibles(item)}"  />
                                 </p:column>
 
 
                                 <p:column headerText="#{msg['field.disponible']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroBuses}" style="color: #{solicitudDocenteController.columnColorDisponibles(item)}" />
+                                    <p:outputLabel value="#{item.numeroBuses}" style="color: #{solicitudDocenteController.disponiblesServices.columnColorDisponibles(item)}" />
                                 </p:column>
                                 <p:column headerText="#{msg['field.pasajeros']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroPasajeros}" style="color: #{solicitudDocenteController.columnColorDisponibles(item)}" />
+                                    <p:outputLabel value="#{item.numeroPasajeros}" style="color: #{solicitudDocenteController.disponiblesServices.columnColorDisponibles(item)}" />
                                 </p:column>
 
 
 
                                 <p:column headerText="#{msg['field.solicitado']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroVehiculosSolicitados}" style="color: #{solicitudDocenteController.columnColorDisponibles(item)}"  />
+                                    <p:outputLabel value="#{item.numeroVehiculosSolicitados}" style="color: #{solicitudDocenteController.disponiblesServices.columnColorDisponibles(item)}"  />
                                 </p:column>
                                 <p:column headerText="#{msg['field.pasajeros']}" style="width:75px">
-                                    <p:outputLabel value="#{item.numeroPasajerosSolicitados}" style="color: #{solicitudDocenteController.columnColorDisponibles(item)}"  />
+                                    <p:outputLabel value="#{item.numeroPasajerosSolicitados}" style="color: #{solicitudDocenteController.disponiblesServices.columnColorDisponibles(item)}"  />
                                 </p:column>
 
                                 <p:column headerText="#{msg['field.vehiculosRecomendados']}" style="width:75px">
-                                    <p:outputLabel value="#{item.busesRecomendados}" style="color: #{solicitudDocenteController.columnColorDisponibles(item)}"  />
+                                    <p:outputLabel value="#{item.busesRecomendados}" style="color: #{solicitudDocenteController.disponiblesServices.columnColorDisponibles(item)}"  />
                                 </p:column>
 
 

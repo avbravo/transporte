@@ -34,6 +34,7 @@ import com.avbravo.jmoordbutils.dates.DecomposedDate;
 import com.avbravo.jmoordbutils.email.ManagerEmail;
 import com.avbravo.transporte.beans.DisponiblesBeans;
 import com.avbravo.transporte.beans.TipoVehiculoCantidadBeans;
+import com.avbravo.transporte.services.DisponiblesServices;
 import com.avbravo.transporteejb.datamodel.SolicitudDataModel;
 import com.avbravo.transporteejb.datamodel.SugerenciaDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
@@ -267,6 +268,9 @@ public class SubdirectorAdministrativoController implements Serializable, IContr
     EstatusServices estatusServices;
     @Inject
     EstatusViajeServices estatusViajeServices;
+    
+      @Inject
+    DisponiblesServices disponiblesServices;
     @Inject
     VistoBuenoServices vistoBuenoServices;
     @Inject
@@ -949,22 +953,7 @@ public class SubdirectorAdministrativoController implements Serializable, IContr
         return valid;
     } // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="columnColorDisponibles(DisponiblesBeans disponiblesBeans) ">
-    public String columnColorDisponibles(DisponiblesBeans disponiblesBeans) {
-        String color = "black";
-        try {
-            if ((disponiblesBeans.getNumeroVehiculosSolicitados() > disponiblesBeans.getNumeroBuses()) || disponiblesBeans.getNumeroPasajerosSolicitados() > disponiblesBeans.getNumeroPasajeros()) {
-                color = "red";
-            }
-//            if (disponiblesBeans.getNumeroBuses() < solicitud.getNumerodevehiculos() || disponiblesBeans.getNumeroPasajeros() < solicitud.getPasajeros()) {
-//                color = "red";
-//            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
-        }
-        return color;
-    } // </editor-fold>
+   
     // <editor-fold defaultstate="collapsed" desc="Boolean columnTieneBusesDisponibles(DisponiblesBeans disponiblesBeans)">
 
     /**
