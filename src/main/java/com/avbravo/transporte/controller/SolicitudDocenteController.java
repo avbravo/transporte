@@ -1857,6 +1857,10 @@ public class SolicitudDocenteController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="sendEmail()">
     private String sendEmail(String msg) {
         try {
+             if(solicitudGuardadasList == null  || solicitudGuardadasList.isEmpty()){
+                  JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noseenvioemailnohaylistasolicitudes"));
+                return "";
+            }
             /**
              * Enviar un email al administrador y al mismo administrador
              */

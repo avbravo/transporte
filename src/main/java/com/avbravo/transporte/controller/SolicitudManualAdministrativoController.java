@@ -1784,6 +1784,10 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
             /**
              * Enviar un email al administrativo y al mismo administrador
              */
+             if(solicitudGuardadasList == null  || solicitudGuardadasList.isEmpty()){
+                  JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noseenvioemailnohaylistasolicitudes"));
+                return "";
+            }
             Solicitud s0 = solicitudGuardadasList.get(0);
 
             String varFacultadName = "";

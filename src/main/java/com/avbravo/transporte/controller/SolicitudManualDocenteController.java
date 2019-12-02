@@ -1862,6 +1862,10 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             /**
              * Enviar un email al administrador y al mismo administrador
              */
+            if(solicitudGuardadasList == null  || solicitudGuardadasList.isEmpty()){
+                  JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noseenvioemailnohaylistasolicitudes"));
+                return "";
+            }
             Solicitud s0 = solicitudGuardadasList.get(0);
 
             String varFacultadName = "";
