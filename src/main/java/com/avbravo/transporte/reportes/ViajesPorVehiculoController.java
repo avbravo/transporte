@@ -171,7 +171,7 @@ public class ViajesPorVehiculoController implements Serializable, IController {
 //            if (action.equals("view")) {
 //                //view
 //            }
-            setSearchAndValue("searchViajesSinConductorController", "_betweendates");
+      //      setSearchAndValue("searchViajesSinConductorController", "_betweendates");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
         }
@@ -207,7 +207,7 @@ public class ViajesPorVehiculoController implements Serializable, IController {
 
             } else {
                 for (Viaje v : viajeList) {
-                    if (v.getRealizado().equals("ca") || v.getRealizado().equals("si")) {
+                    if (v.getRealizado().equals("ca") || v.getRealizado().equals("no")) {
 // esta cancelado
                     } else {
                         //CONDUCTOR PENDIENTE
