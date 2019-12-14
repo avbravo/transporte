@@ -1,0 +1,3 @@
+Para crear un uberjar
+java -jar payara-micro-5.194.jar --deploy transporte.war --outputUberJar transporte.jar
+
