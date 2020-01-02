@@ -210,8 +210,8 @@ public class ViajesPorVehiculoController implements Serializable, IController {
                     if (v.getRealizado().equals("ca") || v.getRealizado().equals("no")) {
 // esta cancelado
                     } else {
-                        //CONDUCTOR PENDIENTE
-                        if (v.getConductor().getEscontrol().equals("si")) {
+                   
+                 
 
                             ProgramacionVehicular pv = new ProgramacionVehicular();
                             pv.setConductor(v.getConductor().getNombre());
@@ -265,11 +265,12 @@ public class ViajesPorVehiculoController implements Serializable, IController {
 
                             }
                             programacionVehicular.add(pv);
-                        }
+                      
                     }
                 }//for
             }
             viajeDataModel = new ViajeDataModel(viajeList);
+        
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);

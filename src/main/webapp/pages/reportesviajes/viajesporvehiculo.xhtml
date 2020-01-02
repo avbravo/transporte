@@ -51,7 +51,7 @@
                                                 dropdown="true"
                               
                                                  minQueryLength="0"
-                                             update=" :form:content"/>
+                                             update=" :form:content , :form:dataTable2 ,:form:dataTable"/>
                     </b:column>
                     <b:column medium-screen="25" >
 
@@ -64,7 +64,7 @@
                             valueHasta="#{viajesPorVehiculoController.fechaHasta}"
                       
                             search="#{viajesPorVehiculoController.searchBy('_betweendates',viajesPorVehiculoController.viaje)}"
-                            update=":form:content "
+                            update=":form:content, :form:dataTable2, :form:dataTable"
                             />
                     </b:column>
 
@@ -73,6 +73,8 @@
 
             </b:panel>
             <b:panel collapsible="false" id="dataTable" look="primary">
+                               
+               
 
                 <jmoordbjsf:paginator
                     controller="#{viajesPorVehiculoController}"                        
@@ -86,7 +88,7 @@
                     url = "/pages/viaje/new.xhtml"
                     />
 
-                <p:dataTable value="#{viajesPorVehiculoController.programacionVehicular}"
+          <p:dataTable value="#{viajesPorVehiculoController.programacionVehicular}"
                              var="item"
                              id="dataTable2"
                              >
@@ -102,11 +104,11 @@
 
 
                     <p:column headerText="#{msg['field.fechapartida']}" style="width:130px">
-                        <h:outputText value="#{viajesPorVehiculoController.showDate(item.fechahorasalida)} #{viajesPorVehiculoController.showHour(item.fechahorasalida)}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}" />
-                        <p:outputLabel value="#{msg['field.dia']} #{item.nombredia}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
+                        <h:outputText value="#{viajesRealizadosController.showDate(item.fechahorasalida)} #{viajesRealizadosController.showHour(item.fechahorasalida)}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}" />
+                        <p:outputLabel value="#{msg['field.dia']} #{item.nombredia}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
                     </p:column>
                     <p:column headerText="#{msg['field.mision']}"  style="width:190px ">
-                        <p:outputLabel value="#{item.mision}" style="font-size: 10; color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
+                        <p:outputLabel value="#{item.mision}" style="font-size: 10; color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
 
                     </p:column>
 
@@ -121,7 +123,7 @@
 
 
                     <p:column headerText="#{msg['field.fecharegreso']}" style="width:100px">
-                        <h:outputText value="#{viajesPorVehiculoController.showDate(item.fechahoraregreso)} #{viajesPorVehiculoController.showHour(item.fechahoraregreso)}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}" />
+                        <h:outputText value="#{viajesRealizadosController.showDate(item.fechahoraregreso)} #{viajesRealizadosController.showHour(item.fechahoraregreso)}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}" />
                         
                     </p:column>
                     <p:column headerText="#{msg['field.vehiculo']}"  >
@@ -140,28 +142,28 @@
 
                         <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
 
-                            <p:outputLabel value="#{msg['field.mision']}"  style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{msg['field.mision']}"  style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
                             <p:outputLabel value="#{item.mision}"  />
 
-                            <p:outputLabel value="#{msg['field.lugarpartida']}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
-                            <p:outputLabel value="#{item.lugarpartida}"  style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{msg['field.lugarpartida']}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.lugarpartida}"  style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
 
-                            <p:outputLabel value="#{msg['field.lugardestino']}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
-                            <p:outputLabel value="#{item.lugardestino}"  style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{msg['field.lugardestino']}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.lugardestino}"  style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
 
 
 
                             <p:outputLabel value="#{msg['field.fechasolicitud']}" />
-                            <h:outputText value="#{viajesPorVehiculoController.showDate(item.fechasolicitud)} #{viajesPorVehiculoController.showHour(item.fechasolicitud)}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}" />
+                            <h:outputText value="#{viajesRealizadosController.showDate(item.fechasolicitud)} #{viajesRealizadosController.showHour(item.fechasolicitud)}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}" />
 
-                            <p:outputLabel value="#{msg['field.numerosolicitudes']}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}" />
-                            <p:outputLabel value="#{item.numerosolicitudes}"  style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{msg['field.numerosolicitudes']}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}" />
+                            <p:outputLabel value="#{item.numerosolicitudes}"  style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
 
-                            <p:outputLabel value="#{msg['field.solicita']}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
-                            <p:outputLabel value="#{item.solicita}"  style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{msg['field.solicita']}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.solicita}"  style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
 
-                            <p:outputLabel value="#{msg['field.responsable']}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
-                            <p:outputLabel value="#{item.responsable}"  style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{msg['field.responsable']}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.responsable}"  style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
 
 
                         </b:panelGrid>
@@ -173,6 +175,8 @@
 
 
                 </p:dataTable>
+                
+              
             </b:panel>
 
         </b:form>

@@ -50,7 +50,7 @@
                               
                                                  minQueryLength="0"
                                              field="nombre"
-                                             update=" :form:dataTable"/>
+                                             update=" :form:dataTable , :form:dataTable2 ,:form:dataTable"/>
                     </b:column>
                     <b:column medium-screen="25" >
 
@@ -63,7 +63,7 @@
                             valueHasta="#{viajesPorConductorController.fechaHasta}"
                 
                             search="#{viajesPorConductorController.searchBy('_betweendates',viajesPorConductorController.viaje)}"
-                            update=":form:dataTable "
+                            update=":form:dataTable , :form:dataTable2 ,:form:dataTable"
                             />
                     </b:column>
 
