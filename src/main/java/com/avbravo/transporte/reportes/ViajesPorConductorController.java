@@ -206,7 +206,7 @@ public class ViajesPorConductorController implements Serializable, IController {
 
             } else {
                 for (Viaje v : viajeList) {
-                    if (v.getRealizado().equals("ca") || v.getRealizado().equals("si")) {
+                    if (v.getRealizado().equals("ca") || v.getRealizado().equals("no")) {
 // esta cancelado
                     } else {
                  
