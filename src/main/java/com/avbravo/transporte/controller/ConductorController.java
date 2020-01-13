@@ -15,16 +15,28 @@ import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.repository.RevisionHistoryRepository;
 import com.avbravo.jmoordb.services.RevisionHistoryServices;
+import com.avbravo.jmoordbutils.DateUtil;
 
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import com.avbravo.jmoordbutils.ReportUtils;
 import com.avbravo.transporteejb.datamodel.ConductorDataModel;
 import com.avbravo.transporteejb.entity.Conductor;
+import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.services.ConductorServices;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import java.io.ByteArrayOutputStream;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -326,4 +338,111 @@ public class ConductorController implements Serializable, IController {
         return delete;
     }
     // </editor-fold>   
+    
+    
+     // <editor-fold defaultstate="collapsed" desc="String printAll()">
+    @Override
+    public String printAll() {
+
+//        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4.rotate());
+        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            PdfWriter.getInstance(document, baos);
+            //METADATA
+
+            document.open();
+            document.add(ReportUtils.paragraph("CONDUCTORES", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+
+            Date currentDate = new Date();
+            String texto = "Fecha " + DateUtil.showDate(currentDate);
+            document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+
+            String date = DateUtil.showDate(currentDate) + " " + DateUtil.showHour(currentDate);
+
+            document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 8, Font.BOLD), Element.ALIGN_RIGHT));
+            document.add(new Paragraph("\n"));
+
+            //Numero de columnas
+            PdfPTable table = new PdfPTable(6);
+
+//Aqui indicamos el tamaño de cada columna
+            table.setTotalWidth(new float[]{65, 140, 45,20,65,65});
+
+            table.setLockedWidth(true);
+
+            table.addCell(ReportUtils.PdfCell("Cedula", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Nombre", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Celular", FontFactory.getFont("arial", 10, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Control", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Km", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Viajes", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            
+
+            for (Conductor c: conductorList) {
+
+                table.addCell(ReportUtils.PdfCell(c.getCedula(), FontFactory.getFont("arial", 10, Font.NORMAL)));
+                table.addCell(ReportUtils.PdfCell(c.getNombre(), FontFactory.getFont("arial", 10, Font.NORMAL)));
+                table.addCell(ReportUtils.PdfCell(c.getCelular(), FontFactory.getFont("arial", 10, Font.NORMAL)));
+                
+                table.addCell(ReportUtils.PdfCell(c.getEscontrol(), FontFactory.getFont("arial", 10, Font.NORMAL)));
+                table.addCell(ReportUtils.PdfCell(c.getTotalkm().toString(), FontFactory.getFont("arial", 10, Font.NORMAL)));
+                table.addCell(ReportUtils.PdfCell(c.getTotalviajes().toString(), FontFactory.getFont("arial", 10, Font.NORMAL)));
+                
+                
+
+            }
+            document.add(table);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        document.close();
+
+        ReportUtils.printPDF(baos);
+        return "";
+    }
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="String print">
+    @Override
+    public String print() {
+
+        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            PdfWriter.getInstance(document, baos);
+            //METADATA
+
+            document.open();
+            document.add(ReportUtils.paragraph("CONDUCTOR", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+
+
+
+            Date currentDate = new Date();
+            String texto = "REPORTE";
+            document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+
+            String date = DateUtil.showDate(currentDate) + " " + DateUtil.showHour(currentDate);
+
+            document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 8, Font.BOLD), Element.ALIGN_RIGHT));
+            document.add(new Paragraph("\n"));
+
+            document.add(ReportUtils.paragraph("Cedula: " + conductor.getCedula(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Nombre: " + conductor.getNombre(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Celular: " + conductor.getCelular(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Email: " + conductor.getEmail(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Control: " + conductor.getEscontrol(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Total km: " + conductor.getTotalkm(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Total viajes: " + conductor.getTotalviajes(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Total consumo: " + conductor.getTotalconsumo(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        document.close();
+
+        ReportUtils.printPDF(baos);
+        return "";
+    }
+    // </editor-fold>  
 }

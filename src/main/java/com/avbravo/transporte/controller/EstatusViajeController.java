@@ -13,16 +13,28 @@ import com.avbravo.jmoordbutils.JsfUtil;
 import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
+import com.avbravo.jmoordbutils.DateUtil;
  
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import com.avbravo.jmoordbutils.ReportUtils;
 import com.avbravo.transporteejb.datamodel.EstatusViajeDataModel;
 import com.avbravo.transporteejb.entity.EstatusViaje;
+import com.avbravo.transporteejb.entity.Rol;
 import com.avbravo.transporteejb.entity.Usuario;
 import com.avbravo.transporteejb.repository.EstatusViajeRepository;
 import com.avbravo.transporteejb.services.EstatusViajeServices;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import java.io.ByteArrayOutputStream;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -209,6 +221,97 @@ public class EstatusViajeController implements Serializable, IController {
             JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
         }
         return delete;
+    }
+    // </editor-fold>  
+    
+     // <editor-fold defaultstate="collapsed" desc="String printAll()">
+    @Override
+    public String printAll() {
+
+//        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4.rotate());
+        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            PdfWriter.getInstance(document, baos);
+            //METADATA
+
+            document.open();
+            document.add(ReportUtils.paragraph("ESATTUS VIAJE", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+
+            Date currentDate = new Date();
+            String texto = "Fecha " + DateUtil.showDate(currentDate);
+            document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+
+            String date = DateUtil.showDate(currentDate) + " " + DateUtil.showHour(currentDate);
+
+            document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 8, Font.BOLD), Element.ALIGN_RIGHT));
+            document.add(new Paragraph("\n"));
+
+            //Numero de columnas
+            PdfPTable table = new PdfPTable(3);
+
+//Aqui indicamos el tamaño de cada columna
+            table.setTotalWidth(new float[]{140, 140, 45});
+
+            table.setLockedWidth(true);
+
+            table.addCell(ReportUtils.PdfCell("Id", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Inicial", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Activo", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+
+            for (EstatusViaje ev : estatusViajeList) {
+
+                table.addCell(ReportUtils.PdfCell(ev.getIdestatusviaje(), FontFactory.getFont("arial", 10, Font.NORMAL)));
+                table.addCell(ReportUtils.PdfCell(ev.getInicial(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(ReportUtils.PdfCell(ev.getActivo(), FontFactory.getFont("arial", 10, Font.NORMAL)));
+
+            }
+            document.add(table);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        document.close();
+
+        ReportUtils.printPDF(baos);
+        return "";
+    }
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="String print">
+    @Override
+    public String print() {
+
+        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            PdfWriter.getInstance(document, baos);
+            //METADATA
+
+            document.open();
+            document.add(ReportUtils.paragraph("ESTATUS VIAJE", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+
+
+
+            Date currentDate = new Date();
+            String texto = "REPORTE";
+            document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+
+            String date = DateUtil.showDate(currentDate) + " " + DateUtil.showHour(currentDate);
+
+            document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 8, Font.BOLD), Element.ALIGN_RIGHT));
+            document.add(new Paragraph("\n"));
+
+            document.add(ReportUtils.paragraph("Id: " + estatusViaje.getIdestatusviaje(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Inicial: " + estatusViaje.getInicial(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Activo: " + estatusViaje.getActivo(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        document.close();
+
+        ReportUtils.printPDF(baos);
+        return "";
     }
     // </editor-fold>  
 }
