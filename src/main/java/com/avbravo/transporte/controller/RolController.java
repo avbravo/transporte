@@ -85,7 +85,7 @@ public class RolController implements Serializable, IController {
     //Repository
     @Inject
     RolRepository rolRepository;
-   
+
     @Inject
     JmoordbResourcesFiles rf;
     @Inject
@@ -98,7 +98,7 @@ public class RolController implements Serializable, IController {
     UsuarioServices usuarioServices;
     @Inject
     JmoordbNotificationsRepository jmoordbNotificationsRepository;
-     //Services
+    //Services
     @Inject
     AutoincrementableServices autoincrementableServices;
     @Inject
@@ -158,14 +158,13 @@ public class RolController implements Serializable, IController {
 //                action = getAction();
 //            }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
-   
     // <editor-fold defaultstate="collapsed" desc="Boolean afterSave(Boolean saved)">
     @Override
-     public Boolean afterSave(Boolean saved) {
+    public Boolean afterSave(Boolean saved) {
         try {
 
             for (Usuario u : usuarioServices.getUsuarioList()) {
@@ -182,7 +181,7 @@ public class RolController implements Serializable, IController {
             }
             push.send("Se creo un nuevo rol");
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }    // </editor-fold> 
@@ -191,7 +190,7 @@ public class RolController implements Serializable, IController {
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -249,7 +248,7 @@ public class RolController implements Serializable, IController {
             rolDataModel = new RolDataModel(rolList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
 
         }
 
@@ -277,70 +276,93 @@ public class RolController implements Serializable, IController {
     }
     // </editor-fold>     
 
-    
-     // <editor-fold defaultstate="collapsed" desc="String printAll()">
+    // <editor-fold defaultstate="collapsed" desc="String printAll()">
     @Override
     public String printAll() {
 
 //        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4.rotate());
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        try {
-//            PdfWriter.getInstance(document, baos);
-//            //METADATA
-//
-//            document.open();
-//            document.add(ReportUtils.paragraph("VIAJES SIN SOLICITUD ASIGNADA", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
-//
-//            String texto = "Desde " + DateUtil.showDate(fechaDesde) + "  Hasta: " + DateUtil.showDate(fechaHasta);
-//            document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
-//
-//            Date currentDate = new Date();
-//            String date = DateUtil.showDate(currentDate) + " " + DateUtil.showHour(currentDate);
-//
-//            document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 8, Font.BOLD), Element.ALIGN_RIGHT));
-//            document.add(new Paragraph("\n"));
-//
-//            //Numero de columnas
-//            PdfPTable table = new PdfPTable(8);
-//
-////Aqui indicamos el tamaño de cada columna
-//            table.setTotalWidth(new float[]{75, 62, 75, 82, 75, 220, 80, 105});
-//
-//            table.setLockedWidth(true);
-//
-//            table.addCell(ReportUtils.PdfCell("Partida", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
-//            table.addCell(ReportUtils.PdfCell("Dia", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
-//            table.addCell(ReportUtils.PdfCell("Regreso", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
-//            table.addCell(ReportUtils.PdfCell("Unidad", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
-//            table.addCell(ReportUtils.PdfCell("Solicitado", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
-//            table.addCell(ReportUtils.PdfCell("Mision", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
-//            table.addCell(ReportUtils.PdfCell("Conductor", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
-//            table.addCell(ReportUtils.PdfCell("Vehiculo", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
-//
-//            for (ProgramacionVehicular pv : programacionVehicular) {
-//
-//                String fechaPartida = DateUtil.showDate(pv.getFechahorasalida()) + "             " + DateUtil.showHour(pv.getFechahorasalida());
-//                String fechaRegreso = DateUtil.showDate(pv.getFechahoraregreso()) + "             " + DateUtil.showHour(pv.getFechahoraregreso());
-//                String fechaSolicitado = DateUtil.showDate(pv.getFechasolicitud()) + "             " + DateUtil.showHour(pv.getFechasolicitud());
-//
-//                table.addCell(ReportUtils.PdfCell(fechaPartida, FontFactory.getFont("arial", 10, Font.NORMAL)));
-//
-//                table.addCell(ReportUtils.PdfCell(pv.getNombredia(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-//                table.addCell(ReportUtils.PdfCell(fechaRegreso, FontFactory.getFont("arial", 10, Font.NORMAL)));
-//                table.addCell(ReportUtils.PdfCell(pv.getUnidad(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-//                table.addCell(ReportUtils.PdfCell(fechaSolicitado, FontFactory.getFont("arial", 10, Font.NORMAL)));
-//                table.addCell(ReportUtils.PdfCell(pv.getMision(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-//                table.addCell(ReportUtils.PdfCell(pv.getConductor(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-//                table.addCell(ReportUtils.PdfCell(pv.getMarca() + " " + pv.getModelo() + " PLACA:" + pv.getPlaca(), FontFactory.getFont("arial", 9, Font.NORMAL)));
-//
-//            }
-//            document.add(table);
-//        } catch (Exception e) {
-//      errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
-//        }
-//        document.close();
-//
-//        ReportUtils.printPDF(baos);
+        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            PdfWriter.getInstance(document, baos);
+            //METADATA
+
+            document.open();
+            document.add(ReportUtils.paragraph("ROLES", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+
+            Date currentDate = new Date();
+            String texto = "Fecha " + DateUtil.showDate(currentDate);
+            document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+
+            String date = DateUtil.showDate(currentDate) + " " + DateUtil.showHour(currentDate);
+
+            document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 8, Font.BOLD), Element.ALIGN_RIGHT));
+            document.add(new Paragraph("\n"));
+
+            //Numero de columnas
+            PdfPTable table = new PdfPTable(3);
+
+//Aqui indicamos el tamaño de cada columna
+            table.setTotalWidth(new float[]{140, 140, 45});
+
+            table.setLockedWidth(true);
+
+            table.addCell(ReportUtils.PdfCell("idrol", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Rol", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Activo", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+
+            for (Rol r : rolList) {
+
+                table.addCell(ReportUtils.PdfCell(r.getIdrol(), FontFactory.getFont("arial", 10, Font.NORMAL)));
+                table.addCell(ReportUtils.PdfCell(r.getRol(), FontFactory.getFont("arial", 9, Font.NORMAL)));
+                table.addCell(ReportUtils.PdfCell(r.getActivo(), FontFactory.getFont("arial", 10, Font.NORMAL)));
+
+            }
+            document.add(table);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        document.close();
+
+        ReportUtils.printPDF(baos);
+        return "";
+    }
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="String printAll()">
+    @Override
+    public String print() {
+
+        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            PdfWriter.getInstance(document, baos);
+            //METADATA
+
+            document.open();
+            document.add(ReportUtils.paragraph("ROLES", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+
+
+
+            Date currentDate = new Date();
+            String texto = "REPORTE";
+            document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+
+            String date = DateUtil.showDate(currentDate) + " " + DateUtil.showHour(currentDate);
+
+            document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 8, Font.BOLD), Element.ALIGN_RIGHT));
+            document.add(new Paragraph("\n"));
+
+            document.add(ReportUtils.paragraph("Idrol: " + rol.getIdrol(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Rol: " + rol.getIdrol(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Activo: " + rol.getActivo(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        document.close();
+
+        ReportUtils.printPDF(baos);
         return "";
     }
     // </editor-fold>  
