@@ -328,7 +328,7 @@ public class RolController implements Serializable, IController {
         return "";
     }
     // </editor-fold>  
-    // <editor-fold defaultstate="collapsed" desc="String printAll()">
+    // <editor-fold defaultstate="collapsed" desc="String print">
     @Override
     public String print() {
 
