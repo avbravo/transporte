@@ -307,7 +307,7 @@ public class RolController implements Serializable, IController {
 
             table.setLockedWidth(true);
 
-            table.addCell(ReportUtils.PdfCell("idrol", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
+            table.addCell(ReportUtils.PdfCell("Id", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
             table.addCell(ReportUtils.PdfCell("Rol", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
             table.addCell(ReportUtils.PdfCell("Activo", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
 
@@ -353,7 +353,7 @@ public class RolController implements Serializable, IController {
             document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 8, Font.BOLD), Element.ALIGN_RIGHT));
             document.add(new Paragraph("\n"));
 
-            document.add(ReportUtils.paragraph("Idrol: " + rol.getIdrol(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Id: " + rol.getIdrol(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
             document.add(ReportUtils.paragraph("Rol: " + rol.getIdrol(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
             document.add(ReportUtils.paragraph("Activo: " + rol.getActivo(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
 
