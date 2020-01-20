@@ -214,7 +214,20 @@
                             <p:outputLabel value="#{msg['field.activo']}"/>
                             <p:outputLabel value="#{item.activo}"/>
 
+                            
+                            <b:commandButton                          
+                                value="#{msg['button.salvoconducto']}"
 
+                                title="#{msg['button.salvoconducto']}"
+
+                            action="#{viajeController.salvoConducto(item)}"
+                              
+                                
+                                 ajax="false"/> 
+                            
+                             
+                              
+                               
                         </b:panelGrid>
                     </p:rowExpansion>
                 </p:dataTable>

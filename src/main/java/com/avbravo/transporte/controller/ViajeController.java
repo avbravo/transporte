@@ -21,6 +21,7 @@ import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.jmoordbutils.DateUtil;
 
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
+import com.avbravo.jmoordbutils.ReportUtils;
 import com.avbravo.jmoordbutils.email.ManagerEmail;
 import com.avbravo.jmoordbutils.pojos.Tiempo;
 import com.avbravo.transporteejb.datamodel.ViajeDataModel;
@@ -47,6 +48,13 @@ import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 import com.avbravo.transporteejb.services.VistoBuenoSubdirectorAdministrativoServices;
 import com.avbravo.transporteejb.services.VistoBuenoServices;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
+import java.io.ByteArrayOutputStream;
 
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -106,10 +114,10 @@ public class ViajeController implements Serializable, IController {
     List<Integer> pages = new ArrayList<>();
     Date fechaDesde = new Date();
     Date fechaHasta = new Date();
-    
+
     Date fechaInicialParaSolicitud = new Date();
     Date fechaFinalParaSolicitud = new Date();
-    
+
     String lugarDestino = "";
     String comentarios = "";
     String activo = "";
@@ -300,10 +308,11 @@ public class ViajeController implements Serializable, IController {
         }
     }// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="handleSelectVehiculo">
+
     public void handleSelectVehiculo(SelectEvent event) {
         try {
- if (solicitud.getPasajeros() > viaje.getVehiculo().getPasajeros()) {
-                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"),rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
+            if (solicitud.getPasajeros() > viaje.getVehiculo().getPasajeros()) {
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
             }
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
@@ -387,8 +396,8 @@ public class ViajeController implements Serializable, IController {
             switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
-                   doc = new Document("activo","si");
-                    viajeList = viajeRepository.findPagination(doc,page, rowPage, new Document("idviaje", -1));
+                    doc = new Document("activo", "si");
+                    viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
                     break;
 
                 case "idviaje":
@@ -397,8 +406,8 @@ public class ViajeController implements Serializable, IController {
                         doc = new Document("idviaje", viajeSearch.getIdviaje()).append("activo", "si");
                         viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
                     } else {
-                         doc = new Document("activo", "si");
-                        viajeList = viajeRepository.findPagination(doc,page, rowPage, new Document("idviaje", -1));
+                        doc = new Document("activo", "si");
+                        viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
                     }
 
                     break;
@@ -448,8 +457,8 @@ public class ViajeController implements Serializable, IController {
 
                     break;
                 default:
-                    doc = new Document("activo","si");
-                    viajeList = viajeRepository.findPagination(doc,page, rowPage, new Document("idviaje", -1));
+                    doc = new Document("activo", "si");
+                    viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
                     break;
             }
 
@@ -1057,10 +1066,9 @@ public class ViajeController implements Serializable, IController {
     public String save() {
         try {
             viaje.setActivo("si");
-            
 
             viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros() - solicitud.getPasajeros());
-            if (!viajeServices.isValid(viaje, rf.getMrb(), rf.getArb(),false)) {
+            if (!viajeServices.isValid(viaje, rf.getMrb(), rf.getArb(), false)) {
                 return "";
             }
 
@@ -1074,12 +1082,12 @@ public class ViajeController implements Serializable, IController {
             }
 
             if (DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), DateUtil.getFechaActual())) {
-                if (!viajeServices.isValidDates(viaje, true,rf.getMrb(), rf.getArb())) {
+                if (!viajeServices.isValidDates(viaje, true, rf.getMrb(), rf.getArb())) {
                     return "";
                 }
             } else {
                 //Indica que es un viaje anterior que no se habia registrado 
-                if (!viajeServices.isValidDates(viaje, true, rf.getMrb(), rf.getArb(),false)) {
+                if (!viajeServices.isValidDates(viaje, true, rf.getMrb(), rf.getArb(), false)) {
                     return "";
                 }
             }
@@ -1105,15 +1113,15 @@ public class ViajeController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getMessage("warning.fechahoraregresoamuylejanadelasolicitud"));
                 return null;
             }
-             if(viaje.getKmestimados() <0){
-                 JsfUtil.warningMessage(rf.getMessage("warning.kmmenorcero"));
+            if (viaje.getKmestimados() < 0) {
+                JsfUtil.warningMessage(rf.getMessage("warning.kmmenorcero"));
                 return null;
             }
-            if(viaje.getCostocombustible()<0){
-                 JsfUtil.warningMessage(rf.getMessage("warning.costocombustiblemenorcero"));
+            if (viaje.getCostocombustible() < 0) {
+                JsfUtil.warningMessage(rf.getMessage("warning.costocombustiblemenorcero"));
                 return null;
             }
-            
+
             if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
                 if (!isVistoBuenoCoordinador()) {
                     JsfUtil.warningMessage(rf.getMessage("warning.faltavistobuenocoordinador"));
@@ -1127,13 +1135,13 @@ public class ViajeController implements Serializable, IController {
                 Rol jmoordb_rol = (Rol) JmoordbContext.get("jmoordb_rol");
                 Boolean allowed = false;
 //                if (jmoordb_rol.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") || jmoordb_rol.getIdrol().equals("ADMINISTRADOR")) {
-                if (jmoordb_rol.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") ) {
+                if (jmoordb_rol.getIdrol().equals("SUBDIRECTORADMINISTRATIVO")) {
                     allowed = true;
                 } else {
                     //Verificar si este usuario tiene el rol de SUBDIRECTORADMINISTRATIVO o administrador
                     for (Rol r : jmoordb_user.getRol()) {
 //                        if (r.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") || r.getIdrol().equals("ADMINISTRADOR")) {
-                        if (r.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") ) {
+                        if (r.getIdrol().equals("SUBDIRECTORADMINISTRATIVO")) {
                             allowed = true;
                             break;
                         }
@@ -1181,22 +1189,21 @@ public class ViajeController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getMessage("warning.demasiadosdiasfechafinal"));
                 return "";
             }
-            
-            List<Object> objectList= viajeServices.asignarListViajesASolicitud(viaje,solicitud, rf.getMrb(), rf.getArb());
-            
+
+            List<Object> objectList = viajeServices.asignarListViajesASolicitud(viaje, solicitud, rf.getMrb(), rf.getArb());
+
             for (Object o : objectList) {
                 if (o instanceof Solicitud) {
-                    solicitud =(Solicitud)o;
-                }else{
-                    if(o instanceof Boolean){
-                        if( !(Boolean)o){
-                           return""; 
+                    solicitud = (Solicitud) o;
+                } else {
+                    if (o instanceof Boolean) {
+                        if (!(Boolean) o) {
+                            return "";
                         }
                     }
                 }
-                
-            }
 
+            }
 
             if (!viaje.getVehiculo().getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())) {
                 JsfUtil.warningMessage(rf.getMessage("warning.tipovehiculonocoincideconeltipodelasolicitud"));
@@ -1219,7 +1226,7 @@ public class ViajeController implements Serializable, IController {
                  *
                  */
 
-             //   solicitud.setViaje(viajeList);
+                //   solicitud.setViaje(viajeList);
                 solicitud.setEstatusViaje(viaje.getEstatusViaje());
 
                 Estatus estatus = new Estatus();
@@ -1373,7 +1380,7 @@ public class ViajeController implements Serializable, IController {
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
 
             } else {
-                if (!viajeServices.isValidDates(viaje, false,rf.getMrb(), rf.getArb())) {
+                if (!viajeServices.isValidDates(viaje, false, rf.getMrb(), rf.getArb())) {
                     //return;
                 } else {
                     validFechas = true;
@@ -1404,10 +1411,10 @@ public class ViajeController implements Serializable, IController {
 
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="calendarChangeListener(SelectEvent event)">
+
     public void calendarFechaSolicitudesChangeListener(SelectEvent event) {
         try {
 
- 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
@@ -1428,8 +1435,8 @@ public class ViajeController implements Serializable, IController {
             // solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
             viaje.setMision(solicitud.getMision());
             viaje.setComentarios("Responsable " + solicitud.getUsuario().get(1).getNombre() + " Destino " + solicitud.getLugarllegada());
-viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
-viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
+            viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
+            viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
             viaje.setLugarpartida(solicitud.getLugarpartida());
             viaje.setLugardestino(solicitud.getLugarllegada());
             viaje.setCostocombustible(0.0);
@@ -1442,16 +1449,16 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
             JsfUtil.updateJSFComponent(":form:content");
             JsfUtil.updateJSFComponent(":form:commandButtonShowSolicitudDetalles");
             if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
-                 if (!isVistoBuenoCoordinador()) {
-                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"),rf.getMessage("warning.faltavistobuenocoordinador"));
-              
+                if (!isVistoBuenoCoordinador()) {
+                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.faltavistobuenocoordinador"));
+
                 }
             }
 
-  if (!isVistoBuenoSubdirectorAdministrativo()) {
-    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"),rf.getMessage("warning.faltavistobuenoSubdirectoradministativo"));
-                    
-  }
+            if (!isVistoBuenoSubdirectorAdministrativo()) {
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.faltavistobuenoSubdirectoradministativo"));
+
+            }
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
@@ -1592,7 +1599,7 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
 
     public Boolean isVistoBuenoSubdirectorAdministrativo() {
         try {
-            if(solicitud == null || solicitud.getVistoBuenoSubdirectorAdministrativo()== null){
+            if (solicitud == null || solicitud.getVistoBuenoSubdirectorAdministrativo() == null) {
                 return false;
             }
             if (solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("si")) {
@@ -1785,4 +1792,82 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
         return completableFuture;
     }// </editor-fold>
 
+    public String salvoConducto(Viaje viaje) {
+        this.viaje = viaje;
+        print();
+        return "";
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="String print">
+    @Override
+    public String print() {
+
+        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            PdfWriter.getInstance(document, baos);
+            //METADATA
+
+            document.open();
+            document.add(ReportUtils.paragraph("UNIVERSIDAD TECNOLOGICA DE PANAMA", FontFactory.getFont("arial", 15, Font.BOLD), Element.ALIGN_CENTER));
+            document.add(ReportUtils.paragraph("CENTRO REGIONAL DE AZUERO", FontFactory.getFont("arial", 15, Font.BOLD), Element.ALIGN_CENTER));
+            document.add(ReportUtils.paragraph("SALVO CONDUCTO", FontFactory.getFont("arial", 15, Font.BOLD), Element.ALIGN_CENTER));
+
+            Date currentDate = new Date();
+//            String texto = "SALVO CONDUCTO";
+//            document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
+
+            String date = DateUtil.showDate(currentDate) + " " + DateUtil.showHour(currentDate);
+
+            document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 10, Font.BOLD), Element.ALIGN_RIGHT));
+            document.add(new Paragraph("\n"));
+
+            document.add(ReportUtils.paragraph("Se Certifica que el Sr.(a):" + "        " + viaje.getConductor().getNombre(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Con licencia de conducir No.: " + viaje.getConductor().getLicencia(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(new Paragraph("\n"));
+            document.add(ReportUtils.paragraph("Del Vehiculo con placa oficial No.: " + viaje.getVehiculo().getPlaca(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Codigo No.: " + viaje.getVehiculo().getCodigo() + "                     Marca:" + viaje.getVehiculo().getMarca(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Viaja en Mision Oficial de: " + viaje.getLugarpartida() + " - " + viaje.getLugardestino(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+         
+
+            if (!DateUtil.esMismoDia(viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva())) {
+                
+                String text = DateUtil.fechaEnLetras(viaje.getFechahorainicioreserva()) + " a " + DateUtil.fechaEnLetras(viaje.getFechahorafinreserva());
+
+                document.add(ReportUtils.paragraph("Durante los dias: " + text, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_JUSTIFIED));
+            } else {
+                String text = DateUtil.fechaEnLetras(viaje.getFechahorainicioreserva());
+
+                document.add(ReportUtils.paragraph("Durante el dia: " + text, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_JUSTIFIED));
+            }
+
+            document.add(new Paragraph("\n"));
+            document.add(ReportUtils.paragraph("Hora de salida: " + DateUtil.horaMinutoAMPMDeUnaFecha(viaje.getFechahorainicioreserva()), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(new Paragraph("\n"));
+            document.add(ReportUtils.paragraph("Hora de llegada al Centro: " + DateUtil.horaMinutoAMPMDeUnaFecha(viaje.getFechahorafinreserva()), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(new Paragraph("\n"));
+            document.add(ReportUtils.paragraph("Mision que realizara: " + viaje.getMision(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(new Paragraph("\n"));
+            document.add(ReportUtils.paragraph("Queda terminantemente prohibido que los vehiculos oficiales sea estacionados o que permanezcan em horas extra-ordinarias en sitios que no estén contemplados en el SALVO CONDUCTO, y en su defecto en la Policia del lugar más cercano em donde se presta el servicio " + viaje.getMision(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(new Paragraph("\n"));
+            document.add(new Paragraph("\n"));
+            document.add(ReportUtils.paragraph("Atentamente, ", FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_RIGHT));
+            document.add(new Paragraph("\n"));
+            document.add(new Paragraph("\n"));
+            document.add(new Paragraph("\n"));
+            document.add(ReportUtils.paragraph("Ing. Rutilio Cedeño, ", FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_RIGHT));
+            document.add(ReportUtils.paragraph("Sub Director Administrativo ", FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_RIGHT));
+            document.add(ReportUtils.paragraph("Centro Regional de Azuero ", FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_RIGHT));
+            document.add(new Paragraph("\n"));
+            document.add(ReportUtils.paragraph("cc. Auditoria Regional de Los Santos ", FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_LEFT));
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        document.close();
+
+        ReportUtils.printPDF(baos);
+        return "";
+    }
+    // </editor-fold>   
 }
