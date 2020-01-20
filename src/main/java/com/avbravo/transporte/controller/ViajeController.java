@@ -29,6 +29,7 @@ import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Estatus;
 import com.avbravo.transporteejb.entity.EstatusViaje;
 import com.avbravo.transporteejb.entity.Rol;
+import com.avbravo.transporteejb.entity.Salvoconducto;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Viaje;
 import com.avbravo.transporteejb.entity.Usuario;
@@ -36,6 +37,7 @@ import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.EstatusViajeRepository;
+import com.avbravo.transporteejb.repository.SalvoconductoRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
@@ -44,6 +46,7 @@ import com.avbravo.transporteejb.services.ConductorServices;
 import com.avbravo.transporteejb.services.EstatusViajeServices;
 import com.avbravo.transporteejb.services.NotificacionServices;
 import com.avbravo.transporteejb.services.SolicitudServices;
+import com.avbravo.transporteejb.services.UsuarioServices;
 import com.avbravo.transporteejb.services.VehiculoServices;
 import com.avbravo.transporteejb.services.ViajeServices;
 import com.avbravo.transporteejb.services.VistoBuenoSubdirectorAdministrativoServices;
@@ -62,7 +65,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -140,6 +142,8 @@ public class ViajeController implements Serializable, IController {
     Solicitud solicitud = new Solicitud();
     Solicitud solicitudCopiar = new Solicitud();
 
+    Usuario autorizasalvoconducto = new Usuario();
+
     //List
     List<Viaje> viajeList = new ArrayList<>();
     List<Conductor> suggestionsConductor = new ArrayList<>();
@@ -168,6 +172,8 @@ public class ViajeController implements Serializable, IController {
     VehiculoRepository vehiculoRepository;
     @Inject
     ViajeRepository viajeRepository;
+    @Inject
+    SalvoconductoRepository salvoconductoRepository;
     @Inject
     JmoordbEmailMasterRepository jmoordbEmailMasterRepository;
     // </editor-fold>  
@@ -198,6 +204,9 @@ public class ViajeController implements Serializable, IController {
     VistoBuenoServices vistoBuenoServices;
     @Inject
     VistoBuenoSubdirectorAdministrativoServices vistoBuenoSubdirectorAdministrativoServices;
+    @Inject
+    UsuarioServices usuarioServices;
+
     //List of Relations
     //Repository of Relations
     // </editor-fold>
@@ -1793,8 +1802,34 @@ public class ViajeController implements Serializable, IController {
     }// </editor-fold>
 
     public String salvoConducto(Viaje viaje) {
-        this.viaje = viaje;
-        print();
+        try {
+            if(autorizasalvoconducto == null || autorizasalvoconducto.getUsername().equals("")){
+                JsfUtil.errorDialog("Texto", "Seleccione el que firma el salvo conducto");
+                return "";
+            }
+            this.viaje = viaje;
+
+            Integer idsalvoconducto = autoincrementableServices.getContador("salvoconducto");
+            Salvoconducto salvoconducto = new Salvoconducto();
+            salvoconducto.setIdsalvoconducto(idsalvoconducto);
+            salvoconducto.setFecha(new Date());
+            salvoconducto.setUsuario(autorizasalvoconducto);
+            salvoconducto.setViaje(viaje);
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            salvoconducto.setUserInfo(viajeRepository.generateListUserinfo(jmoordb_user.getUsername(), "create"));
+            if (salvoconductoRepository.save(salvoconducto)) {
+                //guarda el contenido anterior
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), jmoordb_user.getUsername(),
+                        "create", "salvoconducto", viajeRepository.toDocument(viaje).toString()));
+                /**
+                 *
+                 */
+            }
+            print();
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+
         return "";
     }
 
@@ -1810,54 +1845,56 @@ public class ViajeController implements Serializable, IController {
             //METADATA
 
             document.open();
-            document.add(ReportUtils.paragraph("UNIVERSIDAD TECNOLOGICA DE PANAMA", FontFactory.getFont("arial", 15, Font.BOLD), Element.ALIGN_CENTER));
+            document.add(ReportUtils.paragraph("UNIVERSIDAD TECNOLOGICA DE PANAMÁ", FontFactory.getFont("arial", 15, Font.BOLD), Element.ALIGN_CENTER));
             document.add(ReportUtils.paragraph("CENTRO REGIONAL DE AZUERO", FontFactory.getFont("arial", 15, Font.BOLD), Element.ALIGN_CENTER));
             document.add(ReportUtils.paragraph("SALVO CONDUCTO", FontFactory.getFont("arial", 15, Font.BOLD), Element.ALIGN_CENTER));
 
             Date currentDate = new Date();
-//            String texto = "SALVO CONDUCTO";
-//            document.add(ReportUtils.paragraph(texto, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
 
-            String date = DateUtil.showDate(currentDate) + " " + DateUtil.showHour(currentDate);
-
-            document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 10, Font.BOLD), Element.ALIGN_RIGHT));
+            //String date = DateUtil.showDate(currentDate) + " " + DateUtil.showHour(currentDate);
+            String date = DateUtil.fechaEnLetrasMinusculas(currentDate);
+            document.add(ReportUtils.paragraph("Los Santos " + date, FontFactory.getFont("arial", 10, Font.BOLD), Element.ALIGN_RIGHT));
             document.add(new Paragraph("\n"));
-
-            document.add(ReportUtils.paragraph("Se Certifica que el Sr.(a):" + "        " + viaje.getConductor().getNombre(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
-            document.add(ReportUtils.paragraph("Con licencia de conducir No.: " + viaje.getConductor().getLicencia(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
             document.add(new Paragraph("\n"));
-            document.add(ReportUtils.paragraph("Del Vehiculo con placa oficial No.: " + viaje.getVehiculo().getPlaca(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
-            document.add(ReportUtils.paragraph("Codigo No.: " + viaje.getVehiculo().getCodigo() + "                     Marca:" + viaje.getVehiculo().getMarca(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
-            document.add(ReportUtils.paragraph("Viaja en Mision Oficial de: " + viaje.getLugarpartida() + " - " + viaje.getLugardestino(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
-         
+            document.add(new Paragraph("\n"));
+            document.add(new Paragraph("\n"));
+            document.add(ReportUtils.paragraph("Se Certifica que el Sr.(a):            " + "      " + viaje.getConductor().getNombre(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Con licencia de conducir No.:            " + viaje.getConductor().getLicencia(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Del Vehículo con placa oficial No.:    " + viaje.getVehiculo().getPlaca(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Código No.:   " + viaje.getVehiculo().getCodigo() + "                          Marca:" + viaje.getVehiculo().getMarca(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Viaja en Misión Oficial de:                " + viaje.getLugarpartida() + " - " + viaje.getLugardestino(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
 
             if (!DateUtil.esMismoDia(viaje.getFechahorainicioreserva(), viaje.getFechahorafinreserva())) {
-                
-                String text = DateUtil.fechaEnLetras(viaje.getFechahorainicioreserva()) + " a " + DateUtil.fechaEnLetras(viaje.getFechahorafinreserva());
 
-                document.add(ReportUtils.paragraph("Durante los dias: " + text, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_JUSTIFIED));
+                String text = DateUtil.fechaEnLetrasMinusculas(viaje.getFechahorainicioreserva()) + " a " + DateUtil.fechaEnLetrasMinusculas(viaje.getFechahorafinreserva());
+
+                document.add(ReportUtils.paragraph("Durante los días:                               " + text, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_JUSTIFIED));
             } else {
-                String text = DateUtil.fechaEnLetras(viaje.getFechahorainicioreserva());
+                String text = DateUtil.fechaEnLetrasMinusculas(viaje.getFechahorainicioreserva());
 
-                document.add(ReportUtils.paragraph("Durante el dia: " + text, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_JUSTIFIED));
+                document.add(ReportUtils.paragraph("Durante el día:                                 " + text, FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_JUSTIFIED));
             }
 
+//            document.add(ReportUtils.paragraph("Hora de salida: " + DateUtil.horaMinutoAMPMDeUnaFecha(viaje.getFechahorainicioreserva()), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Hora de salida:                                  " + DateUtil.showHour(viaje.getFechahorainicioreserva()), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+
+            document.add(ReportUtils.paragraph("Hora de llegada al Centro:                 " + DateUtil.showHour(viaje.getFechahorafinreserva()), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+
+            document.add(ReportUtils.paragraph("Misión que realizara: " + viaje.getMision(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
             document.add(new Paragraph("\n"));
-            document.add(ReportUtils.paragraph("Hora de salida: " + DateUtil.horaMinutoAMPMDeUnaFecha(viaje.getFechahorainicioreserva()), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
             document.add(new Paragraph("\n"));
-            document.add(ReportUtils.paragraph("Hora de llegada al Centro: " + DateUtil.horaMinutoAMPMDeUnaFecha(viaje.getFechahorafinreserva()), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Queda terminantemente prohibido que los vehículos oficiales sea estacionados o que permanezcan en horas extraordinarias en sitios que no estén contemplados en el SALVO CONDUCTO, y en su defecto en la Policía del lugar más cercano em donde se presta el servicio " + viaje.getMision(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
             document.add(new Paragraph("\n"));
-            document.add(ReportUtils.paragraph("Mision que realizara: " + viaje.getMision(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
             document.add(new Paragraph("\n"));
-            document.add(ReportUtils.paragraph("Queda terminantemente prohibido que los vehiculos oficiales sea estacionados o que permanezcan em horas extra-ordinarias en sitios que no estén contemplados en el SALVO CONDUCTO, y en su defecto en la Policia del lugar más cercano em donde se presta el servicio " + viaje.getMision(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
             document.add(new Paragraph("\n"));
             document.add(new Paragraph("\n"));
             document.add(ReportUtils.paragraph("Atentamente, ", FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_RIGHT));
             document.add(new Paragraph("\n"));
             document.add(new Paragraph("\n"));
             document.add(new Paragraph("\n"));
-            document.add(ReportUtils.paragraph("Ing. Rutilio Cedeño, ", FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_RIGHT));
-            document.add(ReportUtils.paragraph("Sub Director Administrativo ", FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_RIGHT));
+
+            document.add(ReportUtils.paragraph(autorizasalvoconducto.getNombre(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_RIGHT));
+            document.add(ReportUtils.paragraph(autorizasalvoconducto.getCargo(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_RIGHT));
             document.add(ReportUtils.paragraph("Centro Regional de Azuero ", FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_RIGHT));
             document.add(new Paragraph("\n"));
             document.add(ReportUtils.paragraph("cc. Auditoria Regional de Los Santos ", FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_LEFT));
