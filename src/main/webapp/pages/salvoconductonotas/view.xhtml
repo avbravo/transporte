@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib">
+    <ui:define name="content">
+         
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            }
+        </style>
+       
+         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+            <h:panelGroup id="content" layout="block"> 
+
+                <jmoordbjsf:messages id="msg"/>
+                <b:panel collapsible="false" title="#{msg['titleview.salvoConductoNotas']}"  look="primary">
+                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{salvoConductoNotasController.writable}"> 
+                        <p:outputLabel  value="#{msg['field.idsalvoconductonotas']}" />
+                        <p:outputLabel  value="#{salvoConductoNotasController.salvoConductoNotas.idsalvoconductonotas}" id="idsalvoconductonotas"   />
+
+                        
+                             <p:outputLabel  value="#{msg['field.descripcion']}" />
+                    <b:inputTextarea  rows="2" span="8"  value="#{salvoConductoNotasController.salvoConductoNotas.descripcion}" id="descripcion"   />
+
+                     <p:outputLabel  value="#{msg['field.activo']}" />
+                        <jmoordbjsf:yesno value="#{salvoConductoNotasController.salvoConductoNotas.activo}" id="activo"  required="true"/>
+
+                    </b:panelGrid>
+                      <jmoordbjsf:toolbarview 
+                        renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
+                        renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
+                        controller="#{salvoConductoNotasController}"
+                        url  = "/pages/salvoconductonotas/list.xhtml"
+                        />
+                </b:panel>
+            </h:panelGroup>
+        </b:form>
+          <jmoordbjsf:denegado rendered="#{!p:ifGranted('ADMINISTRADOR')}" />
+        <br/><br/><br/>
+    </ui:define>
+</ui:composition>

@@ -217,7 +217,7 @@
                                 <p:outputLabel  value="#{msg['field.autorizasalvoconducto']}" />
 
                         <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-                                                 completeMethod="#{viajeController.usuarioServices.complete}"
+                                                 completeMethod="#{viajeController.usuarioServices.completeAutorizadoSalvoConducto}"
                                                  labeltip1="#{msg['field.username']} #{p.username}"
                                                  labeltip2="#{msg['field.nombre']} #{p.nombre}"  
                                                  listener="#{viajeController.handleSelect}"

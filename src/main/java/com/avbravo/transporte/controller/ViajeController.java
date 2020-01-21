@@ -29,6 +29,7 @@ import com.avbravo.transporteejb.entity.Conductor;
 import com.avbravo.transporteejb.entity.Estatus;
 import com.avbravo.transporteejb.entity.EstatusViaje;
 import com.avbravo.transporteejb.entity.Rol;
+import com.avbravo.transporteejb.entity.SalvoConductoNotas;
 import com.avbravo.transporteejb.entity.Salvoconducto;
 import com.avbravo.transporteejb.entity.Solicitud;
 import com.avbravo.transporteejb.entity.Viaje;
@@ -37,6 +38,7 @@ import com.avbravo.transporteejb.entity.Vehiculo;
 import com.avbravo.transporteejb.repository.ConductorRepository;
 import com.avbravo.transporteejb.repository.EstatusRepository;
 import com.avbravo.transporteejb.repository.EstatusViajeRepository;
+import com.avbravo.transporteejb.repository.SalvoConductoNotasRepository;
 import com.avbravo.transporteejb.repository.SalvoconductoRepository;
 import com.avbravo.transporteejb.repository.SolicitudRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
@@ -141,6 +143,7 @@ public class ViajeController implements Serializable, IController {
     Vehiculo vehiculo = new Vehiculo();
     Solicitud solicitud = new Solicitud();
     Solicitud solicitudCopiar = new Solicitud();
+    SalvoConductoNotas salvoConductoNotas = new SalvoConductoNotas();
 
     Usuario autorizasalvoconducto = new Usuario();
 
@@ -174,6 +177,8 @@ public class ViajeController implements Serializable, IController {
     ViajeRepository viajeRepository;
     @Inject
     SalvoconductoRepository salvoconductoRepository;
+    @Inject
+    SalvoConductoNotasRepository salvoConductoNotasRepository;
     @Inject
     JmoordbEmailMasterRepository jmoordbEmailMasterRepository;
     // </editor-fold>  
@@ -1801,12 +1806,22 @@ public class ViajeController implements Serializable, IController {
         return completableFuture;
     }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="String salvoConducto(Viaje viaje)">
+
     public String salvoConducto(Viaje viaje) {
         try {
-            if(autorizasalvoconducto == null || autorizasalvoconducto.getUsername().equals("")){
-                JsfUtil.errorDialog("Texto", "Seleccione el que firma el salvo conducto");
+            if (autorizasalvoconducto == null || autorizasalvoconducto.getUsername() == null) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.seleccionequienautorizasalvoconducto"));
                 return "";
             }
+            List<SalvoConductoNotas> list = salvoConductoNotasRepository.findAll();
+            
+            if (list== null || list.isEmpty()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.deberegistrarlanotadelsalvoconducto"));
+                return "";
+            }
+            
+salvoConductoNotas = list.get(0);
             this.viaje = viaje;
 
             Integer idsalvoconducto = autoincrementableServices.getContador("salvoconducto");
@@ -1832,12 +1847,18 @@ public class ViajeController implements Serializable, IController {
 
         return "";
     }
-
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String print">
     @Override
     public String print() {
 
-        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
+        float margin = 30;
+    // Creating a reader
+
+   
+
+    
+com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
@@ -1850,12 +1871,11 @@ public class ViajeController implements Serializable, IController {
             document.add(ReportUtils.paragraph("SALVO CONDUCTO", FontFactory.getFont("arial", 15, Font.BOLD), Element.ALIGN_CENTER));
 
             Date currentDate = new Date();
-
+            document.add(new Paragraph("\n"));
             //String date = DateUtil.showDate(currentDate) + " " + DateUtil.showHour(currentDate);
             String date = DateUtil.fechaEnLetrasMinusculas(currentDate);
-            document.add(ReportUtils.paragraph("Los Santos " + date, FontFactory.getFont("arial", 10, Font.BOLD), Element.ALIGN_RIGHT));
-            document.add(new Paragraph("\n"));
-            document.add(new Paragraph("\n"));
+            document.add(ReportUtils.paragraph("Los Santos " + date, FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_RIGHT));
+     
             document.add(new Paragraph("\n"));
             document.add(new Paragraph("\n"));
             document.add(ReportUtils.paragraph("Se Certifica que el Sr.(a):            " + "      " + viaje.getConductor().getNombre(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
@@ -1878,17 +1898,19 @@ public class ViajeController implements Serializable, IController {
 //            document.add(ReportUtils.paragraph("Hora de salida: " + DateUtil.horaMinutoAMPMDeUnaFecha(viaje.getFechahorainicioreserva()), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
             document.add(ReportUtils.paragraph("Hora de salida:                                  " + DateUtil.showHour(viaje.getFechahorainicioreserva()), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
 
-            document.add(ReportUtils.paragraph("Hora de llegada al Centro:                 " + DateUtil.showHour(viaje.getFechahorafinreserva()), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Hora de llegada al Centro:                " + DateUtil.showHour(viaje.getFechahorafinreserva()), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
 
+            document.add(new Paragraph("\n"));
             document.add(ReportUtils.paragraph("Misión que realizara: " + viaje.getMision(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
             document.add(new Paragraph("\n"));
             document.add(new Paragraph("\n"));
-            document.add(ReportUtils.paragraph("Queda terminantemente prohibido que los vehículos oficiales sea estacionados o que permanezcan en horas extraordinarias en sitios que no estén contemplados en el SALVO CONDUCTO, y en su defecto en la Policía del lugar más cercano em donde se presta el servicio " + viaje.getMision(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(new Paragraph("\n"));
+            document.add(ReportUtils.paragraph(salvoConductoNotas.getDescripcion(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
             document.add(new Paragraph("\n"));
             document.add(new Paragraph("\n"));
             document.add(new Paragraph("\n"));
             document.add(new Paragraph("\n"));
-            document.add(ReportUtils.paragraph("Atentamente, ", FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_RIGHT));
+            document.add(ReportUtils.paragraph("Atentamente, ", FontFactory.getFont("arial", 10, Font.NORMAL), Element.ALIGN_RIGHT));
             document.add(new Paragraph("\n"));
             document.add(new Paragraph("\n"));
             document.add(new Paragraph("\n"));
