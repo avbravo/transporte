@@ -228,6 +228,7 @@ public class UsuarioController implements Serializable, IController {
                 JsfUtil.warningMessage(rf.getMessage("warning.passwordnocoinciden"));
                 return false;
             }
+            
             usuario.setRol(rolList);
             usuario.setPassword(JsfUtil.encriptar(usuario.getPassword()));
             return true;

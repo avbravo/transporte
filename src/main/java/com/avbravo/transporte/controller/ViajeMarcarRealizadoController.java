@@ -1574,6 +1574,7 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
               
               //Actualizar el vehiculo
                 Vehiculo vehiculo = viaje.getVehiculo();
+                vehiculo.setKm(vehiculo.getKm() +item.getKmestimados());
                 vehiculo.setTotalkm(vehiculo.getTotalkm()+item.getKmestimados());
                 vehiculo.setTotalconsumo(vehiculo.getTotalconsumo()+item.getCostocombustible());
                  vehiculo.setTotalviajes(vehiculo.getTotalviajes() + 1);

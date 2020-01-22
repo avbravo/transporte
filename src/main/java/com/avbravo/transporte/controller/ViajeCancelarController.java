@@ -1560,9 +1560,11 @@ public class ViajeCancelarController implements Serializable, IController {
                 //Actualizar el vehiculo
                 Vehiculo vehiculo = viaje.getVehiculo();
                 Double totalkm = vehiculo.getTotalkm() > viaje.getKmestimados() ? vehiculo.getTotalkm() - viaje.getKmestimados() : vehiculo.getTotalkm();
+                Double km = vehiculo.getKm() > viaje.getKmestimados() ? vehiculo.getKm() - viaje.getKmestimados() : vehiculo.getKm();
                 Double totalConsumo = vehiculo.getTotalconsumo() > viaje.getCostocombustible() ? vehiculo.getTotalconsumo() - viaje.getCostocombustible() : vehiculo.getTotalconsumo();
-
+              
                 vehiculo.setTotalkm(totalkm);
+                vehiculo.setKm(km);
                 vehiculo.setTotalconsumo(totalConsumo);
                 vehiculo.setTotalviajes(vehiculo.getTotalviajes() - 1);
                 if (vehiculoRepository.update(vehiculo)) {
@@ -1576,6 +1578,7 @@ public class ViajeCancelarController implements Serializable, IController {
                 //Actualiza los totales en el conductor
                 Conductor conductor = viaje.getConductor();
                 Double totalKmConductor = conductor.getTotalkm() > viaje.getKmestimados() ? vehiculo.getTotalkm() - viaje.getKmestimados() : conductor.getTotalkm();
+               
                 Double totalConsumoConductor = conductor.getTotalconsumo() > viaje.getCostocombustible() ? conductor.getTotalconsumo() - viaje.getCostocombustible() : conductor.getTotalconsumo();
 
                 conductor.setTotalconsumo(conductor.getTotalconsumo() + viaje.getCostocombustible());
