@@ -1677,10 +1677,10 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 verificar si son dias validos
                 Descomponener la fecha de inicio
                          */
-                        DecomposedDate fechaPartidaDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahorapartida());
+                        DecomposedDate fechaPartidaDescompuesta = DateUtil.descomponerFechaMonthStartWith0(solicitud.getFechahorapartida());
 
                         //descomponer la fecha de regreso
-                        DecomposedDate fechaRegresoDescompuesta = DateUtil.descomponerFecha(solicitud.getFechahoraregreso());
+                        DecomposedDate fechaRegresoDescompuesta = DateUtil.descomponerFechaMonthStartWith0(solicitud.getFechahoraregreso());
 
                         varAnio = fechaPartidaDescompuesta.getYear();
                         //Determinar cuantos meses hay
@@ -1937,7 +1937,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 //Verificar si es el mismo año
                 if (fechaPartidaDescompuesta.getYear().equals(fechaRegresoDescompuesta.getYear())) {
                     Integer m = fechaPartidaDescompuesta.getMonth() + i;
-                    String nameOfMohth = DateUtil.nombreMes(m);
+                    String nameOfMohth = DateUtil.nameOfMonthStartWith1(m);
                     List<FechaDiaUtils> list = DateUtil.validarRangoFechas(fechaPartidaDescompuesta.getYear(), nameOfMohth, varFechaHoraPartida, varFechaHoraRegreso);
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                     if (list == null || list.isEmpty()) {
@@ -1966,7 +1966,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
                     }
 
-                    String nameOfMohth = DateUtil.nombreMes(m);
+                    String nameOfMohth = DateUtil.nameOfMonthStartWith1(m);
 
                     List<FechaDiaUtils> list = DateUtil.validarRangoFechas(varAnio, nameOfMohth, varFechaHoraPartida, varFechaHoraRegreso);
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
