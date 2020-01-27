@@ -98,7 +98,7 @@ import org.primefaces.model.ScheduleModel;
 @ViewScoped
 @Getter
 @Setter
-public class ViajeController implements Serializable, IController {
+public class ViajesinsolicitudController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
@@ -241,7 +241,7 @@ public class ViajeController implements Serializable, IController {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public ViajeController() {
+    public ViajesinsolicitudController() {
     }
 
     // </editor-fold>
@@ -269,8 +269,8 @@ public class ViajeController implements Serializable, IController {
                     .withNameFieldOfRowPage("rowPage")
                     .withTypeKey("primary")
                     .withSearchLowerCase(false)
-                    .withPathReportDetail("/resources/reportes/viaje/details.jasper")
-                    .withPathReportAll("/resources/reportes/viaje/all.jasper")
+                    .withPathReportDetail("/resources/reportes/viajesinsolicitud/details.jasper")
+                    .withPathReportAll("/resources/reportes/viajesinsolicitud/all.jasper")
                     .withparameters(parameters)
                     .withResetInSave(true)
                     .withAction("golist")
@@ -288,13 +288,15 @@ public class ViajeController implements Serializable, IController {
 
                 }
                 estatusViaje = optional.get();
-                fechaInicialParaSolicitud = DateUtil.primerDiaDelMesActualConHoraMinutosSegundos(0, 1, 0);
-                fechaFinalParaSolicitud = DateUtil.ultimoDiaDelMesActualConHoraMinutoSegundo(23, 59, 0);
+//                fechaInicialParaSolicitud = DateUtil.primerDiaDelMesActualConHoraMinutosSegundos(0, 1, 0);
+//                fechaFinalParaSolicitud = DateUtil.ultimoDiaDelMesActualConHoraMinutoSegundo(23, 59, 0);
+                fechaInicialParaSolicitud = DateUtil.fechaHoraActual();
+                fechaFinalParaSolicitud = DateUtil.fechaHoraActual();
                 viaje.setMensajeWarning("");
                 viaje.setEstatusViaje(estatusViaje);
-                viaje.setFechahorainicioreserva(DateUtil.primerDiaDelMesActualConHoraMinutosSegundos(0, 1, 0));
-                viaje.setFechahorafinreserva(DateUtil.ultimoDiaDelMesActualConHoraMinutoSegundo(23, 59, 0));
-                     viaje.setKmestimados(0.0);
+                viaje.setFechahorainicioreserva( DateUtil.fechaHoraActual());
+                viaje.setFechahorafinreserva(DateUtil.fechaHoraActual());
+                viaje.setKmestimados(0.0);
                 viaje.setCostocombustible(0.0);
 
             }
@@ -412,14 +414,14 @@ public class ViajeController implements Serializable, IController {
             switch (getSearch()) {
                 case "_init":
                 case "_autocomplete":
-                    doc = new Document("activo", "si");
+                    doc = new Document("activo", "si") ;
                     viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
                     break;
 
                 case "idviaje":
                     if (getValueSearch() != null) {
                         viajeSearch.setIdviaje(Integer.parseInt(getValueSearch().toString()));
-                        doc = new Document("idviaje", viajeSearch.getIdviaje()).append("activo", "si");
+                        doc = new Document("idviaje", viajeSearch.getIdviaje()).append("activo", "si") ;;
                         viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
                     } else {
                         doc = new Document("activo", "si");
@@ -430,27 +432,27 @@ public class ViajeController implements Serializable, IController {
                 case "activo":
 
                     String activo = getValueSearch().toString();
-                    doc = new Document("activo", activo);
+                    doc = new Document("activo", activo) ;;
                     viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
 
                     break;
 
                 case "realizado":
                     String realizado = (String) getValueSearch().toString();
-                    viajeList = viajeRepository.findPagination(new Document("realizado", realizado).append("activo", "si"), page, rowPage, new Document("idviaje", -1));
+                    viajeList = viajeRepository.findPagination(new Document("realizado", realizado).append("activo", "si") , page, rowPage, new Document("idviaje", -1));
 
                     break;
 
                 case "conductor":
                     Conductor conductor = (Conductor) getValueSearch();
-                    doc = new Document("activo", "si");
+                    doc = new Document("activo", "si") ;;
                     doc.append("conductor.idconductor", conductor.getIdconductor());
                     viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
 
                     break;
                 case "vehiculo":
                     Vehiculo vehiculo = (Vehiculo) getValueSearch();
-                    doc = new Document("activo", "si");
+                    doc = new Document("activo", "si") ;;
                     doc.append("vehiculo.idvehiculo", vehiculo.getIdvehiculo());
                     viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
 
@@ -707,11 +709,7 @@ public class ViajeController implements Serializable, IController {
         List<Vehiculo> temp = new ArrayList<>();
 
         try {
-            if (solicitud == null || solicitud.getIdsolicitud() == null) {
-                JsfUtil.warningMessage(rf.getMessage("warning.indiquesolicitudprimero"));
-                JsfUtil.updateJSFComponent(":form:growl");
-                return suggestions;
-            }
+           
 
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
                 JsfUtil.warningMessage(rf.getMessage("warning.seleccionefechas"));
@@ -730,11 +728,11 @@ public class ViajeController implements Serializable, IController {
                 List<Vehiculo> validos = new ArrayList<>();
                 if (noHayCambioFechaHoras()) {
                     validos = temp.stream()
-                            .filter(x -> viajeServices.isVehiculoActivoDisponible(x, solicitud, viaje)).collect(Collectors.toList());
+                            .filter(x -> viajeServices.isVehiculoActivoDisponibleSinSolicitud(x, viaje)).collect(Collectors.toList());
 
                 } else {
                     validos = temp.stream()
-                            .filter(x -> viajeServices.isVehiculoActivoDisponibleExcluyendoMismoViaje(x, solicitud, viaje)).collect(Collectors.toList());
+                            .filter(x -> viajeServices.isVehiculoActivoDisponibleExcluyendoMismoViajeSinSolicitud(x, viaje)).collect(Collectors.toList());
                     //si cambia el vehiculo
 
                 }
@@ -879,11 +877,7 @@ public class ViajeController implements Serializable, IController {
         suggestionsConductor = new ArrayList<>();
         List<Conductor> temp = new ArrayList<>();
         try {
-            if (solicitud == null || solicitud.getIdsolicitud() == null) {
-                JsfUtil.warningMessage(rf.getMessage("warning.indiquesolicitudprimero"));
-                JsfUtil.updateJSFComponent(":form:growl");
-                return suggestionsConductor;
-            }
+           
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
                 JsfUtil.warningMessage(rf.getMessage("warning.seleccionefechas"));
                 JsfUtil.updateJSFComponent(":form:growl");
@@ -1083,21 +1077,21 @@ public class ViajeController implements Serializable, IController {
         try {
             viaje.setActivo("si");
 
-            viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros() - solicitud.getPasajeros());
-            viaje.setKmestimados(0.0);
+//            viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros() - solicitud.getPasajeros());
+viaje.setKmestimados(0.0);
 viaje.setCostocombustible(0.0);
             if (!viajeServices.isValid(viaje, rf.getMrb(), rf.getArb(), false)) {
                 return "";
             }
 
-            if (DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
-                JsfUtil.warningMessage(rf.getMessage("warning.fechahorainicioviajemayorfechainiciosolicitud"));
-                return "";
-            }
-            if (DateUtil.fechaMayor(solicitud.getFechahoraregreso(), viaje.getFechahorafinreserva())) {
-                JsfUtil.warningMessage(rf.getMessage("warning.fecharegresomayorfechainicioviaje"));
-                return null;
-            }
+//            if (DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
+//                JsfUtil.warningMessage(rf.getMessage("warning.fechahorainicioviajemayorfechainiciosolicitud"));
+//                return "";
+//            }
+//            if (DateUtil.fechaMayor(solicitud.getFechahoraregreso(), viaje.getFechahorafinreserva())) {
+//                JsfUtil.warningMessage(rf.getMessage("warning.fecharegresomayorfechainicioviaje"));
+//                return null;
+//            }
 
             if (DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), DateUtil.getFechaActual())) {
                 if (!viajeServices.isValidDates(viaje, true, rf.getMrb(), rf.getArb())) {
@@ -1115,22 +1109,19 @@ viaje.setCostocombustible(0.0);
                 return null;
             }
 
-            if (solicitud == null || solicitud.getIdsolicitud() == null) {
-                JsfUtil.warningMessage(rf.getMessage("warning.seleccioneunasolicitud"));
-                return null;
-            }
-
-            Tiempo tiempoPartida = DateUtil.diferenciaEntreFechas(solicitud.getFechahorapartida(), viaje.getFechahorainicioreserva());
-            Tiempo tiempoRegreso = DateUtil.diferenciaEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
-
-            if (tiempoPartida.getDias() > 0 || tiempoPartida.getHoras() > 4) {
-                JsfUtil.warningMessage(rf.getMessage("warning.fechahorapartdamuylejanadelasolicitud"));
-                return null;
-            }
-            if (tiempoRegreso.getDias() > 0 || tiempoRegreso.getHoras() > 4) {
-                JsfUtil.warningMessage(rf.getMessage("warning.fechahoraregresoamuylejanadelasolicitud"));
-                return null;
-            }
+           
+//
+//            Tiempo tiempoPartida = DateUtil.diferenciaEntreFechas(solicitud.getFechahorapartida(), viaje.getFechahorainicioreserva());
+//            Tiempo tiempoRegreso = DateUtil.diferenciaEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
+//
+//            if (tiempoPartida.getDias() > 0 || tiempoPartida.getHoras() > 4) {
+//                JsfUtil.warningMessage(rf.getMessage("warning.fechahorapartdamuylejanadelasolicitud"));
+//                return null;
+//            }
+//            if (tiempoRegreso.getDias() > 0 || tiempoRegreso.getHoras() > 4) {
+//                JsfUtil.warningMessage(rf.getMessage("warning.fechahoraregresoamuylejanadelasolicitud"));
+//                return null;
+//            }
             if (viaje.getKmestimados() < 0) {
                 JsfUtil.warningMessage(rf.getMessage("warning.kmmenorcero"));
                 return null;
@@ -1140,12 +1131,7 @@ viaje.setCostocombustible(0.0);
                 return null;
             }
 
-            if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
-                if (!isVistoBuenoCoordinador()) {
-                    JsfUtil.warningMessage(rf.getMessage("warning.faltavistobuenocoordinador"));
-                    return null;
-                }
-            }
+         
 
             if (!isVistoBuenoSubdirectorAdministrativo()) {
                 Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
@@ -1165,27 +1151,11 @@ viaje.setCostocombustible(0.0);
                         }
                     }
                 }
-                if (allowed) {
-                    //Cambia el estatus del visto bueno del SUBDIRECTORADMINISTRATIVO
-                    solicitud.getVistoBuenoSubdirectorAdministrativo().setAprobado("si");
-                } else {
-                    JsfUtil.warningMessage(rf.getMessage("warning.faltavistobuenoSubdirectoradministativo"));
-                    return null;
-                }
+               
 
             }
             // List<Solicitud> list = solicitudRepository.filterBetweenDate("estatus.idestatus", "SOLICITADO", "fechahorapartida", viaje.getFechahorainicioreserva(), "fechahoraregreso", viaje.getFechahorafinreserva(), new Document("fechahorapartida", 1));
-            List<Solicitud> list = solicitudRepository.filterBetweenDate("idsolicitud", solicitud.getIdsolicitud(), "fechahorapartida", viaje.getFechahorainicioreserva(), "fechahoraregreso", viaje.getFechahorafinreserva(), new Document("fechahorapartida", 1));
-            if (list == null || list.isEmpty()) {
-                JsfUtil.warningMessage(rf.getMessage("warning.solicitudnoestaenelrangofechas"));
-                return null;
-            }
-            if (list.get(0).getEstatus().getIdestatus().equals("SOLICITADO")) {
-
-            } else {
-                JsfUtil.warningMessage(rf.getMessage("warning.solicitudebetenerestatusolocitado"));
-                return null;
-            }
+          
 
             if (!viajeServices.vehiculoDisponible(viaje)) {
                 JsfUtil.warningMessage(rf.getMessage("warning.vehiculoenviajefechas"));
@@ -1198,40 +1168,17 @@ viaje.setCostocombustible(0.0);
                     return null;
                 }
             }
-            if (solicitud.getPasajeros() > viaje.getVehiculo().getPasajeros()) {
-                JsfUtil.warningMessage(rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
-                return "";
-            }
+          
 
-            if (DateUtil.diasEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso()) > 1) {
-                JsfUtil.warningMessage(rf.getMessage("warning.demasiadosdiasfechafinal"));
-                return "";
-            }
+          
 
-            List<Object> objectList = viajeServices.asignarListViajesASolicitud(viaje, solicitud, rf.getMrb(), rf.getArb());
+         
 
-            for (Object o : objectList) {
-                if (o instanceof Solicitud) {
-                    solicitud = (Solicitud) o;
-                } else {
-                    if (o instanceof Boolean) {
-                        if (!(Boolean) o) {
-                            return "";
-                        }
-                    }
-                }
-
-            }
-
-            if (!viaje.getVehiculo().getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())) {
-                JsfUtil.warningMessage(rf.getMessage("warning.tipovehiculonocoincideconeltipodelasolicitud"));
-                return "";
-            }
             Integer idviaje = autoincrementableServices.getContador("viaje");
             viaje.setIdviaje(idviaje);
             viaje.setRealizado("no");
             viaje.setActivo("si");
-            viaje.setViajesinsolicitud("no");
+             viaje.setViajesinsolicitud("no");
 
             //Lo datos del usuario
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
@@ -1245,38 +1192,20 @@ viaje.setCostocombustible(0.0);
                  *
                  */
 
-                //   solicitud.setViaje(viajeList);
-                solicitud.setEstatusViaje(viaje.getEstatusViaje());
+              
 
-                Estatus estatus = new Estatus();
-                estatus.setIdestatus("APROBADO");
-                Optional<Estatus> optional = estatusRepository.findById(estatus);
-                if (!optional.isPresent()) {
-                    JsfUtil.warningMessage(rf.getMessage("warning.noexisteestatuscancelado"));
-                    return "";
-                }
-                estatus = optional.get();
-                solicitud.setEstatus(estatus);
-
-                if (solicitudRepository.update(solicitud)) {
-                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
-                            "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
-                } else {
-                    JsfUtil.warningMessage(rf.getMessage("warning.solicitudnoactualizada"));
-                    return "";
-                }
 
                 JsfUtil.successMessage(rf.getAppMessage("info.save"));
                 usuarioList = new ArrayList<>();
-                if (solicitud.getUsuario().get(0).getUsername().equals(solicitud.getUsuario().get(1).getUsername())) {
-                    usuarioList.add(solicitud.getUsuario().get(0));
-                    notificacionServices.saveNotification("Solicitud Aprobada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(0).getUsername(), "solicitudrechazada");
-                } else {
-                    notificacionServices.saveNotification("Solicitud Aprobada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(0).getUsername(), "solicitudrechazada");
-                    notificacionServices.saveNotification("Solicitud Aprobada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(1).getUsername(), "solicitudrechazada");
-                    usuarioList.add(solicitud.getUsuario().get(0));
-                    usuarioList.add(solicitud.getUsuario().get(1));
-                }
+//                if (solicitud.getUsuario().get(0).getUsername().equals(solicitud.getUsuario().get(1).getUsername())) {
+//                    usuarioList.add(solicitud.getUsuario().get(0));
+//                    notificacionServices.saveNotification("Solicitud Aprobada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(0).getUsername(), "solicitudrechazada");
+//                } else {
+//                    notificacionServices.saveNotification("Solicitud Aprobada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(0).getUsername(), "solicitudrechazada");
+//                    notificacionServices.saveNotification("Solicitud Aprobada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(1).getUsername(), "solicitudrechazada");
+//                    usuarioList.add(solicitud.getUsuario().get(0));
+//                    usuarioList.add(solicitud.getUsuario().get(1));
+//                }
 
 //Notificacion al conductor
                 List<Usuario> usuarioConductorList = usuarioRepository.findBy(new Document("cedula", viaje.getConductor().getCedula()));
@@ -1288,9 +1217,9 @@ viaje.setCostocombustible(0.0);
                 }
 
                 //Envia la notificacion.....
-                push.send("Solicitud Aprobada ");
+                push.send("Viaje sin solicitud creado ");
 
-                sendEmail("Solicitud Aprobada", "SOLICITUDAPROBADA");
+          //      sendEmail("Viaje sin solicitud creado", "VIAJESINSOLICITUDCREADO");
 
                 reset();
             } else {
