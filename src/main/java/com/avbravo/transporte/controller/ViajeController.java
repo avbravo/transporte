@@ -477,7 +477,12 @@ public class ViajeController implements Serializable, IController {
                     viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
                     break;
             }
+ /**
+             * Filtrar el viaje que no se haya asignado una solicitud
+             */
 
+          viajeList = viajeServices.sinSolicitud(viajeList);
+          
             viajeDataModel = new ViajeDataModel(viajeList);
 
         } catch (Exception e) {

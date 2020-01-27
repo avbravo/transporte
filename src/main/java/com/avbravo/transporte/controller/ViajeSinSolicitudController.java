@@ -98,7 +98,7 @@ import org.primefaces.model.ScheduleModel;
 @ViewScoped
 @Getter
 @Setter
-public class ViajesinsolicitudController implements Serializable, IController {
+public class ViajeSinSolicitudController implements Serializable, IController {
 
 // <editor-fold defaultstate="collapsed" desc="fields">  
     private static final long serialVersionUID = 1L;
@@ -241,7 +241,7 @@ public class ViajesinsolicitudController implements Serializable, IController {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="constructor">
-    public ViajesinsolicitudController() {
+    public ViajeSinSolicitudController() {
     }
 
     // </editor-fold>
@@ -479,7 +479,15 @@ public class ViajesinsolicitudController implements Serializable, IController {
                     viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
                     break;
             }
+            
+            /**
+             * Filtrar el viaje que no se haya asignado una solicitud
+             */
 
+            viajeList = viajeServices.conSolicitud(viajeList);
+                
+           
+            
             viajeDataModel = new ViajeDataModel(viajeList);
 
         } catch (Exception e) {
@@ -1178,7 +1186,7 @@ viaje.setCostocombustible(0.0);
             viaje.setIdviaje(idviaje);
             viaje.setRealizado("no");
             viaje.setActivo("si");
-             viaje.setViajesinsolicitud("no");
+             viaje.setViajesinsolicitud("si");
 
             //Lo datos del usuario
             Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");

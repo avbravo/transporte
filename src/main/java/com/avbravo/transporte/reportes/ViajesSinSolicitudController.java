@@ -234,7 +234,7 @@ public class ViajesSinSolicitudController implements Serializable, IController {
 // esta cancelado
                         } else {
                             //CONDUCTOR PENDIENTE
-                            if (v.getConductor().getEscontrol().equals("si")) {
+                         //   if (v.getConductor().getEscontrol().equals("si")) {
 
                                 ProgramacionVehicular pv = new ProgramacionVehicular();
                                 pv.setConductor(v.getConductor().getNombre());
@@ -288,7 +288,7 @@ public class ViajesSinSolicitudController implements Serializable, IController {
 
                                 }
                                 programacionVehicular.add(pv);
-                            }
+                         //   }
                         }
                     }//for
                 }

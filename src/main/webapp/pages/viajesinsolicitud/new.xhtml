@@ -56,9 +56,9 @@
                             <jmoordbjsf:calendar
                                 required="true"
                                 pattern="dd/MM/yyyy HH:mm a" 
-                                value="#{viajesinsolicitudController.viaje.fechahorainicioreserva}" 
+                                value="#{viajeSinSolicitudController.viaje.fechahorainicioreserva}" 
                                 label="#{msg['field.fechahorainicioreserva']}"
-                                listener="#{viajesinsolicitudController.calendarChangeListener}"
+                                listener="#{viajeSinSolicitudController.calendarChangeListener}"
                                 update=":form:vehiculo, , :form:conductor, :form:msg, :form:growl,:form:warningMessage"/>
 
 
@@ -72,9 +72,9 @@
                             <jmoordbjsf:calendar
                                 pattern="dd/MM/yyyy HH:mm a" 
                                 required="true"
-                                value="#{viajesinsolicitudController.viaje.fechahorafinreserva}"
+                                value="#{viajeSinSolicitudController.viaje.fechahorafinreserva}"
                                 label="#{msg['field.fechahorafinreserva']}" 
-                                listener="#{viajesinsolicitudController.calendarChangeListener}"
+                                listener="#{viajeSinSolicitudController.calendarChangeListener}"
                                 update=":form:vehiculo,:form:conductor, :form:msg, :form:growl, :form:warningMessage"/>
 
 
@@ -90,17 +90,17 @@
                                        id="vehiculolabel" />
                         <p:fieldset>
                             <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
-                                                     completeMethod="#{viajesinsolicitudController.completeVehiculo}"
+                                                     completeMethod="#{viajeSinSolicitudController.completeVehiculo}"
 
 
                                                      labeltip1="#{msg['field.tipovehiculo']} #{p.tipovehiculo.idtipovehiculo}" 
                                                      labeltip2="#{msg['field.pasajeros']} #{p.pasajeros}" 
-                                                     listener="#{viajesinsolicitudController.handleSelectVehiculo}"
+                                                     listener="#{viajeSinSolicitudController.handleSelectVehiculo}"
                                                      dropdown="true"
                                                      required="true"                                                                                                                                                                                                                                                                                                                                                                            
                                                      minQueryLength="0"
                                                      id="vehiculo"
-                                                     value="#{viajesinsolicitudController.viaje.vehiculo}"
+                                                     value="#{viajeSinSolicitudController.viaje.vehiculo}"
                                                      itemLabel="#{p.marca} #{p.modelo} #{p.placa} "
                                                      field="marca"
                                                      />
@@ -111,7 +111,7 @@
                                               title="#{msg['label.viajevehiculo']}"
                                               iconAwesome="fa-calendar" 
                                               update="vehiculoDetails"
-                                              action="#{viajesinsolicitudController.prepareScheduleVehiculo()}"
+                                              action="#{viajeSinSolicitudController.prepareScheduleVehiculo()}"
                                               oncomplete="PF('vehiculoDialog').show();" />
 
 
@@ -119,13 +119,13 @@
                         <p:outputLabel value="#{msg['field.conductor']}"  />
                         <p:fieldset>
                             <jmoordbjsf:autocomplete converter="#{conductorConverter}"
-                                                     completeMethod="#{viajesinsolicitudController.completeConductor}"
+                                                     completeMethod="#{viajeSinSolicitudController.completeConductor}"
                                                      labeltip1="#{msg['field.cedula']} #{p.cedula}"
                                                      labeltip2="#{msg['field.nombre']} #{p.nombre}" 
-                                                     listener="#{viajesinsolicitudController.handleSelect}"
+                                                     listener="#{viajeSinSolicitudController.handleSelect}"
                                                      dropdown="true"
                                                      minQueryLength="0"
-                                                     value="#{viajesinsolicitudController.viaje.conductor}"
+                                                     value="#{viajeSinSolicitudController.viaje.conductor}"
                                                      itemLabel="#{p.nombre}"
                                                      field="nombre"
                                                      required="true"
@@ -136,36 +136,36 @@
                                               title="#{msg['label.viajeconductor']}"
                                               iconAwesome="fa-calendar" 
                                               update="conductorDetails"
-                                              action="#{viajesinsolicitudController.prepareScheduleConductor()}"
+                                              action="#{viajeSinSolicitudController.prepareScheduleConductor()}"
                                               oncomplete="PF('conductorDialog').show();" />
 
 
                         </p:fieldset>
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
-                        <jmoordbjsf:inputText      required="true"  value="#{viajesinsolicitudController.viaje.lugarpartida}"    />
+                        <jmoordbjsf:inputText      required="true"  value="#{viajeSinSolicitudController.viaje.lugarpartida}"    />
 
                         <p:outputLabel  value="#{msg['field.lugardestino']}" />
-                        <jmoordbjsf:inputText      required="true"  value="#{viajesinsolicitudController.viaje.lugardestino}"    />
+                        <jmoordbjsf:inputText      required="true"  value="#{viajeSinSolicitudController.viaje.lugardestino}"    />
 
 
                         <p:outputLabel  value="#{msg['field.mision']}"/>
                         <b:inputTextarea  requiredMessage="#{msg['field.mision']}"
                                           required="true"
-                                          rows="2" value="#{viajesinsolicitudController.viaje.mision}"  />
+                                          rows="2" value="#{viajeSinSolicitudController.viaje.mision}"  />
 
                         <p:outputLabel  value="#{msg['field.comentarios']}"/>
                         <b:inputTextarea  requiredMessage="#{msg['field.comentarios']}"
                                           required="true"
-                                          rows="2" value="#{viajesinsolicitudController.viaje.comentarios}"  />
+                                          rows="2" value="#{viajeSinSolicitudController.viaje.comentarios}"  />
 
 
 
                         <p:outputLabel  value="#{msg['field.kmestimados']}" />
-                      <p:outputLabel    value="#{viajesinsolicitudController.viaje.kmestimados}"  />
+                      <p:outputLabel    value="#{viajeSinSolicitudController.viaje.kmestimados}"  />
 
                         <p:outputLabel  value="#{msg['field.costocombustible']}"  />
-                    <p:outputLabel value="#{viajesinsolicitudController.viaje.costocombustible}"   />
+                    <p:outputLabel value="#{viajeSinSolicitudController.viaje.costocombustible}"   />
 
 
 
@@ -177,8 +177,8 @@
                         <jmoordbjsf:autocomplete converter="#{estatusViajeConverter}"
                                                  completeMethod="#{estatusViajeController.estatusViajeServices.complete}"
                                                  labeltip1="#{msg['field.estatusviaje']} #{p.idestatusviaje}" 
-                                                 listener="#{viajesinsolicitudController.handleSelectEstatusViaje}"
-                                                 value="#{viajesinsolicitudController.viaje.estatusViaje}"
+                                                 listener="#{viajeSinSolicitudController.handleSelectEstatusViaje}"
+                                                 value="#{viajeSinSolicitudController.viaje.estatusViaje}"
                                                  itemLabel=" #{p.idestatusviaje}"
                                                  field="idestatusviaje"
                                                  dropdown="true"
@@ -190,11 +190,11 @@
 
 
 
-                        <jmoordbjsf:commandbuttonsave    save="#{viajesinsolicitudController.save()}" />
+                        <jmoordbjsf:commandbuttonsave    save="#{viajeSinSolicitudController.save()}" />
 
                        
                             <jmoordbjsf:commandbuttongolist   url = "/pages/viajesinsolocitud/list.xhtml"
-                                                              controller="#{viajesinsolicitudController}" />
+                                                              controller="#{viajeSinSolicitudController}" />
                             
 
                
@@ -220,7 +220,7 @@
                 <b:panelGrid id="vehiculoDetails" colSpans="12" size="xs" > 
                     <p:schedule id="vehiculoSchedule"       
                                 rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
-                                value="#{viajesinsolicitudController.vehiculoScheduleModel}" widgetVar="vehiculoSchedule" timeZone="GMT-5" locale="es">
+                                value="#{viajeSinSolicitudController.vehiculoScheduleModel}" widgetVar="vehiculoSchedule" timeZone="GMT-5" locale="es">
 
 
                     </p:schedule>
@@ -240,7 +240,7 @@
                 <b:panelGrid id="conductorDetails" colSpans="12" size="xs" > 
                     <p:schedule id="conductorSchedule"       
                                 rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
-                                value="#{viajesinsolicitudController.conductorScheduleModel}" widgetVar="conductorSchedule" timeZone="GMT-5" locale="es">
+                                value="#{viajeSinSolicitudController.conductorScheduleModel}" widgetVar="conductorSchedule" timeZone="GMT-5" locale="es">
 
 
                     </p:schedule>
@@ -261,8 +261,8 @@
                 <b:panelGrid id="viajesDetails" colSpans="12" size="xs" > 
                     <p:schedule id="viajesSchedule"       
                                 rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
-                                value="#{viajesinsolicitudController.viajeScheduleModel}" widgetVar="viajesSchedule" timeZone="GMT-5" locale="es">
-                        <p:ajax  event="eventSelect"  listener="#{viajesinsolicitudController.onEventSelectViaje}" 
+                                value="#{viajeSinSolicitudController.viajeScheduleModel}" widgetVar="viajesSchedule" timeZone="GMT-5" locale="es">
+                        <p:ajax  event="eventSelect"  listener="#{viajeSinSolicitudController.onEventSelectViaje}" 
                                  update="viajesDetallesPanel"  oncomplete="PF('viajesDetallesDialog').show();"/>
 
                     </p:schedule>
@@ -284,43 +284,43 @@
 
 
                     <p:outputLabel  value="#{msg['field.idviaje']}" />
-                    <p:outputLabel  value="#{viajesinsolicitudController.viajeSelected.idviaje}"   />
+                    <p:outputLabel  value="#{viajeSinSolicitudController.viajeSelected.idviaje}"   />
 
                     <p:outputLabel  value="#{msg['field.placa']}" />
-                    <p:outputLabel  value="#{viajesinsolicitudController.viajeSelected.vehiculo.placa}"    />
+                    <p:outputLabel  value="#{viajeSinSolicitudController.viajeSelected.vehiculo.placa}"    />
                     <p:outputLabel  value="#{msg['field.marca']}" />
-                    <p:outputLabel  value="#{viajesinsolicitudController.viajeSelected.vehiculo.marca}"    />
+                    <p:outputLabel  value="#{viajeSinSolicitudController.viajeSelected.vehiculo.marca}"    />
                     <p:outputLabel  value="#{msg['field.modelo']}" />
-                    <p:outputLabel  value="#{viajesinsolicitudController.viajeSelected.vehiculo.modelo}"    />
+                    <p:outputLabel  value="#{viajeSinSolicitudController.viajeSelected.vehiculo.modelo}"    />
 
                     <p:outputLabel  value="#{msg['field.conductor']}" />
-                    <p:outputLabel  value="#{viajesinsolicitudController.viajeSelected.conductor.nombre}"   />
+                    <p:outputLabel  value="#{viajeSinSolicitudController.viajeSelected.conductor.nombre}"   />
 
                     <p:outputLabel value="#{msg['field.tipoviaje']}" />
-                    <p:outputLabel value="#{viajesinsolicitudController.viajeSelected.estatusViaje.idestatusviaje}" />
+                    <p:outputLabel value="#{viajeSinSolicitudController.viajeSelected.estatusViaje.idestatusviaje}" />
                     <p:outputLabel value="#{msg['field.realizado']}" />
-                    <p:outputLabel value="#{viajesinsolicitudController.viajeSelected.realizado}" />
+                    <p:outputLabel value="#{viajeSinSolicitudController.viajeSelected.realizado}" />
 
 
 
                     <p:outputLabel  value="#{msg['field.fechapartida']}" />
-                    <p:outputLabel value="#{viajesinsolicitudController.showDate(viajesinsolicitudController.viajeSelected.fechahorainicioreserva)} #{viajesinsolicitudController.showHour(viajesinsolicitudController.viajeSelected.fechahorainicioreserva)}"  />
+                    <p:outputLabel value="#{viajeSinSolicitudController.showDate(viajeSinSolicitudController.viajeSelected.fechahorainicioreserva)} #{viajeSinSolicitudController.showHour(viajeSinSolicitudController.viajeSelected.fechahorainicioreserva)}"  />
 
 
 
                     <p:outputLabel  value="#{msg['field.lugarpartida']}" />
 
-                    <p:outputLabel value="#{viajesinsolicitudController.viajeSelected.lugarpartida}"    />
+                    <p:outputLabel value="#{viajeSinSolicitudController.viajeSelected.lugarpartida}"    />
                     <p:outputLabel  value="#{msg['field.lugardestino']}" />
 
-                    <p:outputLabel value="#{viajesinsolicitudController.viajeSelected.lugardestino}"    />
+                    <p:outputLabel value="#{viajeSinSolicitudController.viajeSelected.lugardestino}"    />
 
 
                     <p:outputLabel  value="#{msg['field.fecharegreso']}" />
-                    <p:outputLabel value="#{viajesinsolicitudController.showDate(viajesinsolicitudController.viajeSelected.fechahorafinreserva)} #{viajesinsolicitudController.showHour(viajesinsolicitudController.viajeSelected.fechahorafinreserva)}"  />
+                    <p:outputLabel value="#{viajeSinSolicitudController.showDate(viajeSinSolicitudController.viajeSelected.fechahorafinreserva)} #{viajeSinSolicitudController.showHour(viajeSinSolicitudController.viajeSelected.fechahorafinreserva)}"  />
 
                     <p:outputLabel  value="#{msg['field.asientosdisponibles']}" />
-                    <p:outputLabel  value="#{viajesinsolicitudController.viajeSelected.asientosdisponibles}" />
+                    <p:outputLabel  value="#{viajeSinSolicitudController.viajeSelected.asientosdisponibles}" />
 
 
 
@@ -341,8 +341,8 @@
                 <b:panelGrid id="solicitudDetails" colSpans="12" size="xs" > 
                     <p:schedule id="solicitudSchedule"       
                                 rightHeaderTemplate="month,agendaWeek,agendaDay,basicDay"
-                                value="#{viajesinsolicitudController.solicitudScheduleModel}" widgetVar="solicitudSchedule" timeZone="GMT-5" locale="es">
-                        <p:ajax  event="eventSelect"  listener="#{viajesinsolicitudController.onEventSelect}" 
+                                value="#{viajeSinSolicitudController.solicitudScheduleModel}" widgetVar="solicitudSchedule" timeZone="GMT-5" locale="es">
+                        <p:ajax  event="eventSelect"  listener="#{viajeSinSolicitudController.onEventSelect}" 
                                  update="solicitudDetallesPanel"  oncomplete="PF('solicitudDetallesDialog').show();"/>
 
                     </p:schedule>
@@ -365,31 +365,31 @@
 
 
                     <p:outputLabel  value="#{msg['field.idsolicitud']}" />
-                    <p:outputLabel  value="#{viajesinsolicitudController.solicitud.idsolicitud}" id="idsolicitud"   />
+                    <p:outputLabel  value="#{viajeSinSolicitudController.solicitud.idsolicitud}" id="idsolicitud"   />
 
                     <p:outputLabel  value="#{msg['field.solicitadopor']}" />
-                    <p:outputLabel  value="#{viajesinsolicitudController.solicitud.usuario.get(0).nombre}" id="solicitadopor"   />
+                    <p:outputLabel  value="#{viajeSinSolicitudController.solicitud.usuario.get(0).nombre}" id="solicitadopor"   />
 
                     <p:outputLabel  value="#{msg['field.responsable']}" />
-                    <p:outputLabel  value="#{viajesinsolicitudController.solicitud.usuario.get(1).nombre}" id="responsable"   />
+                    <p:outputLabel  value="#{viajeSinSolicitudController.solicitud.usuario.get(1).nombre}" id="responsable"   />
 
                     <p:outputLabel value="#{msg['field.idestatus']}" />
-                    <p:outputLabel value="#{viajesinsolicitudController.solicitud.estatus.idestatus}" />
+                    <p:outputLabel value="#{viajeSinSolicitudController.solicitud.estatus.idestatus}" />
                     <p:outputLabel value="#{msg['field.tiposolicitud']}" />
-                    <p:outputLabel value="#{viajesinsolicitudController.solicitud.tiposolicitud.idtiposolicitud}" />
+                    <p:outputLabel value="#{viajeSinSolicitudController.solicitud.tiposolicitud.idtiposolicitud}" />
 
 
                     <p:outputLabel value="#{msg['field.vistobueno']}"/>
                     <p:fieldset>
-                        <p:outputLabel value="#{msg['field.coordinador']}" rendered="#{viajesinsolicitudController.solicitud.tiposolicitud.idtiposolicitud eq'DOCENTE'}"/>
+                        <p:outputLabel value="#{msg['field.coordinador']}" rendered="#{viajeSinSolicitudController.solicitud.tiposolicitud.idtiposolicitud eq'DOCENTE'}"/>
                         <p:spacer width="5"/>
-                        <p:toggleSwitch value="#{viajesinsolicitudController.isVistoBuenoCoordinador()}"  disabled="true" rendered="#{viajesinsolicitudController.solicitud.tiposolicitud.idtiposolicitud eq'DOCENTE'}"/>
+                        <p:toggleSwitch value="#{viajeSinSolicitudController.isVistoBuenoCoordinador()}"  disabled="true" rendered="#{viajeSinSolicitudController.solicitud.tiposolicitud.idtiposolicitud eq'DOCENTE'}"/>
 
 
                         <p:spacer width="25"/>
                         <p:outputLabel value="#{msg['field.subdirectoradministrativo']}"/>
                         <p:spacer width="5"/>
-                        <p:toggleSwitch value="#{viajesinsolicitudController.isVistoBuenoSubdirectorAdministrativo()}" disabled="true"  />
+                        <p:toggleSwitch value="#{viajeSinSolicitudController.isVistoBuenoSubdirectorAdministrativo()}" disabled="true"  />
 
 
                     </p:fieldset>
@@ -397,11 +397,11 @@
 
                     <p:fieldset>
 
-                        <h:outputText value="#{viajesinsolicitudController.showDate(viajesinsolicitudController.solicitud.fechahorapartida)} #{viajesinsolicitudController.showHour(viajesinsolicitudController.solicitud.fechahorapartida)}"  />
+                        <h:outputText value="#{viajeSinSolicitudController.showDate(viajeSinSolicitudController.solicitud.fechahorapartida)} #{viajeSinSolicitudController.showHour(viajeSinSolicitudController.solicitud.fechahorapartida)}"  />
                         <p:spacer width="25"/>
                         <p:outputLabel value="#{msg['field.fecharegreso']}"/>
                         <p:spacer width="5"/>
-                        <h:outputText value="#{viajesinsolicitudController.showDate(viajesinsolicitudController.solicitud.fechahoraregreso)} #{viajesinsolicitudController.showHour(viajesinsolicitudController.solicitud.fechahoraregreso)}"  />
+                        <h:outputText value="#{viajeSinSolicitudController.showDate(viajeSinSolicitudController.solicitud.fechahoraregreso)} #{viajeSinSolicitudController.showHour(viajeSinSolicitudController.solicitud.fechahoraregreso)}"  />
 
                     </p:fieldset>
 
@@ -410,29 +410,29 @@
 
                     <p:outputLabel  value="#{msg['field.lugarpartida']}" />
 
-                    <p:outputLabel value="#{viajesinsolicitudController.solicitud.lugarpartida}" id="lugarpartida"   />
+                    <p:outputLabel value="#{viajeSinSolicitudController.solicitud.lugarpartida}" id="lugarpartida"   />
                     <p:outputLabel  value="#{msg['field.lugarllegada']}" />
 
-                    <p:outputLabel value="#{viajesinsolicitudController.solicitud.lugarllegada}" id="lugarllegada"   />
+                    <p:outputLabel value="#{viajeSinSolicitudController.solicitud.lugarllegada}" id="lugarllegada"   />
 
 
 
 
                     <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
-                    <p:outputLabel  value="#{viajesinsolicitudController.solicitud.numerodevehiculos}" />
+                    <p:outputLabel  value="#{viajeSinSolicitudController.solicitud.numerodevehiculos}" />
                     <p:outputLabel  value="#{msg['field.pasajeros']}" />
-                    <p:outputLabel  value="#{viajesinsolicitudController.solicitud.pasajeros}" />
+                    <p:outputLabel  value="#{viajeSinSolicitudController.solicitud.pasajeros}" />
                     <p:outputLabel  value="#{msg['field.tipovehiculo']}" />
-                    <p:outputLabel  value="#{viajesinsolicitudController.solicitud.tipovehiculo.get(0).idtipovehiculo}" />
+                    <p:outputLabel  value="#{viajeSinSolicitudController.solicitud.tipovehiculo.get(0).idtipovehiculo}" />
 
 
 
                     <p:outputLabel value="#{msg['field.idtipogira']}"/>
                     <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
-                                             completeMethod="#{viajesinsolicitudController.tipogiraServices.complete}" 
+                                             completeMethod="#{viajeSinSolicitudController.tipogiraServices.complete}" 
                                              labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"  
-                                             listener="#{viajesinsolicitudController.handleSelect}"
-                                             value="#{viajesinsolicitudController.solicitud.tipogira}"
+                                             listener="#{viajeSinSolicitudController.handleSelect}"
+                                             value="#{viajeSinSolicitudController.solicitud.tipogira}"
                                              itemLabel=" #{p.idtipogira}"
                                              field="idtipogira"
                                              dropdown="true"
@@ -442,12 +442,12 @@
                                              update=""/>
 
                     <p:outputLabel  value="#{msg['field.objetivo']}" />
-                    <b:inputTextarea disabled="true" rows="2" span="8"  value="#{viajesinsolicitudController.solicitud.objetivo}" id="objetivo"   />
+                    <b:inputTextarea disabled="true" rows="2" span="8"  value="#{viajeSinSolicitudController.solicitud.objetivo}" id="objetivo"   />
 
 
 
                     <p:outputLabel  value="#{msg['field.lugares']}" />
-                    <p:chips disabled="true" value="#{viajesinsolicitudController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
+                    <p:chips disabled="true" value="#{viajeSinSolicitudController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
 
 
 

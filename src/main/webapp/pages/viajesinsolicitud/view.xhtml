@@ -26,19 +26,19 @@
 
                 <jmoordbjsf:messages id="msg"/>
                 <b:panel collapsible="false" title="#{msg['titleview.viaje']}"  look="primary">
-                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{viajesinsolicitudController.writable}"> 
+                    <b:panelGrid id="panel" colSpans="2,10" size="xs" rendered="#{viajeSinSolicitudController.writable}"> 
                         <p:outputLabel  value="#{msg['field.idviaje']}" />
-                        <p:outputLabel  value="#{viajesinsolicitudController.viaje.idviaje}" id="idviaje"   />
+                        <p:outputLabel  value="#{viajeSinSolicitudController.viaje.idviaje}" id="idviaje"   />
 
                      <p:outputLabel  value="#{msg['field.activo']}" />
-                        <jmoordbjsf:yesno value="#{viajesinsolicitudController.viaje.activo}" id="activo"  required="true"/>
+                        <jmoordbjsf:yesno value="#{viajeSinSolicitudController.viaje.activo}" id="activo"  required="true"/>
 
                     </b:panelGrid>
                       <jmoordbjsf:toolbarview 
                         renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
                         renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
                         renderedList="#{p:ifGranted('ADMINISTRADOR')}"                    
-                        controller="#{viajesinsolicitudController}"
+                        controller="#{viajeSinSolicitudController}"
                         url  = "/pages/viajesinsolicitud/list.xhtml"
                         />
                 </b:panel>
