@@ -96,6 +96,11 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
     private String mensajeWarning = "";
     private String mensajeWarningTitle = "";
 
+    private Date fechaRestaurarSolicitudPartida = new Date();
+    private Date fechaRestaurarSolicitudRegreso = new Date();
+    private Date fechaPartidaNueva= new Date();
+    private Date fechaRegresoNueva= new Date();
+
     Integer index = 0;
     //DataModel
     private ViajeDataModel viajeDataModel;
@@ -105,10 +110,10 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
     List<Integer> pages = new ArrayList<>();
     Date fechaDesde = new Date();
     Date fechaHasta = new Date();
-    
+
     Date fechaInicialParaSolicitud = new Date();
     Date fechaFinalParaSolicitud = new Date();
-    
+
     String lugarDestino = "";
     String comentarios = "";
     String activo = "";
@@ -132,7 +137,7 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
     Vehiculo vehiculo = new Vehiculo();
     Solicitud solicitud = new Solicitud();
     Solicitud solicitudCopiar = new Solicitud();
-    
+    Solicitud solicitudInicial = new Solicitud();
 
     //List
     List<Viaje> viajeList = new ArrayList<>();
@@ -229,6 +234,7 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
     @PostConstruct
     public void init() {
         try {
+
             vehiculoScheduleModel = new DefaultScheduleModel();
             conductorScheduleModel = new DefaultScheduleModel();
             solicitudScheduleModel = new DefaultScheduleModel();
@@ -287,14 +293,14 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
-    public String iniciarHoras(){
+
+    // <editor-fold defaultstate="collapsed" desc="String iniciarHoras()">
+    public String iniciarHoras() {
         try {
-               fechaInicialParaSolicitud = DateUtil.primerDiaDelMesActualConHoraMinutosSegundos(0, 1, 0);
-                fechaFinalParaSolicitud = DateUtil.ultimoDiaDelMesActualConHoraMinutoSegundo(23, 59, 0);
+            fechaInicialParaSolicitud = DateUtil.primerDiaDelMesActualConHoraMinutosSegundos(0, 1, 0);
+            fechaFinalParaSolicitud = DateUtil.ultimoDiaDelMesActualConHoraMinutoSegundo(23, 59, 0);
         } catch (Exception e) {
-                errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -563,6 +569,67 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
     }
 
     // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String updateFechahoraPartidaDesdeViajeIda()">
+    public String updateFechahoraPartidaDesdeViajeIda() {
+        try {
+            fechaPartidaNueva = viajeIda.getFechahorainicioreserva();
+            solicitud.setFechahorapartida(viajeIda.getFechahorainicioreserva());
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return "";
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String updateFechahoraRegresoDesdeViajeIda()">
+
+    public String updateFechahoraRegresoDesdeViajeIda() {
+        try {
+             fechaRegresoNueva = viajeIda.getFechahorafinreserva();
+            solicitud.setFechahoraregreso(viajeIda.getFechahorafinreserva());
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return "";
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String updateFechahoraPartidaDesdeViajeRegreso()">
+    public String updateFechahoraPartidaDesdeViajeRegreso() {
+        try {
+             fechaPartidaNueva = viajeRegreso.getFechahorainicioreserva();
+            solicitud.setFechahorapartida(viajeRegreso.getFechahorainicioreserva());
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return "";
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String updateFechahoraRegresoDesdeViajeRegreso()">
+
+    public String updateFechahoraRegresoDesdeViajeRegreso() {
+        try {
+             fechaRegresoNueva = viajeRegreso.getFechahorafinreserva();
+            solicitud.setFechahoraregreso(viajeRegreso.getFechahorafinreserva());
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return "";
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String String updateFechahoraDesdeSolicitudInicial() ">
+    public String updateFechahoraDesdeSolicitudInicial() {
+        try {
+
+            solicitud.setFechahorapartida(fechaRestaurarSolicitudPartida);
+            solicitud.setFechahoraregreso(fechaRestaurarSolicitudRegreso);
+        } catch (Exception e) {
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return "";
+    }
+
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Boolean showButtonSolicitudDetallesShow()">
     public Boolean showButtonSolicitudDetallesShow() {
         try {
@@ -787,17 +854,24 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
      */
     public List<Viaje> completeViajeRangoFechas(String query) {
         List<Viaje> suggestions = new ArrayList<>();
+        List<Viaje> list = new ArrayList<>();
 
         try {
             if (fechaInicialParaSolicitud == null || fechaFinalParaSolicitud == null) {
                 return suggestions;
             }
 
-            suggestions = viajeRepository.filterBetweenDate("viajesinsolicitud", "si", "fechahorainicioreserva", fechaInicialParaSolicitud, "fechahorafinreserva", fechaFinalParaSolicitud, new Document("fechahorainicioreserva", 1));
+            list = viajeRepository.filterBetweenDate("activo", "si", "fechahorainicioreserva", fechaInicialParaSolicitud, "fechahorafinreserva", fechaFinalParaSolicitud, new Document("fechahorainicioreserva", 1));
+            for (Viaje v : list) {
+                if (v.getRealizado().equals("no") && v.getVehiculo().getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())) {
+                    suggestions.add(v);
+                }
+            }
 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
+
         return suggestions;
     }
 
@@ -1081,71 +1155,6 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
         return "";
     }   // </editor-fold>
 
-
-
-    // <editor-fold defaultstate="collapsed" desc="String rechazarSolicitud()">
-    public String rechazarSolicitud() {
-        try {
-            usuarioList = new ArrayList<>();
-            if (solicitud == null || solicitud.getIdsolicitud() == null) {
-                JsfUtil.warningMessage(rf.getMessage("warning.seleccioneunasolicitud"));
-                return null;
-            }
-
-            //Asignar el estatusViaje
-            Estatus estatus = new Estatus();
-            estatus.setIdestatus("RECHAZADO");
-            Optional<Estatus> optional = estatusRepository.findById(estatus);
-            if (optional.isPresent()) {
-                estatus = optional.get();
-            } else {
-                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusrechazado"));
-                return "";
-            }
-            solicitud.setEstatus(estatus);
-
-            //Lo datos del usuario
-            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
-            //solicitud.setUserInfo(solicitudRepository.generateListUserinfo(jmoordb_user.getUsername(), "rechazar"));
-            solicitud = solicitudRepository.addUserInfoForEditMethod(solicitud, jmoordb_user.getUsername(), "rechazar");
-            if (solicitudRepository.update(solicitud)) {
-                //guarda el contenido anterior
-                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
-                        "rechazar", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
-                /**
-                 * //Actualizar los viajes y el estatus de la solicitud
-                 *
-                 */
-
-                JsfUtil.warningMessage(rf.getMessage("warning.solicitudrechazada"));
-
-                //Verifica si el usuario que hay que notificarle es el mismo que solicita y responsable
-                if (solicitud.getUsuario().get(0).getUsername().equals(solicitud.getUsuario().get(1).getUsername())) {
-                    usuarioList.add(solicitud.getUsuario().get(0));
-                    notificacionServices.saveNotification("Solicitud Rechazada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(0).getUsername(), "solicitudrechazada");
-                } else {
-                    notificacionServices.saveNotification("Solicitud Rechazada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(0).getUsername(), "solicitudrechazada");
-                    notificacionServices.saveNotification("Solicitud Rechazada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(1).getUsername(), "solicitudrechazada");
-                    usuarioList.add(solicitud.getUsuario().get(0));
-                    usuarioList.add(solicitud.getUsuario().get(1));
-                }
-
-                //Envia la notificacion.....
-                push.send("Solicitud Rechazada");
-
-                sendEmail("Solicitud Rechazada", "SOLICITUDRECHAZADA");
-                reset();
-                return "";
-            } else {
-                JsfUtil.successMessage("rechazarSolicitud() " + viajeRepository.getException().toString());
-            }
-
-        } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
-        }
-        return "";
-    }// </editor-fold>
-
     // <editor-fold defaultstate="collapsed" desc="String primerDia()">
     public String primerDia() {
         try {
@@ -1179,7 +1188,7 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
             if (viaje.getFechahorainicioreserva() == null || viaje.getFechahorafinreserva() == null) {
 
             } else {
-                if (!viajeServices.isValidDates(viaje, false,rf.getMrb(), rf.getArb())) {
+                if (!viajeServices.isValidDates(viaje, false, rf.getMrb(), rf.getArb())) {
                     //return;
                 } else {
                     validFechas = true;
@@ -1210,10 +1219,10 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
 
     }// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="calendarChangeListener(SelectEvent event)">
+
     public void calendarFechaSolicitudesChangeListener(SelectEvent event) {
         try {
 
- 
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
@@ -1232,10 +1241,17 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
         try {
 
             // solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
+//            solicitudInicial = new Solicitud();
+//            solicitudInicial = solicitud;
+            fechaRestaurarSolicitudPartida = solicitud.getFechahorapartida();
+            fechaRestaurarSolicitudRegreso = solicitud.getFechahoraregreso();
+            fechaPartidaNueva = solicitud.getFechahorapartida();
+            fechaRegresoNueva = solicitud.getFechahoraregreso();
+            //solicitudInicial =solicitudServices.copiarDesde(solicitudCopiar, solicitud);
             viaje.setMision(solicitud.getMision());
             viaje.setComentarios("Responsable " + solicitud.getUsuario().get(1).getNombre() + " Destino " + solicitud.getLugarllegada());
-viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
-viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
+            viaje.setFechahorainicioreserva(solicitud.getFechahorapartida());
+            viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
             viaje.setLugarpartida(solicitud.getLugarpartida());
             viaje.setLugardestino(solicitud.getLugarllegada());
             viaje.setCostocombustible(0.0);
@@ -1247,17 +1263,17 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
             JsfUtil.updateJSFComponent(":form:form:warningMessage");
             JsfUtil.updateJSFComponent(":form:content");
             JsfUtil.updateJSFComponent(":form:commandButtonShowSolicitudDetalles");
-//            if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
-//                 if (!isVistoBuenoCoordinador()) {
-//                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"),rf.getMessage("warning.faltavistobuenocoordinador"));
-//              
-//                }
-//            }
-//
-//  if (!isVistoBuenoSubdirectorAdministrativo()) {
-//    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"),rf.getMessage("warning.faltavistobuenoSubdirectoradministativo"));
-//                    
-//  }
+            if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
+                if (!isVistoBuenoCoordinador()) {
+                    JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.faltavistobuenocoordinador"));
+
+                }
+            }
+
+            if (!isVistoBuenoSubdirectorAdministrativo()) {
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.faltavistobuenoSubdirectoradministativo"));
+
+            }
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
@@ -1398,7 +1414,7 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
 
     public Boolean isVistoBuenoSubdirectorAdministrativo() {
         try {
-            if(solicitud == null || solicitud.getVistoBuenoSubdirectorAdministrativo()== null){
+            if (solicitud == null || solicitud.getVistoBuenoSubdirectorAdministrativo() == null) {
                 return false;
             }
             if (solicitud.getVistoBuenoSubdirectorAdministrativo().getAprobado().equals("si")) {
@@ -1590,5 +1606,288 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
 
         return completableFuture;
     }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="save">
+    @Override
+    public String save() {
+        try {
+           
+            
+            if (viajeIda == null || viajeIda.getIdviaje() == null) {
+                JsfUtil.warningMessage(rf.getMessage("warning.seleccionaviajeida"));
+                return "";
+            }
+            if (viajeRegreso == null || viajeRegreso.getIdviaje() == null) {
+                JsfUtil.warningMessage(rf.getMessage("warning.seleccioneviajeregreso"));
+                return "";
+            }
+            if (solicitud == null || solicitud.getIdsolicitud() == null) {
+                JsfUtil.warningMessage(rf.getMessage("warning.seleccioneunasolicitud"));
+                return null;
+            }
+            if (viajeIda.getIdviaje().equals(viajeRegreso.getIdviaje())) {
+                viaje = viajeIda;
+                if (!validar(viaje)) {
+                    return "";
+                }
+
+            } else {
+                viaje = viajeIda;
+                if (!validar(viaje)) {
+                    return "";
+                }
+                viaje = viajeRegreso;
+                if (!validar(viaje)) {
+                    return "";
+                }
+
+            }
+
+            if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
+                if (!isVistoBuenoCoordinador()) {
+                    JsfUtil.warningMessage(rf.getMessage("warning.faltavistobuenocoordinador"));
+                    return null;
+                }
+            }
+
+            if (!isVistoBuenoSubdirectorAdministrativo()) {
+                Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+                //Verificar si tiene rol para cambiar el estatus
+                Rol jmoordb_rol = (Rol) JmoordbContext.get("jmoordb_rol");
+                Boolean allowed = false;
+//                if (jmoordb_rol.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") || jmoordb_rol.getIdrol().equals("ADMINISTRADOR")) {
+                if (jmoordb_rol.getIdrol().equals("SUBDIRECTORADMINISTRATIVO")) {
+                    allowed = true;
+                } else {
+                    //Verificar si este usuario tiene el rol de SUBDIRECTORADMINISTRATIVO o administrador
+                    for (Rol r : jmoordb_user.getRol()) {
+//                        if (r.getIdrol().equals("SUBDIRECTORADMINISTRATIVO") || r.getIdrol().equals("ADMINISTRADOR")) {
+                        if (r.getIdrol().equals("SUBDIRECTORADMINISTRATIVO")) {
+                            allowed = true;
+                            break;
+                        }
+                    }
+                }
+                if (allowed) {
+                    //Cambia el estatus del visto bueno del SUBDIRECTORADMINISTRATIVO
+                    solicitud.getVistoBuenoSubdirectorAdministrativo().setAprobado("si");
+                } else {
+                    JsfUtil.warningMessage(rf.getMessage("warning.faltavistobuenoSubdirectoradministativo"));
+                    return null;
+                }
+
+            }
+
+            // List<Solicitud> list = solicitudRepository.filterBetweenDate("estatus.idestatus", "SOLICITADO", "fechahorapartida", viaje.getFechahorainicioreserva(), "fechahoraregreso", viaje.getFechahorafinreserva(), new Document("fechahorapartida", 1));
+            List<Object> objectList = viajeServices.asignarListViajesIdaRegresoASolicitud(viajeIda, viajeRegreso, solicitud, rf.getMrb(), rf.getArb());
+
+            for (Object o : objectList) {
+                if (o instanceof Solicitud) {
+                    solicitud = (Solicitud) o;
+                } else {
+                    if (o instanceof Boolean) {
+                        if (!(Boolean) o) {
+                            return "";
+                        }
+                    }
+                }
+
+            }
+
+            //Cambia el estatus del viaje ahora tiene asignado
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+
+            if (viajeIda.getIdviaje().equals(viajeRegreso.getIdviaje())) {
+                viajeIda.setViajesinsolicitud("si");
+                viajeIda.setUserInfo(viajeRepository.generateListUserinfo(jmoordb_user.getUsername(), "update"));
+                if (viajeRepository.update(viajeIda)) {
+                    //guarda el contenido anterior
+                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), jmoordb_user.getUsername(),
+                            "create", "viaje", viajeRepository.toDocument(viaje).toString()));
+                } else {
+                    JsfUtil.successMessage("save() " + viajeRepository.getException().toString());
+                    return "";
+                }
+            } else {
+                viajeIda.setViajesinsolicitud("si");
+                viajeIda.setUserInfo(viajeRepository.generateListUserinfo(jmoordb_user.getUsername(), "update"));
+                if (viajeRepository.update(viajeIda)) {
+                    //guarda el contenido anterior
+                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viajeIda.getIdviaje().toString(), jmoordb_user.getUsername(),
+                            "asignarsolcitudviaje", "viaje", viajeRepository.toDocument(viajeIda).toString()));
+                } else {
+                    JsfUtil.successMessage("save() " + viajeRepository.getException().toString());
+                    return "";
+                }
+                viajeRegreso.setViajesinsolicitud("si");
+                viajeRegreso.setUserInfo(viajeRepository.generateListUserinfo(jmoordb_user.getUsername(), "update"));
+                if (viajeRepository.update(viajeRegreso)) {
+                    //guarda el contenido anterior
+                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viajeRegreso.getIdviaje().toString(), jmoordb_user.getUsername(),
+                            "asignarsolcitudviaje", "viaje", viajeRepository.toDocument(viajeRegreso).toString()));
+                } else {
+                    JsfUtil.successMessage("save() " + viajeRepository.getException().toString());
+                    return "";
+                }
+            }
+
+            //Lo datos del usuario
+            /**
+             * //Actualizar los viajes y el estatus de la solicitud
+             *
+             */
+            //   solicitud.setViaje(viajeList);
+            solicitud.setEstatusViaje(viajeIda.getEstatusViaje());
+
+            Estatus estatus = new Estatus();
+            estatus.setIdestatus("APROBADO");
+            Optional<Estatus> optional = estatusRepository.findById(estatus);
+            if (!optional.isPresent()) {
+                JsfUtil.warningMessage(rf.getMessage("warning.noexisteestatuscancelado"));
+                return "";
+            }
+            estatus = optional.get();
+            solicitud.setEstatus(estatus);
+
+            if (solicitudRepository.update(solicitud)) {
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
+                        "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+            } else {
+                JsfUtil.warningMessage(rf.getMessage("warning.solicitudnoactualizada"));
+                return "";
+            }
+
+            JsfUtil.successMessage(rf.getAppMessage("info.save"));
+            usuarioList = new ArrayList<>();
+            if (solicitud.getUsuario().get(0).getUsername().equals(solicitud.getUsuario().get(1).getUsername())) {
+                usuarioList.add(solicitud.getUsuario().get(0));
+                notificacionServices.saveNotification("Solicitud Aprobada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(0).getUsername(), "solicitudrechazada");
+            } else {
+                notificacionServices.saveNotification("Solicitud Aprobada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(0).getUsername(), "solicitudrechazada");
+                notificacionServices.saveNotification("Solicitud Aprobada: " + solicitud.getIdsolicitud(), solicitud.getUsuario().get(1).getUsername(), "solicitudrechazada");
+                usuarioList.add(solicitud.getUsuario().get(0));
+                usuarioList.add(solicitud.getUsuario().get(1));
+            }
+
+//Notificacion al conductor
+            List<Usuario> usuarioConductorList = usuarioRepository.findBy(new Document("cedula", viaje.getConductor().getCedula()));
+            if (usuarioConductorList == null || usuarioConductorList.isEmpty()) {
+                //  JsfUtil.warningMessage(rf.getMessage("warning.noexisteusuariocomoconductorparaviaje"));
+            } else {
+                notificacionServices.saveNotification("Viaje nuevo: " + viaje.getIdviaje() + "Fecha:" + viaje.getFechahorainicioreserva(), usuarioConductorList.get(0).getUsername(), "viaje nuevo");
+                usuarioList.add(usuarioConductorList.get(0));
+            }
+
+            //Envia la notificacion.....
+            push.send("Solicitud Aprobada ");
+
+            sendEmail("Solicitud Aprobada", "SOLICITUDAPROBADA");
+
+            reset();
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return "";
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    private Boolean validar(Viaje viaje) {
+        try {
+            if (!viajeServices.isValid(viaje, rf.getMrb(), rf.getArb(), false)) {
+                return false;
+            }
+
+            if (DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
+                JsfUtil.warningMessage(rf.getMessage("warning.fechahorainicioviajemayorfechainiciosolicitud"));
+
+                return false;
+            }
+            if (DateUtil.fechaMayor(solicitud.getFechahoraregreso(), viaje.getFechahorafinreserva())) {
+                JsfUtil.warningMessage(rf.getMessage("warning.fecharegresomayorfechainicioviaje"));
+
+                return false;
+            }
+
+            if (DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), DateUtil.getFechaActual())) {
+                if (!viajeServices.isValidDates(viaje, true, rf.getMrb(), rf.getArb())) {
+
+                    return false;
+                }
+            } else {
+                //Indica que es un viaje anterior que no se habia registrado 
+                if (!viajeServices.isValidDates(viaje, true, rf.getMrb(), rf.getArb(), false)) {
+                    return false;
+                }
+            }
+            Tiempo tiempoPartida = DateUtil.diferenciaEntreFechas(solicitud.getFechahorapartida(), viaje.getFechahorainicioreserva());
+            Tiempo tiempoRegreso = DateUtil.diferenciaEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
+
+            if (tiempoPartida.getDias() > 0 || tiempoPartida.getHoras() > 10) {
+                JsfUtil.warningMessage(rf.getMessage("warning.fechahorapartdamuylejanadelasolicitud"));
+                return false;
+            }
+            if (tiempoRegreso.getDias() > 0 || tiempoRegreso.getHoras() > 10) {
+                JsfUtil.warningMessage(rf.getMessage("warning.fechahoraregresoamuylejanadelasolicitud"));
+                return false;
+            }
+            if (viaje.getKmestimados() < 0) {
+                JsfUtil.warningMessage(rf.getMessage("warning.kmmenorcero"));
+                return false;
+            }
+            if (viaje.getCostocombustible() < 0) {
+                JsfUtil.warningMessage(rf.getMessage("warning.costocombustiblemenorcero"));
+                return false;
+            }
+            if (!viajeIda.getVehiculo().getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())) {
+                JsfUtil.warningMessage(rf.getMessage("warning.tipovehiculoviajeidadiferenteviaje"));
+                return false;
+            }
+            if (!viajeRegreso.getVehiculo().getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())) {
+                JsfUtil.warningMessage(rf.getMessage("warning.tipovehiculoviajeregresodiferentesolicitud"));
+                return false;
+            }
+
+//            List<Solicitud> list = solicitudRepository.filterBetweenDate("idsolicitud", solicitud.getIdsolicitud(), "fechahorapartida", viajeIda.getFechahorainicioreserva(), "fechahoraregreso", viajeIda.getFechahorafinreserva(), new Document("fechahorapartida", 1));
+//            if (list == null || list.isEmpty()) {
+//                JsfUtil.warningMessage(rf.getMessage("warning.solicitudnoestaenelrangofechasviajeida"));
+//                return false;
+//            }
+//
+//            List<Solicitud> list2 = solicitudRepository.filterBetweenDate("idsolicitud", solicitud.getIdsolicitud(), "fechahorapartida", viajeRegreso.getFechahorainicioreserva(), "fechahoraregreso", viajeRegreso.getFechahorafinreserva(), new Document("fechahorapartida", 1));
+//            if (list2 == null || list2.isEmpty()) {
+//                JsfUtil.warningMessage(rf.getMessage("warning.solicitudnoestaenelrangofechasviajeregreso"));
+//
+//                return false;
+//            }
+
+            if (solicitud.getEstatus().getIdestatus().equals("SOLICITADO")) {
+
+            } else {
+                JsfUtil.warningMessage(rf.getMessage("warning.solicitudebetenerestatusolocitado"));
+                return false;
+            }
+
+            if (solicitud.getPasajeros() > viaje.getVehiculo().getPasajeros()) {
+                JsfUtil.warningMessage(rf.getMessage("warning.capacidadvehiculomenorsolicitados"));
+                return false;
+            }
+
+            if (DateUtil.diasEntreFechas(viajeIda.getFechahorainicioreserva(), solicitud.getFechahorapartida()) > 1) {
+                JsfUtil.warningMessage(rf.getMessage("warning.demasiadosdiasfechaida"));
+
+                return false;
+            }
+            if (DateUtil.diasEntreFechas(viajeRegreso.getFechahorafinreserva(), solicitud.getFechahoraregreso()) > 1) {
+                JsfUtil.warningMessage(rf.getMessage("warning.demasiadosdiasfechafinalregreso"));
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return false;
+    }
+    // </editor-fold>
 
 }

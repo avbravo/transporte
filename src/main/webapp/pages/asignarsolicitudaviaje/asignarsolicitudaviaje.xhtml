@@ -69,17 +69,17 @@
                                               action="#{asignarSolicitudaViajeController.prepareScheduleSolicitud()}"
                                               oncomplete="PF('solicitudDialog').show();" />
 
-                                <p:spacer width="25">
-                              <p:commandButton value="#{msg['button.iniciarhoras']}" 
-                                         rendered="true"
-                                         action="#{asignarSolicitudaViajeController.iniciarHoras()}"
-                                         process="@this"
-                                         icon="pi pi-trash"
-                                         update=":form:content">
-                          
+                            <p:spacer width="25">
+                                <p:commandButton value="#{msg['button.iniciarhoras']}" 
+                                                 rendered="true"
+                                                 action="#{asignarSolicitudaViajeController.iniciarHoras()}"
+                                                 process="@this"
+                                                 icon="pi pi-trash"
+                                                 update=":form:content">
 
-                        </p:commandButton>
-                                    
+
+                                </p:commandButton>
+
                             </p:spacer>
                         </p:fieldset>
 
@@ -93,9 +93,6 @@
                             label="#{msg['field.fechahorafinreserva']}" 
                             listener="#{asignarSolicitudaViajeController.calendarFechaSolicitudesChangeListener}"
                             update=" :form:msg, :form:growl"/>
-
-
-
 
 
 
@@ -135,7 +132,7 @@
 
                                 listener="#{asignarSolicitudaViajeController.handleSelectCopiarDesde}"
                                 value="#{asignarSolicitudaViajeController.solicitud}"
-                                itemLabel="# #{p.idsolicitud} - #{p.objetivo}"
+                                itemLabel="# #{p.idsolicitud} - #{p.objetivo} #{p.tipovehiculo.get(0).idtipovehiculo}"
                                 field="objetivo"
                                 dropdown="true"
                                 minQueryLength="0"
@@ -144,6 +141,32 @@
                                 id="solicitudAutoComplete"
                                 />
 
+                            <p:calendar  disabled="true"  size="10"                                  
+                                         pattern="dd/MM/yyyy"
+                                         value="#{asignarSolicitudaViajeController.solicitud.fechahorapartida}"  />
+
+                            <h:outputText value="" />
+                            <p:calendar  disabled="true"  size="10"                                  
+                                         pattern="HH:mm:ss a"
+                                         value="#{asignarSolicitudaViajeController.solicitud.fechahorapartida}"  />
+                            <p:spacer width="15"/>
+                            <p:calendar  disabled="true"  size="10"                                  
+                                         pattern="dd/MM/yyyy"
+                                         value="#{asignarSolicitudaViajeController.solicitud.fechahoraregreso}"  />
+
+                            <h:outputText value="" />
+                            <p:calendar  disabled="true"  size="10"                                  
+                                         pattern="HH:mm:ss a"
+                                         value="#{asignarSolicitudaViajeController.solicitud.fechahoraregreso}"  />
+
+                            <p:spacer width="25"/>
+                             <b:commandButton  look="danger"                                                                      
+                                              title="#{msg['label.actulizarfechahorasolicitudinicial']}"
+                                              rendered="false"
+                                              iconAwesome="fa-exchange" 
+                                              update=":form:content"
+                                              action="#{asignarSolicitudaViajeController.updateFechahoraDesdeSolicitudInicial()}"
+                                             />
                             <p:spacer width="25"/>
                             <b:commandButton  look="success"
                                               id="commandButtonShowSolicitudDetalles"
@@ -175,13 +198,13 @@
                                 labelvalue4="#{p.conductor.nombre}" 
                                 labeltip5="#{msg['field.lugarpartida']}" 
                                 labelvalue5="#{p.lugarpartida}"
-                                calendarsize="20"
+                                calendarsize="40"
                                 columnpaneltip="2"
                                 calendardatelabel1="#{msg['field.fechapartida']}" 
                                 calendardatevalue1="#{p.fechahorainicioreserva}" 
 
                                 calendartimelabel1="#{msg['field.horapartida']}"
-                                calendartimevalue1="#{p.fechahorapartida}"  
+                                calendartimevalue1="#{p.fechahorainicioreserva}"  
 
                                 calendardatelabel2="#{msg['field.fecharegreso']}" 
                                 calendardatevalue2="#{p.fechahorafinreserva}"  
@@ -193,7 +216,7 @@
 
                                 listener="#{asignarSolicitudaViajeController.handleSelectCopiarDesde}"
                                 value="#{asignarSolicitudaViajeController.viajeIda}"
-                                itemLabel="# #{p.idviaje} - #{p.vehiculo.marca}"
+                                itemLabel="No. #{p.idviaje} - #{p.vehiculo.marca} #{p.vehiculo.tipovehiculo.idtipovehiculo}"
                                 field="objetivo"
                                 dropdown="true"
                                 minQueryLength="0"
@@ -204,7 +227,42 @@
 
 
 
+                            <p:calendar  disabled="true"  size="10"                                  
+                                         pattern="dd/MM/yyyy"
+                                         value="#{asignarSolicitudaViajeController.viajeIda.fechahorainicioreserva}"  />
 
+                            <h:outputText value="" />
+                            <p:calendar  disabled="true"  size="10"                                  
+                                         pattern="HH:mm:ss a"
+                                         value="#{asignarSolicitudaViajeController.viajeIda.fechahorainicioreserva}"  />
+                            <b:commandButton  look="danger"                                                                      
+                                              title="#{msg['label.actulizarfechahorasolicitud']}"
+                                        rendered="false"
+                                              iconAwesome="fa-arrow-up" 
+                                              update=":form:content"
+                                              action="#{asignarSolicitudaViajeController.updateFechahoraPartidaDesdeViajeIda()}"
+                                             />
+                            
+                            <h:outputText value="a" />
+                            <p:calendar  disabled="true"  size="10"                                  
+                                         pattern="dd/MM/yyyy"
+                                         value="#{asignarSolicitudaViajeController.viajeIda.fechahorafinreserva}"  />
+
+                            <h:outputText value="" />
+                            <p:calendar  disabled="true"  size="10"                                  
+                                         pattern="HH:mm:ss a"
+                                         value="#{asignarSolicitudaViajeController.viajeIda.fechahorafinreserva}"  />
+
+
+               <b:commandButton  look="danger"
+                                              title="#{msg['label.actulizarfechahorasolicitud']}"
+                                     rendered="false"
+                                              iconAwesome="fa-arrow-up" 
+                                              update=":form:content"
+                                              action="#{asignarSolicitudaViajeController.updateFechahoraRegresoDesdeViajeIda()}"
+                                             />
+                            
+                            
                         </p:fieldset>
                         <p:outputLabel  value="#{msg['field.viajeregreso']}" >
                             <i class="pi pi-download"></i>
@@ -223,13 +281,13 @@
                                 labelvalue4="#{p.conductor.nombre}" 
                                 labeltip5="#{msg['field.lugarpartida']}" 
                                 labelvalue5="#{p.lugarpartida}"
-                                calendarsize="20"
+                                calendarsize="40"
                                 columnpaneltip="2"
                                 calendardatelabel1="#{msg['field.fechapartida']}" 
                                 calendardatevalue1="#{p.fechahorainicioreserva}" 
 
                                 calendartimelabel1="#{msg['field.horapartida']}"
-                                calendartimevalue1="#{p.fechahorapartida}"  
+                                calendartimevalue1="#{p.fechahorainicioreserva}"  
 
                                 calendardatelabel2="#{msg['field.fecharegreso']}" 
                                 calendardatevalue2="#{p.fechahorafinreserva}"  
@@ -241,7 +299,7 @@
 
                                 listener="#{asignarSolicitudaViajeController.handleSelectCopiarDesde}"
                                 value="#{asignarSolicitudaViajeController.viajeRegreso}"
-                                itemLabel="# #{p.idviaje} - #{p.vehiculo.marca}"
+                                itemLabel="No. #{p.idviaje} - #{p.vehiculo.marca} #{p.vehiculo.tipovehiculo.idtipovehiculo}"
                                 field="objetivo"
                                 dropdown="true"
                                 minQueryLength="0"
@@ -252,7 +310,38 @@
 
 
 
+                            <p:calendar  disabled="true"  size="10"                                  
+                                         pattern="dd/MM/yyyy"
+                                         value="#{asignarSolicitudaViajeController.viajeRegreso.fechahorainicioreserva}"  />
 
+                            <h:outputText value="" />
+                            <p:calendar  disabled="true"  size="10"                                  
+                                         pattern="HH:mm:ss a"
+                                         value="#{asignarSolicitudaViajeController.viajeRegreso.fechahorainicioreserva}"  />
+                             <b:commandButton  look="danger"                                                                      
+                                              title="#{msg['label.actulizarfechahorasolicitud']}"
+                                       rendered="false"
+                                              iconAwesome="fa-arrow-up" 
+                                              update=":form:content"
+                                              action="#{asignarSolicitudaViajeController.updateFechahoraPartidaDesdeViajeRegreso()}"
+                                             />
+                            <h:outputText value="a" />
+                            <p:calendar  disabled="true"  size="10"                                  
+                                         pattern="dd/MM/yyyy"
+                                         value="#{asignarSolicitudaViajeController.viajeRegreso.fechahorafinreserva}"  />
+
+                            <h:outputText value="" />
+                            <p:calendar  disabled="true"  size="10"                                  
+                                         pattern="HH:mm:ss a"
+                                         value="#{asignarSolicitudaViajeController.viajeRegreso.fechahorafinreserva}"  />
+
+    <b:commandButton  look="danger"
+                                              title="#{msg['label.actulizarfechahorasolicitud']}"
+                                        rendered="false"
+                                              iconAwesome="fa-arrow-up" 
+                                              update=":form:content"
+                                              action="#{asignarSolicitudaViajeController.updateFechahoraRegresoDesdeViajeRegreso()}"
+                                             />
                         </p:fieldset>
 
 
@@ -268,21 +357,14 @@
 
                         <p:commandButton value="#{app['button.save']}" 
                                          rendered="#{asignarSolicitudaViajeController.isSolicitudValida()}"
-                                         action="#{asignarSolicitudaViajeController.rechazarSolicitud()}"
+                                         action="#{asignarSolicitudaViajeController.save()}"
                                          process="@this, solicitudAutoComplete"
                                          icon="pi pi-trash"
                                          update=":form:content">
-                            <p:confirm header="#{msg['info.doyouwantrechazarsolicitud']}"
-                                       message="#{msg['info.doyouwantrechazar']}" icon="pi pi-exclamation-triangle" />
 
                         </p:commandButton>
+                      
 
-
-
-                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                            <p:commandButton value="#{app['button.yes']}"  type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
-                            <p:commandButton value="#{app['button.no']}"  type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
-                        </p:confirmDialog>    
                     </b:panelGrid>
 
 

@@ -1551,5 +1551,17 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
 
         return completableFuture;
     }// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="String iniciarHoras()">
+    public String iniciarHoras() {
+        try {
+            fechaInicialParaSolicitud = DateUtil.primerDiaDelMesActualConHoraMinutosSegundos(0, 1, 0);
+            fechaFinalParaSolicitud = DateUtil.ultimoDiaDelMesActualConHoraMinutoSegundo(23, 59, 0);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return "";
+    }
+    // </editor-fold>
 
 }

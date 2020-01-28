@@ -69,7 +69,13 @@
                                               action="#{rechazarSolicitudController.prepareScheduleSolicitud()}"
                                               oncomplete="PF('solicitudDialog').show();" />
 
-
+  <p:spacer width="25"/>
+                                <p:commandButton value="#{msg['button.iniciarhoras']}" 
+                                                 rendered="true"
+                                                 action="#{rechazarSolicitudController.iniciarHoras()}"
+                                                 process="@this"
+                                                 icon="pi pi-trash"
+                                                 update=":form:content"/>
                         </p:fieldset>
 
 
@@ -145,7 +151,7 @@ id="solicitudAutoComplete"
                                               oncomplete="PF('solicitudDetallesDialog').show();" />
 
                          
-
+ 
                         </p:fieldset>
 
                         <p:outputLabel value="#{msg['field.desde']}"/>

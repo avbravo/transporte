@@ -1088,6 +1088,8 @@ public class ViajeSinSolicitudController implements Serializable, IController {
 //            viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros() - solicitud.getPasajeros());
 viaje.setKmestimados(0.0);
 viaje.setCostocombustible(0.0);
+viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros());
+       
             if (!viajeServices.isValid(viaje, rf.getMrb(), rf.getArb(), false)) {
                 return "";
             }
