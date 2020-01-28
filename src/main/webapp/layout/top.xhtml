@@ -55,34 +55,25 @@
                 </b:dropMenu>
 
                 <b:dropMenu value="#{msg['menubar.viaje']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, CONDUCTOR, SECRETARIA,DOCENTE, ADMINISTRATIVO')}">
-                    <b:navLink value="#{msg['menu.viajes']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/list" iconAwesome= "fa-book" />
-                 
-                    
+                    <b:navLink value="#{msg['menu.viajesconsolicitud']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/list" iconAwesome= "fa-book" />
+
+
                     <b:navLink value="#{msg['menu.marcarrealizado']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/marcarviajerealizado" iconAwesome= "fa-check" />
                     <b:navLink value="#{msg['menu.cancelarviaje']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/cancelarviaje" iconAwesome= "fa-eraser" />
                     <!--<b:navLink value="#{msg['menu.editarviaje']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/list" iconAwesome= "fa-pencil-square-o" />-->
                     <!--<b:navLink value="#{msg['menu.fusionarviaje']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/list" iconAwesome= "fa-clone" />-->
                     <!--<b:navLink value="#{msg['menu.viajeregreso']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/list" iconAwesome= "fa-exchange" />-->
                     <!--<b:navLink value="#{msg['menu.solicitudconviajesinasignar']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/list" iconAwesome= "fa-exchange" />-->
-                   
+
 
                     <b:navLink value="#{msg['menu.disponibles']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA, DOCENTE, ADMINISTRATIVO')}" outcome="/pages/disponibles/disponibles" iconAwesome= "fa-calendar-o" />                                   
-                    <b:navLink value="#{msg['menu.programacionvehicular']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, CONDUCTOR, SECRETARIA')}" outcome="/pages/programacionvehicular/programacionvehicular" iconAwesome= "fa-print" />  
+                   
+
                     <b:navLink rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}"/>
-                    <b:navLink value="#{msg['menu.viajesrealizados']}"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajesrealizados" iconAwesome= "fa-drivers-license-o" />
-                    <b:navLink value="#{msg['menu.viajespendientes']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajespendientes" iconAwesome= "fa-car" />    
-                    <b:navLink value="#{msg['menu.viajessinconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajessinconductor" iconAwesome= "fa-child" />    
-                        <b:navLink rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}"/>
-                       <b:navLink value="#{msg['menu.viajessinsolicitud']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viajesinsolicitud/list" iconAwesome= "fa-plane" />
-                       <b:navLink value="#{msg['menu.asignarsolicitudaviaje']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/asignarsolicitudaviaje/asignarsolicitudaviaje" iconAwesome= "fa-leaf" />
-                    <b:navLink value="#{msg['menu.viajessinsolicitudreportes']}"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajessinsolicitud" iconAwesome= "fa-unlink" />
-                    
-                    <b:navLink rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}"/>
-                    <b:navLink value="#{msg['menu.viajesporvehiculo']}"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajesporvehiculo" iconAwesome= "fa-car" />
-                    <b:navLink value="#{msg['menu.viajesporconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajesporconductor" iconAwesome= "fa-drivers-license-o" />
-                    <b:navLink rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}"/>
-                    <b:navLink value="#{msg['menu.kmrecorridosporvehiculo']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajeskmvehiculos" iconAwesome= "fa-map-signs" />
-                    <b:navLink value="#{msg['menu.kmrecorridosporconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajeskmconductor" iconAwesome= "fa-map-signs" />
+                    <b:navLink value="#{msg['menu.viajessinsolicitud']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viajesinsolicitud/list" iconAwesome= "fa-plane" />
+                    <b:navLink value="#{msg['menu.asignarsolicitudaviaje']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/asignarsolicitudaviaje/asignarsolicitudaviaje" iconAwesome= "fa-leaf" />
+                  
+
 
 
 
@@ -97,13 +88,25 @@
                     </h:form>
                 </b:dropMenu>
                 <b:dropMenu value="#{msg['menubar.reportes']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO')}">
+                     <b:navLink value="#{msg['menu.programacionvehicular']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, CONDUCTOR, SECRETARIA')}" outcome="/pages/programacionvehicular/programacionvehicular" iconAwesome= "fa-print" />  
+                       <b:navLink value="#{msg['menu.viajessinsolicitudreportes']}"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajessinsolicitud" iconAwesome= "fa-unlink" />
+                          <b:navLink rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}"/>
                     <b:navLink value="#{msg['menu.solicitudpendiente']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudespendientes" iconAwesome= "fa-battery-empty" />                    
                     <b:navLink value="#{msg['menu.solicitudesaprobadas']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudesaprobadas" iconAwesome= "fa-battery-full" />
                     <b:navLink value="#{msg['menu.solicitudescanceladas']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudescanceladas" iconAwesome= "fa-eraser" />
                     <b:navLink value="#{msg['menu.solicitudesrechazadas']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudesrechazadas" iconAwesome= "fa-battery-empty" />
                     <b:navLink value="#{msg['menu.solicitudesporusuario']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO')}" outcome="/pages/reportessolicitudes/solicitudesporusuario" icon="user" />
+                    <b:navLink rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}"/>
+                    <b:navLink value="#{msg['menu.viajesrealizados']}"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajesrealizados" iconAwesome= "fa-drivers-license-o" />
+                    <b:navLink value="#{msg['menu.viajespendientes']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajespendientes" iconAwesome= "fa-car" />    
+                    <b:navLink value="#{msg['menu.viajessinconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajessinconductor" iconAwesome= "fa-child" />    
 
-
+                    <b:navLink rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}"/>
+                    <b:navLink value="#{msg['menu.viajesporvehiculo']}"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajesporvehiculo" iconAwesome= "fa-car" />
+                    <b:navLink value="#{msg['menu.viajesporconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajesporconductor" iconAwesome= "fa-drivers-license-o" />
+                    <b:navLink rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}"/>
+                    <b:navLink value="#{msg['menu.kmrecorridosporvehiculo']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajeskmvehiculos" iconAwesome= "fa-map-signs" />
+                    <b:navLink value="#{msg['menu.kmrecorridosporconductor']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/reportesviajes/viajeskmconductor" iconAwesome= "fa-map-signs" />
 
 
 
