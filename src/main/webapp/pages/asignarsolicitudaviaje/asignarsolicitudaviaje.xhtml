@@ -262,6 +262,7 @@
                                               action="#{asignarSolicitudaViajeController.updateFechahoraRegresoDesdeViajeIda()}"
                                              />
                             
+               <p:staticMessage  id="warningMessageIda" severity="warn" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{asignarSolicitudaViajeController.viajeIda.mensajeWarning}" />
                             
                         </p:fieldset>
                         <p:outputLabel  value="#{msg['field.viajeregreso']}" >
@@ -342,6 +343,9 @@
                                               update=":form:content"
                                               action="#{asignarSolicitudaViajeController.updateFechahoraRegresoDesdeViajeRegreso()}"
                                              />
+    
+    
+      <p:staticMessage  id="warningMessageRegreso" severity="warn" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{asignarSolicitudaViajeController.viajeRegreso.mensajeWarning}" />
                         </p:fieldset>
 
 

@@ -70,6 +70,7 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
@@ -98,8 +99,8 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
 
     private Date fechaRestaurarSolicitudPartida = new Date();
     private Date fechaRestaurarSolicitudRegreso = new Date();
-    private Date fechaPartidaNueva= new Date();
-    private Date fechaRegresoNueva= new Date();
+    private Date fechaPartidaNueva = new Date();
+    private Date fechaRegresoNueva = new Date();
 
     Integer index = 0;
     //DataModel
@@ -110,6 +111,10 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
     List<Integer> pages = new ArrayList<>();
     Date fechaDesde = new Date();
     Date fechaHasta = new Date();
+    Tiempo tiempoIdaPartida = new Tiempo();
+    Tiempo tiempoIdaRegreso = new Tiempo();
+    Tiempo tiempoRegresoPartida = new Tiempo();
+    Tiempo tiempoRegresoRegreso = new Tiempo();
 
     Date fechaInicialParaSolicitud = new Date();
     Date fechaFinalParaSolicitud = new Date();
@@ -584,7 +589,7 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
 
     public String updateFechahoraRegresoDesdeViajeIda() {
         try {
-             fechaRegresoNueva = viajeIda.getFechahorafinreserva();
+            fechaRegresoNueva = viajeIda.getFechahorafinreserva();
             solicitud.setFechahoraregreso(viajeIda.getFechahorafinreserva());
         } catch (Exception e) {
             errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
@@ -596,7 +601,7 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
     // <editor-fold defaultstate="collapsed" desc="String updateFechahoraPartidaDesdeViajeRegreso()">
     public String updateFechahoraPartidaDesdeViajeRegreso() {
         try {
-             fechaPartidaNueva = viajeRegreso.getFechahorainicioreserva();
+            fechaPartidaNueva = viajeRegreso.getFechahorainicioreserva();
             solicitud.setFechahorapartida(viajeRegreso.getFechahorainicioreserva());
         } catch (Exception e) {
             errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
@@ -608,7 +613,7 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
 
     public String updateFechahoraRegresoDesdeViajeRegreso() {
         try {
-             fechaRegresoNueva = viajeRegreso.getFechahorafinreserva();
+            fechaRegresoNueva = viajeRegreso.getFechahorafinreserva();
             solicitud.setFechahoraregreso(viajeRegreso.getFechahorafinreserva());
         } catch (Exception e) {
             errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
@@ -862,6 +867,9 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
             }
 
             list = viajeRepository.filterBetweenDate("activo", "si", "fechahorainicioreserva", fechaInicialParaSolicitud, "fechahorafinreserva", fechaFinalParaSolicitud, new Document("fechahorainicioreserva", 1));
+            //list = viajeRepository.filterBetweenDate("activo", "si", "fechahorainicioreserva", solicitud.getFechahorapartida(), "fechahorafinreserva", solicitud.getFechahoraregreso(), new Document("fechahorainicioreserva", 1));
+            //          Bson filter = new Document("activo","si");
+//            list = viajeRepository.filterBetweenDateWithoutHours(filter, "fechahorainicioreserva", solicitud.getFechahorapartida(), "fechahorafinreserva", solicitud.getFechahoraregreso(), new Document("fechahorainicioreserva", 1));
             for (Viaje v : list) {
                 if (v.getRealizado().equals("no") && v.getVehiculo().getTipovehiculo().getIdtipovehiculo().equals(solicitud.getTipovehiculo().get(0).getIdtipovehiculo())) {
                     suggestions.add(v);
@@ -1240,9 +1248,6 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
     public void handleSelectCopiarDesde(SelectEvent event) {
         try {
 
-            // solicitud = solicitudServices.copiarDesde(solicitudCopiar, solicitud);
-//            solicitudInicial = new Solicitud();
-//            solicitudInicial = solicitud;
             fechaRestaurarSolicitudPartida = solicitud.getFechahorapartida();
             fechaRestaurarSolicitudRegreso = solicitud.getFechahoraregreso();
             fechaPartidaNueva = solicitud.getFechahorapartida();
@@ -1368,15 +1373,49 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
      */
     private void validarMensajesDias() {
         try {
+            tiempoIdaPartida = new Tiempo();
+            tiempoIdaRegreso = new Tiempo();
+            tiempoRegresoPartida = new Tiempo();
+            tiempoRegresoRegreso = new Tiempo();
+            if (viajeIda == null || viajeIda.getIdviaje() == null) {
+            } else {
+
+                viajeIda = validarMensajesDias(viajeIda, true);
+            }
+            if (viajeRegreso == null || viajeRegreso.getIdviaje() == null) {
+            } else {
+                viajeRegreso = validarMensajesDias(viajeRegreso, false);
+            }
+
+            mensajeWarningTitle = "Nota";
+
+            JsfUtil.updateJSFComponent(":form:form:warningMessageIda");
+            JsfUtil.updateJSFComponent(":form:form:warningMessageRegreso");
+
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+    }
+
+    // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="Viaje validarMensajesDias(Viaje viaje) ">
+    /**
+     * valida los mensajes para desplejar
+     */
+    private Viaje validarMensajesDias(Viaje viaje, Boolean esIda) {
+        try {
 
             //  aqui comparar el tiempo dias, horas minutos de diferencias
             if (DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
                 JsfUtil.warningMessage(rf.getMessage("warning.fechahorainicioviajemayorfechainiciosolicitud"));
-                return;
+                viaje.setMensajeWarning(rf.getMessage("warning.fechahorainicioviajemayorfechainiciosolicitud"));
+                return viaje;
             }
             if (DateUtil.fechaMayor(solicitud.getFechahoraregreso(), viaje.getFechahorafinreserva())) {
                 JsfUtil.warningMessage(rf.getMessage("warning.fecharegresomayorfechainicioviaje"));
-                return;
+                viaje.setMensajeWarning(rf.getMessage("warning.fecharegresomayorfechainicioviaje"));
+
+                return viaje;
             }
             Tiempo tiempoPartida = DateUtil.diferenciaEntreFechas(solicitud.getFechahorapartida(), viaje.getFechahorainicioreserva());
             Tiempo tiempoRegreso = DateUtil.diferenciaEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
@@ -1392,10 +1431,10 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
 
             viaje.setMensajeWarning(viaje.getMensajeWarning() + " Regreso ( " + llegada + ")");
 
-            JsfUtil.updateJSFComponent(":form:form:warningMessage");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
+        return viaje;
     }
     // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="Boolean aprobadoCoordinador()">
@@ -1611,8 +1650,7 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
     @Override
     public String save() {
         try {
-           
-            
+
             if (viajeIda == null || viajeIda.getIdviaje() == null) {
                 JsfUtil.warningMessage(rf.getMessage("warning.seleccionaviajeida"));
                 return "";
@@ -1791,7 +1829,7 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
         return "";
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="Boolean validar(Viaje viaje)">
     private Boolean validar(Viaje viaje) {
         try {
             if (!viajeServices.isValid(viaje, rf.getMrb(), rf.getArb(), false)) {
@@ -1860,7 +1898,6 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
 //
 //                return false;
 //            }
-
             if (solicitud.getEstatus().getIdestatus().equals("SOLICITADO")) {
 
             } else {
