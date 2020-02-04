@@ -2171,7 +2171,7 @@ public class SubdirectorAdministrativoController implements Serializable, IContr
                         disponiblesBeans.setNumeroPasajeros(numeroPasajeros);
                         disponiblesBeans.setVehiculo(vehiculoFreeList);
                         disponiblesBeans.setBusesRecomendados(vehiculoServices.vehiculosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
-                        disponiblesBeans.setPasajerosPendientes(vehiculoServices.pasajerosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
+                        disponiblesBeans.setPasajerosPendientes(vehiculoServices.pasajerosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros(),rf.getMrb(), rf.getArb()));
                         disponiblesBeans.setPasajerosPorViaje(vehiculoServices.generarPasajerosPorViajes(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
                         disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
                         disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
@@ -2667,7 +2667,7 @@ public class SubdirectorAdministrativoController implements Serializable, IContr
                         disponiblesBeans.setVehiculo(vehiculoFreeList);
 
                         disponiblesBeans.setBusesRecomendados(vehiculoServices.vehiculosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
-                        disponiblesBeans.setPasajerosPendientes(vehiculoServices.pasajerosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
+                        disponiblesBeans.setPasajerosPendientes(vehiculoServices.pasajerosRecomendados(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros(),rf.getMrb(), rf.getArb()));
                         disponiblesBeans.setPasajerosPorViaje(vehiculoServices.generarPasajerosPorViajes(vehiculoFreeList, tipoVehiculoCantidadBeans.getPasajeros()));
                         disponiblesBeans.setNumeroVehiculosSolicitados(tipoVehiculoCantidadBeans.getCantidad());
                         disponiblesBeans.setNumeroPasajerosSolicitados(tipoVehiculoCantidadBeans.getPasajeros());
