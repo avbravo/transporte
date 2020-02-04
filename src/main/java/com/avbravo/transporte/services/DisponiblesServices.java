@@ -68,7 +68,7 @@ public class DisponiblesServices {
           } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
-        return "";
+        return tipo;
     }
     // </editor-fold>
 }
