@@ -55,4 +55,20 @@ public class DisponiblesServices {
         }
         return disponible;
     } // </editor-fold>
+    
+    
+    // <editor-fold defaultstate="collapsed" desc="String showTipovehiculo(DisponiblesBeans item)">
+    public String showTipovehiculo(DisponiblesBeans item){
+        String tipo="";
+        try {
+            if(item == null || item.getVehiculo() == null || item.getVehiculo().isEmpty()){
+                return  "";
+            }
+           tipo= item.getVehiculo().get(0).getTipovehiculo().getIdtipovehiculo();
+          } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return "";
+    }
+    // </editor-fold>
 }

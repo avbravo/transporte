@@ -1725,6 +1725,7 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
                 } else {
                     if (o instanceof Boolean) {
                         if (!(Boolean) o) {
+                      JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosepudoasignarviajesasolicitud"));
                             return "";
                         }
                     }
@@ -1821,6 +1822,9 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
 
             sendEmail("Solicitud Aprobada", "SOLICITUDAPROBADA");
 
+            viajeIda = new Viaje();
+            viajeRegreso = new Viaje();
+            solicitud = new Solicitud();
             reset();
 
         } catch (Exception e) {

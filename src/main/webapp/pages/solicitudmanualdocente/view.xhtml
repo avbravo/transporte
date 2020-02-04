@@ -359,7 +359,8 @@
 
 
                                 <p:column headerText="#{msg['field.tipovehiculo']}" style="width:95px">
-                                    <h:outputText value="#{item.vehiculo.get(0).tipovehiculo.idtipovehiculo}" style="color: #{solicitudManualDocenteController.disponiblesServices.columnColorDisponibles(item)}"  />
+                                    
+                                    <h:outputText value="#{solicitudManualDocenteController.disponiblesServices.showTipovehiculo(item)}" style="color: #{solicitudManualDocenteController.disponiblesServices.columnColorDisponibles(item)}"  />
                                 </p:column>
 
 
