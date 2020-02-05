@@ -50,7 +50,7 @@
                                              field="idestatus"
                                              update=" :form:dataTable"/>
 
-                  
+
 
                     <p:outputLabel value="#{msg['field.coordinador']}"/>
                     <p:selectOneMenu id="coordinador" value="#{solicitudManualDocenteController.vistoBuenoSearch}" style="width:150px">
@@ -71,10 +71,10 @@
                         <f:selectItem itemLabel="#{msg['selectitem.noaprobado']}" itemValue="no" />
 
                     </p:selectOneMenu>
-                    
+
                     <p:spacer/>
                     <p:spacer/>
-                      <p:outputLabel value="#{msg['field.mensaje']}"/>
+                    <p:outputLabel value="#{msg['field.mensaje']}"/>
                     <p:inputTextarea rows="2" value="#{solicitudManualDocenteController.messages}"/>
                     <p:commandButton value="#{msg['button.send']}" action="#{solicitudManualDocenteController.enviarMensajesDirectos()}"
                                      update=":form:msgs"
@@ -159,12 +159,12 @@
                             <p:outputLabel value="#{item.objetivo}" style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
                             <p:outputLabel value="#{msg['field.lugares']}"/>
                             <p:outputLabel value="#{item.lugares}"  style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
-                           
+
                             <p:outputLabel value="#{msg['field.solicitadopor']}"/>                          
                             <p:outputLabel value="#{item.usuario.get(0).nombre}"  style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
 
-  <p:outputLabel value="#{msg['field.responsable']}"/>
-<p:outputLabel value="#{item.usuario.get(1).nombre}"  style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+                            <p:outputLabel value="#{msg['field.responsable']}"/>
+                            <p:outputLabel value="#{item.usuario.get(1).nombre}"  style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
 
                             <p:outputLabel  value="#{msg['field.facultad']}" />
                             <p:repeat value="#{item.facultad}" var="car">
@@ -198,15 +198,22 @@
                             <p:outputLabel  value="#{msg['field.objetivo']}" />
                             <p:outputLabel  value="#{item.objetivo}" id="objetivo"   />
 
-                 <p:outputLabel value="#{msg['field.coordinador']}" />
-                        <p:outputLabel value="#{solicitudManualDocenteController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
-              
-                   <p:outputLabel value="#{msg['field.secadministrativo']}"  />
-                        <p:outputLabel value="#{solicitudManualDocenteController.columnNameVistoBuenoSubdirectorAdministrativo(item.vistoBuenoSubdirectorAdministrativo)}"   style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
-                   
+                            <p:outputLabel value="#{msg['field.coordinador']}" />
+                            <p:outputLabel value="#{solicitudManualDocenteController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+
+                            <p:outputLabel value="#{msg['field.secadministrativo']}"  />
+                            <p:outputLabel value="#{solicitudManualDocenteController.columnNameVistoBuenoSubdirectorAdministrativo(item.vistoBuenoSubdirectorAdministrativo)}"   style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+
                             <p:outputLabel value="#{msg['field.estatus']}" />
                             <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
 
+                            
+                                 <p:outputLabel value="#{msg['field.viajeida']}" />
+                            <p:outputLabel  value="#{solicitudManualDocenteController.showViajeIda(item)}"  />
+
+                            
+                            <p:outputLabel value="#{msg['field.viajeregreso']}" />
+                           <p:outputLabel  value="#{solicitudManualDocenteController.showViajeRegreso(item)}"  />
                         </b:panelGrid>
                     </p:rowExpansion>
                 </p:dataTable>
@@ -236,7 +243,7 @@
 
                         <p:outputLabel  value="#{msg['field.horapartida']}" />        
                         <p:calendar  disabled="true"    
-                                    
+
                                      pattern="HH:mm:ss a" value="#{solicitudManualDocenteController.solicitud.fechahorapartida}"  />
 
 
@@ -259,7 +266,7 @@
 
                         <p:outputLabel  value="#{msg['field.horaregreso']}" />
                         <p:calendar  disabled="true"    
-                                   
+
                                      pattern="HH:mm:ss a" value="#{solicitudManualDocenteController.solicitud.fechahoraregreso}"  />
 
 

@@ -50,9 +50,9 @@
                                              field="idestatus"
                                              update=" :form:dataTable"/>
 
-                 
-                    
-                        <p:outputLabel value="#{msg['field.vistobueno']}"/>
+
+
+                    <p:outputLabel value="#{msg['field.vistobueno']}"/>
                     <p:selectOneMenu id="country" value="#{solicitudManualAdministrativoController.vistoBuenoSearch}" style="width:150px">
                         <p:ajax listener="#{solicitudManualAdministrativoController.onVistoBuenoChange}" update=":form:dataTable" />
                         <f:selectItem itemLabel="#{msg['selectitem.seleccione']}" itemValue="" noSelectionOption="true" />
@@ -61,13 +61,13 @@
                         <f:selectItem itemLabel="#{msg['selectitem.noaprobado']}" itemValue="no" />
 
                     </p:selectOneMenu>
-                        
-                           <p:outputLabel value="#{msg['field.mensaje']}"/>
+
+                    <p:outputLabel value="#{msg['field.mensaje']}"/>
                     <p:inputTextarea rows="2" value="#{solicitudManualAdministrativoController.messages}"/>
                     <p:commandButton value="#{msg['button.send']}" action="#{solicitudManualAdministrativoController.enviarMensajesDirectos()}"
                                      update=":form:msgs"
                                      />
-                    
+
                 </b:panelGrid>
 
             </b:panel>
@@ -104,11 +104,11 @@
                     <p:column headerText="#{msg['field.lugarllegada']}"  >
                         <p:outputLabel value="#{item.lugarllegada}"   style="color: #{solicitudManualAdministrativoController.columnColor(item.estatus)}" />
                     </p:column>
-               
-                    
-                   
-                    
-                     <p:column headerText="#{msg['field.secadministrativo']}"  >
+
+
+
+
+                    <p:column headerText="#{msg['field.secadministrativo']}"  >
                         <p:outputLabel value="#{solicitudManualAdministrativoController.columnNameVistoBuenoSubdirectorAdministrativo(item.vistoBuenoSubdirectorAdministrativo)}"   style="color: #{solicitudManualAdministrativoController.columnColor(item.estatus)}" />
                     </p:column>
                     <p:column headerText="#{msg['field.estatus']}" style="width:100px">
@@ -141,13 +141,13 @@
                             <p:outputLabel value="#{msg['field.horaregreso']}" />
                             <p:outputLabel value="#{solicitudManualAdministrativoController.showHour(item.fechahoraregreso)}"  />
 
-  <p:outputLabel value="#{msg['field.solicitadopor']}"/>                          
+                            <p:outputLabel value="#{msg['field.solicitadopor']}"/>                          
                             <p:outputLabel value="#{item.usuario.get(0).nombre}"  style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
 
-  <p:outputLabel value="#{msg['field.responsable']}"/>
-<p:outputLabel value="#{item.usuario.get(1).nombre}"  style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+                            <p:outputLabel value="#{msg['field.responsable']}"/>
+                            <p:outputLabel value="#{item.usuario.get(1).nombre}"  style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
 
-                            
+
                             <p:outputLabel value="#{msg['field.objetivo']}"  />
                             <p:outputLabel value="#{item.objetivo}" style="color: #{solicitudManualAdministrativoController.columnColor(item.estatus)}" />
                             <p:outputLabel value="#{msg['field.lugares']}"/>
@@ -186,14 +186,22 @@
                             <p:outputLabel value="#{item.lugarllegada}" />
                             <p:outputLabel  value="#{msg['field.objetivo']}" />
                             <p:outputLabel  value="#{item.objetivo}" id="objetivo"   />
-                          
+
                             <p:outputLabel  value="#{msg['field.vistobueno']}" />
-                          
-                                  <p:outputLabel value="#{solicitudManualAdministrativoController.columnNameVistoBuenoSubdirectorAdministrativo(item.vistoBuenoSubdirectorAdministrativo)}"   style="color: #{solicitudManualAdministrativoController.columnColor(item.estatus)}" />
-                          
+
+                            <p:outputLabel value="#{solicitudManualAdministrativoController.columnNameVistoBuenoSubdirectorAdministrativo(item.vistoBuenoSubdirectorAdministrativo)}"   style="color: #{solicitudManualAdministrativoController.columnColor(item.estatus)}" />
+
 
                             <p:outputLabel value="#{msg['field.estatus']}" />
                             <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{solicitudManualAdministrativoController.columnColor(item.estatus)}" />
+
+                            
+                               <p:outputLabel value="#{msg['field.viajeida']}" />
+                            <p:outputLabel  value="#{solicitudManualAdministrativoController.showViajeIda(item)}"  />
+
+                            
+                            <p:outputLabel value="#{msg['field.viajeregreso']}" />
+                           <p:outputLabel  value="#{solicitudManualAdministrativoController.showViajeRegreso(item)}"  />
 
                         </b:panelGrid>
                     </p:rowExpansion>
@@ -224,7 +232,7 @@
 
                         <p:outputLabel  value="#{msg['field.horapartida']}" />        
                         <p:calendar  disabled="true"    
-                                
+
                                      pattern="HH:mm:ss a" value="#{solicitudManualAdministrativoController.solicitud.fechahorapartida}"  />
 
 
@@ -247,7 +255,7 @@
 
                         <p:outputLabel  value="#{msg['field.horaregreso']}" />
                         <p:calendar  disabled="true"    
-                                   
+
                                      pattern="HH:mm:ss a" value="#{solicitudManualAdministrativoController.solicitud.fechahoraregreso}"  />
 
 

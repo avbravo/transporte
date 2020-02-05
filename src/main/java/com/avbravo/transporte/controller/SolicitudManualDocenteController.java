@@ -2427,5 +2427,39 @@ public class SolicitudManualDocenteController implements Serializable, IControll
         }
         return "";
     }// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="String showViajeIda(Solicitud solicitud)">
+    public String showViajeIda(Solicitud solicitud){
+        String data ="NO ASIGNADO";
+        try {
+            if(solicitud.getViaje()== null || solicitud.getViaje().isEmpty()){
+                return data;
+            }else{
+                data = "# "+solicitud.getViaje().get(0).getIdviaje().toString() + " De "+showDate(solicitud.getViaje().get(0).getFechahorainicioreserva()) + " "+showHour(solicitud.getViaje().get(0).getFechahorainicioreserva())+ " a "+ " "+showDate(solicitud.getViaje().get(0).getFechahorafinreserva()) + " "+showHour(solicitud.getViaje().get(0).getFechahorafinreserva());
+            }
+        } catch (Exception e) {
+                  errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return data;
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String showViajeIda(Solicitud solicitud)">
+    public String showViajeRegreso(Solicitud solicitud){
+        String data ="NO ASIGNADO";
+        try {
+            if(solicitud.getViaje()== null || solicitud.getViaje().isEmpty()){
+                return data;
+            }else{
+                if(solicitud.getViaje().size()==1){
+                    return "NO TIENE VIAJE DE REGRESO";
+                }
+                data = "# " +solicitud.getViaje().get(1).getIdviaje().toString() + " De "+showDate(solicitud.getViaje().get(1).getFechahorainicioreserva()) + " "+showHour(solicitud.getViaje().get(1).getFechahorainicioreserva())+ " a "+ " "+showDate(solicitud.getViaje().get(1).getFechahorafinreserva()) + " "+showHour(solicitud.getViaje().get(1).getFechahorafinreserva());
+            }
+        } catch (Exception e) {
+                  errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return data;
+    }
+    // </editor-fold>
 
 }

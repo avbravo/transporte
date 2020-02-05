@@ -203,8 +203,24 @@
                    
                             <p:outputLabel value="#{msg['field.estatus']}" />
                             <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{solicitudDocenteController.columnColor(item.estatus)}" />
+                           
+                            
+                            <p:outputLabel value="#{msg['field.viajeida']}" />
+                            <p:outputLabel  value="#{solicitudDocenteController.showViajeIda(item)}"  />
 
+                            
+                            <p:outputLabel value="#{msg['field.viajeregreso']}" />
+                           <p:outputLabel  value="#{solicitudDocenteController.showViajeRegreso(item)}"  />
+
+                            
+                            
+                            
+                            
+                            
                         </b:panelGrid>
+                        
+                        
+                        
                     </p:rowExpansion>
                 </p:dataTable>
 
