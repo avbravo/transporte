@@ -35,9 +35,10 @@
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
-
+ <p:outputLabel value="" id="growl"/>
                 <jmoordbjsf:messages id="msg"/>
-                <p:growl id="growl"/>
+                <!--<p:growl id="growl"/>-->
+               
 
                 <b:panel collapsible="false" title="#{msg['titleview.asignarsolicitudaviaje']}" look="primary" >
 
@@ -262,7 +263,7 @@
                                               action="#{asignarSolicitudaViajeController.updateFechahoraRegresoDesdeViajeIda()}"
                                              />
                             
-               <p:staticMessage  id="warningMessageIda" severity="warn" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{asignarSolicitudaViajeController.viajeIda.mensajeWarning}" />
+               <p:staticMessage  id="warningMessageIda" severity="info" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{asignarSolicitudaViajeController.viajeIda.mensajeWarning}" />
                             
                         </p:fieldset>
                         <p:outputLabel  value="#{msg['field.viajeregreso']}" >
@@ -345,18 +346,18 @@
                                              />
     
     
-      <p:staticMessage  id="warningMessageRegreso" severity="warn" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{asignarSolicitudaViajeController.viajeRegreso.mensajeWarning}" />
+      <p:staticMessage  id="warningMessageRegreso" severity="info" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{asignarSolicitudaViajeController.viajeRegreso.mensajeWarning}" />
                         </p:fieldset>
 
 
 
 
 
+<p:spacer/>
 
 
 
-
-
+      <p:staticMessage  id="warningnota"  severity="error" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{msg['label.notaasignarsolicitudviaje']}" />
 
 
                         <p:commandButton value="#{app['button.save']}" 
