@@ -35,10 +35,10 @@
                     return false;
                 }">
             <h:panelGroup id="content" layout="block"> 
- <p:outputLabel value="" id="growl"/>
+                <p:outputLabel value="" id="growl"/>
                 <jmoordbjsf:messages id="msg"/>
                 <!--<p:growl id="growl"/>-->
-               
+
 
                 <b:panel collapsible="false" title="#{msg['titleview.asignarsolicitudaviaje']}" look="primary" >
 
@@ -142,32 +142,26 @@
                                 id="solicitudAutoComplete"
                                 />
 
-                            <p:calendar  disabled="true"  size="10"                                  
-                                         pattern="dd/MM/yyyy"
-                                         value="#{asignarSolicitudaViajeController.solicitud.fechahorapartida}"  />
+                            
+                                  <p:outputLabel value="#{asignarSolicitudaViajeController.viajeServices.showDate(asignarSolicitudaViajeController.solicitud.fechahorapartida)}" />
+                              <p:spacer width="10"/>
+                            <p:outputLabel value="#{asignarSolicitudaViajeController.viajeServices.showHour(asignarSolicitudaViajeController.solicitud.fechahorapartida)}" />
+                                <p:spacer width="10"/>
+                            <p:outputLabel value=" a " />                            
+                            <p:outputLabel value="#{asignarSolicitudaViajeController.viajeServices.showDate(asignarSolicitudaViajeController.solicitud.fechahoraregreso)}" />
+                             <p:spacer width="10"/>
+                             <p:outputLabel value="#{asignarSolicitudaViajeController.viajeServices.showHour(asignarSolicitudaViajeController.solicitud.fechahoraregreso)}" />
 
-                            <h:outputText value="" />
-                            <p:calendar  disabled="true"  size="10"                                  
-                                         pattern="HH:mm:ss a"
-                                         value="#{asignarSolicitudaViajeController.solicitud.fechahorapartida}"  />
-                            <p:spacer width="15"/>
-                            <p:calendar  disabled="true"  size="10"                                  
-                                         pattern="dd/MM/yyyy"
-                                         value="#{asignarSolicitudaViajeController.solicitud.fechahoraregreso}"  />
-
-                            <h:outputText value="" />
-                            <p:calendar  disabled="true"  size="10"                                  
-                                         pattern="HH:mm:ss a"
-                                         value="#{asignarSolicitudaViajeController.solicitud.fechahoraregreso}"  />
-
+                                 
+                           
                             <p:spacer width="25"/>
-                             <b:commandButton  look="danger"                                                                      
+                            <b:commandButton  look="danger"                                                                      
                                               title="#{msg['label.actulizarfechahorasolicitudinicial']}"
                                               rendered="false"
                                               iconAwesome="fa-exchange" 
                                               update=":form:content"
                                               action="#{asignarSolicitudaViajeController.updateFechahoraDesdeSolicitudInicial()}"
-                                             />
+                                              />
                             <p:spacer width="25"/>
                             <b:commandButton  look="success"
                                               id="commandButtonShowSolicitudDetalles"
@@ -226,45 +220,35 @@
                                 id="viajeIdaAutoComplete"
                                 />
 
+                            <p:outputLabel value="#{asignarSolicitudaViajeController.viajeServices.showDate(asignarSolicitudaViajeController.viajeIda.fechahorainicioreserva)}" />
+                              <p:spacer width="10"/>
+                            <p:outputLabel value="#{asignarSolicitudaViajeController.viajeServices.showHour(asignarSolicitudaViajeController.viajeIda.fechahorainicioreserva)}" />
+                                <p:spacer width="10"/>
+                            <p:outputLabel value=" a " />                            
+                             <p:outputLabel value="#{asignarSolicitudaViajeController.viajeServices.showDate(asignarSolicitudaViajeController.viajeIda.fechahorafinreserva)}" />
+                             <p:spacer width="10"/>
+                            <p:outputLabel value="#{asignarSolicitudaViajeController.viajeServices.showHour(asignarSolicitudaViajeController.viajeIda.fechahorafinreserva)}" />
 
-
-                            <p:calendar  disabled="true"  size="10"                                  
-                                         pattern="dd/MM/yyyy"
-                                         value="#{asignarSolicitudaViajeController.viajeIda.fechahorainicioreserva}"  />
-
-                            <h:outputText value="" />
-                            <p:calendar  disabled="true"  size="10"                                  
-                                         pattern="HH:mm:ss a"
-                                         value="#{asignarSolicitudaViajeController.viajeIda.fechahorainicioreserva}"  />
+                          
                             <b:commandButton  look="danger"                                                                      
                                               title="#{msg['label.actulizarfechahorasolicitud']}"
-                                        rendered="false"
+                                              rendered="false"
                                               iconAwesome="fa-arrow-up" 
                                               update=":form:content"
                                               action="#{asignarSolicitudaViajeController.updateFechahoraPartidaDesdeViajeIda()}"
-                                             />
-                            
-                            <h:outputText value="a" />
-                            <p:calendar  disabled="true"  size="10"                                  
-                                         pattern="dd/MM/yyyy"
-                                         value="#{asignarSolicitudaViajeController.viajeIda.fechahorafinreserva}"  />
+                                              />
 
-                            <h:outputText value="" />
-                            <p:calendar  disabled="true"  size="10"                                  
-                                         pattern="HH:mm:ss a"
-                                         value="#{asignarSolicitudaViajeController.viajeIda.fechahorafinreserva}"  />
-
-
-               <b:commandButton  look="danger"
+                         
+                            <b:commandButton  look="danger"
                                               title="#{msg['label.actulizarfechahorasolicitud']}"
-                                     rendered="false"
+                                              rendered="false"
                                               iconAwesome="fa-arrow-up" 
                                               update=":form:content"
                                               action="#{asignarSolicitudaViajeController.updateFechahoraRegresoDesdeViajeIda()}"
-                                             />
-                            
-               <p:staticMessage  id="warningMessageIda" severity="info" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{asignarSolicitudaViajeController.viajeIda.mensajeWarning}" />
-                            
+                                              />
+
+                            <p:staticMessage  id="warningMessageIda" severity="info" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{asignarSolicitudaViajeController.viajeIda.mensajeWarning}" />
+
                         </p:fieldset>
                         <p:outputLabel  value="#{msg['field.viajeregreso']}" >
                             <i class="pi pi-download"></i>
@@ -312,52 +296,32 @@
 
 
 
-                            <p:calendar  disabled="true"  size="10"                                  
-                                         pattern="dd/MM/yyyy"
-                                         value="#{asignarSolicitudaViajeController.viajeRegreso.fechahorainicioreserva}"  />
+                             <p:outputLabel value="#{asignarSolicitudaViajeController.viajeServices.showDate(asignarSolicitudaViajeController.viajeRegreso.fechahorainicioreserva)}" />
+                             <p:spacer width="10"/>
+                            <p:outputLabel value="#{asignarSolicitudaViajeController.viajeServices.showHour(asignarSolicitudaViajeController.viajeRegreso.fechahorainicioreserva)}" />
+                                <p:spacer width="10"/>
+                            <p:outputLabel value="a" />
+                            
+                             <p:outputLabel value="#{asignarSolicitudaViajeController.viajeServices.showDate(asignarSolicitudaViajeController.viajeRegreso.fechahorafinreserva)}" />
+                                <p:spacer width="10"/>
+                            <p:outputLabel value="#{asignarSolicitudaViajeController.viajeServices.showHour(asignarSolicitudaViajeController.viajeRegreso.fechahorafinreserva)}" />
 
-                            <h:outputText value="" />
-                            <p:calendar  disabled="true"  size="10"                                  
-                                         pattern="HH:mm:ss a"
-                                         value="#{asignarSolicitudaViajeController.viajeRegreso.fechahorainicioreserva}"  />
-                             <b:commandButton  look="danger"                                                                      
-                                              title="#{msg['label.actulizarfechahorasolicitud']}"
-                                       rendered="false"
-                                              iconAwesome="fa-arrow-up" 
-                                              update=":form:content"
-                                              action="#{asignarSolicitudaViajeController.updateFechahoraPartidaDesdeViajeRegreso()}"
-                                             />
-                            <h:outputText value="a" />
-                            <p:calendar  disabled="true"  size="10"                                  
-                                         pattern="dd/MM/yyyy"
-                                         value="#{asignarSolicitudaViajeController.viajeRegreso.fechahorafinreserva}"  />
 
-                            <h:outputText value="" />
-                            <p:calendar  disabled="true"  size="10"                                  
-                                         pattern="HH:mm:ss a"
-                                         value="#{asignarSolicitudaViajeController.viajeRegreso.fechahorafinreserva}"  />
+                          
 
-    <b:commandButton  look="danger"
-                                              title="#{msg['label.actulizarfechahorasolicitud']}"
-                                        rendered="false"
-                                              iconAwesome="fa-arrow-up" 
-                                              update=":form:content"
-                                              action="#{asignarSolicitudaViajeController.updateFechahoraRegresoDesdeViajeRegreso()}"
-                                             />
-    
-    
-      <p:staticMessage  id="warningMessageRegreso" severity="info" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{asignarSolicitudaViajeController.viajeRegreso.mensajeWarning}" />
+
+                            <p:staticMessage  id="warningMessageRegreso" severity="info" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{asignarSolicitudaViajeController.viajeRegreso.mensajeWarning}" />
                         </p:fieldset>
 
 
 
 
 
-<p:spacer/>
+                        <p:spacer/>
 
 
 
-      <p:staticMessage  id="warningnota"  severity="error" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{msg['label.notaasignarsolicitudviaje']}" />
+                        <p:staticMessage  id="warningnota"  severity="error" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{msg['label.notaasignarsolicitudviaje']}" />
 
 
                         <p:commandButton value="#{app['button.save']}" 
@@ -368,7 +332,7 @@
                                          update=":form:content">
 
                         </p:commandButton>
-                      
+
 
                     </b:panelGrid>
 
