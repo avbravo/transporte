@@ -1939,4 +1939,31 @@ com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
         return "";
     }
     // </editor-fold>   
+    
+    // <editor-fold defaultstate="collapsed" desc="List<Solicitud> verSolicitudPorViaje(Viaje viaje)">
+    public List<Solicitud> verSolicitudPorViaje(Viaje viaje){
+        List<Solicitud> list = new ArrayList<>();
+        try {
+             list = solicitudServices.solicituPorViaje(viaje);
+       } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return list;
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="List<Solicitud> verSolicitudPorViaje(Viaje viaje)">
+    public String showNombre(Solicitud solicitud){
+      String nombre ="";
+        try {
+      if(solicitud.getUsuario() == null || solicitud.getUsuario().isEmpty()){
+          
+      }else{
+          nombre = solicitud.getUsuario().get(0).getNombre();
+      }
+       } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return nombre;
+    }
+    // </editor-fold>
 }

@@ -56,10 +56,12 @@
 
                 <b:dropMenu value="#{msg['menubar.viaje']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, CONDUCTOR, SECRETARIA,DOCENTE, ADMINISTRATIVO')}">
                     <b:navLink value="#{msg['menu.viajesconsolicitud']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/list" iconAwesome= "fa-book" />
+                    <b:navLink value="#{msg['menu.salvoconducto']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/salvoconducto" iconAwesome= "fa-book" />
 
 
                     <b:navLink value="#{msg['menu.marcarrealizado']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/marcarviajerealizado" iconAwesome= "fa-check" />
-                    <b:navLink value="#{msg['menu.cancelarviaje']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/cancelarviaje" iconAwesome= "fa-eraser" />
+                    <b:navLink value="#{msg['menu.cancelarviajeysolicitud']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/cancelarviajeysolicitud" iconAwesome= "fa-eraser" />
+                    <b:navLink value="#{msg['menu.cancelarsoloviaje']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/cancelarsoloviaje" iconAwesome= "fa-eraser" />
                     <!--<b:navLink value="#{msg['menu.editarviaje']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/list" iconAwesome= "fa-pencil-square-o" />-->
                     <!--<b:navLink value="#{msg['menu.fusionarviaje']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/list" iconAwesome= "fa-clone" />-->
                     <!--<b:navLink value="#{msg['menu.viajeregreso']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" outcome="/pages/viaje/list" iconAwesome= "fa-exchange" />-->

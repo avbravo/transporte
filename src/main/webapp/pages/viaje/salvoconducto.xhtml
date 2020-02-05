@@ -26,7 +26,7 @@
 
             <b:growl  id="msgs"/>
 
-            <b:panel collapsible="false" title="#{msg['titlelist.viajeconsolicitud']}" id="content"   look="primary" > 
+            <b:panel collapsible="false" title="#{msg['titlelist.salvoconducto']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
 
@@ -140,6 +140,7 @@
                     skip="ajax:viajeController.skip()" 
                     url = "/pages/viaje/new.xhtml"
                     renderedPrint="false"
+                    renderedNew="false"
                     />
 
 
@@ -223,23 +224,28 @@
 
 
 
+                            <p:outputLabel  value="#{msg['field.autorizasalvoconducto']}" />
+
+                            <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
+                                                     completeMethod="#{viajeController.usuarioServices.completeAutorizadoSalvoConducto}"
+                                                     labeltip1="#{msg['field.username']} #{p.username}"
+                                                     labeltip2="#{msg['field.nombre']} #{p.nombre}"  
+                                                     listener="#{viajeController.handleSelect}"
+                                                     value="#{viajeController.autorizasalvoconducto}"
+                                                     itemLabel=" #{p.nombre}"
+                                                     field="nombre"
+                                                     dropdown="true"
+                                                     minQueryLength="0"
+                                                     disabled="false"
+                                                     />
+
+                            <b:commandButton                    
+                                value="#{msg['button.salvoconducto']}"
+                                title="#{msg['button.salvoconducto']}"
+                                action="#{viajeController.salvoConducto(item)}"
+                                ajax="false"/> 
 
 
-  <p:spacer/>
-                            <p:dataTable value="#{viajeController.verSolicitudPorViaje(item)}" var="var" >
-                                <f:facet name="header">
-                                    <p:outputLabel value="#{msg['label.solicitudes']}"/>
-                                </f:facet>
-                                <p:column headerText="#{msg['field.idsolicitud']}" style="width:75px">
-                                    <h:outputText value="#{var.idsolicitud}"  />
-                                </p:column>
-                                <p:column headerText="#{msg['field.nombre']}" style="width:75px">
-                                    <h:outputText value="#{viajeController.showNombre(var)}"  />
-                                </p:column>
-
-
-                            </p:dataTable>
-                
 
 
                         </b:panelGrid>

@@ -1536,8 +1536,8 @@ public class ViajeCancelarController implements Serializable, IController {
         return completableFuture;
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="String cancelarViaje(Viaje item) ">
-    public String cancelarViaje(Viaje item) {
+    // <editor-fold defaultstate="collapsed" desc="String cancelarViajeYSolictud(Viaje item)">
+    public String cancelarViajeYSolictud(Viaje item) {
         try {
             Viaje viaje = new Viaje();
             viaje = item;
@@ -1597,69 +1597,13 @@ public class ViajeCancelarController implements Serializable, IController {
             if (list == null || list.isEmpty()) {
                 //No hay ninguna solicitud con ese viaje asignado.
             } else {
-                if (viajeServices.actualizarSolicitudesConViajeCancelado(viaje, list, rf.getMrb(), rf.getArb())) {
+                if (viajeServices.actualizarSolicitudesConViajeCancelado(viaje, list, rf.getMrb(), rf.getArb(),true)) {
 
                 }
 
             }
 
-//            if (list == null || list.isEmpty()) {
-//                for (Solicitud s : list) {
-//                    //Es el viaje de ida y regreso
-//                    if (s.getViaje().get(0).equals(viaje.getIdviaje()) && s.getViaje().get(1).getIdviaje().equals(viaje.getIdviaje())) {
-//                        List<Viaje> viajeList = new ArrayList<>();
-//                        s.setViaje(viajeList);
-//                        //cambiar el estatus del viaje a no asignado
-//
-//                        Optional<EstatusViaje> optional = estatusViajeServices.estatusViajeInicial();
-//                        if (optional.isPresent()) {
-//                            s.setEstatusViaje(optional.get());
-//                        } else {
-//                            JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
-//                            return "";
-//                        }
-//
-//                        solicitudRepository.update(s);
-//
-//                    } else {
-//                        // Si el que se quita es el viaje de ida
-//                        if (s.getViaje().get(0).equals(viaje.getIdviaje()) && !s.getViaje().get(1).getIdviaje().equals(viaje.getIdviaje())) {
-//                            EstatusViaje estatusViaje = new EstatusViaje();
-//                            estatusViaje.setIdestatusviaje("PENDIENTEIDA/REGRESOASIGNADO");
-//                            Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
-//                            if (optional.isPresent()) {
-//                                estatusViaje = optional.get();
-//                            } else {
-//                                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
-//                                return "";
-//                            }
-//                            s.setEstatusViaje(estatusViaje);
-//
-//                            //Removerlo 
-//                            s.getViaje().remove(0);
-//                            solicitudRepository.update(s);
-//                        } else {
-//                            //Remueve el viaje de regreso y si tiene viaje de ida
-//                            if (s.getViaje().get(1).getIdviaje().equals(viaje.getIdviaje())) {
-//                                EstatusViaje estatusViaje = new EstatusViaje();
-//                                estatusViaje.setIdestatusviaje("PENDIENTEREGRESO/IDAASIGNADO");
-//                                Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
-//                                if (optional.isPresent()) {
-//                                    estatusViaje = optional.get();
-//                                } else {
-//                                    JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
-//                                    return "";
-//                                }
-//                                s.setEstatusViaje(estatusViaje);
-//
-//                                //Removerlo 
-//                                s.getViaje().remove(0);
-//                                solicitudRepository.update(s);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
+
             JsfUtil.infoDialog(rf.getAppMessage("info.cancel"), rf.getMessage("info.viajecancelado"));
             move(page);
         } catch (Exception e) {
@@ -1668,4 +1612,107 @@ public class ViajeCancelarController implements Serializable, IController {
         return "";
     }
     // </editor-fold>  
+    // <editor-fold defaultstate="collapsed" desc="String cancelarSoloViaje(Viaje item)">
+    public String cancelarSoloViaje(Viaje item) {
+        try {
+            Viaje viaje = new Viaje();
+            viaje = item;
+
+            //Lo datos del usuario
+            Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+            Double kmdiferencias = viaje.getKmestimados() - item.getKmestimados();
+            Double costoCombustibleDiferencia = viaje.getCostocombustible() - item.getCostocombustible();
+
+            viaje.setActivo("no");
+            if (viajeRepository.update(viaje)) {
+                revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(viaje.getIdviaje().toString(), jmoordb_user.getUsername(),
+                        "cancelar viaje", "viaje", viajeRepository.toDocument(viaje).toString()));
+            } else {
+                JsfUtil.warningMessage(rf.getMessage("warning.noseactualizoelviaje"));
+                return "";
+            }
+            if (item.getRealizado().equals("si")) {
+
+                //Actualizar el vehiculo
+                Vehiculo vehiculo = viaje.getVehiculo();
+                Double totalkm = vehiculo.getTotalkm() > viaje.getKmestimados() ? vehiculo.getTotalkm() - viaje.getKmestimados() : vehiculo.getTotalkm();
+                Double km = vehiculo.getKm() > viaje.getKmestimados() ? vehiculo.getKm() - viaje.getKmestimados() : vehiculo.getKm();
+                Double totalConsumo = vehiculo.getTotalconsumo() > viaje.getCostocombustible() ? vehiculo.getTotalconsumo() - viaje.getCostocombustible() : vehiculo.getTotalconsumo();
+              
+                vehiculo.setTotalkm(totalkm);
+                vehiculo.setKm(km);
+                vehiculo.setTotalconsumo(totalConsumo);
+                vehiculo.setTotalviajes(vehiculo.getTotalviajes() - 1);
+                if (vehiculoRepository.update(vehiculo)) {
+                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(vehiculo.getIdvehiculo().toString(), jmoordb_user.getUsername(),
+                            "update totales desde cancelar viaje", "vehiculo", vehiculoRepository.toDocument(vehiculo).toString()));
+                } else {
+                    JsfUtil.warningMessage(rf.getMessage("warning.noseactualizoelvehiculo"));
+                    return "";
+                }
+
+                //Actualiza los totales en el conductor
+                Conductor conductor = viaje.getConductor();
+                Double totalKmConductor = conductor.getTotalkm() > viaje.getKmestimados() ? vehiculo.getTotalkm() - viaje.getKmestimados() : conductor.getTotalkm();
+               
+                Double totalConsumoConductor = conductor.getTotalconsumo() > viaje.getCostocombustible() ? conductor.getTotalconsumo() - viaje.getCostocombustible() : conductor.getTotalconsumo();
+
+                conductor.setTotalconsumo(conductor.getTotalconsumo() + viaje.getCostocombustible());
+                conductor.setTotalkm(conductor.getTotalkm() + viaje.getKmestimados());
+                conductor.setTotalviajes(conductor.getTotalviajes() - 1);
+                if (conductorRepository.update(conductor)) {
+                    revisionHistoryRepository.save(revisionHistoryServices.getRevisionHistory(conductor.getCedula(), jmoordb_user.getUsername(),
+                            "update totales desde  cancelar viaje", "conductor", conductorRepository.toDocument(conductor).toString()));
+                } else {
+                    JsfUtil.successMessage(rf.getMessage("warning.conductornoactualizado"));
+                    return "";
+                }
+            }
+            //Quitar el viaje de las solocitudes
+            List<Solicitud> list = solicitudServices.solicituPorViaje(viaje);
+            if (list == null || list.isEmpty()) {
+                //No hay ninguna solicitud con ese viaje asignado.
+            } else {
+                if (viajeServices.actualizarSolicitudesConViajeCancelado(viaje, list, rf.getMrb(), rf.getArb(),false)) {
+
+                }
+
+            }
+
+
+            JsfUtil.infoDialog(rf.getAppMessage("info.cancel"), rf.getMessage("info.viajecancelado"));
+            move(page);
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return "";
+    }
+    // </editor-fold>  
+    
+    // <editor-fold defaultstate="collapsed" desc="List<Solicitud> verSolicitudPorViaje(Viaje viaje)">
+    public List<Solicitud> verSolicitudPorViaje(Viaje viaje){
+        List<Solicitud> list = new ArrayList<>();
+        try {
+             list = solicitudServices.solicituPorViaje(viaje);
+       } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return list;
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="List<Solicitud> verSolicitudPorViaje(Viaje viaje)">
+    public String showNombre(Solicitud solicitud){
+      String nombre ="";
+        try {
+      if(solicitud.getUsuario() == null || solicitud.getUsuario().isEmpty()){
+          
+      }else{
+          nombre = solicitud.getUsuario().get(0).getNombre();
+      }
+       } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return nombre;
+    }
+    // </editor-fold>
 }

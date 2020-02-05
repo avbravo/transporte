@@ -11,8 +11,10 @@
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
     <ui:define name="content">
 
-
+        -<jmoordbjsf:csscommandbuttongreen/>
         <style>
+
+
             .thumbnail { max-width: 100%; }
             img.thumbnail:hover, img.thumbnail:focus {
                 border: 1px solid;
@@ -26,7 +28,7 @@
 
             <b:growl  id="msgs"/>
 
-            <b:panel collapsible="false" title="#{msg['titlelist.viajeconsolicitud']}" id="content"   look="primary" > 
+            <b:panel collapsible="false" title="#{msg['titlelist.viajecancelarsoloviaje']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
 
@@ -37,11 +39,11 @@
 
                     <p:outputLabel value="#{msg['field.conductor']}"/>
                     <jmoordbjsf:autocomplete converter="#{conductorConverter}"
-                                             completeMethod="#{viajeController.conductorServices.complete}"
+                                             completeMethod="#{viajeCancelarController.conductorServices.complete}"
                                              labeltip1="#{msg['field.cedula']} #{p.cedula}"
                                              labeltip2="#{msg['field.nombre']} #{p.nombre}" 
-                                             listener="#{viajeController.handleSelectedConductor}"
-                                             value="#{viajeController.conductor}"
+                                             listener="#{viajeCancelarController.handleSelectedConductor}"
+                                             value="#{viajeCancelarController.conductor}"
                                              itemLabel=" #{p.nombre}"
                                              dropdown="true"
                                              minQueryLength="0"
@@ -50,12 +52,12 @@
 
                     <p:outputLabel value="#{msg['field.vehiculo']}"/>
                     <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
-                                             completeMethod="#{viajeController.vehiculoServices.complete}" 
+                                             completeMethod="#{viajeCancelarController.vehiculoServices.complete}" 
                                              labeltip1="#{msg['field.idvehiculo']} #{p.idvehiculo}"
                                              labeltip2="#{msg['field.marca']} #{p.marca}"
                                              labeltip3="#{msg['field.modelo']} #{p.modelo}"  
-                                             listener="#{viajeController.handleSelectedVehiculo}"
-                                             value="#{viajeController.vehiculo}"
+                                             listener="#{viajeCancelarController.handleSelectedVehiculo}"
+                                             value="#{viajeCancelarController.vehiculo}"
                                              itemLabel=" #{p.marca}"
                                              field="marca"
                                              dropdown="true"
@@ -72,11 +74,11 @@
                         <jmoordbjsf:searchBetweenDate
 
                             labelDesde="#{msg['field.fechainicio']}"
-                            valueDesde="#{viajeController.fechaDesde}"
+                            valueDesde="#{viajeCancelarController.fechaDesde}"
                             labelHasta="#{msg['field.fechafin']}"
-                            valueHasta="#{viajeController.fechaHasta}"
+                            valueHasta="#{viajeCancelarController.fechaHasta}"
 
-                            search="#{viajeController.searchBetweenDate('_betweendates',viajeController.fechaDesde, viajeController.fechaHasta)}"
+                            search="#{viajeCancelarController.searchBetweenDate('_betweendates',viajeCancelarController.fechaDesde, viajeCancelarController.fechaHasta)}"
                             update=":form:dataTable "
 
                             />
@@ -85,46 +87,14 @@
 
 
 
-
-                <jmoordbjsf:searchTwoColummns
-                    label="#{msg['field.lugardestino']}"
-                    value="#{viajeController.lugarDestino}"
-                    search="#{viajeController.searchBy('lugardestino',viajeController.lugarDestino)}"
-                    label2="#{msg['field.comentario']}"
-                    value2="#{viajeController.comentarios}"
-                    search2="#{viajeController.searchBy('comentarios',viajeController.comentarios)}"
-                    />
-
-
-                <b:row>
-                    <b:column medium-screen="6" >
-
-                        <jmoordbjsf:searchYesNo label="#{msg['field.realizado']}" 
-                                                value="#{viajeController.realizado}"
-                                                id="realizado"  
-
-                                                search="#{viajeController.searchBy('realizado',viajeController.realizado)}"
-                                                />
-
-                    </b:column>
-                    <b:column medium-screen="6" >
-                        <jmoordbjsf:searchYesNo label="#{msg['field.activo']}" 
-                                                value="#{viajeController.activo}"
-                                                id="activo"  
-
-                                                search="#{viajeController.searchBy('activo',viajeController.activo)}"
-                                                />
-                    </b:column>
-                </b:row>
-
                 <b:row>
                     <b:column medium-screen="6" >
 
                         <jmoordbjsf:searchDate label="#{msg['field.fechapartida']}" 
-                                               value="#{viajeController.fechaPartida}"
+                                               value="#{viajeCancelarController.fechaPartida}"
                                                id="fechapartida"  
 
-                                               search="#{viajeController.searchBy('fechapartida',viajeController.fechaPartida)}"
+                                               search="#{viajeCancelarController.searchBy('fechapartida',viajeCancelarController.fechaPartida)}"
                                                />
 
                     </b:column>
@@ -133,61 +103,53 @@
             </b:panel>
             <b:panel collapsible="false" id="dataTable" look="primary">
                 <jmoordbjsf:paginator
-                    controller="#{viajeController}"                        
-                    rowPage="#{viajeController.rowPage}"                   
-                    page="#{viajeController.page}"
-                    pages="#{viajeController.pages}"
-                    skip="ajax:viajeController.skip()" 
+                    controller="#{viajeCancelarController}"                        
+                    rowPage="#{viajeCancelarController.rowPage}"                   
+                    page="#{viajeCancelarController.page}"
+                    pages="#{viajeCancelarController.pages}"
+                    skip="ajax:viajeCancelarController.skip()" 
                     url = "/pages/viaje/new.xhtml"
+                    renderedNew="false"
                     renderedPrint="false"
                     />
-
-
-                <p:dataTable  value="#{viajeController.viajeDataModel}"
+                <p:dataTable  value="#{viajeCancelarController.viajeDataModel}"
                               var="item"
                               id="dataTable2"
 
                               paginator="false"
                               >
-                    <f:facet name="footer">
-
-                    </f:facet>
                     <p:column style="width:35px">
                         <p:rowToggler />
                     </p:column>
 
                     <p:column headerText="#{msg['field.idviaje']}" style="width:75px">
-                        <h:outputText value="#{item.idviaje}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" />
+                        <h:outputText value="#{item.idviaje}" style="color: #{viajeCancelarController.viajeServices.columnColor(item.realizado,item.activo)}" />
                     </p:column>
 
 
 
 
                     <p:column headerText="#{msg['field.fechapartida']}" style="width:100px">
-                        <h:outputText value="#{viajeController.showDate(item.fechahorainicioreserva)} #{viajeController.showHour(item.fechahorainicioreserva)}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" />
+                        <h:outputText value="#{viajeCancelarController.viajeServices.showDate(item.fechahorainicioreserva)} #{viajeCancelarController.viajeServices.showHour(item.fechahorainicioreserva)}" style="color: #{viajeCancelarController.viajeServices.columnColor(item.realizado,item.activo)}" />
                     </p:column>
                     <p:column headerText="#{msg['field.fecharegreso']}" style="width:100px">
-                        <h:outputText value="#{viajeController.showDate(item.fechahorafinreserva)} #{viajeController.showHour(item.fechahorafinreserva)}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" />
+                        <h:outputText value="#{viajeCancelarController.viajeServices.showDate(item.fechahorafinreserva)} #{viajeCancelarController.viajeServices.showHour(item.fechahorafinreserva)}" style="color: #{viajeCancelarController.viajeServices.columnColor(item.realizado,item.activo)}" />
                     </p:column>
 
 
-                    <p:column headerText="#{msg['field.vehiculos']}"  style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
+                    <p:column headerText="#{msg['field.vehiculos']}"  style="color: #{viajeCancelarController.viajeServices.columnColor(item.realizado,item.activo)}">
 
                         <p:outputLabel value="#{item.vehiculo.marca} #{item.vehiculo.modelo}"/>
 
                     </p:column>
-                    <p:column headerText="#{msg['field.conductores']}"  style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
+                    <p:column headerText="#{msg['field.conductores']}"  style="color: #{viajeCancelarController.viajeServices.columnColor(item.realizado,item.activo)}">
 
                         <p:outputLabel value="#{item.conductor.nombre}"/>
 
                     </p:column>
 
-                    <p:column headerText="#{msg['field.lugardestino']}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
+                    <p:column headerText="#{msg['field.lugardestino']}" style="color: #{viajeCancelarController.viajeServices.columnColor(item.realizado,item.activo)}">
                         <p:outputLabel value="#{item.lugardestino}"  />
-
-                    </p:column> 
-                    <p:column headerText="#{msg['field.realizado']}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
-                        <p:outputLabel value="#{item.realizado}"  />
 
                     </p:column> 
 
@@ -219,14 +181,8 @@
                             <p:outputLabel value="#{msg['field.activo']}"/>
                             <p:outputLabel value="#{item.activo}"/>
 
-
-
-
-
-
-
-  <p:spacer/>
-                            <p:dataTable value="#{viajeController.verSolicitudPorViaje(item)}" var="var" >
+                            <p:spacer/>
+                            <p:dataTable value="#{viajeCancelarController.verSolicitudPorViaje(item)}" var="var" >
                                 <f:facet name="header">
                                     <p:outputLabel value="#{msg['label.solicitudes']}"/>
                                 </f:facet>
@@ -234,19 +190,30 @@
                                     <h:outputText value="#{var.idsolicitud}"  />
                                 </p:column>
                                 <p:column headerText="#{msg['field.nombre']}" style="width:75px">
-                                    <h:outputText value="#{viajeController.showNombre(var)}"  />
+                                    <h:outputText value="#{viajeCancelarController.showNombre(var)}"  />
                                 </p:column>
 
 
                             </p:dataTable>
-                
+                            <p:spacer/>
+                            <p:commandButton 
+                                value="#{app['button.cancel']}"
 
+                                title="#{app['button.cancel']}"
+                                action="#{viajeCancelarController.cancelarSoloViaje(item)}"
+                                update=":form:content, :form:msgs, :form:dataTable">
+                                <p:confirm header="#{app['info.doyouwantdelete']}"
+                                           message="#{app['info.doyouwantdelete']}" icon="pi pi-exclamation-triangle" />
+                            </p:commandButton>
 
                         </b:panelGrid>
                     </p:rowExpansion>
                 </p:dataTable>
             </b:panel>
-
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="#{app['button.yes']}"  type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="#{app['button.no']}"  type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+            </p:confirmDialog>    
         </b:form>
 
         <jmoordbjsf:denegado rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" />

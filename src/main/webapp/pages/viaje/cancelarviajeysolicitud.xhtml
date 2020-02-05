@@ -28,7 +28,7 @@
 
             <b:growl  id="msgs"/>
 
-            <b:panel collapsible="false" title="#{msg['titlelist.viajecancelar']}" id="content"   look="primary" > 
+            <b:panel collapsible="false" title="#{msg['titlelist.viajecancelarysolicitud']}" id="content"   look="primary" > 
                 <!--<b:panelGrid colSpans="2,10" size="xs">--> 
                 <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
 
@@ -182,13 +182,27 @@
                             <p:outputLabel value="#{item.activo}"/>
 
 
+  <p:spacer/>
+                            <p:dataTable value="#{viajeCancelarController.verSolicitudPorViaje(item)}" var="var" >
+                                <f:facet name="header">
+                                    <p:outputLabel value="#{msg['label.solicitudes']}"/>
+                                </f:facet>
+                                <p:column headerText="#{msg['field.idsolicitud']}" style="width:75px">
+                                    <h:outputText value="#{var.idsolicitud}"  />
+                                </p:column>
+                                <p:column headerText="#{msg['field.nombre']}" style="width:75px">
+                                    <h:outputText value="#{viajeCancelarController.showNombre(var)}"  />
+                                </p:column>
 
+
+                            </p:dataTable>
+                            <p:spacer/>
 
                             <p:commandButton 
                                 value="#{app['button.cancel']}"
 
                                 title="#{app['button.cancel']}"
-                                action="#{viajeCancelarController.cancelarViaje(item)}"
+                                action="#{viajeCancelarController.cancelarViajeYSolictud(item)}"
                                 update=":form:content, :form:msgs, :form:dataTable">
                                 <p:confirm header="#{app['info.doyouwantdelete']}"
                                            message="#{app['info.doyouwantdelete']}" icon="pi pi-exclamation-triangle" />
