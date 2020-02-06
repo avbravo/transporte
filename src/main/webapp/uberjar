@@ -7,8 +7,6 @@ java -jar /home/avbravo/software/payara/payara-micro-5.194.jar --deploy /home/av
 EJECUTAR CON PAYARAMICRO
  java -jar home/avbravo/software/payara/payara-micro-5.194.jar  --deploy /home/avbravo/NetBeansProjects/javscaz/fiscal/fiscalweb/target/fiscalweb.war --port '8081'
 
-ejecutarlo en puerto 8081
-java -jar transporte.jar --port '8081'
 
 
 SUBIRLO AL SERVER
@@ -17,6 +15,13 @@ scp transporte.jar   avbravo@192.168.60.3:/home/avbravo/
 Ingresar al server
  ssh avbravo@192.168.60.3
 
+Si hay una version ejecutandos
+Matar el proceso
+ps -x
+kill numero_de_procesop
+
+ejecutarlo en puerto 8081
+java -jar transporte.jar --port '8081'
 
 Cerrar el terminal y que se mantenga en ejecucion
 Presionar en el terminal
