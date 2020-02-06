@@ -55,16 +55,17 @@
     
     <context-param>
         <param-name>primefaces.THEME</param-name>
+   <param-value>omega</param-value>
 <!--        <param-value>nova-light</param-value>
         
    
-        <param-value>nova-dark</param-value>
+              <param-value>nova-dark</param-value>
          <param-value>nova-colored</param-value>
       <param-value>luna-blue</param-value>
         <param-value>luna-amber</param-value>
         <param-value>luna-green</param-value>
          <param-value>luna-pink</param-value>-->
-         <param-value>omega</param-value>
+       
 
     </context-param>
     <!--
