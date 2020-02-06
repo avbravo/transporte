@@ -116,16 +116,7 @@
 
                     </p:column>
 
-                    <p:column style="width:55px" >
-
-                        <jmoordbjsf:commandbuttondatatableprepareView
-                            rendered="#{(item.estatus.idestatus eq 'SOLICITADO') or ((item.estatus.idestatus eq 'APROBADO'))}"
-                            controller="#{solicitudManualAdministrativoController}"
-                            url="/pages/solicitudmanualadministrativo/view.xhtml"
-                            item="#{item}"
-                            />                
-                    </p:column>
-
+                
 
 
 
@@ -203,6 +194,13 @@
                             <p:outputLabel value="#{msg['field.viajeregreso']}" />
                            <p:outputLabel  value="#{solicitudManualAdministrativoController.showViajeRegreso(item)}"  />
 
+                           <p:spacer/>
+                             <jmoordbjsf:commandbuttondatatableprepareView
+                            rendered="#{(item.estatus.idestatus eq 'SOLICITADO') or ((item.estatus.idestatus eq 'APROBADO'))}"
+                            controller="#{solicitudManualAdministrativoController}"
+                            url="/pages/solicitudmanualadministrativo/view.xhtml"
+                            item="#{item}"
+                            />                
                         </b:panelGrid>
                     </p:rowExpansion>
                 </p:dataTable>

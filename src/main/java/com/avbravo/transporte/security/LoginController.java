@@ -311,30 +311,33 @@ public class LoginController implements Serializable, SecurityInterface {
                 JsfUtil.warningMessage(rf.getAppMessage("login.usernamenotvalid"));
                 return null;
             }
-            usernameRecover = usernameRecoveryOfSession();
-            recoverSession = !usernameRecover.equals("");
-            if (recoverSession) {
-                invalidateCurrentSession();
-                //  RequestContext.getCurrentInstance().execute("PF('sessionDialog').show();");
-                JsfUtil.warningMessage(rf.getAppMessage("session.procederacerrar"));
-                return "";
-            }
-            if (recoverSession && usernameRecover.equals(username)) {
-            } else {
-                if (isUserLogged(username)) {
-                    userwasLoged = true;
-                    JsfUtil.warningMessage(rf.getAppMessage("login.alreadylogged"));
-                    if (destroyByUsername(username)) {
+            
+            //Aqui valida la sesion de otro usuario
+            
+//            usernameRecover = usernameRecoveryOfSession();
+//            recoverSession = !usernameRecover.equals("");
+//            if (recoverSession) {
+//                invalidateCurrentSession();
+//                //  RequestContext.getCurrentInstance().execute("PF('sessionDialog').show();");
+//                JsfUtil.warningMessage(rf.getAppMessage("session.procederacerrar"));
+//                return "";
+//            }
+//            if (recoverSession && usernameRecover.equals(username)) {
+//            } else {
+//                if (isUserLogged(username)) {
+//                    userwasLoged = true;
+//                    JsfUtil.warningMessage(rf.getAppMessage("login.alreadylogged"));
+//                    if (destroyByUsername(username)) {
+//
+//                    }
+//                    return "";
+//                }
+//
+//            }
 
-                    }
-                    return "";
-                }
-
-            }
-
-            if (!isValidSession(username)) {
-                return "";
-            }
+//            if (!isValidSession(username)) {
+//                return "";
+//            }
 
             /**
              * Cargando la configuracion
