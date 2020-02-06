@@ -269,7 +269,7 @@
                     <p:outputLabel value="#{solicitudManualAdministrativoController.solicitud.estatus.idestatus}" />
 
                     <p:outputLabel  value="#{msg['field.numerogrupos']}" />
-                    <p:chips id="numerogrupo" disabled="true" value="#{solicitudManualAdministrativoController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
+                <p:outputLabel id="numerogrupo"  value="#{solicitudManualAdministrativoController.solicitud.numerogrupo}"   />
                     <p:outputLabel value="#{msg['field.idtipogira']}"/>
                     <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
                                              completeMethod="#{solicitudManualAdministrativoController.tipogiraServices.complete}" 
@@ -290,7 +290,7 @@
 
 
                     <p:outputLabel  value="#{msg['field.lugares']}" />
-                    <p:chips disabled="true" value="#{solicitudManualAdministrativoController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
+                  <p:outputLabel  value="#{solicitudManualAdministrativoController.solicitud.lugares}" id="lugares"    />
 
 
                 </b:panelGrid>

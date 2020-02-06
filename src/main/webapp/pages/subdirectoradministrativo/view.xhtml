@@ -174,7 +174,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.numerogrupos']}" />
-                        <p:chips required="true" id="numerogrupo" value="#{subdirectorAdministrativoController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
+                          <jmoordbjsf:pinputText size="60" required="true" id="numerogrupo" value="#{subdirectorAdministrativoController.solicitud.numerogrupo}"   />
 
 
                         <p:spacer/>
@@ -200,7 +200,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.lugares']}" />
-                        <p:chips required="true" value="#{subdirectorAdministrativoController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
+                          <jmoordbjsf:pinputText size="60" required="true" value="#{subdirectorAdministrativoController.solicitud.lugares}" id="lugares"    />
 
                      
                           <p:outputLabel value="#{msg['field.solicitud']}"/>
@@ -304,7 +304,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.recursossolicitados']}" />
-                        <p:chips required="true" value="#{subdirectorAdministrativoController.solicitud.recursossolicitados}" id="recursossolicitados" title="#{msg['field.chips']}"   />
+                          <jmoordbjsf:pinputText size="60" required="true" value="#{subdirectorAdministrativoController.solicitud.recursossolicitados}" id="recursossolicitados"     />
 
                         <p:outputLabel  value="#{msg['field.observaciones']}" />
                         <b:inputTextarea required="true"  rows="2" span="8" value="#{subdirectorAdministrativoController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />

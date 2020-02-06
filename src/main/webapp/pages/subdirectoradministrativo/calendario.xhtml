@@ -254,7 +254,7 @@
 
 
                     <p:outputLabel  value="#{msg['field.numerogrupos']}" />
-                    <p:chips id="numerogrupo" disabled="true" value="#{subdirectorAdministrativoCalendarController.solicitud.numerogrupo}" title="#{msg['field.chips']}" />
+                 <p:outputLabel id="numerogrupo"  value="#{subdirectorAdministrativoCalendarController.solicitud.numerogrupo}"   />
                     <p:outputLabel value="#{msg['field.idtipogira']}"/>
                     <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
                                              completeMethod="#{subdirectorAdministrativoCalendarController.tipogiraServices.complete}" 
@@ -275,7 +275,7 @@
 
 
                     <p:outputLabel  value="#{msg['field.lugares']}" />
-                    <p:chips disabled="true" value="#{subdirectorAdministrativoCalendarController.solicitud.lugares}" id="lugares"  title="#{msg['field.chips']}" />
+<p:outputLabel  value="#{subdirectorAdministrativoCalendarController.solicitud.lugares}" id="lugares"    />
 
 
                 </b:panelGrid>

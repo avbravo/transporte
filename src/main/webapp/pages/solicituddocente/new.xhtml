@@ -222,7 +222,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.numerogrupos']}" />
-                        <p:chips  required="true" id="numerogrupo" value="#{solicitudDocenteController.solicitud.numerogrupo}" placeholder="#{msg['field.chips']}" title="#{msg['field.chips']}" />
+                          <jmoordbjsf:pinputText size="60"  required="true" id="numerogrupo" value="#{solicitudDocenteController.solicitud.numerogrupo}"     />
 
 
                         <p:spacer/>
@@ -248,7 +248,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.lugares']}" />
-                        <p:chips required="true" value="#{solicitudDocenteController.solicitud.lugares}" id="lugares" placeholder="#{msg['field.chips']}" title="#{msg['field.chips']}" >
+                          <jmoordbjsf:pinputText size="60" required="true" value="#{solicitudDocenteController.solicitud.lugares}" id="lugares"     >
 
                         </p:chips>
 
@@ -377,7 +377,7 @@
                         <p:outputLabel  value="#{msg['field.recursossolicitados']}" >
                             <i class="pi pi-briefcase"></i>
                         </p:outputLabel>
-                        <p:chips required="true" value="#{solicitudDocenteController.solicitud.recursossolicitados}" id="recursossolicitados" placeholder="#{msg['field.chips']}" title="#{msg['field.chips']}"   />
+                          <jmoordbjsf:pinputText size="60" required="true" value="#{solicitudDocenteController.solicitud.recursossolicitados}" id="recursossolicitados"       />
 
                         <p:outputLabel  value="#{msg['field.observaciones']}" >
                             <i class="pi pi-comment"></i>
