@@ -14,3 +14,24 @@ java -jar transporte.jar --port '8081'
 SUBIRLO AL SERVER
 scp transporte.jar   avbravo@192.168.60.3:/home/avbravo/
 
+Ingresar al server
+ ssh avbravo@192.168.60.3
+
+
+Cerrar el terminal y que se mantenga en ejecucion
+Presionar en el terminal
+
+Ctrl + z 
+Ejecuta los siguientes comandos:
+disown -h %1 
+Luego
+bg 1 
+
+p
+
+PASOS:
+1. LIMPIAR BASES DE DATOS
+2. CREAR USUARIOS
+3. CREAR VEHICULOS
+4. CREAR FACULTADES
+5. CREAR CARRERAS
