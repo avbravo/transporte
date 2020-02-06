@@ -1043,6 +1043,9 @@ public class RechazarSolicitudController implements Serializable, IController {
     }   // </editor-fold>
 
 
+    
+    
+    
 
     // <editor-fold defaultstate="collapsed" desc="String rechazarSolicitud()">
     public String rechazarSolicitud() {
