@@ -20,7 +20,10 @@
                 border-color: #428BCA;
             }
             
-            
+            .ui-fieldset, .ui-fieldset .ui-fieldset-legend {
+background-color: transparent;
+border-color: transparent;
+}
 
         </style>
 
@@ -119,8 +122,9 @@
 
 
                         <p:outputLabel  value="#{msg['field.telefono']}" />
-                        <jmoordbjsf:pinputText span="4"  value="#{solicitudDocenteController.responsable.celular}" id="celular" label="#{msg['field.celular']}" />
-
+                     
+                        <jmoordbjsf:pinputText span="4"  value="#{solicitudDocenteController.responsable.celular}" id="celular" label="#{msg['field.telefono']}" />
+                  
                         <p:outputLabel  value="#{msg['field.email']}" />
                         <jmoordbjsf:pemail required="true" size="35" value="#{solicitudDocenteController.responsable.email}" id="email"  label="#{msg['field.email']}" />
 
