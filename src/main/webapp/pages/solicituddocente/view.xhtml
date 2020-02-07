@@ -335,9 +335,9 @@
                                          id="datatableDisponibles"
                                          var="item"  >
                                 <f:facet name="header">
-                                    <p:outputLabel  value="#{msg['tabletitle.vehiculos']}" />
+                                    <p:outputLabel  value="#{msg['tabletitle.analisisdisponibilidad']}"  />
                                 </f:facet>
-                                <p:columnGroup type="header">
+<!--                                <p:columnGroup type="header">
                                     <p:row>
 
                                         <p:column rowspan="1" style="width:95px" headerText="#{msg['field.fecha']}" />
@@ -362,11 +362,13 @@
                                         <p:column headerText="#{msg['field.recomendados']}" />
 
                                     </p:row>
-                                </p:columnGroup>
+                                </p:columnGroup>-->
+ <p:column style="width:1px">
+     <p:rowToggler  />
+ </p:column>
+                                <p:column style="width:75px">
 
-                                <p:column style="width:95px">
-
-                                    <p:rowToggler />
+                               
                                     <h:outputText value="#{solicitudDocenteController.showDate(item.fechahorainicio)}" style="color: #{solicitudDocenteController.disponiblesServices.columnColorDisponibles(item)}"  />
                                 </p:column>
 
