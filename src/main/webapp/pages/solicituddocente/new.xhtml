@@ -260,7 +260,7 @@ border-color: transparent;
                         
 
 
-                        <p:outputLabel   value="#{msg['field.dias']}" >
+                        <p:outputLabel   value="#{msg['field.seleccionedias']}" >
                               <b:iconAwesome value="fa-book"/> 
                         </p:outputLabel>
                         <p:selectCheckboxMenu id="multiple" value="#{solicitudDocenteController.diasSelected}" label="#{msg['field.dias']}" multiple="true"
@@ -273,11 +273,12 @@ border-color: transparent;
                                     process="@this,pasajeros"/>
                         </p:selectCheckboxMenu>
 
+                          
                         <p:outputLabel value="#{msg['field.solicitud']}"/>
                         <p:dataTable id="datatableTipoVehiculo" var="item" value="#{solicitudDocenteController.tipoVehiculoCantidadBeansList}" 
                                      editable="true" editMode="cell" widgetVar="cellCars">
                             <f:facet name="header">
-
+     <p:outputLabel value="#{msg['label.ingresevehiculosypasajeros']}"/>
                             </f:facet>
 
                             <p:ajax event="cellEdit" listener="#{solicitudDocenteController.onCellEdit}" 
