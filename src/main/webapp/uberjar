@@ -21,7 +21,7 @@ ps -x
 kill numero_de_procesop
 
 ejecutarlo en puerto 8081
-java -jar transporte.jar --port '8081'
+bg
 
 Cerrar el terminal y que se mantenga en ejecucion
 Presionar en el terminal
