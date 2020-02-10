@@ -251,7 +251,7 @@
 
 
 
-                        <p:outputLabel  value="#{msg['field.dias']}" >
+                          <p:outputLabel   value="#{msg['field.seleccionedias']}" >
                             <b:iconAwesome value="fa-book"/> 
                         </p:outputLabel>
                         <p:selectCheckboxMenu id="multiple" value="#{solicitudManualDocenteController.diasSelected}" label="#{msg['field.dias']}" multiple="true"
@@ -268,7 +268,7 @@
                         <p:dataTable id="datatableTipoVehiculo" var="item" value="#{solicitudManualDocenteController.tipoVehiculoCantidadBeansList}" 
                                      editable="true" editMode="cell" widgetVar="cellCars">
                             <f:facet name="header">
-
+     <p:outputLabel value="#{msg['label.ingresevehiculosypasajeros']}"/>
                             </f:facet>
 
                             <p:ajax event="cellEdit" listener="#{solicitudManualDocenteController.onCellEdit}" 
@@ -397,7 +397,7 @@
                                          id="datatableDisponibles"
                                          var="item"  >
                                 <f:facet name="header">
-                                    <p:outputLabel  value="#{msg['tabletitle.vehiculos']}" />
+                               <p:outputLabel  value="#{msg['tabletitle.analisisdisponibilidad']}" />
                                 </f:facet>
                                 <!--                                <p:columnGroup type="header">
                                                                     <p:row>

@@ -39,20 +39,6 @@
 
 
 
-                        <p:outputLabel  value="#{msg['field.solicitadopor']}" />
-
-                        <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-                                                 completeMethod="#{solicitudAdministrativoController.usuarioServices.complete}"
-                                                 labeltip1="#{msg['field.username']} #{p.username}"
-                                                 labeltip2="#{msg['field.nombre']} #{p.nombre}"  
-                                                 listener="#{solicitudAdministrativoController.handleSelect}"
-                                                 value="#{solicitudAdministrativoController.solicita}"
-                                                 itemLabel=" #{p.nombre}"
-                                                 field="nombre"
-                                                 dropdown="true"
-                                                 minQueryLength="0"
-                                                 disabled="true"
-                                                 />
 
                         <p:outputLabel  value="#{msg['field.copiarsolicituddesde']}" >
                             <i class="pi pi-download"></i>
@@ -99,21 +85,7 @@
 
 
 
-                        <p:outputLabel value="#{msg['field.responsable']}"/>
-                        <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-                                                 completeMethod="#{solicitudAdministrativoController.usuarioServices.complete}"
-                                                 labeltip1="#{msg['field.username']} #{p.username}"
-                                                 labeltip2="#{msg['field.nombre']} #{p.nombre}"   
-                                                 listener="#{solicitudAdministrativoController.handleSelect}"
-                                                 value="#{solicitudAdministrativoController.responsable}"
-                                                 itemLabel=" #{p.nombre}"
-                                                 field="nombre"
-                                                 dropdown="true"
-                                                 minQueryLength="0"
-                                                 update=":form:panel"
-                                                 size="50"
-                                                 disabled="true"
-                                                 />
+                    
 
 
                         <p:outputLabel  value="#{msg['field.telefono']}" />
@@ -171,7 +143,7 @@
                         <p:dataTable id="datatableTipoVehiculo" var="item" value="#{solicitudAdministrativoController.tipoVehiculoCantidadBeansList}" 
                                      editable="true" editMode="cell" widgetVar="cellCars">
                             <f:facet name="header">
-
+     <p:outputLabel value="#{msg['label.ingresevehiculosypasajeros']}"/>
                             </f:facet>
 
                             <p:ajax event="cellEdit" listener="#{solicitudAdministrativoController.onCellEdit}" 
@@ -280,7 +252,7 @@
                                          id="datatableDisponibles"
                                          var="item"  >
                                 <f:facet name="header">
-                                    <p:outputLabel  value="#{msg['tabletitle.vehiculos']}" />
+                                      <p:outputLabel  value="#{msg['tabletitle.analisisdisponibilidad']}" />
                                 </f:facet>
 <!--                                <p:columnGroup type="header">
                                     <p:row>

@@ -26,7 +26,7 @@
             <h:panelGroup id="content" layout="block"> 
 
                 <jmoordbjsf:messages id="msg"/>
-   <p:growl id="growl"/>
+                <p:growl id="growl"/>
 
                 <b:panel collapsible="false" title="#{msg['title.solicitudmanualdocente']}" look="primary"  >
 
@@ -174,7 +174,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.numerogrupos']}" />
-                             <jmoordbjsf:pinputText required="true" size="60" id="numerogrupo" value="#{solicitudManualDocenteController.solicitud.numerogrupo}"  />
+                        <jmoordbjsf:pinputText required="true" size="60" id="numerogrupo" value="#{solicitudManualDocenteController.solicitud.numerogrupo}"  />
 
 
                         <p:spacer/>
@@ -202,10 +202,10 @@
                         <p:outputLabel  value="#{msg['field.lugares']}" />
                         <jmoordbjsf:pinputText required="true" size="60" value="#{solicitudManualDocenteController.solicitud.lugares}" id="lugares"   />
 
-                     
-                       <p:outputLabel  value="#{msg['field.dias']}" >
-                          <b:iconAwesome value="fa-book"/> 
-                          </p:outputLabel>
+
+       <p:outputLabel   value="#{msg['field.seleccionedias']}" >
+                            <b:iconAwesome value="fa-book"/> 
+                        </p:outputLabel>
                         <p:selectCheckboxMenu id="multiple" value="#{solicitudManualDocenteController.diasSelected}" label="#{msg['field.rangoagenda']}" multiple="true"
                                               required="true" 
                                               disabled="true"
@@ -216,12 +216,12 @@
                                     listener="#{solicitudManualDocenteController.changeDaysViewAvailable()}"
                                     process="@this,pasajeros"/>
                         </p:selectCheckboxMenu>
-                         
-                          <p:outputLabel value="#{msg['field.solicitud']}"/>
+
+                        <p:outputLabel value="#{msg['field.solicitud']}"/>
                         <p:dataTable id="datatableTipoVehiculo" var="item" value="#{solicitudManualDocenteController.tipoVehiculoCantidadBeansList}" 
                                      editable="true" editMode="cell" widgetVar="cellCars">
                             <f:facet name="header">
-
+                                <p:outputLabel value="#{msg['label.ingresevehiculosypasajeros']}"/>
                             </f:facet>
 
                             <p:ajax event="cellEdit" listener="#{solicitudManualDocenteController.onCellEdit}" 
@@ -229,8 +229,8 @@
 
 
                             <p:column headerText="#{msg['field.idtipovehiculo']}">
- <h:outputText value="#{item.tipovehiculo.idtipovehiculo} (#{item.maximo})" />
-                                <!--<h:outputText value="#{item.tipovehiculo.idtipovehiculo}" />-->
+                                <h:outputText value="#{item.tipovehiculo.idtipovehiculo} (#{item.maximo})" />
+                                                               <!--<h:outputText value="#{item.tipovehiculo.idtipovehiculo}" />-->
                             </p:column>
 
                             <p:column  headerText="#{msg['field.vehiculos']}" style="width:150px">
@@ -254,7 +254,7 @@
 
 
 
-  <p:outputLabel value="#{msg['field.totaltipovehiculo']}" />
+                        <p:outputLabel value="#{msg['field.totaltipovehiculo']}" />
                         <p:outputLabel id="totalTipoVehiculoCantidad" value="#{solicitudManualDocenteController.calcularTotalVehiculo()}"/>
 
                         <p:outputLabel  value="#{msg['field.pasajeros']}" >
@@ -262,19 +262,19 @@
                         </p:outputLabel>
                         <p:outputLabel value="#{solicitudManualDocenteController.calcularTotalPasajeros()}" id="pasajeros"/>
 
-                      
+
 
 
 
                         <p:outputLabel  value="#{msg['field.fechahorapartida']}" />
-                         <b:row>
+                        <b:row>
                             <b:column medium-screen="4">
-                        <jmoordbjsf:calendar required="true"
-                                             pattern="dd/MM/yyyy HH:mm a" value="#{solicitudManualDocenteController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}"
-                                             listener="#{solicitudManualDocenteController.calendarChangeListener}"
-                                            update=":form:msg , :form:growl :form:datatableDisponibles, :form:horapartida"
-                                             />
-                         </b:column>
+                                <jmoordbjsf:calendar required="true"
+                                                     pattern="dd/MM/yyyy HH:mm a" value="#{solicitudManualDocenteController.solicitud.fechahorapartida}" id="fechahorapartida"  label="#{msg['field.fechahorapartida']}"
+                                                     listener="#{solicitudManualDocenteController.calendarChangeListener}"
+                                                     update=":form:msg , :form:growl :form:datatableDisponibles, :form:horapartida"
+                                                     />
+                            </b:column>
                             <b:column medium-screen="2">
                                 <p:outputLabel id="horapartida" value="#{solicitudManualDocenteController.showHour(solicitudManualDocenteController.solicitud.fechahorapartida)}"  />
                             </b:column>
@@ -283,21 +283,21 @@
 
 
                         <p:outputLabel  value="#{msg['field.fechahoraregreso']}" />
-                             <b:row>
+                        <b:row>
                             <b:column medium-screen="4">
-                        <jmoordbjsf:calendar required="true" pattern="dd/MM/yyyy HH:mm a" value="#{solicitudManualDocenteController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
-                                             listener="#{solicitudManualDocenteController.calendarChangeListener}"
-                                           update=":form:msg , :form:growl :form:datatableDisponibles :form:horaregreso"
+                                <jmoordbjsf:calendar required="true" pattern="dd/MM/yyyy HH:mm a" value="#{solicitudManualDocenteController.solicitud.fechahoraregreso}" id="fechahoraregreso" 
+                                                     listener="#{solicitudManualDocenteController.calendarChangeListener}"
+                                                     update=":form:msg , :form:growl :form:datatableDisponibles :form:horaregreso"
 
-                                             label="#{msg['field.fechahoraregreso']}" />
-                        
-                         </b:column>
+                                                     label="#{msg['field.fechahoraregreso']}" />
+
+                            </b:column>
                             <b:column medium-screen="2">
                                 <p:outputLabel id="horaregreso" value="#{solicitudManualDocenteController.showHour(solicitudManualDocenteController.solicitud.fechahoraregreso)}"  />
                             </b:column>
                         </b:row>
 
-                       
+
 
                         <p:outputLabel  value="#{msg['field.lugarpartida']}" />
                         <jmoordbjsf:inputText required="true" span="8" value="#{solicitudManualDocenteController.solicitud.lugarpartida}" id="lugarpartida"  label="#{msg['field.lugarpartida']}" />
@@ -308,7 +308,7 @@
 
 
                         <p:outputLabel  value="#{msg['field.recursossolicitados']}" />
-                          <jmoordbjsf:pinputText required="true" size="60" value="#{solicitudManualDocenteController.solicitud.recursossolicitados}" id="recursossolicitados"   />
+                        <jmoordbjsf:pinputText required="true" size="60" value="#{solicitudManualDocenteController.solicitud.recursossolicitados}" id="recursossolicitados"   />
 
                         <p:outputLabel  value="#{msg['field.observaciones']}" />
                         <b:inputTextarea required="true"  rows="2" span="8" value="#{solicitudManualDocenteController.solicitud.observaciones}" id="observaciones"  label="#{msg['field.observaciones']}" />
@@ -318,51 +318,51 @@
 
                     <b:row>
                         <b:column span="12">
-                         <p:dataTable value="#{solicitudManualDocenteController.disponiblesBeansList}" 
+                            <p:dataTable value="#{solicitudManualDocenteController.disponiblesBeansList}" 
                                          id="datatableDisponibles"
                                          var="item"  >
                                 <f:facet name="header">
-                                    <p:outputLabel  value="#{msg['tabletitle.vehiculos']}" />
+                               <p:outputLabel  value="#{msg['tabletitle.analisisdisponibilidad']}" />
                                 </f:facet>
-<!--                                <p:columnGroup type="header">
-                                    <p:row>
+                                <!--                                <p:columnGroup type="header">
+                                                                    <p:row>
+                                
+                                                                        <p:column rowspan="1" style="width:95px" headerText="#{msg['field.fecha']}" />
+                                                                        <p:column colspan="1"  style="width:95px" headerText="#{msg['field.tipovehiculo']}" />
+                                                                        <p:column colspan="5" headerText="#{msg['tabletitle.resultado']}" />
+                                                                    </p:row>
+                                                                    <p:row>
+                                                                        <p:column headerText="" />
+                                                                        <p:column headerText="" />
+                                                                        <p:column colspan="2" headerText="#{msg['tabletitle.disponibles']}" />
+                                                                        <p:column colspan="3" headerText="#{msg['tabletitle.solicitados']}" />
+                                                                        <p:column colspan="1" headerText="#{msg['tabletitle.recomendados']}" />
+                                
+                                                                    </p:row>
+                                                                    <p:row>
+                                                                        <p:column headerText="" />
+                                                                        <p:column headerText="" />
+                                                                        <p:column headerText="#{msg['field.vehiculos']}" />
+                                                                        <p:column headerText="#{msg['field.pasajeros']}" />
+                                                                        <p:column headerText="#{msg['field.vehiculos']}" />
+                                                                        <p:column headerText="#{msg['field.pasajeros']}" /> 
+                                                                        <p:column headerText="#{msg['field.recomendados']}" />
+                                
+                                                                    </p:row>
+                                                                </p:columnGroup>-->
 
-                                        <p:column rowspan="1" style="width:95px" headerText="#{msg['field.fecha']}" />
-                                        <p:column colspan="1"  style="width:95px" headerText="#{msg['field.tipovehiculo']}" />
-                                        <p:column colspan="5" headerText="#{msg['tabletitle.resultado']}" />
-                                    </p:row>
-                                    <p:row>
-                                        <p:column headerText="" />
-                                        <p:column headerText="" />
-                                        <p:column colspan="2" headerText="#{msg['tabletitle.disponibles']}" />
-                                        <p:column colspan="3" headerText="#{msg['tabletitle.solicitados']}" />
-                                        <p:column colspan="1" headerText="#{msg['tabletitle.recomendados']}" />
-
-                                    </p:row>
-                                    <p:row>
-                                        <p:column headerText="" />
-                                        <p:column headerText="" />
-                                        <p:column headerText="#{msg['field.vehiculos']}" />
-                                        <p:column headerText="#{msg['field.pasajeros']}" />
-                                        <p:column headerText="#{msg['field.vehiculos']}" />
-                                        <p:column headerText="#{msg['field.pasajeros']}" /> 
-                                        <p:column headerText="#{msg['field.recomendados']}" />
-
-                                    </p:row>
-                                </p:columnGroup>-->
-
-  <p:column style="width:1px">
+                                <p:column style="width:1px">
                                     <p:rowToggler  />
                                 </p:column>
                                 <p:column style="width:75px">
 
-                  
+
                                     <h:outputText value="#{solicitudManualDocenteController.showDate(item.fechahorainicio)}" style="color: #{solicitudManualDocenteController.disponiblesServices.columnColorDisponibles(item)}"  />
                                 </p:column>
 
 
                                 <p:column headerText="#{msg['field.tipovehiculo']}" style="width:95px">
-                                    
+
                                     <h:outputText value="#{solicitudManualDocenteController.disponiblesServices.showTipovehiculo(item)}" style="color: #{solicitudManualDocenteController.disponiblesServices.columnColorDisponibles(item)}"  />
                                 </p:column>
 

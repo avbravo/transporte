@@ -40,41 +40,7 @@
                         <p:outputLabel  value="#{solicitudDocenteController.solicitud.idsolicitud}" id="idsolicitud"   />
 
 
-                        <p:outputLabel  value="#{msg['field.solicitadopor']}" />
-                        <b:column>
-                            <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-                                                     completeMethod="#{solicitudDocenteController.usuarioServices.complete}"
-                                                     labeltip1="#{msg['field.username']} #{p.username}"
-                                                     labeltip2="#{msg['field.nombre']} #{p.nombre}"  
-                                                     listener="#{solicitudDocenteController.handleSelect}"
-                                                     value="#{solicitudDocenteController.solicita}"
-                                                     itemLabel=" #{p.nombre}"
-                                                     field="nombre"
-                                                     dropdown="true"
-                                                     minQueryLength="0"
-                                                     disabled="true"
-                                                     />
-
-
-                        </b:column>
-
-
-                        <p:outputLabel value="#{msg['field.responsable']}"/>
-                        <jmoordbjsf:autocomplete converter="#{usuarioConverter}"
-                                                 completeMethod="#{solicitudDocenteController.usuarioServices.complete}"
-                                                 labeltip1="#{msg['field.username']} #{p.username}"
-                                                 labeltip2="#{msg['field.nombre']} #{p.nombre}"   
-                                                 listener="#{solicitudDocenteController.handleSelect}"
-                                                 value="#{solicitudDocenteController.responsable}"
-                                                 itemLabel=" #{p.nombre}"
-                                                 field="nombre"
-                                                 dropdown="true"
-                                                 minQueryLength="0"
-                                                 update=":form:panel"
-                                                 required="true"
-                                                 disabled="true"
-                                                 />
-
+                      
                         <p:outputLabel value="#{msg['field.vistobueno']}"/>
                         <p:fieldset>
                             <p:spacer width="5"/>
@@ -216,7 +182,7 @@
                         <p:outputLabel  value="#{msg['field.lugares']}" />
                           <jmoordbjsf:pinputText size="60" required="true" value="#{solicitudDocenteController.solicitud.lugares}" id="lugares"    />
 
-                          <p:outputLabel  value="#{msg['field.dias']}" >
+                            <p:outputLabel   value="#{msg['field.seleccionedias']}" >
                           <b:iconAwesome value="fa-book"/> 
                           </p:outputLabel>
                         <p:selectCheckboxMenu id="multiple" value="#{solicitudDocenteController.diasSelected}" label="#{msg['field.rangoagenda']}" multiple="true"
@@ -234,7 +200,7 @@
                         <p:dataTable id="datatableTipoVehiculo" var="item" value="#{solicitudDocenteController.tipoVehiculoCantidadBeansList}" 
                                      editable="true" editMode="cell" widgetVar="cellCars">
                             <f:facet name="header">
-
+     <p:outputLabel value="#{msg['label.ingresevehiculosypasajeros']}"/>
                             </f:facet>
 
                             <p:ajax event="cellEdit" listener="#{solicitudDocenteController.onCellEdit}" 

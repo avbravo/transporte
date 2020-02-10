@@ -148,7 +148,8 @@
     <build>
         <finalName>transporte</finalName>
         <plugins>
-            <plugin>
+        
+          <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
@@ -160,7 +161,25 @@
                     </compilerArguments>
                 </configuration>
             </plugin>
+<!--            
+             java 11 
+                
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <release>10</release>
+                </configuration>
+            </plugin>-->
+            <!--java 11 -->
+<!--            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.2.1</version>
+            </plugin>-->
+            <!-- java 8 -->
+        <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.2.2</version>
