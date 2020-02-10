@@ -85,7 +85,8 @@
 
 
             <b:panel collapsible="false" id="dataTable" look="primary" >
-                <jmoordbjsf:paginator
+               
+    <jmoordbjsf:paginator
                     controller="#{solicitudDocenteController}"                        
                     rowPage="#{solicitudDocenteController.rowPage}"                   
                     page="#{solicitudDocenteController.page}"
@@ -95,11 +96,12 @@
                     />
 
 
-
                 <p:dataTable var="item" value="#{solicitudDocenteController.solicitudDataModel}"
                              reflow="true">
+                  
                     <f:facet name="header">
                         <p:outputLabel value="#{msg['titlelist.solicituddocente']}"/>
+                       
                     </f:facet>
                     <p:column style="width:35px">
                         <p:rowToggler />

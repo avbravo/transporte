@@ -22,7 +22,7 @@
         </style>
 
 
-        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA, DOCENTE, ADMINISTRATIVO')}" onkeypress="if (event.keyCode == 13) {
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA, DOCENTE, ADMINISTRATIVO, COORDINADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
             <h:panelGroup id="content" layout="block" > 
@@ -237,7 +237,7 @@
 
 
         </b:form>
-        <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA,DOCENTE, ADMINISTRATIVO')}"/>
+        <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA,DOCENTE, ADMINISTRATIVO, COORDINADOR')}"/>
 
         <br/><br/><br/>
     </ui:define>

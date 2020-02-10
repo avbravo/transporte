@@ -340,13 +340,13 @@ public class AdministradorController implements Serializable, IController {
 
             // eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", DateUtil.fechaHoraActual(), DateUtil.fechaHoraActual()));
             diasList = new ArrayList<String>();
-            diasList.add("Dia/ Dias Consecutivo");
+            diasList.add("Día/ Días Consecutivo");
             diasList.add("Lunes");
             diasList.add("Martes");
-            diasList.add("Miercoles");
+            diasList.add("Miércoles");
             diasList.add("Jueves");
             diasList.add("Viernes");
-            diasList.add("Sabado");
+            diasList.add("Sábado");
             diasList.add("Domingo");
 
             //autoincrementablebRepository.setDatabase("transporte");
@@ -1374,7 +1374,7 @@ public class AdministradorController implements Serializable, IController {
             }
             //
 //            diasSelected = new String[0];           
-//            diasSelected[0] = "Dia/ Dias Consecutivo";
+//            diasSelected[0] = "Día/ Días Consecutivo";
 
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
             solicitudSelected = solicitud;
@@ -2243,7 +2243,7 @@ public class AdministradorController implements Serializable, IController {
                 return false;
             }
             for (String d : diasSelected) {
-                if (d.equals("Dia/ Dias Consecutivo")) {
+                if (d.equals("Día/ Días Consecutivo")) {
                     diasconsecutivos = true;
                 }
                 rangoAgenda.add(d);

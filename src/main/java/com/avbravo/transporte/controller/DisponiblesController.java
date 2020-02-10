@@ -311,13 +311,13 @@ public class DisponiblesController implements Serializable, IController {
             // eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", DateUtil.fechaHoraActual(), DateUtil.fechaHoraActual()));
 
             diasList = new ArrayList<String>();
-            diasList.add("Dia/ Dias Consecutivo");
+            diasList.add("Día/ Días Consecutivo");
             diasList.add("Lunes");
             diasList.add("Martes");
-            diasList.add("Miercoles");
+            diasList.add("Miércoles");
             diasList.add("Jueves");
             diasList.add("Viernes");
-            diasList.add("Sabado");
+            diasList.add("Sábado");
             diasList.add("Domingo");
 
             //autoincrementablebRepository.setDatabase("transporte");
@@ -1746,10 +1746,10 @@ public class DisponiblesController implements Serializable, IController {
             diasconsecutivos = false;
             rangoAgenda.add("Lunes");
             rangoAgenda.add("Martes");
-            rangoAgenda.add("Miercoles");
+            rangoAgenda.add("Miércoles");
             rangoAgenda.add("Jueves");
             rangoAgenda.add("Viernes");
-            rangoAgenda.add("Sabado");
+            rangoAgenda.add("Sábado");
             rangoAgenda.add("Domingo");
             solicitud.setRangoagenda(rangoAgenda);
             List<Vehiculo> vehiculoFreeList = new ArrayList<>();
@@ -1887,7 +1887,7 @@ public class DisponiblesController implements Serializable, IController {
                 return false;
             }
             for (String d : diasSelected) {
-                if (d.equals("Dia/ Dias Consecutivo")) {
+                if (d.equals("Día/ Días Consecutivo")) {
                     diasconsecutivos = true;
                 }
                 rangoAgenda.add(d);

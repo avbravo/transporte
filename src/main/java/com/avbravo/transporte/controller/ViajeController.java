@@ -294,7 +294,7 @@ public class ViajeController implements Serializable, IController {
                 viaje.setEstatusViaje(estatusViaje);
                 viaje.setFechahorainicioreserva(DateUtil.primerDiaDelMesActualConHoraMinutosSegundos(0, 1, 0));
                 viaje.setFechahorafinreserva(DateUtil.ultimoDiaDelMesActualConHoraMinutoSegundo(23, 59, 0));
-                     viaje.setKmestimados(0.0);
+                viaje.setKmestimados(0.0);
                 viaje.setCostocombustible(0.0);
 
             }
@@ -477,12 +477,12 @@ public class ViajeController implements Serializable, IController {
                     viajeList = viajeRepository.findPagination(doc, page, rowPage, new Document("idviaje", -1));
                     break;
             }
- /**
+            /**
              * Filtrar el viaje que no se haya asignado una solicitud
              */
 
-          viajeList = viajeServices.sinSolicitud(viajeList);
-          
+            viajeList = viajeServices.sinSolicitud(viajeList);
+
             viajeDataModel = new ViajeDataModel(viajeList);
 
         } catch (Exception e) {
@@ -788,6 +788,7 @@ public class ViajeController implements Serializable, IController {
      */
     public List<Solicitud> completeSolicitudRangoFechas(String query) {
         List<Solicitud> suggestions = new ArrayList<>();
+        List<Solicitud> list = new ArrayList<>();
 
         try {
             if (fechaInicialParaSolicitud == null || fechaFinalParaSolicitud == null) {
@@ -795,7 +796,7 @@ public class ViajeController implements Serializable, IController {
             }
 
             suggestions = solicitudRepository.filterBetweenDate("estatus.idestatus", "SOLICITADO", "fechahorapartida", fechaInicialParaSolicitud, "fechahoraregreso", fechaFinalParaSolicitud, new Document("fechahorapartida", 1));
-
+          
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
@@ -1090,7 +1091,7 @@ public class ViajeController implements Serializable, IController {
 
             viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros() - solicitud.getPasajeros());
             viaje.setKmestimados(0.0);
-viaje.setCostocombustible(0.0);
+            viaje.setCostocombustible(0.0);
             if (!viajeServices.isValid(viaje, rf.getMrb(), rf.getArb(), false)) {
                 return "";
             }
@@ -1817,7 +1818,6 @@ viaje.setCostocombustible(0.0);
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="String salvoConducto(Viaje viaje)">
-
     public String salvoConducto(Viaje viaje) {
         try {
             if (autorizasalvoconducto == null || autorizasalvoconducto.getUsername() == null) {
@@ -1825,13 +1825,13 @@ viaje.setCostocombustible(0.0);
                 return "";
             }
             List<SalvoConductoNotas> list = salvoConductoNotasRepository.findAll();
-            
-            if (list== null || list.isEmpty()) {
+
+            if (list == null || list.isEmpty()) {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.deberegistrarlanotadelsalvoconducto"));
                 return "";
             }
-            
-salvoConductoNotas = list.get(0);
+
+            salvoConductoNotas = list.get(0);
             this.viaje = viaje;
 
             Integer idsalvoconducto = autoincrementableServices.getContador("salvoconducto");
@@ -1857,18 +1857,16 @@ salvoConductoNotas = list.get(0);
 
         return "";
     }
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String print">
     @Override
     public String print() {
 
         float margin = 30;
-    // Creating a reader
+        // Creating a reader
 
-   
-
-    
-com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
+        com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
@@ -1885,7 +1883,7 @@ com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
             //String date = DateUtil.showDate(currentDate) + " " + DateUtil.showHour(currentDate);
             String date = DateUtil.fechaEnLetrasMinusculas(currentDate);
             document.add(ReportUtils.paragraph("Los Santos " + date, FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_RIGHT));
-     
+
             document.add(new Paragraph("\n"));
             document.add(new Paragraph("\n"));
             document.add(ReportUtils.paragraph("Se Certifica que el Sr.(a):            " + "      " + viaje.getConductor().getNombre(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
@@ -1939,28 +1937,29 @@ com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
         return "";
     }
     // </editor-fold>   
-    
+
     // <editor-fold defaultstate="collapsed" desc="List<Solicitud> verSolicitudPorViaje(Viaje viaje)">
-    public List<Solicitud> verSolicitudPorViaje(Viaje viaje){
+    public List<Solicitud> verSolicitudPorViaje(Viaje viaje) {
         List<Solicitud> list = new ArrayList<>();
         try {
-             list = solicitudServices.solicituPorViaje(viaje);
-       } catch (Exception e) {
+            list = solicitudServices.solicituPorViaje(viaje);
+        } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return list;
     }
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="List<Solicitud> verSolicitudPorViaje(Viaje viaje)">
-    public String showNombre(Solicitud solicitud){
-      String nombre ="";
+    public String showNombre(Solicitud solicitud) {
+        String nombre = "";
         try {
-      if(solicitud.getUsuario() == null || solicitud.getUsuario().isEmpty()){
-          
-      }else{
-          nombre = solicitud.getUsuario().get(0).getNombre();
-      }
-       } catch (Exception e) {
+            if (solicitud.getUsuario() == null || solicitud.getUsuario().isEmpty()) {
+
+            } else {
+                nombre = solicitud.getUsuario().get(0).getNombre();
+            }
+        } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return nombre;
