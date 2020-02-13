@@ -247,6 +247,10 @@ public class ConductorController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="findByCedula()">
     public String findByCedula() {
         try {
+             if(conductor == null || conductor.getCedula()== null||conductor.getCedula().equals("")){
+              JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.ingresecedula"));
+                return "";
+            }
             if (JsfUtil.isVacio(conductor.getCedula())) {
                 writable = false;
                 return "";

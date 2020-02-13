@@ -252,6 +252,10 @@ public class VehiculoController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="findByPlaca()">
     public String findByPlaca() {
         try {
+            if(vehiculo == null || vehiculo.getPlaca()== null||vehiculo.getPlaca().equals("")){
+              JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.ingreseplaca"));
+                return "";
+            }
             if (JsfUtil.isVacio(vehiculo.getPlaca())) {
                 writable = false;
                 return "";
