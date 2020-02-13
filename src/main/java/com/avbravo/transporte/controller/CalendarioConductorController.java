@@ -97,6 +97,8 @@ public class CalendarioConductorController implements Serializable, IController 
     private String mensajeWarningTitle = "";
 
     Integer index = 0;
+    Integer indexcc = 0;
+    Integer indexbcc = 0;
     //DataModel
     private ViajeDataModel viajeDataModel;
 
@@ -1476,33 +1478,37 @@ viaje.setFechahorafinreserva(solicitud.getFechahoraregreso());
                     String[] cc;
                     String[] bcc;
 
-                    if (size <= 5) {
+                    if (size <= 10) {
                         to = new String[usuarioList.size()];
                         cc = new String[0];
                         bcc = new String[0];
                     } else {
-                        if (size > 5 && size <= 10) {
-                            to = new String[4];
-                            cc = new String[4];
+                        if (size > 10 && size <= 20) {
+                            to = new String[10];
+                            cc = new String[size - 10];
                             bcc = new String[0];
                         } else {
-                            to = new String[4];
-                            cc = new String[4];
-                            bcc = new String[size - 8];
+                            to = new String[10];
+                            cc = new String[10];
+                            bcc = new String[size - 20];
                         }
                     }
                     index = 0;
+                    indexcc = 0;
+                    indexbcc = 0;
+
                     usuarioList.forEach((u) -> {
 
-                        if (index <= 5) {
+                        if (index <= 10) {
                             to[index] = u.getEmail();
                         } else {
-                            if (index > 5 && index <= 10) {
-                                cc[index] = u.getEmail();
+                            if (index > 10 && index <= 20) {
+                                cc[indexcc] = u.getEmail();
+                                indexcc++;
                             } else {
 
-                                bcc[index] = u.getEmail();
-
+                                bcc[indexbcc] = u.getEmail();
+                                indexbcc++;
                             }
                         }
                         index++;
