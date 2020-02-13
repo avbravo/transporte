@@ -159,21 +159,39 @@
 
 
 
+                        <p:outputLabel  value="#{msg['field.kmestimados']}" />
+                      <p:outputLabel    value="#{viajeSinSolicitudController.viaje.kmestimados}"  />
 
-                    
+                        <p:outputLabel  value="#{msg['field.costocombustible']}"  />
+                    <p:outputLabel value="#{viajeSinSolicitudController.viaje.costocombustible}"   />
 
 
 
-                        <p:commandButton value="#{app['button.save']}"
-                                             icon="fa fa-floppy-o"
-                                         action="#{viajeSinSolicitudController.save()}"
-                                         process=":form:content"
-                                         update=":form:content"
-                                         />
-                      
+                        <p:outputLabel  value="#{msg['field.tipoviaje']}" >
+                            <i class="pi pi-download"></i>
+                        </p:outputLabel>  
+
+
+                        <jmoordbjsf:autocomplete converter="#{estatusViajeConverter}"
+                                                 completeMethod="#{estatusViajeController.estatusViajeServices.complete}"
+                                                 labeltip1="#{msg['field.estatusviaje']} #{p.idestatusviaje}" 
+                                                 listener="#{viajeSinSolicitudController.handleSelectEstatusViaje}"
+                                                 value="#{viajeSinSolicitudController.viaje.estatusViaje}"
+                                                 itemLabel=" #{p.idestatusviaje}"
+                                                 field="idestatusviaje"
+                                                 dropdown="true"
+                                                 required="true"  
+                                                 disabled="true"
+                                                 minQueryLength="0"
+                                                 update=""/>
+
+
+
+
+                        <jmoordbjsf:commandbuttonsave    save="#{viajeSinSolicitudController.save()}" />
 
                        
-                            <jmoordbjsf:commandbuttongolist   url = "/pages/viajesinsolicitud/list.xhtml"
+                            <jmoordbjsf:commandbuttongolist   url = "/pages/viajesinsolocitud/list.xhtml"
                                                               controller="#{viajeSinSolicitudController}" />
                             
 

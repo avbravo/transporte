@@ -318,6 +318,17 @@ public class VehiculoController implements Serializable, IController {
               JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.aniomayorqueactual"));  
                 return false;
             }
+            List<Vehiculo> list = vehiculoRepository.findBy("codigo",vehiculo.getCodigo());
+            if(list== null || list.isEmpty()){
+                
+        }else{
+                 JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.existeunvehiculoconesecodigo"));  
+                return false; 
+            }
+            if(vehiculo.getAnio()> DateUtil.anioActual()){
+              JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.aniomayorqueactual"));  
+                return false;
+            }
             vehiculo.setIdvehiculo(autoincrementableServices.getContador("vehiculo"));
             vehiculo.setTotalconsumo(0.0);
             vehiculo.setTotalkm(0.0);

@@ -298,6 +298,7 @@ public class ViajeSinSolicitudController implements Serializable, IController {
                 viaje.setFechahorafinreserva(DateUtil.fechaHoraActual());
                 viaje.setKmestimados(0.0);
                 viaje.setCostocombustible(0.0);
+                viaje.setMensajeWarning("");
 
             }
             if (action.equals("view")) {
@@ -1094,14 +1095,7 @@ viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros());
                 return "";
             }
 
-//            if (DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), solicitud.getFechahorapartida())) {
-//                JsfUtil.warningMessage(rf.getMessage("warning.fechahorainicioviajemayorfechainiciosolicitud"));
-//                return "";
-//            }
-//            if (DateUtil.fechaMayor(solicitud.getFechahoraregreso(), viaje.getFechahorafinreserva())) {
-//                JsfUtil.warningMessage(rf.getMessage("warning.fecharegresomayorfechainicioviaje"));
-//                return null;
-//            }
+
 
             if (DateUtil.fechaMayor(viaje.getFechahorainicioreserva(), DateUtil.getFechaActual())) {
                 if (!viajeServices.isValidDates(viaje, true, rf.getMrb(), rf.getArb())) {
@@ -1119,19 +1113,8 @@ viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros());
                 return null;
             }
 
-           
-//
-//            Tiempo tiempoPartida = DateUtil.diferenciaEntreFechas(solicitud.getFechahorapartida(), viaje.getFechahorainicioreserva());
-//            Tiempo tiempoRegreso = DateUtil.diferenciaEntreFechas(viaje.getFechahorafinreserva(), solicitud.getFechahoraregreso());
-//
-//            if (tiempoPartida.getDias() > 0 || tiempoPartida.getHoras() > 4) {
-//                JsfUtil.warningMessage(rf.getMessage("warning.fechahorapartdamuylejanadelasolicitud"));
-//                return null;
-//            }
-//            if (tiempoRegreso.getDias() > 0 || tiempoRegreso.getHoras() > 4) {
-//                JsfUtil.warningMessage(rf.getMessage("warning.fechahoraregresoamuylejanadelasolicitud"));
-//                return null;
-//            }
+
+
             if (viaje.getKmestimados() < 0) {
                 JsfUtil.warningMessage(rf.getMessage("warning.kmmenorcero"));
                 return null;
@@ -1232,6 +1215,21 @@ viaje.setAsientosdisponibles(viaje.getVehiculo().getPasajeros());
           //      sendEmail("Viaje sin solicitud creado", "VIAJESINSOLICITUDCREADO");
 
                 reset();
+                
+                 EstatusViaje estatusViaje = new EstatusViaje();
+                estatusViaje.setIdestatusviaje("IDA/REGRESO");
+                Optional<EstatusViaje> optional = estatusViajeRepository.findById(estatusViaje);
+                if (!optional.isPresent()) {
+
+                }
+                estatusViaje = optional.get();
+                 viaje.setMensajeWarning("");
+                viaje.setEstatusViaje(estatusViaje);
+                viaje.setFechahorainicioreserva( DateUtil.fechaHoraActual());
+                viaje.setFechahorafinreserva(DateUtil.fechaHoraActual());
+                viaje.setKmestimados(0.0);
+                viaje.setCostocombustible(0.0);
+                viaje.setMensajeWarning("");
             } else {
                 JsfUtil.successMessage("save() " + viajeRepository.getException().toString());
             }
