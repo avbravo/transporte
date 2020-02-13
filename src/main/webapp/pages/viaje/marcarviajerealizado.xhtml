@@ -151,7 +151,7 @@
 
                     </p:column> 
 
-   <p:column headerText="#{msg['field.realizado']}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
+                    <p:column headerText="#{msg['field.realizado']}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
                         <p:outputLabel value="#{item.realizado}"  />
 
                     </p:column> 
@@ -188,7 +188,7 @@
                                 title="#{app['button.save']}"
 
                                 action="#{viajeMarcarRealizadoController.marcarRealizado(item)}"
-                                update=":form:msgs" /> 
+                                update=":form:msgs, :form:dataTable" /> 
 
                         </b:panelGrid>
                     </p:rowExpansion>
