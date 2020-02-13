@@ -129,6 +129,9 @@ public class SolicitudDocenteController implements Serializable, IController {
     Boolean coordinadorvalido = false;
     Boolean escoordinador = false;
     Integer index = 0;
+    Integer indexcc = 0;
+    Integer indexbcc = 0;
+
     Integer pasajerosDisponibles = 0;
     ManagerEmail managerEmail = new ManagerEmail();
     private Boolean writable = false;
@@ -236,8 +239,8 @@ public class SolicitudDocenteController implements Serializable, IController {
     AutoincrementableServices autoincrementableServices;
     @Inject
     AutoincrementablebRepository autoincrementablebRepository;
-    
-      @Inject
+
+    @Inject
     DisponiblesServices disponiblesServices;
     @Inject
     ErrorInfoServices errorServices;
@@ -350,8 +353,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             sugerenciaList = sugerenciaRepository.findBy("activo", "si");
             sugerenciaDataModel = new SugerenciaDataModel(sugerenciaList);
             cargarSchedule();
-     String  action = getAction();
-            
+            String action = getAction();
 
             if (action == null || action.equals("gonew") || action.equals("new") || action.equals("golist")) {
                 inicializar();
@@ -362,7 +364,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
             JsfUtil.updateJSFComponent(":form:growl");
         }
     }// </editor-fold>
@@ -424,7 +426,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
 
         return true;
@@ -435,7 +437,7 @@ public class SolicitudDocenteController implements Serializable, IController {
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -502,7 +504,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             solicitudDataModel = new SolicitudDataModel(solicitudList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
 
         }
 
@@ -544,7 +546,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 textsearch = "DOCENTE";
             }
             solicitud.setTiposolicitud(tiposolicitudServices.findById(textsearch));
-            if (!solicitudServices.isValid(solicitud,rf.getMrb(), rf.getArb())) {
+            if (!solicitudServices.isValid(solicitud, rf.getMrb(), rf.getArb())) {
                 return false;
             }
 
@@ -568,12 +570,10 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }// </editor-fold>
-
-   
 
     // <editor-fold defaultstate="collapsed" desc="Boolean isValidDayName(String name)">
     private Boolean isValidDayName(String name) {
@@ -587,7 +587,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 }
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return valid;
     }
@@ -614,10 +614,10 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
             //Asignar el estatusViaje
-                       Optional<EstatusViaje> optional = estatusViajeServices.estatusViajeInicial();
+            Optional<EstatusViaje> optional = estatusViajeServices.estatusViajeInicial();
             if (optional.isPresent()) {
 
-               solicitud.setEstatusViaje(optional.get());
+                solicitud.setEstatusViaje(optional.get());
             } else {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
                 return "";
@@ -683,8 +683,8 @@ public class SolicitudDocenteController implements Serializable, IController {
                     } else {
                         solicitud.setVistoBuenoSubdirectorAdministrativo(vistoBuenoSubdirectorAdministrativoServices.inicializarPendiente(jmoordb_user));
                     }
-                    
-                      List<Object> objectList = solicitudServices.insert(solicitud, db.getVehiculo().get(0).getTipovehiculo(), solicitudGuardadasList, rf.getMrb(), rf.getArb());
+
+                    List<Object> objectList = solicitudServices.insert(solicitud, db.getVehiculo().get(0).getTipovehiculo(), solicitudGuardadasList, rf.getMrb(), rf.getArb());
                     for (Object o : objectList) {
                         if (o instanceof Solicitud) {
                             solicitud = (Solicitud) o;
@@ -731,7 +731,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                 //Verifica si es un coordinador y le envia la notificacion
                 usuarioList.forEach((u) -> {
-                  
+
                     notificacionServices.saveNotification("Nueva solicitud de: " + responsable.getNombre(), u.getUsername(), "solicituddocente");
 
                 });
@@ -752,7 +752,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             inicializar();
             return "";
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -764,13 +764,11 @@ public class SolicitudDocenteController implements Serializable, IController {
         try {
             color = estatusServices.columnColor(estatus);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return color;
     }
 // </editor-fold>
-    
-    
 
     // <editor-fold defaultstate="collapsed" desc="completeSolicitudParaCopiar(String query)">
     public List<Solicitud> completeSolicitudParaCopiar(String query) {
@@ -807,7 +805,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return suggestionsUnidad;
     }// </editor-fold>
@@ -841,7 +839,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return suggestionsFacultad;
     }// </editor-fold>
@@ -870,7 +868,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 }
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return suggestionsCarrera;
     }// </editor-fold>
@@ -898,7 +896,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             });
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return list;
     }
@@ -912,7 +910,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -930,7 +928,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return _found;
     }
@@ -948,7 +946,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 _found = false;
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return _found;
     }
@@ -967,7 +965,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return _found;
     }
@@ -980,7 +978,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 suggestionsFacultad.add(facultad);
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -993,7 +991,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 suggestionsCarrera.add(carrera);
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -1006,7 +1004,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 suggestionsUnidad.add(unidad);
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -1027,7 +1025,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return editable;
     } // </editor-fold>
@@ -1043,7 +1041,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
 
@@ -1076,7 +1074,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return suggestionsTipovehiculo;
     }// </editor-fold>
@@ -1088,7 +1086,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 suggestionsTipovehiculo.add(tipovehiculo);
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -1108,7 +1106,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return _found;
     }
@@ -1210,8 +1208,8 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
-              JsfUtil.updateJSFComponent(":form:growl");
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+            JsfUtil.updateJSFComponent(":form:growl");
         }
         return "";
     }
@@ -1226,7 +1224,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             facultadList = solicitud.getFacultad();
             carreraList = solicitud.getCarrera();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -1292,7 +1290,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -1325,7 +1323,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
         } catch (Exception e) {
 
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     } // </editor-fold>
 
@@ -1391,7 +1389,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (solicitud.getFechahorapartida() == null || solicitud.getFechahoraregreso() == null) {
 
             } else {
-                if (!solicitudServices.isValidDates(solicitud, false,true,rf.getMrb(), rf.getArb())) {
+                if (!solicitudServices.isValidDates(solicitud, false, true, rf.getMrb(), rf.getArb())) {
                     return;
                 }
                 changeDaysViewAvailable();
@@ -1413,7 +1411,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
 
     }// </editor-fold>
@@ -1443,7 +1441,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                     .reversed());
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return vehiculoList;
     }// </editor-fold>
@@ -1462,7 +1460,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return valid;
     }
@@ -1482,7 +1480,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorDialog(nameOfClass(), nameOfMethod(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return valid;
     }
@@ -1582,7 +1580,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             if (usuarioList == null || usuarioList.isEmpty()) {
             } else {
 
-                 //Agrega los adminisradores
+                //Agrega los adminisradores
                 if (usuarioAdministradoreslist == null || usuarioAdministradoreslist.isEmpty()) {
                 } else {
                     //Agrega el administrador a la lista
@@ -1612,7 +1610,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             return "";
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -1633,7 +1631,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -1646,7 +1644,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }// </editor-fold>
@@ -1672,7 +1670,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
             JsfUtil.infoDialog(rf.getAppMessage("info.informacion"), rf.getMessage("info.seenvioinformacionalosadministradores"));
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -1717,7 +1715,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
             if (calcularTotalVehiculo() == 0) {
 //                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.indiquelacantidaddevehiculosportipo"));
-                JsfUtil.warningMessage( rf.getMessage("warning.indiquelacantidaddevehiculosportipo"));
+                JsfUtil.warningMessage(rf.getMessage("warning.indiquelacantidaddevehiculosportipo"));
                 return "";
             }
             //Genero para cada fecha y cada tipo
@@ -1800,7 +1798,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
 
         return "";
@@ -1817,8 +1815,8 @@ public class SolicitudDocenteController implements Serializable, IController {
         try {
             Integer c = 0;
             diasconsecutivos = false;
-              if(diasSelected == null){
-                  JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.seleccionerangodias"));
+            if (diasSelected == null) {
+                JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.seleccionerangodias"));
 
                 return false;
             }
@@ -1838,7 +1836,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
             valid = true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return valid;
     }// </editor-fold>
@@ -1849,7 +1847,7 @@ public class SolicitudDocenteController implements Serializable, IController {
         try {
             disponiblesBeansList = new ArrayList<>();
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return true;
     }
@@ -1858,8 +1856,8 @@ public class SolicitudDocenteController implements Serializable, IController {
 // <editor-fold defaultstate="collapsed" desc="sendEmail()">
     private String sendEmail(String msg) {
         try {
-             if(solicitudGuardadasList == null  || solicitudGuardadasList.isEmpty()){
-                  JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noseenvioemailnohaylistasolicitudes"));
+            if (solicitudGuardadasList == null || solicitudGuardadasList.isEmpty()) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noseenvioemailnohaylistasolicitudes"));
                 return "";
             }
             /**
@@ -1946,33 +1944,37 @@ public class SolicitudDocenteController implements Serializable, IController {
                     String[] cc;
                     String[] bcc;
 
-                    if (size <= 5) {
+                    if (size <= 10) {
                         to = new String[usuarioList.size()];
                         cc = new String[0];
                         bcc = new String[0];
                     } else {
-                        if (size > 5 && size <= 10) {
-                            to = new String[4];
-                            cc = new String[4];
+                        if (size > 10 && size <= 20) {
+                            to = new String[10];
+                            cc = new String[size - 10];
                             bcc = new String[0];
                         } else {
-                            to = new String[4];
-                            cc = new String[4];
-                            bcc = new String[size - 8];
+                            to = new String[10];
+                            cc = new String[10];
+                            bcc = new String[size - 20];
                         }
                     }
                     index = 0;
+                    indexcc = 0;
+                    indexbcc = 0;
+
                     usuarioList.forEach((u) -> {
 
-                        if (index <= 5) {
+                        if (index <= 10) {
                             to[index] = u.getEmail();
                         } else {
-                            if (index > 5 && index <= 10) {
-                                cc[index] = u.getEmail();
+                            if (index > 10 && index <= 20) {
+                                cc[indexcc] = u.getEmail();
+                                indexcc++;
                             } else {
 
-                                bcc[index] = u.getEmail();
-
+                                bcc[indexbcc] = u.getEmail();
+                                indexbcc++;
                             }
                         }
                         index++;
@@ -1984,7 +1986,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             }
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -2015,7 +2017,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }//isEmpty
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
 
@@ -2084,7 +2086,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
 
@@ -2150,7 +2152,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
             return true;
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -2179,7 +2181,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return pasajerosPendientes;
     }
@@ -2198,7 +2200,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }
@@ -2293,7 +2295,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             sendEmail(" cancelada(s) ");
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
 
         return "";
@@ -2345,7 +2347,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
             solicitud.setNumerodevehiculos(total);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return total;
     }
@@ -2362,7 +2364,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
             solicitud.setPasajeros(totalpasajeros);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return totalpasajeros;
     }
@@ -2385,7 +2387,7 @@ public class SolicitudDocenteController implements Serializable, IController {
             }
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return valid;
     }
@@ -2410,7 +2412,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }// </editor-fold>
@@ -2422,47 +2424,44 @@ public class SolicitudDocenteController implements Serializable, IController {
 
             move(page);
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return "";
     }// </editor-fold>
-    
-  
+
     // <editor-fold defaultstate="collapsed" desc="String showViajeIda(Solicitud solicitud)">
-    public String showViajeIda(Solicitud solicitud){
-        String data ="NO ASIGNADO";
+    public String showViajeIda(Solicitud solicitud) {
+        String data = "NO ASIGNADO";
         try {
-            if(solicitud.getViaje()== null || solicitud.getViaje().isEmpty()){
+            if (solicitud.getViaje() == null || solicitud.getViaje().isEmpty()) {
                 return data;
-            }else{
-                data = "# "+solicitud.getViaje().get(0).getIdviaje().toString() + " De "+showDate(solicitud.getViaje().get(0).getFechahorainicioreserva()) + " "+showHour(solicitud.getViaje().get(0).getFechahorainicioreserva())+ " a "+ " "+showDate(solicitud.getViaje().get(0).getFechahorafinreserva()) + " "+showHour(solicitud.getViaje().get(0).getFechahorafinreserva());
+            } else {
+                data = "# " + solicitud.getViaje().get(0).getIdviaje().toString() + " De " + showDate(solicitud.getViaje().get(0).getFechahorainicioreserva()) + " " + showHour(solicitud.getViaje().get(0).getFechahorainicioreserva()) + " a " + " " + showDate(solicitud.getViaje().get(0).getFechahorafinreserva()) + " " + showHour(solicitud.getViaje().get(0).getFechahorafinreserva());
             }
         } catch (Exception e) {
-                  errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return data;
     }
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String showViajeIda(Solicitud solicitud)">
-    public String showViajeRegreso(Solicitud solicitud){
-        String data ="NO ASIGNADO";
+    public String showViajeRegreso(Solicitud solicitud) {
+        String data = "NO ASIGNADO";
         try {
-            if(solicitud.getViaje()== null || solicitud.getViaje().isEmpty()){
+            if (solicitud.getViaje() == null || solicitud.getViaje().isEmpty()) {
                 return data;
-            }else{
-                if(solicitud.getViaje().size()==1){
+            } else {
+                if (solicitud.getViaje().size() == 1) {
                     return "NO TIENE VIAJE DE REGRESO";
                 }
-                data = "# " +solicitud.getViaje().get(1).getIdviaje().toString() + " De "+showDate(solicitud.getViaje().get(1).getFechahorainicioreserva()) + " "+showHour(solicitud.getViaje().get(1).getFechahorainicioreserva())+ " a "+ " "+showDate(solicitud.getViaje().get(1).getFechahorafinreserva()) + " "+showHour(solicitud.getViaje().get(1).getFechahorafinreserva());
+                data = "# " + solicitud.getViaje().get(1).getIdviaje().toString() + " De " + showDate(solicitud.getViaje().get(1).getFechahorainicioreserva()) + " " + showHour(solicitud.getViaje().get(1).getFechahorainicioreserva()) + " a " + " " + showDate(solicitud.getViaje().get(1).getFechahorafinreserva()) + " " + showHour(solicitud.getViaje().get(1).getFechahorafinreserva());
             }
         } catch (Exception e) {
-                  errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return data;
     }
     // </editor-fold>
-  
-  
-
 
 }

@@ -1470,7 +1470,7 @@ public class ViajeController implements Serializable, IController {
             completeConductor("");
             validarMensajesDias();
 
-            JsfUtil.updateJSFComponent(":form:form:warningMessage");
+            JsfUtil.updateJSFComponent(":form:warningMessage");
             JsfUtil.updateJSFComponent(":form:content");
             JsfUtil.updateJSFComponent(":form:commandButtonShowSolicitudDetalles");
             if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
@@ -1602,7 +1602,7 @@ public class ViajeController implements Serializable, IController {
 
             viaje.setMensajeWarning(viaje.getMensajeWarning() + " Regreso ( " + llegada + ")");
 
-            JsfUtil.updateJSFComponent(":form:form:warningMessage");
+            JsfUtil.updateJSFComponent(":form:warningMessage");
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
