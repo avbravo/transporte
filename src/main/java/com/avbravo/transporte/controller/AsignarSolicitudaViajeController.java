@@ -1473,6 +1473,19 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
             if (solicitud == null || solicitud.getIdsolicitud() == null) {
                 return false;
             }
+              if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
+                if (!isVistoBuenoCoordinador()) {
+                    //JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.faltavistobuenocoordinador"));
+                    JsfUtil.warningMessage(rf.getMessage("warning.faltavistobuenocoordinador"));
+return false;
+                }
+            }
+
+            if (!isVistoBuenoSubdirectorAdministrativo()) {
+                //JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.faltavistobuenoSubdirectoradministativo"));
+                JsfUtil.warningMessage(rf.getMessage("warning.faltavistobuenoSubdirectoradministativo"));
+return false;
+            }
             return true;
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
@@ -1952,6 +1965,20 @@ public class AsignarSolicitudaViajeController implements Serializable, IControll
             return true;
         } catch (Exception e) {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        return false;
+    }
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    public Boolean showStaticMessage(String text){
+        try {
+            if(text == null || text.equals("")){
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+                errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
         return false;
     }

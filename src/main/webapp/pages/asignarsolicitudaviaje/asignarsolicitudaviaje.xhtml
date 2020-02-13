@@ -62,7 +62,7 @@
                                 update=" :form:msg, :form:growl"/>
 
                             <p:spacer width="25"/>
-                            <b:commandButton  look="success"
+                            <b:commandButton  look="primary"
                                               title="#{msg['label.solicitudpendiente']}"
                                               immediate="true"
                                               iconAwesome="fa-calendar" 
@@ -163,7 +163,7 @@
                                               action="#{asignarSolicitudaViajeController.updateFechahoraDesdeSolicitudInicial()}"
                                               />
                             <p:spacer width="25"/>
-                            <b:commandButton  look="success"
+                            <b:commandButton  look="primary"
                                               id="commandButtonShowSolicitudDetalles"
                                               rendered="#{asignarSolicitudaViajeController.showButtonSolicitudDetallesShow()}"
                                               title="#{msg['label.detalles']}"
@@ -247,7 +247,7 @@
                                               action="#{asignarSolicitudaViajeController.updateFechahoraRegresoDesdeViajeIda()}"
                                               />
 
-                            <p:staticMessage  id="warningMessageIda" severity="info" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{asignarSolicitudaViajeController.viajeIda.mensajeWarning}" />
+                            <p:staticMessage  id="warningMessageIda" severity="info"  rendered="#{asignarSolicitudaViajeController.showStaticMessage(asignarSolicitudaViajeController.viajeIda.mensajeWarning )}" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{asignarSolicitudaViajeController.viajeIda.mensajeWarning}" />
 
                         </p:fieldset>
                         <p:outputLabel  value="#{msg['field.viajeregreso']}" >
@@ -310,7 +310,7 @@
                           
 
 
-                            <p:staticMessage  id="warningMessageRegreso" severity="info" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{asignarSolicitudaViajeController.viajeRegreso.mensajeWarning}" />
+                            <p:staticMessage  id="warningMessageRegreso" severity="info" rendered="#{asignarSolicitudaViajeController.showStaticMessage(asignarSolicitudaViajeController.viajeRegreso.mensajeWarning)}" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{asignarSolicitudaViajeController.viajeRegreso.mensajeWarning}" />
                         </p:fieldset>
 
 
@@ -321,7 +321,7 @@
 
 
 
-                        <p:staticMessage  id="warningnota"  severity="error" summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{msg['label.notaasignarsolicitudviaje']}" />
+                        <p:staticMessage  id="warningnota"  severity="error"  summary="#{asignarSolicitudaViajeController.mensajeWarningTitle}" detail="#{msg['label.notaasignarsolicitudviaje']}" />
 
 
                         <p:commandButton value="#{app['button.save']}" 
