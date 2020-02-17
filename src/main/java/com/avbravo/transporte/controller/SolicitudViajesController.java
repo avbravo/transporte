@@ -2460,6 +2460,26 @@ public class SolicitudViajesController implements Serializable, IController {
                     return "NO TIENE VIAJE DE REGRESO";
                 }
                 data = "# " +solicitud.getViaje().get(1).getIdviaje().toString() + " De "+showDate(solicitud.getViaje().get(1).getFechahorainicioreserva()) + " "+showHour(solicitud.getViaje().get(1).getFechahorainicioreserva())+ " a "+ " "+showDate(solicitud.getViaje().get(1).getFechahorafinreserva()) + " "+showHour(solicitud.getViaje().get(1).getFechahorafinreserva());
+              
+            }
+        } catch (Exception e) {
+                  errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return data;
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="String showViajeVehiculo(Solicitud solicitud)">
+    public String showViajeVehiculo(Solicitud solicitud){
+        String data ="NO ASIGNADO";
+        try {
+            if(solicitud.getViaje()== null || solicitud.getViaje().isEmpty()){
+                return data;
+            }else{
+                if(solicitud.getViaje().size()==1){
+                    return "NO TIENE VIAJE DE REGRESO";
+                }
+
+                data = " " +solicitud.getViaje().get(1).getVehiculo().getMarca()+ " -- "+solicitud.getViaje().get(1).getVehiculo().getModelo() + " Placa:"+solicitud.getViaje().get(1).getVehiculo().getPlaca();
             }
         } catch (Exception e) {
                   errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
@@ -2468,7 +2488,29 @@ public class SolicitudViajesController implements Serializable, IController {
     }
     // </editor-fold>
     
-    // <editor-fold defaultstate="collapsed" desc="metodo()">
+    // <editor-fold defaultstate="collapsed" desc="String showViajeConductor(Solicitud solicitud)">
+    public String showViajeConductor(Solicitud solicitud){
+        String data ="NO ASIGNADO";
+        try {
+            if(solicitud.getViaje()== null || solicitud.getViaje().isEmpty()){
+                return data;
+            }else{
+                if(solicitud.getViaje().size()==1){
+                    return "NO TIENE VIAJE DE REGRESO";
+                }
+
+                data = " " +solicitud.getViaje().get(1).getConductor().getNombre()+ "  "+solicitud.getViaje().get(1).getConductor().getCedula();
+            }
+        } catch (Exception e) {
+                  errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+        }
+        return data;
+    }
+    // </editor-fold>
+    
+    
+    
+    // <editor-fold defaultstate="collapsed" desc="String showSolicita(Solicitud solicitud){">
     public String showSolicita(Solicitud solicitud){
         try {
             if(solicitud == null || solicitud.getUsuario()== null || solicitud.getUsuario().isEmpty()){
