@@ -59,6 +59,7 @@ import com.avbravo.transporteejb.repository.TipovehiculoRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
+import com.avbravo.transporteejb.services.DiasServices;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.EstatusViajeServices;
 import com.avbravo.transporteejb.services.NotificacionServices;
@@ -233,6 +234,8 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     //Services
     @Inject
     RevisionHistoryServices revisionHistoryServices;
+      @Inject
+    DiasServices diasServices;
     @Inject
     AutoincrementableServices autoincrementableServices;
     @Inject
@@ -313,14 +316,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
             // eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", DateUtil.fechaHoraActual(), DateUtil.fechaHoraActual()));
 
             diasList = new ArrayList<String>();
-            diasList.add("Día/ Días Consecutivo");
-            diasList.add("Lunes");
-            diasList.add("Martes");
-            diasList.add("Miércoles");
-            diasList.add("Jueves");
-            diasList.add("Viernes");
-            diasList.add("Sábado");
-            diasList.add("Domingo");
+         diasList = diasServices.generarDiasList();
 
             //autoincrementablebRepository.setDatabase("transporte");
             /*

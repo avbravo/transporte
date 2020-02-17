@@ -59,6 +59,7 @@ import com.avbravo.transporteejb.repository.TipovehiculoRepository;
 import com.avbravo.transporteejb.repository.UnidadRepository;
 import com.avbravo.transporteejb.repository.UsuarioRepository;
 import com.avbravo.transporteejb.repository.VehiculoRepository;
+import com.avbravo.transporteejb.services.DiasServices;
 import com.avbravo.transporteejb.services.EstatusServices;
 import com.avbravo.transporteejb.services.EstatusViajeServices;
 import com.avbravo.transporteejb.services.NotificacionServices;
@@ -233,6 +234,8 @@ public class DisponiblesController implements Serializable, IController {
     //Services
     @Inject
     RevisionHistoryServices revisionHistoryServices;
+      @Inject
+    DiasServices diasServices;
     @Inject
     AutoincrementableServices autoincrementableServices;
     @Inject
@@ -313,14 +316,7 @@ public class DisponiblesController implements Serializable, IController {
             // eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", DateUtil.fechaHoraActual(), DateUtil.fechaHoraActual()));
 
             diasList = new ArrayList<String>();
-            diasList.add("Día/ Días Consecutivo");
-            diasList.add("Lunes");
-            diasList.add("Martes");
-            diasList.add("Miércoles");
-            diasList.add("Jueves");
-            diasList.add("Viernes");
-            diasList.add("Sábado");
-            diasList.add("Domingo");
+      diasList = diasServices.generarDiasList();
 
             //autoincrementablebRepository.setDatabase("transporte");
             /*
@@ -1748,10 +1744,10 @@ public class DisponiblesController implements Serializable, IController {
             diasconsecutivos = false;
             rangoAgenda.add("Lunes");
             rangoAgenda.add("Martes");
-            rangoAgenda.add("Miércoles");
+            rangoAgenda.add("Miercoles");
             rangoAgenda.add("Jueves");
             rangoAgenda.add("Viernes");
-            rangoAgenda.add("Sábado");
+            rangoAgenda.add("Sabado");
             rangoAgenda.add("Domingo");
             solicitud.setRangoagenda(rangoAgenda);
             List<Vehiculo> vehiculoFreeList = new ArrayList<>();
