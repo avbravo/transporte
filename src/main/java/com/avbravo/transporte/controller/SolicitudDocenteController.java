@@ -1397,7 +1397,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                     // JsfUtil.warningDialog("texto", "Aun no ha seleccionado el rango");
                 } else {
                     if (disponiblesBeansList == null || disponiblesBeansList.isEmpty()) {
-                        JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohaybusesdisponiblesenesasfechas"));
+                        JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayvehiculosdisponiblesenesasfechas"));
 
                         return;
                     }
@@ -2033,7 +2033,7 @@ public class SolicitudDocenteController implements Serializable, IController {
                 //Verificar si es el mismo año
                 if (fechaPartidaDescompuesta.getYear().equals(fechaRegresoDescompuesta.getYear())) {
                     Integer m = fechaPartidaDescompuesta.getMonth() + i;
-                    String nameOfMohth = DateUtil.nameOfMonthStartWith1(m);
+                    String nameOfMohth = DateUtil.nameOfMonthStartWith1(m+1);
                     List<FechaDiaUtils> list = DateUtil.validarRangoFechas(fechaPartidaDescompuesta.getYear(), nameOfMohth, varFechaHoraPartida, varFechaHoraRegreso);
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                     if (list == null || list.isEmpty()) {
