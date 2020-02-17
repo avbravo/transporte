@@ -5,7 +5,7 @@ java -jar ~/software/payara/payara-micro-5.194.jar --deploy ~/NetBeansProjects/u
 
 
 EJECUTAR CON PAYARAMICRO
- java -jar ~/software/payara/payara-micro-5.194.jar  --deploy ~/NetBeansProjects/utp/alexis/transporte/target/transporte.war --port '8081'
+ java -jar /home/avbravo/software/payara/payara-micro-5.194.jar  --deploy /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte.war --port '8081'
 
 
 

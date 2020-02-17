@@ -1,0 +1,314 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
+                xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
+    <ui:define name="content">
+
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            } 
+
+        </style>
+        <script type="text/javascript">
+            function socketListener(message, channel, event) {
+                document.getElementById("clockId").innerHTML += message + "<br/>";
+            }
+        </script>    
+        <jmoordbjsf:cssschedule/>  
+        <jmoordbjsf:jsschedule/>
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+
+
+
+            <b:growl  id="msgs"/>
+
+            <b:panel collapsible="false" title="#{msg['titlelist.solicitudviaje']}" id="content"   look="primary"  > 
+                <b:panelGrid colSpans="2,4,2,4"  columns="4" size="xs"> 
+                    <p:outputLabel value="#{msg['field.idestatus']}"/>
+                    <jmoordbjsf:autocomplete converter="#{estatusConverter}"
+                                             dropdown="true"
+                                             minQueryLength="0"
+                                             completeMethod="#{solicitudViajesController.estatusServices.complete}"
+                                             labeltip1="#{msg['field.estatus']} #{p.idestatus}" 
+                                             listener="#{solicitudViajesController.handleAutocompleteOfListXhtml}"
+                                             value="#{solicitudViajesController.estatusSearch}"
+                                             itemLabel=" #{p.idestatus}"
+                                             field="idestatus"
+                                             update=" :form:dataTable"/>
+
+
+
+                    <p:outputLabel value="#{msg['field.coordinador']}"/>
+                    <p:selectOneMenu id="coordinador" value="#{solicitudViajesController.vistoBuenoSearch}" style="width:150px">
+                        <p:ajax listener="#{solicitudViajesController.onVistoBuenoChange}" update=":form:dataTable" />
+                        <f:selectItem itemLabel="#{msg['selectitem.seleccione']}" itemValue="" noSelectionOption="true" />
+                        <f:selectItem itemLabel="#{msg['selectitem.pendiente']}" itemValue="pe" />
+                        <f:selectItem itemLabel="#{msg['selectitem.aprobado']}" itemValue="si" />
+                        <f:selectItem itemLabel="#{msg['selectitem.noaprobado']}" itemValue="no" />
+
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="#{msg['field.subdirectoradministrativo']}"/>
+                    <p:selectOneMenu id="subdirectoradministrativo" value="#{solicitudViajesController.vistoBuenoSubdirectorAdministrativoSearch}" style="width:150px">
+                        <p:ajax listener="#{solicitudViajesController.onVistoBuenoChangeSubdirectorAdministrativo}" update=":form:dataTable" />
+                        <f:selectItem itemLabel="#{msg['selectitem.seleccione']}" itemValue="" noSelectionOption="true" />
+                        <f:selectItem itemLabel="#{msg['selectitem.pendiente']}" itemValue="pe" />
+                        <f:selectItem itemLabel="#{msg['selectitem.aprobado']}" itemValue="si" />
+                        <f:selectItem itemLabel="#{msg['selectitem.noaprobado']}" itemValue="no" />
+
+                    </p:selectOneMenu>
+
+                    <p:spacer/>
+                    <p:spacer/>
+                    <p:outputLabel value="#{msg['field.mensaje']}"/>
+                    <p:inputTextarea rows="2" value="#{solicitudViajesController.messages}"/>
+                    <p:commandButton value="#{msg['button.send']}" action="#{solicitudViajesController.enviarMensajesDirectos()}"
+                                     update=":form:msgs"
+                                     />
+                </b:panelGrid>
+
+            </b:panel>
+
+
+            <b:panel collapsible="false" id="dataTable" look="primary" >
+                <jmoordbjsf:paginator
+                    controller="#{solicitudViajesController}"                        
+                    rowPage="#{solicitudViajesController.rowPage}"                   
+                    page="#{solicitudViajesController.page}"
+                    pages="#{solicitudViajesController.pages}"
+                    skip="ajax:solicitudViajesController.skip()" 
+                    url = "/pages/solicitudmanualdocente/new.xhtml"
+                    renderedNew="false"
+                    renderedPrint="false"
+                    />
+
+
+
+                <p:dataTable var="item" value="#{solicitudViajesController.solicitudDataModel}"
+                             reflow="true">
+                    <f:facet name="header">
+                        <p:outputLabel value="#{msg['titlelist.solicituddocente']}"/>
+                    </f:facet>
+                    <p:column style="width:35px">
+                        <p:rowToggler />
+                    </p:column>
+                    <p:column headerText="#{msg['field.idsolicitud']}" style="width:75px">
+                        <h:outputText value="#{item.idsolicitud}" style="color: #{solicitudViajesController.columnColor(item.estatus)}" />
+                    </p:column>
+
+                    <p:column headerText="#{msg['field.fechapartida']}" style="width:150px">
+                        <h:outputText value="#{solicitudViajesController.showDate(item.fechahorapartida)} #{solicitudViajesController.showHour(item.fechahorapartida)}" style="color: #{solicitudViajesController.columnColor(item.estatus)}" />
+                    </p:column>
+                    <p:column headerText="#{msg['field.solicita']}" style="width:150px">
+                        <h:outputText value="#{solicitudViajesController.showSolicita(item)}" />
+                    </p:column>
+                    <p:column headerText="#{msg['field.lugarllegada']}"  >
+                        <p:outputLabel value="#{item.lugarllegada}"   style="color: #{solicitudViajesController.columnColor(item.estatus)}" />
+                    </p:column>
+
+
+                    <p:column headerText="#{msg['field.viajeida']}" >
+                    <p:outputLabel  value="#{solicitudViajesController.showViajeIda(item)}"  />
+
+                    </p:column>
+                    <p:column headerText="#{msg['field.viajeregreso']}" >
+                    <p:outputLabel  value="#{solicitudViajesController.showViajeRegreso(item)}"  />
+
+                    </p:column>
+
+                    <p:column headerText="#{msg['field.estatus']}" style="width:100px">
+                        <p:outputLabel  value="#{item.estatus.idestatus}"   style="color: #{solicitudViajesController.columnColor(item.estatus)}"/>
+
+                    </p:column>
+
+
+
+
+
+
+
+
+                    <p:rowExpansion>
+
+                        <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
+
+                            <p:outputLabel value="#{msg['field.fecharegreso']}" />
+                            <p:outputLabel value="#{solicitudViajesController.showDate(item.fechahoraregreso)}"  />
+
+                            <p:outputLabel value="#{msg['field.horaregreso']}" />
+                            <p:outputLabel value="#{solicitudViajesController.showHour(item.fechahoraregreso)}"  />
+
+
+                            <p:outputLabel value="#{msg['field.objetivo']}"  />
+                            <p:outputLabel value="#{item.objetivo}" style="color: #{solicitudViajesController.columnColor(item.estatus)}" />
+                            <p:outputLabel value="#{msg['field.lugares']}"/>
+                            <p:outputLabel value="#{item.lugares}"  style="color: #{solicitudViajesController.columnColor(item.estatus)}" />
+
+                            <p:outputLabel value="#{msg['field.solicitadopor']}"/>                          
+                            <p:outputLabel value="#{item.usuario.get(0).nombre}"  style="color: #{solicitudViajesController.columnColor(item.estatus)}" />
+
+                            <p:outputLabel value="#{msg['field.responsable']}"/>
+                            <p:outputLabel value="#{item.usuario.get(1).nombre}"  style="color: #{solicitudViajesController.columnColor(item.estatus)}" />
+
+                            <p:outputLabel  value="#{msg['field.facultad']}" />
+                            <p:repeat value="#{item.facultad}" var="car">
+                                <p:outputLabel value="#{car.descripcion}"/>
+                            </p:repeat>
+
+                            <p:outputLabel  value="#{msg['field.carrera']}" />
+                            <p:repeat value="#{item.carrera}" var="car">
+                                <p:outputLabel value="#{car.descripcion}"/>
+                            </p:repeat>
+                            <p:outputLabel  value="#{msg['field.numerogrupos']}" />
+                            <p:outputLabel  value="#{item.numerogrupo}" />
+
+
+
+                            <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
+
+                            <p:outputLabel  value="#{item.numerodevehiculos}"  />
+
+                            <p:outputLabel  value="#{msg['field.pasajeros']}" >
+                                <i class="pi pi-users"></i>
+                            </p:outputLabel>
+                            <p:outputLabel value="#{item.pasajeros}"   />
+
+                            <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+                            <p:outputLabel value="#{solicitudViajesController.solicitud.lugarpartida}"  />
+                            <p:outputLabel  value="#{msg['field.lugarllegada']}" >
+                                <i class="pi pi-home"></i>
+                            </p:outputLabel>
+                            <p:outputLabel value="#{item.lugarllegada}" />
+                            <p:outputLabel  value="#{msg['field.objetivo']}" />
+                            <p:outputLabel  value="#{item.objetivo}" id="objetivo"   />
+
+                            <p:outputLabel value="#{msg['field.coordinador']}" />
+                            <p:outputLabel value="#{solicitudViajesController.columnNameVistoBueno(item.vistoBueno)}"   style="color: #{solicitudViajesController.columnColor(item.estatus)}" />
+
+                            <p:outputLabel value="#{msg['field.secadministrativo']}"  />
+                            <p:outputLabel value="#{solicitudViajesController.columnNameVistoBuenoSubdirectorAdministrativo(item.vistoBuenoSubdirectorAdministrativo)}"   style="color: #{solicitudViajesController.columnColor(item.estatus)}" />
+
+                            <p:outputLabel value="#{msg['field.estatus']}" />
+                            <p:outputLabel  value="#{item.estatus.idestatus}"  style="color: #{solicitudViajesController.columnColor(item.estatus)}" />
+
+
+                            <p:outputLabel value="#{msg['field.viajeida']}" />
+                            <p:outputLabel  value="#{solicitudViajesController.showViajeIda(item)}"  />
+
+
+                            <p:outputLabel value="#{msg['field.viajeregreso']}" />
+                            <p:outputLabel  value="#{solicitudViajesController.showViajeRegreso(item)}"  />
+
+
+
+                        </b:panelGrid>
+                    </p:rowExpansion>
+                </p:dataTable>
+
+            </b:panel>
+
+
+
+            <p:dialog widgetVar="eventDialog" header="#{msg['dialogo.solicitud']}" 
+                      width="650" height="450"
+                      styleClass="customDialog"
+
+                      responsive="true"
+
+                      showEffect="clip" hideEffect="clip">
+                <b:panelGrid id="eventDetails" colSpans="2,10" size="xs" > 
+                    <p:outputLabel  value="#{msg['field.idsolicitud']}" />
+                    <p:outputLabel  value="#{solicitudViajesController.solicitud.idsolicitud}" id="idsolicitud"   />
+
+
+
+                    <p:outputLabel  value="#{msg['field.fechapartida']}" />
+                    <p:fieldset >
+                        <p:calendar  disabled="true"                                   
+                                     style="background-color: grey;"
+                                     pattern="dd/MM/yyyy" value="#{solicitudViajesController.solicitud.fechahorapartida}"  />
+
+                        <p:outputLabel  value="#{msg['field.horapartida']}" />        
+                        <p:calendar  disabled="true"    
+
+                                     pattern="HH:mm:ss a" value="#{solicitudViajesController.solicitud.fechahorapartida}"  />
+
+
+                    </p:fieldset>
+
+
+                    <p:outputLabel  value="#{msg['field.lugarpartida']}" />
+
+                    <p:outputLabel value="#{solicitudViajesController.solicitud.lugarpartida}" id="lugarpartida"   />
+
+
+                    <p:outputLabel  value="#{msg['field.fecharegreso']}" />
+                    <p:fieldset >
+
+                        <p:calendar  disabled="true"                                   
+                                     style="background-color: grey;"
+                                     pattern="dd/MM/yyyy" value="#{solicitudViajesController.solicitud.fechahoraregreso}"  />
+
+
+
+                        <p:outputLabel  value="#{msg['field.horaregreso']}" />
+                        <p:calendar  disabled="true"    
+
+                                     pattern="HH:mm:ss a" value="#{solicitudViajesController.solicitud.fechahoraregreso}"  />
+
+
+                    </p:fieldset>
+
+                    <p:outputLabel  value="#{msg['field.numerodevehiculos']}" />
+                    <p:outputLabel  value="#{solicitudViajesController.solicitud.numerodevehiculos}" />
+                    <p:outputLabel  value="#{msg['field.pasajeros']}" />
+                    <p:outputLabel  value="#{solicitudViajesController.solicitud.pasajeros}" />
+                    <p:outputLabel value="#{msg['field.idestatus']}" />
+                    <p:outputLabel value="#{solicitudViajesController.solicitud.estatus.idestatus}" />
+
+                    <p:outputLabel  value="#{msg['field.numerogrupos']}" />
+                    <p:outputLabel id="numerogrupo"  value="#{solicitudViajesController.solicitud.numerogrupo}"   />
+                    <p:outputLabel value="#{msg['field.idtipogira']}"/>
+                    <jmoordbjsf:autocomplete converter="#{tipogiraConverter}"
+                                             completeMethod="#{solicitudViajesController.tipogiraServices.complete}" 
+                                             labeltip1="#{msg['field.tipogira']} #{p.idtipogira}"  
+                                             listener="#{solicitudViajesController.handleSelect}"
+                                             value="#{solicitudViajesController.solicitud.tipogira}"
+                                             itemLabel=" #{p.idtipogira}"
+                                             field="idtipogira"
+                                             dropdown="true"
+                                             fromstart="true"
+                                             minQueryLength="0"
+                                             disabled="true"
+                                             update=""/>
+
+                    <p:outputLabel  value="#{msg['field.objetivo']}" />
+                    <b:inputTextarea disabled="true" rows="2" span="8"  value="#{solicitudViajesController.solicitud.objetivo}" id="objetivo"   />
+
+
+
+                    <p:outputLabel  value="#{msg['field.lugares']}" />
+                    <p:outputLabel  value="#{solicitudViajesController.solicitud.lugares}" id="lugares"    />
+
+
+                </b:panelGrid>
+            </p:dialog>
+        </b:form>
+
+        <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"/>
+    </ui:define>
+</ui:composition>
