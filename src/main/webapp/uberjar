@@ -32,7 +32,9 @@ disown -h %1
 Luego
 bg 1 
 
-p
+--> MONGODB<--
+Crear un Tunel a MongoDB
+ssh -N -L 27017:127.0.0.1:27017 avbravo@192.168.60.3
 
 PASOS:
 1. LIMPIAR BASES DE DATOS
