@@ -582,7 +582,14 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     public String save() {
         try {
             solicitudGuardadasList = new ArrayList<>();
+  responsable = solicita;
+            responsableOld = responsable;
 
+            usuarioList = new ArrayList<>();
+            usuarioList.add(solicita);
+            usuarioList.add(responsable);
+            solicitud.setUsuario(usuarioList);
+            
             if (!localValid()) {
                 return "";
             }
@@ -603,6 +610,11 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 solicitud.setEstatusViaje(optional.get());
             } else {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
+                return "";
+            }
+            
+            if(solicita == null || responsable == null){
+                  JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosecargoelusuarioreiniciesusesion"));
                 return "";
             }
 
@@ -1429,6 +1441,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
     @Override
     public String edit() {
         try {
+            
             leyoSugerencias = true;
             solicitudGuardadasList = new ArrayList<>();
             solicitudGuardadasList.add(solicitud);
@@ -1939,7 +1952,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
                 //Verificar si es el mismo año
                 if (fechaPartidaDescompuesta.getYear().equals(fechaRegresoDescompuesta.getYear())) {
                     Integer m = fechaPartidaDescompuesta.getMonth() + i;
-                    String nameOfMohth = DateUtil.nameOfMonthStartWith1(m);
+                    String nameOfMohth = DateUtil.nameOfMonthStartWith1(m+1);
                     List<FechaDiaUtils> list = DateUtil.validarRangoFechas(fechaPartidaDescompuesta.getYear(), nameOfMohth, varFechaHoraPartida, varFechaHoraRegreso);
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                     if (list == null || list.isEmpty()) {
@@ -1968,7 +1981,7 @@ public class SolicitudAdministrativoController implements Serializable, IControl
 
                     }
 
-                    String nameOfMohth = DateUtil.nameOfMonthStartWith1(m);
+                    String nameOfMohth = DateUtil.nameOfMonthStartWith1(m+1);
 
                     List<FechaDiaUtils> list = DateUtil.validarRangoFechas(varAnio, nameOfMohth, varFechaHoraPartida, varFechaHoraRegreso);
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();

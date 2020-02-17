@@ -2564,7 +2564,7 @@ public class SubdirectorAdministrativoCalendarController implements Serializable
                 //Verificar si es el mismo año
                 if (fechaPartidaDescompuesta.getYear().equals(fechaRegresoDescompuesta.getYear())) {
                     Integer m = fechaPartidaDescompuesta.getMonth() + i;
-                    String nameOfMohth = DateUtil.nameOfMonthStartWith1(m);
+                    String nameOfMohth = DateUtil.nameOfMonthStartWith1(m+1);
                     List<FechaDiaUtils> list = DateUtil.validarRangoFechas(fechaPartidaDescompuesta.getYear(), nameOfMohth,varFechaHoraPartida,varFechaHoraRegreso);
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
                     if (list == null || list.isEmpty()) {
@@ -2593,7 +2593,7 @@ public class SubdirectorAdministrativoCalendarController implements Serializable
 
                     }
 
-                    String nameOfMohth = DateUtil.nameOfMonthStartWith1(m);
+                    String nameOfMohth = DateUtil.nameOfMonthStartWith1(m+1);
 
                     List<FechaDiaUtils> list = DateUtil.validarRangoFechas(varAnio, nameOfMohth,varFechaHoraPartida ,varFechaHoraRegreso);
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();

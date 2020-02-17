@@ -596,6 +596,13 @@ public class SolicitudDocenteController implements Serializable, IController {
         try {
             solicitudGuardadasList = new ArrayList<>();
 
+              responsable = solicita;
+            responsableOld = responsable;
+
+            usuarioList = new ArrayList<>();
+            usuarioList.add(solicita);
+            usuarioList.add(responsable);
+            solicitud.setUsuario(usuarioList);
             if (!localValid()) {
                 return "";
             }
@@ -619,6 +626,12 @@ public class SolicitudDocenteController implements Serializable, IController {
                 JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.noexisteestatusviajenoasigando"));
                 return "";
             }
+            
+                   if(solicita == null || responsable == null){
+                  JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nosecargoelusuarioreiniciesusesion"));
+                return "";
+            }
+
             /**
              * Habilitarlo si no deseamos guardar los que estan en rojo
              */
@@ -2059,7 +2072,7 @@ public class SolicitudDocenteController implements Serializable, IController {
 
                     }
 
-                    String nameOfMohth = DateUtil.nameOfMonthStartWith1(m);
+                    String nameOfMohth = DateUtil.nameOfMonthStartWith1(m+1);
 
                     List<FechaDiaUtils> list = DateUtil.validarRangoFechas(varAnio, nameOfMohth, varFechaHoraPartida, varFechaHoraRegreso);
                     List<FechaDiaUtils> fechasValidasList = new ArrayList<>();
