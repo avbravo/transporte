@@ -88,7 +88,7 @@
                 <p:dataTable var="item" value="#{solicitudManualAdministrativoController.solicitudDataModel}"
                              reflow="true">
                     <f:facet name="header">
-                        <p:outputLabel value="#{msg['titlelist.solicituddocente']}"/>
+                        <p:outputLabel value="#{msg['titlelist.solicitudadministrativomanual']}"/>
                     </f:facet>
                     <p:column style="width:35px">
                         <p:rowToggler />
@@ -133,10 +133,10 @@
                             <p:outputLabel value="#{solicitudManualAdministrativoController.showHour(item.fechahoraregreso)}"  />
 
                             <p:outputLabel value="#{msg['field.solicitadopor']}"/>                          
-                            <p:outputLabel value="#{item.usuario.get(0).nombre}"  style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+                            <p:outputLabel value="#{item.usuario.get(0).nombre}"  style="color: #{solicitudManualAdministrativoController.columnColor(item.estatus)}" />
 
                             <p:outputLabel value="#{msg['field.responsable']}"/>
-                            <p:outputLabel value="#{item.usuario.get(1).nombre}"  style="color: #{solicitudManualDocenteController.columnColor(item.estatus)}" />
+                            <p:outputLabel value="#{item.usuario.get(1).nombre}"  style="color: #{solicitudManualAdministrativoController.columnColor(item.estatus)}" />
 
 
                             <p:outputLabel value="#{msg['field.objetivo']}"  />
@@ -195,12 +195,15 @@
                            <p:outputLabel  value="#{solicitudManualAdministrativoController.showViajeRegreso(item)}"  />
 
                            
-                             <jmoordbjsf:commandbuttondatatableprepareView
+                                   
+                             
+                              <jmoordbjsf:commandbuttondatatableprepareView
                             rendered="#{(item.estatus.idestatus eq 'SOLICITADO') or ((item.estatus.idestatus eq 'APROBADO'))}"
                             controller="#{solicitudManualAdministrativoController}"
                             url="/pages/solicitudmanualadministrativo/view.xhtml"
                             item="#{item}"
-                            />                
+                            />          
+                             
                         </b:panelGrid>
                     </p:rowExpansion>
                 </p:dataTable>
