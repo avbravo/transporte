@@ -1709,23 +1709,7 @@ return false;
                 return null;
             }
             // No se valida 
-//            if (viajeIda.getIdviaje().equals(viajeRegreso.getIdviaje())) {
-//                viaje = viajeIda;
-//                if (!validar(viaje)) {
-//                    return "";
-//                }
-//
-//            } else {
-//                viaje = viajeIda;
-//                if (!validar(viaje)) {
-//                    return "";
-//                }
-//                viaje = viajeRegreso;
-//                if (!validar(viaje)) {
-//                    return "";
-//                }
-//
-//            }
+
 
             if (solicitud.getTiposolicitud().getIdtiposolicitud().equals("DOCENTE")) {
                 if (!isVistoBuenoCoordinador()) {

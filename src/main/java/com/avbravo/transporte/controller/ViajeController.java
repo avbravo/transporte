@@ -944,6 +944,7 @@ public class ViajeController implements Serializable, IController {
             errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
 
         }
+      
         return suggestionsConductor;
     }
 
