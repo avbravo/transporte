@@ -1509,7 +1509,7 @@ public class SolicitudManualAdministrativoController implements Serializable, IC
             Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
             RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
             repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(solicitud.getIdsolicitud().toString(), jmoordb_user.getUsername(),
-                    "update", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
+                    "update solicitud manual administrativo", "solicitud", solicitudRepository.toDocument(solicitud).toString()));
 
             JsfUtil.infoDialog(rf.getAppMessage("info.mensaje"), rf.getMessage("info.editsolicitudes"));
 
