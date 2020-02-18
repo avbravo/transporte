@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
+                > 
+    <ui:define name="content">
+
+
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            }
+        </style>
+        <style>
+            .thumbnail { max-width: 100%; }
+            img.thumbnail:hover, img.thumbnail:focus {
+                border: 1px solid;
+                border-color: #428BCA;
+            }
+
+        </style>
+
+        <jmoordbjsf:cssschedule/>
+        <jmoordbjsf:jsschedule/>
+
+        <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
+                    return false;
+                }">
+            <h:panelGroup id="content" layout="block"> 
+                <p:outputLabel value="" id="growl"/>
+                <jmoordbjsf:messages id="msg"/>
+                <!--<p:growl id="growl"/>-->
+
+
+                <b:panel collapsible="false" title="#{msg['titleview.cambiarvehiculoviaje']}" look="primary" >
+
+
+
+                    <b:panelGrid id="panel" colSpans="2,10" size="xs" > 
+
+
+
+
+                        <p:outputLabel  value="#{msg['field.fechahorainicioreserva']}"/>
+
+
+
+                        <jmoordbjsf:calendar
+                            required="true"
+                            pattern="dd/MM/yyyy HH:mm a" 
+                            value="#{cambiarVehiculoViajeController.fechaInicialParaSolicitud}" 
+                            label="#{msg['field.fechahorainicioreserva']}"
+                            listener="#{cambiarVehiculoViajeController.calendarFechaSolicitudesChangeListener}"
+                            update=" :form:msg, :form:growl"/>
+
+
+
+
+
+                        <p:outputLabel  value="#{msg['field.fechahorafinreserva']}"  />
+
+                        <jmoordbjsf:calendar
+                            pattern="dd/MM/yyyy HH:mm a" 
+                            required="true"
+                            value="#{cambiarVehiculoViajeController.fechaFinalParaSolicitud}"
+                            label="#{msg['field.fechahorafinreserva']}" 
+                            listener="#{cambiarVehiculoViajeController.calendarFechaSolicitudesChangeListener}"
+                            update=" :form:msg, :form:growl"/>
+
+
+
+
+
+                        <p:outputLabel  value="#{msg['field.viaje']}" >
+                            <i class="pi pi-download"></i>
+                        </p:outputLabel>
+
+                        <jmoordbjsf:autocompleteWithCalendarDateTime
+                            converter="#{viajeConverter}"
+                            completeMethod="#{cambiarVehiculoViajeController.completeViajeRangoFechas}"    
+                            labeltip1="#{msg['field.idviaje']}"
+                            labelvalue1="#{p.idviaje}"   
+                            labeltip2="#{msg['field.vehiculo']}" 
+                            labelvalue2="#{p.vehiculo.marca}"
+                            labeltip3="#{msg['field.modelo']}"
+                            labelvalue3="#{p.vehiculo.modelo}"
+                            labeltip4="#{msg['field.conductor']} "
+                            labelvalue4="#{p.conductor.nombre}" 
+                            labeltip5="#{msg['field.lugarpartida']}" 
+                            labelvalue5="#{p.lugarpartida}"
+                            calendarsize="40"
+                            columnpaneltip="2"
+                            calendardatelabel1="#{msg['field.fechapartida']}" 
+                            calendardatevalue1="#{p.fechahorainicioreserva}" 
+
+                            calendartimelabel1="#{msg['field.horapartida']}"
+                            calendartimevalue1="#{p.fechahorainicioreserva}"  
+
+                            calendardatelabel2="#{msg['field.fecharegreso']}" 
+                            calendardatevalue2="#{p.fechahorafinreserva}"  
+
+
+                            calendartimelabel2="#{msg['field.horaregreso']}" 
+                            calendartimevalue2="#{p.fechahorafinreserva}"  
+
+
+                            listener="#{cambiarVehiculoViajeController.handleSelectedViaje}"
+                            value="#{cambiarVehiculoViajeController.viajeIda}"
+                            itemLabel="No. #{p.idviaje} - #{p.vehiculo.marca} #{p.vehiculo.tipovehiculo.idtipovehiculo}"
+                            field="objetivo"
+                            dropdown="true"
+                            minQueryLength="0"
+                            update=":form:panel"
+                            multiple="false"
+                            id="viajeIdaAutoComplete"
+                            />
+
+
+
+
+
+                        <p:outputLabel value="#{msg['field.vehiculo']}"/>
+                        <p:outputLabel value="#{cambiarVehiculoViajeController.viajeIda.vehiculo.placa} - #{cambiarVehiculoViajeController.viajeIda.vehiculo.marca} - #{cambiarVehiculoViajeController.viajeIda.vehiculo.modelo}"/>
+
+                        <p:outputLabel value="#{msg['field.nuevovehiculo']}"/>
+
+                            <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
+                                                     completeMethod="#{cambiarVehiculoViajeController.completeVehiculo}"
+
+
+                                                     labeltip1="#{msg['field.tipovehiculo']} #{p.tipovehiculo.idtipovehiculo}" 
+                                                     labeltip2="#{msg['field.pasajeros']} #{p.pasajeros}" 
+                                                     listener="#{cambiarVehiculoViajeController.handleSelectVehiculo}"
+                                                     dropdown="true"
+                                                     required="true"                                                                                                                                                                                                                                                                                                                                                                            
+                                                     minQueryLength="0"
+                                                     id="vehiculo"
+                                                     value="#{cambiarVehiculoViajeController.vehiculoNuevo}"
+                                                     itemLabel="#{p.marca} #{p.modelo} #{p.placa} "
+                                                     field="marca"
+                                                     />
+                        
+
+
+                        <p:commandButton value="#{app['button.save']}" 
+
+                                         action="#{cambiarVehiculoViajeController.save()}"
+                                         process="@this"
+                                         icon="pi pi-trash"
+                                         update=":form:content">
+
+                        </p:commandButton>
+
+
+                    </b:panelGrid>
+
+
+                </b:panel>
+            </h:panelGroup>
+
+
+
+
+
+
+
+        </b:form>
+        <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}"  />
+
+        <br/><br/><br/>
+    </ui:define>
+</ui:composition>
