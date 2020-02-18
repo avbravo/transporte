@@ -1,17 +1,17 @@
 Para crear un uberjar
 java -jar payara-micro-5.194.jar --deploy transporte.war --outputUberJar transporte.jar
 
-java -jar ~/software/payara/payara-micro-5.194.jar --deploy ~/NetBeansProjects/utp/alexis/transporte/target/transporte.war --outputUberJar /home/avbravo/Descargas/transporte.jar
+
 
 
 EJECUTAR CON PAYARAMICRO
  java -jar /home/avbravo/software/payara/payara-micro-5.194.jar  --deploy /home/avbravo/NetBeansProjects/utp/alexis/transporte/target/transporte.war --port '8081'
+----------------------------------------------
+CREAR EL UBER JAR
+java -jar ~/software/payara/payara-micro-5.194.jar --deploy ~/NetBeansProjects/utp/alexis/transporte/target/transporte.war --outputUberJar /home/avbravo/Descargas/transporte.jar
 
 
-
-SUBIRLO AL SERVER
-scp transporte.jar   avbravo@192.168.60.3:/home/avbravo/
-
+---------------------------------------------
 Ingresar al server
  ssh avbravo@192.168.60.3
 
@@ -19,6 +19,11 @@ Si hay una version ejecutandos
 Matar el proceso
 ps -x
 kill numero_de_procesop
+----------------------------------------
+SUBIRLO AL SERVER
+cd Descargas
+
+scp transporte.jar   avbravo@192.168.60.3:/home/avbravo/
 
 ejecutarlo en puerto 8081
 java -jar transporte.jar --port '8081'
