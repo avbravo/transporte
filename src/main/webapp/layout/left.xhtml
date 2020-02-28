@@ -82,7 +82,7 @@ Hint to editors: The menus follow the Chicago style of capitalization. Please ca
                 <b:navCommandLink value="#{msg['menu.timelinesolicitud']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineSolicitud()}" iconAwesome= "fa-list" />    
                 <b:navCommandLink value="#{msg['menu.timelineusuario']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO')}" action="#{timeLineController.loadTimeLineUsuarioSolicitud()}" iconAwesome= "fa-list" />    
 
-                <b:navLink value="#{msg['menu.disponibles']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA, DOCENTE, ADMINISTRATIVO, COORDINADOR')}" outcome="/pages/disponibles/disponibles" iconAwesome= "fa-tachometer" />                                   
+                <b:navLink value="#{msg['menu.disponibles']}" rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA, DOCENTE, ADMINISTRATIVO, COORDINADOR, CONDUCTOR')}" outcome="/pages/disponibles/disponibles" iconAwesome= "fa-tachometer" />                                   
 
 
 
