@@ -19,18 +19,19 @@
                 border-color: #428BCA;
             } 
         </style>
-
+   <jmoordbjsf:csspanelgrid/>  
         <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
                      return false;
                  }">
 
             <b:growl  id="msgs"/>
-
-            <b:panel collapsible="false" title="#{msg['titlelist.vehiculo']}" id="content"   look="primary" > 
-                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-                <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
-
-
+  <p:outputPanel  id="content"  deferred="true" deferredMode="visible"/>
+            <p:dialog widgetVar="searchDialog" header="#{app['dialog.search']}" 
+                      modal="true"
+                      responsive="true"
+                      width="450" height="250"
+                      showEffect="clip" hideEffect="clip">
+                <p:panelGrid id="searchDetails"  columns="2" styleClass="ui-panelgrid-blank" > 
 
                     <p:outputLabel value="#{msg['field.placa']}"/>
                     <jmoordbjsf:autocomplete converter="#{vehiculoConverter}"
@@ -54,6 +55,8 @@
                                              value="#{vehiculoController.vehiculoSearch}"
                                              itemLabel=" #{p.marca}"
                                              field="marca"
+                                              dropdown="true"
+                                             minQueryLength="0"
                                              update=" :form:dataTable"/>
 
 
@@ -67,16 +70,19 @@
                                              value="#{vehiculoController.vehiculoSearch}"
                                              itemLabel=" #{p.modelo}"
                                              field="modelo"
+                                              dropdown="true"
+                                             minQueryLength="0"
                                              update=" :form:dataTable"/>
 
 
 
 
 
-                </b:panelGrid>
+                </p:panelGrid>
                 
-            </b:panel>
-            <b:panel collapsible="false" id="dataTable" look="primary">
+         </p:dialog>
+  
+            <b:panel collapsible="false" id="dataTable" look="primary" title="#{msg['titlelist.vehiculo']}">
                  <jmoordbjsf:paginator
                     controller="#{vehiculoController}"                        
                     rowPage="#{vehiculoController.rowPage}"                   
