@@ -19,16 +19,19 @@
                 border-color: #428BCA;
             }
         </style>
-
+        <jmoordbjsf:csspanelgrid/> 
         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
             <b:growl id="msgs"/>
-            <b:panel collapsible="false" title="#{msg['titlelist.unidad']}" id="content"   look="primary" > 
-                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-                <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
-
+            <p:outputPanel  id="content"  deferred="true" deferredMode="visible"/>
+            <p:dialog widgetVar="searchDialog" header="#{app['dialog.search']}" 
+                      modal="true"
+                      responsive="true"
+                      width="450" height="250"
+                      showEffect="clip" hideEffect="clip">
+                <p:panelGrid id="searchDetails"  columns="2" styleClass="ui-panelgrid-blank" > 
                     <p:outputLabel value="#{msg['field.idunidad']}"/>
                     <jmoordbjsf:autocomplete converter="#{unidadConverter}"
                                              completeMethod="#{unidadController.unidadServices.complete}"
@@ -38,23 +41,22 @@
                                              value="#{unidadController.unidadSearch}"
                                              itemLabel="#{p.idunidad}"
                                              field="idunidad"
+                                             dropdown="true"
+                                             minQueryLength="0"
                                              update=":form:dataTable"/>
 
                     
-
-                </b:panelGrid>
-
-                <b:row>
-                    <b:column medium-screen="4">
-                        <jmoordbjsf:search label="#{msg['field.activo']}"
+                </p:panelGrid>
+   <jmoordbjsf:searchText label="#{msg['field.activo']}"
                                            value="#{unidadController.unidadSearch.activo}"
                                    
                                            search="#{unidadController.searchBy('activo',unidadController.unidadSearch.activo)}"
                                            />
-                    </b:column>
-                </b:row>
-            </b:panel>
-            <b:panel collapsible="false" id="dataTable" look="primary">
+            </p:dialog>
+                  
+                     
+            
+            <b:panel collapsible="false" id="dataTable" look="primary" title="#{msg['titlelist.unidad']}">
                 <jmoordbjsf:paginator
                     controller="#{unidadController}"                        
                     rowPage="#{unidadController.rowPage}"                   
