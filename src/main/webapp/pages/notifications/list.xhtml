@@ -19,27 +19,34 @@
                 border-color: #428BCA;
             } 
         </style>
-
+        <jmoordbjsf:csspanelgrid/> 
         <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, DOCENTE, ADMINISTRATIVO,SECRETARIA,SUBDIRECTORADMINISTRATIVO, COORDINADOR, CONDUCTOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
             <b:growl  id="msgs"/>
 
-            <b:panel collapsible="false" title="#{app['titlelist.jmoordbNotifications']}" id="content"   look="primary" > 
-                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-                <b:commandButton value="#{app['button.markall']}" 
+            <p:outputPanel  id="content"  deferred="true" deferredMode="visible"/>
+            <p:dialog widgetVar="searchDialog" header="#{app['dialog.search']}" 
+                      modal="true"
+                      responsive="true"
+                      width="450" height="250"
+                      showEffect="clip" hideEffect="clip">
+                <p:panelGrid id="searchDetails"  columns="2" styleClass="ui-panelgrid-blank" > 
+                </p:panelGrid>
+
+            </p:dialog>
+            
+            <b:panel collapsible="false" id="dataTable"  look="primary" title="#{app['titlelist.jmoordbNotifications']}">
+ <b:commandButton value="#{app['button.markall']}" 
                                  action="#{jmoordbNotificationsController.markAsViewedAll()}"
                                  iconAwesome="fa-check-square-o" 
                                  update=":form:dataTable, :form:msgs"/>
-
-            </b:panel>
-            <b:panel collapsible="false" id="dataTable"  look="primary">
-
                 <jmoordbjsf:paginator 
                     controller="#{jmoordbNotificationsController}"     
                     renderedNew="false"
                     renderedPrint="false"
+                    renderedSearch="false"
                     rowPage="#{jmoordbNotificationsController.rowPage}"                   
                     page="#{jmoordbNotificationsController.page}"
                     pages="#{jmoordbNotificationsController.pages}"
