@@ -34,7 +34,25 @@
                       showEffect="clip" hideEffect="clip">
                 <p:panelGrid id="searchDetails"  columns="2" styleClass="ui-panelgrid-blank" > 
                     
+                 <p:outputLabel value="#{msg['field.idsugerencia']}"/>
+                    <jmoordbjsf:autocomplete converter="#{salvoConductoNotasConverter}"
+                                             completeMethod="#{salvoConductoNotasController.salvoConductoNotasServices.complete}" 
+                                             labeltip1="#{msg['field.idsalvoconductonotas']} #{p.idsalvoconductonotas}"   
+                                             listener="#{salvoConductoNotasController.handleAutocompleteOfListXhtml}"
+                                             value="#{salvoConductoNotasController.salvoConductoNotasSearch}"
+                                             itemLabel=" #{p.idsalvoconductonotas}"
+                                             field="idsalvoconductonotas"
+                                             dropdown="true"
+                                             minQueryLength="0"
+                                             update=" :form:dataTable"/>
+
+
                 </p:panelGrid>
+                <jmoordbjsf:searchText label="#{msg['field.activo']}"
+                                       value="#{salvoConductoNotasController.salvoConductoNotasSearch.activo}"
+
+                                       search="#{salvoConductoNotasController.searchBy('descripcion',salvoConductoNotasController.salvoConductoNotasSearch.activo)}"
+                                       />
 
             </p:dialog>
             <b:panel collapsible="false" id="dataTable" look="primary" title="#{msg['titlelist.salvoConductoNotas']}">

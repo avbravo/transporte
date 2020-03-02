@@ -14,7 +14,7 @@ import com.avbravo.jmoordbutils.printer.Printer;
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
 import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordbutils.DateUtil;
- 
+
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.jmoordbutils.ReportUtils;
 import com.avbravo.transporteejb.datamodel.SalvoConductoNotasDataModel;
@@ -133,14 +133,14 @@ public class SalvoConductoNotasController implements Serializable, IController {
                     .withPathReportDetail("/resources/reportes/salvoconductonotas/details.jasper")
                     .withPathReportAll("/resources/reportes/salvoconductonotas/all.jasper")
                     .withparameters(parameters)
-                     .withResetInSave(true) 
+                    .withResetInSave(true)
                     .withAction("golist")
                     .build();
 
             start();
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -148,7 +148,7 @@ public class SalvoConductoNotasController implements Serializable, IController {
     public void handleSelect(SelectEvent event) {
         try {
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
         }
     }// </editor-fold>
 
@@ -176,6 +176,16 @@ public class SalvoConductoNotasController implements Serializable, IController {
                     }
 
                     break;
+
+                case "descripcion":
+                    if (getValueSearch() != null) {
+                        salvoConductoNotasSearch.setDescripcion(getValueSearch().toString());
+                        System.out.println("Description:==>>>> " + salvoConductoNotasSearch.getDescripcion());
+                        salvoConductoNotasList = salvoConductoNotasRepository.findRegexInTextPagination("descripcion", salvoConductoNotasSearch.getDescripcion(), true, page, rowPage, new Document("descripcion", -1));
+
+                    } else {
+                        salvoConductoNotasList = salvoConductoNotasRepository.findPagination(page, rowPage);
+                    }
                 case "activo":
                     if (getValueSearch() != null) {
                         salvoConductoNotasSearch.setActivo(getValueSearch().toString());
@@ -194,12 +204,12 @@ public class SalvoConductoNotasController implements Serializable, IController {
             salvoConductoNotasDataModel = new SalvoConductoNotasDataModel(salvoConductoNotasList);
 
         } catch (Exception e) {
-            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(),e);
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
 
         }
 
     }// </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Boolean beforeDelete()">
     @Override
     public Boolean beforeDelete() {
@@ -214,15 +224,15 @@ public class SalvoConductoNotasController implements Serializable, IController {
     // <editor-fold defaultstate="collapsed" desc="Boolean beforeDeleteFromListXhtml()">
     @Override
     public Boolean beforeDeleteFromListXhtml() {
-           Boolean delete = salvoConductoNotasServices.isDeleted(salvoConductoNotas);
+        Boolean delete = salvoConductoNotasServices.isDeleted(salvoConductoNotas);
         if (!delete) {
             JsfUtil.warningDialog(rf.getMessage("warning.advertencia"), rf.getMessage("warning.nosepuedeeliminar"));
         }
         return delete;
     }
     // </editor-fold>   
-    
-     // <editor-fold defaultstate="collapsed" desc="String printAll()">
+
+    // <editor-fold defaultstate="collapsed" desc="String printAll()">
     @Override
     public String printAll() {
 
@@ -254,13 +264,13 @@ public class SalvoConductoNotasController implements Serializable, IController {
             table.setLockedWidth(true);
 
             table.addCell(ReportUtils.PdfCell("Id", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
-            
+
             table.addCell(ReportUtils.PdfCell("Activo", FontFactory.getFont("arial", 11, Font.BOLD), Element.ALIGN_CENTER));
 
-            for (SalvoConductoNotas l:salvoConductoNotasList) {
+            for (SalvoConductoNotas l : salvoConductoNotasList) {
 
                 table.addCell(ReportUtils.PdfCell(l.getIdsalvoconductonotas(), FontFactory.getFont("arial", 10, Font.NORMAL)));
-                
+
                 table.addCell(ReportUtils.PdfCell(l.getActivo(), FontFactory.getFont("arial", 10, Font.NORMAL)));
 
             }
@@ -273,13 +283,14 @@ public class SalvoConductoNotasController implements Serializable, IController {
         ReportUtils.printPDF(baos);
         return "";
     }
+
     // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="String print">
     @Override
     public String print() {
 
         com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             PdfWriter.getInstance(document, baos);
@@ -287,8 +298,6 @@ public class SalvoConductoNotasController implements Serializable, IController {
 
             document.open();
             document.add(ReportUtils.paragraph("SalvoConductoNotas", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
-
-
 
             Date currentDate = new Date();
             String texto = "REPORTE";
@@ -299,8 +308,8 @@ public class SalvoConductoNotasController implements Serializable, IController {
             document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 8, Font.BOLD), Element.ALIGN_RIGHT));
             document.add(new Paragraph("\n"));
 
-            document.add(ReportUtils.paragraph("Id: " + salvoConductoNotas.getIdsalvoconductonotas(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
-            
+            document.add(ReportUtils.paragraph("Id: " + salvoConductoNotas.getIdsalvoconductonotas(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+
             document.add(ReportUtils.paragraph("Activo: " + salvoConductoNotas.getActivo(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
 
         } catch (Exception e) {
