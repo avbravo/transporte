@@ -27,7 +27,7 @@
         </script>    
         <jmoordbjsf:cssschedule/>  
         <jmoordbjsf:jsschedule/>
-
+        <jmoordbjsf:csspanelgrid/> 
         <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
@@ -36,8 +36,14 @@
 
             <b:growl  id="msgs"/>
 
-            <b:panel collapsible="false" title="#{msg['titlelist.solicitudmanualdocente']}" id="content"   look="primary"  > 
-                <b:panelGrid colSpans="2,4,2,4"  columns="4" size="xs"> 
+            <p:outputPanel  id="content"  deferred="true" deferredMode="visible"/>
+            <p:dialog widgetVar="searchDialog" header="#{app['dialog.search']}" 
+                      modal="true"
+                      responsive="true"
+                      width="450" height="250"
+                      showEffect="clip" hideEffect="clip">
+                <p:panelGrid id="searchDetails"  columns="2" styleClass="ui-panelgrid-blank" > 
+                    
                     <p:outputLabel value="#{msg['field.idestatus']}"/>
                     <jmoordbjsf:autocomplete converter="#{estatusConverter}"
                                              dropdown="true"
@@ -72,19 +78,12 @@
 
                     </p:selectOneMenu>
 
-                    <p:spacer/>
-                    <p:spacer/>
-                    <p:outputLabel value="#{msg['field.mensaje']}"/>
-                    <p:inputTextarea rows="2" value="#{solicitudManualDocenteController.messages}"/>
-                    <p:commandButton value="#{msg['button.send']}" action="#{solicitudManualDocenteController.enviarMensajesDirectos()}"
-                                     update=":form:msgs"
-                                     />
-                </b:panelGrid>
+                </p:panelGrid>
 
-            </b:panel>
+            </p:dialog>
 
 
-            <b:panel collapsible="false" id="dataTable" look="primary" >
+            <b:panel collapsible="false" id="dataTable" look="primary" title="#{msg['titlelist.solicitudmanualdocente']}">
                 <jmoordbjsf:paginator
                     controller="#{solicitudManualDocenteController}"                        
                     rowPage="#{solicitudManualDocenteController.rowPage}"                   
