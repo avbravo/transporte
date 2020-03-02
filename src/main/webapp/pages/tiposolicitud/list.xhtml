@@ -20,18 +20,20 @@
             } 
         </style>
 
+        <jmoordbjsf:csspanelgrid/> 
         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
                      return false;
                  }">
 
             <b:growl  id="msgs"/>
 
-            <b:panel collapsible="false" title="#{msg['titlelist.tiposolicitud']}" id="content"   look="primary" > 
-                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-                <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
-
-
-
+            <p:outputPanel  id="content"  deferred="true" deferredMode="visible"/>
+            <p:dialog widgetVar="searchDialog" header="#{app['dialog.search']}" 
+                      modal="true"
+                      responsive="true"
+                      width="450" height="250"
+                      showEffect="clip" hideEffect="clip">
+                <p:panelGrid id="searchDetails"  columns="2" styleClass="ui-panelgrid-blank" > 
                     <p:outputLabel value="#{msg['field.idtiposolicitud']}"/>
                     <jmoordbjsf:autocomplete converter="#{tiposolicitudConverter}"
                                              completeMethod="#{tiposolicitudController.tiposolicitudServices.complete}" 
@@ -40,24 +42,24 @@
                                              value="#{tiposolicitudController.tiposolicitudSearch}"
                                              itemLabel=" #{p.idtiposolicitud}"
                                              field="idtiposolicitud"
+                                             dropdown="true"
+                                             minQueryLength="0"
                                              update=" :form:dataTable"/>
 
 
 
+                </p:panelGrid>
 
-
-                </b:panelGrid>
-                 <b:row>
-                    <b:column medium-screen="4">
-                        <jmoordbjsf:search label="#{msg['field.activo']}"
+                        <jmoordbjsf:searchText label="#{msg['field.activo']}"
                                            value="#{tiposolicitudController.tiposolicitudSearch.activo}"
                                    
                                            search="#{tiposolicitudController.searchBy('activo',tiposolicitudController.tiposolicitudSearch.activo)}"
                                            />
-                    </b:column>
-                </b:row>
-            </b:panel>
-            <b:panel collapsible="false" id="dataTable" look="primary">
+            </p:dialog>
+                    
+                
+                
+            <b:panel collapsible="false" id="dataTable" look="primary" title="#{msg['titlelist.tiposolicitud']}">
                <jmoordbjsf:paginator
                     controller="#{tiposolicitudController}"                        
                     rowPage="#{tiposolicitudController.rowPage}"                   

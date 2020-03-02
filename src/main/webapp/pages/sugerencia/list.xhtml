@@ -10,7 +10,7 @@
                 xmlns:jmoordbjsf="http://jmoordbjsf.com/taglib"
                 xmlns:e="http://xmlns.jcp.org/jsf/composite/extensions">
     <ui:define name="content">
-         
+
 
         <style>
             .thumbnail { max-width: 100%; }
@@ -19,19 +19,20 @@
                 border-color: #428BCA;
             } 
         </style>
-
+        <jmoordbjsf:csspanelgrid/> 
         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
-                     return false;
-                 }">
+                    return false;
+                }">
 
             <b:growl  id="msgs"/>
 
-            <b:panel collapsible="false" title="#{msg['titlelist.sugerencia']}" id="content"   look="primary" > 
-                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-                <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
-
-
-
+            <p:outputPanel  id="content"  deferred="true" deferredMode="visible"/>
+            <p:dialog widgetVar="searchDialog" header="#{app['dialog.search']}" 
+                      modal="true"
+                      responsive="true"
+                      width="450" height="250"
+                      showEffect="clip" hideEffect="clip">
+                <p:panelGrid id="searchDetails"  columns="2" styleClass="ui-panelgrid-blank" > 
                     <p:outputLabel value="#{msg['field.idsugerencia']}"/>
                     <jmoordbjsf:autocomplete converter="#{sugerenciaConverter}"
                                              completeMethod="#{sugerenciaController.sugerenciaServices.complete}" 
@@ -40,25 +41,23 @@
                                              value="#{sugerenciaController.sugerenciaSearch}"
                                              itemLabel=" #{p.idsugerencia}"
                                              field="idsugerencia"
+                                             dropdown="true"
+                                             minQueryLength="0"
                                              update=" :form:dataTable"/>
 
 
+                </p:panelGrid>
+                <jmoordbjsf:searchText label="#{msg['field.descripcion']}"
+                                       value="#{sugerenciaController.sugerenciaSearch.descripcion}"
+
+                                       search="#{sugerenciaController.searchBy('descripcion',sugerenciaController.sugerenciaSearch.descripcion)}"
+                                       />
+            </p:dialog>
 
 
 
-                </b:panelGrid>
-                <b:row>
 
-                    <b:column medium-screen="6">
-                        <jmoordbjsf:search label="#{msg['field.descripcion']}"
-                                           value="#{sugerenciaController.sugerenciaSearch.descripcion}"
- 
-                                           search="#{sugerenciaController.searchBy('descripcion',sugerenciaController.sugerenciaSearch.descripcion)}"
-                                           />
-                    </b:column>
-                </b:row>
-            </b:panel>
-            <b:panel collapsible="false" id="dataTable" look="primary">
+            <b:panel collapsible="false" id="dataTable" look="primary" title="#{msg['titlelist.sugerencia']}">
                 <jmoordbjsf:paginator
                     controller="#{sugerenciaController}"                        
                     rowPage="#{sugerenciaController.rowPage}"                   
@@ -80,7 +79,7 @@
 
                     <b:dataTableColumn label="">
 
-                           <jmoordbjsf:column
+                        <jmoordbjsf:column
 
                             renderedEdit="#{p:ifGranted('ADMINISTRADOR')}"
                             renderedDelete="#{p:ifGranted('ADMINISTRADOR')}"
@@ -96,6 +95,6 @@
 
         </b:form>
 
-       <jmoordbjsf:denegado rendered="#{!p:ifGranted('ADMINISTRADOR')}" />
+        <jmoordbjsf:denegado rendered="#{!p:ifGranted('ADMINISTRADOR')}" />
     </ui:define>
 </ui:composition>
