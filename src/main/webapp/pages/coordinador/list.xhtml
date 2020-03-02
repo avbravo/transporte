@@ -27,6 +27,7 @@
         </script>    
         <jmoordbjsf:cssschedule/>  
         <jmoordbjsf:jsschedule/>
+        <jmoordbjsf:csspanelgrid/> 
 
         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('COORDINADOR')}" onkeypress="if (event.keyCode == 13) {
                     return false;
@@ -36,9 +37,14 @@
 
             <b:growl  id="msgs"/>
 
-            <b:panel collapsible="false" title="#{msg['titlelist.vistobuenosolicitudes']}" id="content"   look="primary"  > 
-                <b:panelGrid colSpans="1,5,1,5"  columns="4" size="xs"> 
-
+            <p:outputPanel  id="content"  deferred="true" deferredMode="visible"/>
+            <p:dialog widgetVar="searchDialog" header="#{app['dialog.search']}" 
+                      modal="true"
+                      responsive="true"
+                      width="450" height="250"
+                      showEffect="clip" hideEffect="clip">
+                <p:panelGrid id="searchDetails"  columns="2" styleClass="ui-panelgrid-blank" > 
+                    
                     <p:outputLabel value="#{msg['field.vistobueno']}"/>
                     <p:selectOneMenu id="country" value="#{coordinadorController.vistoBuenoSearch}" style="width:150px">
                         <p:ajax listener="#{coordinadorController.onVistoBuenoChange}" update=":form:dataTable" />
@@ -90,15 +96,8 @@
                                              size="35"
                                              />
 
-
-                    <p:outputLabel value="#{msg['field.mensaje']}"/>
-                    <p:inputTextarea rows="2" value="#{coordinadorController.messages}"/>
-                    <p:commandButton value="#{msg['button.send']}" action="#{coordinadorController.enviarMensajesDirectos()}"
-                                     update=":form:msgs"
-                                     />
-                </b:panelGrid>
-
-                <b:row>
+                </p:panelGrid>
+ <b:row>
                     <b:column medium-screen="25" >
 
 
@@ -114,10 +113,13 @@
                             />
                     </b:column>
                 </b:row>
-            </b:panel>
+            </p:dialog>
+
+               
+     
 
 
-            <b:panel collapsible="false" id="dataTable" look="primary" >
+            <b:panel collapsible="false" id="dataTable" look="primary" title="#{msg['titlelist.vistobuenosolicitudes']}" >
                 <jmoordbjsf:paginator
                     controller="#{coordinadorController}"                        
                     rowPage="#{coordinadorController.rowPage}"                   
@@ -151,7 +153,7 @@
                     </p:column>
 
                     <p:column headerText="#{msg['field.solicita']}" style="width:140px">
-                        <h:outputText value="#{item.usuario.get(0).nombre}" style="font-size: 10; color: #{solicitudDocenteController.columnColor(item.estatus)}" />
+                        <h:outputText value="#{item.usuario.get(0).nombre}" style="font-size: 10; color: #{coordinadorController.columnColorVistoBueno(item.vistoBueno)}" />
                     </p:column>
 <!--                    <p:column headerText="#{msg['field.lugarllegada']}"  >
                         <p:outputLabel value="#{item.lugarllegada}"   style="color: #{coordinadorController.columnColor(item.estatus)}" />
