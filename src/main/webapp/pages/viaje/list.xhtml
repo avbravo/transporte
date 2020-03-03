@@ -19,21 +19,20 @@
                 border-color: #428BCA;
             } 
         </style>
-
+        <jmoordbjsf:csspanelgrid/> 
         <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
             <b:growl  id="msgs"/>
 
-            <b:panel collapsible="false" title="#{msg['titlelist.viajeconsolicitud']}" id="content"   look="primary" > 
-                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-                <b:panelGrid colSpans="1,4,1,6"  columns="4" size="xs"> 
-
-
-
-
-
+            <p:outputPanel  id="content"  deferred="true" deferredMode="visible"/>
+            <p:dialog widgetVar="searchDialog" header="#{app['dialog.search']}" 
+                      modal="true"
+                      responsive="true"
+                      width="620" height="350"
+                      showEffect="clip" hideEffect="clip">
+                <p:panelGrid id="searchDetails"  columns="2" styleClass="ui-panelgrid-blank" > 
 
                     <p:outputLabel value="#{msg['field.conductor']}"/>
                     <jmoordbjsf:autocomplete converter="#{conductorConverter}"
@@ -63,7 +62,9 @@
                                              update=" :form:dataTable"/>
 
 
-                </b:panelGrid>
+                </p:panelGrid>
+
+
                 <b:row>
                     <b:column medium-screen="25" >
 
@@ -130,8 +131,9 @@
                     </b:column>
                 </b:row>
 
-            </b:panel>
-            <b:panel collapsible="false" id="dataTable" look="primary">
+            </p:dialog>
+
+            <b:panel collapsible="false" id="dataTable" look="primary" title="#{msg['titlelist.viajeconsolicitud']}">
                 <jmoordbjsf:paginator
                     controller="#{viajeController}"                        
                     rowPage="#{viajeController.rowPage}"                   
@@ -176,18 +178,18 @@
                         <p:outputLabel value="#{item.vehiculo.marca} #{item.vehiculo.modelo}"/>
 
                     </p:column>
-                    <p:column headerText="#{msg['field.conductores']}"  style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
+                    <p:column headerText="#{msg['field.conductores']}"  >
 
-                        <p:outputLabel value="#{item.conductor.nombre}"/>
+                        <p:outputLabel value="#{item.conductor.nombre}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}"/>
 
                     </p:column>
 
-                    <p:column headerText="#{msg['field.lugardestino']}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
-                        <p:outputLabel value="#{item.lugardestino}"  />
+                    <p:column headerText="#{msg['field.lugardestino']}"  >
+                        <p:outputLabel value="#{item.lugardestino}"  style="color: #{viajeController.columnColor(item.realizado,item.activo)}"/>
 
                     </p:column> 
-                    <p:column headerText="#{msg['field.realizado']}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}">
-                        <p:outputLabel value="#{item.realizado}"  />
+                    <p:column headerText="#{msg['field.realizado']}">
+                        <p:outputLabel value="#{item.realizado}" style="color: #{viajeController.columnColor(item.realizado,item.activo)}" />
 
                     </p:column> 
 
@@ -225,7 +227,7 @@
 
 
 
-  <p:spacer/>
+                            <p:spacer/>
                             <p:dataTable value="#{viajeController.verSolicitudPorViaje(item)}" var="var" >
                                 <f:facet name="header">
                                     <p:outputLabel value="#{msg['label.solicitudes']}"/>
@@ -239,7 +241,7 @@
 
 
                             </p:dataTable>
-                
+
 
 
                         </b:panelGrid>
