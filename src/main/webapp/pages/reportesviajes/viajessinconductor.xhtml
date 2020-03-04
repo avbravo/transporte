@@ -20,19 +20,20 @@
                 border-color: #428BCA;
             } 
         </style>
-
+        <jmoordbjsf:csspanelgrid/> 
         <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
             <b:growl  id="msgs"/>
 
-            <b:panel collapsible="false" title="#{msg['titlelist.viajessinconductor']}" id="content"   look="primary" > 
-                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-
-
-
-
+            <p:outputPanel  id="content"  deferred="true" deferredMode="visible"/>
+            <p:dialog widgetVar="searchDialog" header="#{app['dialog.search']}" 
+                      modal="true"
+                      responsive="true"
+                      width="650" height="250"
+                      showEffect="clip" hideEffect="clip">
+                <p:panelGrid id="searchDetails"  columns="2" styleClass="ui-panelgrid-blank" > 
 
                 <b:row>
                     <b:column medium-screen="25" >
@@ -52,9 +53,10 @@
 
                 </b:row>
 
+                </p:panelGrid>
 
-            </b:panel>
-            <b:panel collapsible="false" id="dataTable" look="primary">
+            </p:dialog>
+            <b:panel collapsible="false" id="dataTable" look="primary" title="#{msg['titlelist.viajessinconductor']}">
 
                 <jmoordbjsf:paginator
                     controller="#{viajesSinConductorController}"                        
@@ -96,7 +98,7 @@
 
                     <p:column headerText="#{msg['field.unidad']}" >
 
-                        <p:outputLabel value="#{item.unidad}"/>
+                        <p:outputLabel value="#{item.unidad}" style="font-size: 10; color: #{viajesSinConductorController.columnColor(item.realizado,item.activo)}"/>
 
                     </p:column>
 
@@ -108,12 +110,12 @@
                     </p:column>
                     <p:column headerText="#{msg['field.vehiculo']}"  >
 
-                        <p:outputLabel value="#{item.marca} #{item.modelo}  #{msg['field.placa']} #{item.placa}"/>
+                        <p:outputLabel value="#{item.marca} #{item.modelo}  #{msg['field.placa']} #{item.placa}" style="font-size: 10; color: #{viajesSinConductorController.columnColor(item.realizado,item.activo)}"/>
 
                     </p:column>
                     <p:column headerText="#{msg['field.conductor']}" >
 
-                        <p:outputLabel value="#{item.conductor}"/>
+                        <p:outputLabel value="#{item.conductor}" style="font-size: 10; color: #{viajesSinConductorController.columnColor(item.realizado,item.activo)}"/>
 
                     </p:column>
 
@@ -123,7 +125,7 @@
                         <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
 
                             <p:outputLabel value="#{msg['field.mision']}"  style="color: #{viajesSinConductorController.columnColor(item.realizado,item.activo)}"/>
-                            <p:outputLabel value="#{item.mision}"  />
+                            <p:outputLabel value="#{item.mision}"  style="font-size: 10; color: #{viajesSinConductorController.columnColor(item.realizado,item.activo)}"/>
 
                             <p:outputLabel value="#{msg['field.lugarpartida']}" style="color: #{viajesSinConductorController.columnColor(item.realizado,item.activo)}"/>
                             <p:outputLabel value="#{item.lugarpartida}"  style="color: #{viajesSinConductorController.columnColor(item.realizado,item.activo)}"/>
@@ -133,7 +135,7 @@
 
 
 
-                            <p:outputLabel value="#{msg['field.fechasolicitud']}" />
+                            <p:outputLabel value="#{msg['field.fechasolicitud']}" style="font-size: 10; color: #{viajesSinConductorController.columnColor(item.realizado,item.activo)}"/>
                             <h:outputText value="#{viajesSinConductorController.showDate(item.fechasolicitud)} #{viajesSinConductorController.showHour(item.fechasolicitud)}" style="color: #{viajesSinConductorController.columnColor(item.realizado,item.activo)}" />
 
                             <p:outputLabel value="#{msg['field.numerosolicitudes']}" style="color: #{viajesSinConductorController.columnColor(item.realizado,item.activo)}" />

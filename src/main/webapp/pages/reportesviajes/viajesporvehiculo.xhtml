@@ -20,19 +20,19 @@
                 border-color: #428BCA;
             } 
         </style>
-
+        <jmoordbjsf:csspanelgrid/> 
         <b:form id="form"  prependId="false"  rendered="#{p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO, SECRETARIA')}" onkeypress="if (event.keyCode == 13) {
                     return false;
                 }">
 
             <b:growl  id="msgs"/>
-
-            <b:panel collapsible="false" title="#{msg['titlelist.viajesporvehiculo']}" id="content"   look="primary" > 
-                <!--<b:panelGrid colSpans="2,10" size="xs">--> 
-
-
-
-
+            <p:outputPanel  id="content"  deferred="true" deferredMode="visible"/>
+            <p:dialog widgetVar="searchDialog" header="#{app['dialog.search']}" 
+                      modal="true"
+                      responsive="true"
+                      width="650" height="250"
+                      showEffect="clip" hideEffect="clip">
+                <p:panelGrid id="searchDetails"  columns="2" styleClass="ui-panelgrid-blank" > 
 
                 <b:row>
                     <b:column medium-screen="25" >
@@ -71,8 +71,10 @@
                 </b:row>
 
 
-            </b:panel>
-            <b:panel collapsible="false" id="dataTable" look="primary">
+                </p:panelGrid>
+
+            </p:dialog>
+            <b:panel collapsible="false" id="dataTable" look="primary" title="#{msg['titlelist.viajesporvehiculo']}">
                                
                
 
@@ -104,11 +106,11 @@
 
 
                     <p:column headerText="#{msg['field.fechapartida']}" style="width:130px">
-                        <h:outputText value="#{viajesRealizadosController.showDate(item.fechahorasalida)} #{viajesRealizadosController.showHour(item.fechahorasalida)}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}" />
-                        <p:outputLabel value="#{msg['field.dia']} #{item.nombredia}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
+                        <h:outputText value="#{viajesPorVehiculoController.showDate(item.fechahorasalida)} #{viajesPorVehiculoController.showHour(item.fechahorasalida)}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}" />
+                        <p:outputLabel value="#{msg['field.dia']} #{item.nombredia}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
                     </p:column>
                     <p:column headerText="#{msg['field.mision']}"  style="width:190px ">
-                        <p:outputLabel value="#{item.mision}" style="font-size: 10; color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
+                        <p:outputLabel value="#{item.mision}" style="font-size: 10; color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
 
                     </p:column>
 
@@ -116,24 +118,24 @@
 
                     <p:column headerText="#{msg['field.unidad']}" >
 
-                        <p:outputLabel value="#{item.unidad}"/>
+                        <p:outputLabel value="#{item.unidad}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
 
                     </p:column>
 
 
 
                     <p:column headerText="#{msg['field.fecharegreso']}" style="width:100px">
-                        <h:outputText value="#{viajesRealizadosController.showDate(item.fechahoraregreso)} #{viajesRealizadosController.showHour(item.fechahoraregreso)}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}" />
+                        <h:outputText value="#{viajesPorVehiculoController.showDate(item.fechahoraregreso)} #{viajesPorVehiculoController.showHour(item.fechahoraregreso)}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}" />
                         
                     </p:column>
                     <p:column headerText="#{msg['field.vehiculo']}"  >
 
-                        <p:outputLabel value="#{item.marca} #{item.modelo}  #{msg['field.placa']} #{item.placa}"/>
+                        <p:outputLabel value="#{item.marca} #{item.modelo}  #{msg['field.placa']} #{item.placa}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
 
                     </p:column>
                     <p:column headerText="#{msg['field.conductor']}" >
 
-                        <p:outputLabel value="#{item.conductor}"/>
+                        <p:outputLabel value="#{item.conductor}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
 
                     </p:column>
 
@@ -142,28 +144,28 @@
 
                         <b:panelGrid id="panel" colSpans="2,10" size="sm" > 
 
-                            <p:outputLabel value="#{msg['field.mision']}"  style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
-                            <p:outputLabel value="#{item.mision}"  />
+                            <p:outputLabel value="#{msg['field.mision']}"  style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.mision}"  style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
 
-                            <p:outputLabel value="#{msg['field.lugarpartida']}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
-                            <p:outputLabel value="#{item.lugarpartida}"  style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{msg['field.lugarpartida']}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.lugarpartida}"  style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
 
-                            <p:outputLabel value="#{msg['field.lugardestino']}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
-                            <p:outputLabel value="#{item.lugardestino}"  style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{msg['field.lugardestino']}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.lugardestino}"  style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
 
 
 
-                            <p:outputLabel value="#{msg['field.fechasolicitud']}" />
-                            <h:outputText value="#{viajesRealizadosController.showDate(item.fechasolicitud)} #{viajesRealizadosController.showHour(item.fechasolicitud)}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}" />
+                            <p:outputLabel value="#{msg['field.fechasolicitud']}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
+                            <h:outputText value="#{viajesPorVehiculoController.showDate(item.fechasolicitud)} #{viajesPorVehiculoController.showHour(item.fechasolicitud)}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}" />
 
-                            <p:outputLabel value="#{msg['field.numerosolicitudes']}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}" />
-                            <p:outputLabel value="#{item.numerosolicitudes}"  style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{msg['field.numerosolicitudes']}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}" />
+                            <p:outputLabel value="#{item.numerosolicitudes}"  style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
 
-                            <p:outputLabel value="#{msg['field.solicita']}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
-                            <p:outputLabel value="#{item.solicita}"  style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{msg['field.solicita']}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.solicita}"  style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
 
-                            <p:outputLabel value="#{msg['field.responsable']}" style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
-                            <p:outputLabel value="#{item.responsable}"  style="color: #{viajesRealizadosController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{msg['field.responsable']}" style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
+                            <p:outputLabel value="#{item.responsable}"  style="color: #{viajesPorVehiculoController.columnColor(item.realizado,item.activo)}"/>
 
 
                         </b:panelGrid>
