@@ -144,7 +144,7 @@ jmoordb
             <version>2.3.1</version>
         </dependency>-->
         <!--PayaraMicro APi-->
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>fish.payara.extras</groupId>
 
             <artifactId>payara-micro</artifactId>
@@ -177,6 +177,9 @@ jmoordb
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
+                    <!--Java 11-->
+                    <!--<release>10</release>-->
+                    <!-- Java 8 -->
                     <source>1.8</source>
                     <target>1.8</target>
                     <compilerArguments>
@@ -184,24 +187,7 @@ jmoordb
                     </compilerArguments>
                 </configuration>
             </plugin>
-            <!--            
-             java 11 
-                
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-                <configuration>
-                    <release>10</release>
-                </configuration>
-            </plugin>-->
-            <!--java 11 -->
-            <!--            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.2.1</version>
-            </plugin>-->
-            <!-- java 8 -->
+           
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
