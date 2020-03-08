@@ -109,7 +109,7 @@ jmoordb
         <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbjsf</artifactId>
-            <version>0.44</version>
+            <version>0.45</version>
         </dependency>
       
         <dependency>
