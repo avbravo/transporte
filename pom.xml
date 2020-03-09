@@ -107,16 +107,12 @@
         <!--
 jmoordb
         -->
-<!--        <dependency>
+     <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbjsf</artifactId>
-            <version>0.45</version>
-        </dependency>-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jmoordbjsf</artifactId>
-            <version>0.45.100</version>
+            <version>0.46</version>
         </dependency>
+      
         
         
      <dependency>
