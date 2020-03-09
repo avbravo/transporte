@@ -117,17 +117,13 @@ jmoordb
             <artifactId>jmoordbjsf</artifactId>
             <version>0.45.100</version>
         </dependency>
-           <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jmoordbutils</artifactId>
-            <version>0.60.100</version>
-        </dependency>
         
-<!--        <dependency>
+        
+     <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbutils</artifactId>
-            <version>0.60</version>
-        </dependency>-->
+            <version>0.61</version>
+        </dependency>
         
         <!--        <dependency>
             <groupId>com.github.librepdf</groupId>

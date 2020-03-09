@@ -20,6 +20,9 @@
                 color: #000000
             }
 
+
+            
+
         </style>
         <jmoordbjsf:csspanelgrid/>  
         <b:form id="form"  prependId="false"  rendered="#{p:ifGranted('ADMINISTRADOR')}" onkeypress="if (event.keyCode == 13) {
@@ -90,11 +93,11 @@
                     <p:column  headerText="#{msg['field.rol']}" >
                         <p:outputLabel value="#{item.rol}"/>
                     </p:column>
-                    <p:column  headerText="#{msg['field.activo']}" >
+                    <p:column  headerText="#{msg['field.activo']}" style="width:80px">
                        <p:outputLabel value="#{item.activo}"/>
                     </p:column>
 
-                    <p:column label="">
+                    <p:column headerText="" style="width:80px">
 
                         <jmoordbjsf:column
 
