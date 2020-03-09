@@ -76,6 +76,7 @@ public class SugerenciaController implements Serializable, IController {
 
     //List
     List<Sugerencia> sugerenciaList = new ArrayList<>();
+    List<Sugerencia> sugerenciaListSelected = new ArrayList<>();
 
     // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">

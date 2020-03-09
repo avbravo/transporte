@@ -184,6 +184,7 @@ public class SolicitudManualDocenteController implements Serializable, IControll
     //List
     List<Solicitud> solicitudGuardadasList = new ArrayList<>();
     List<Solicitud> solicitudList = new ArrayList<>();
+    List<Solicitud> solicitudListSelected = new ArrayList<>();
     List<Solicitud> solicitudFiltered = new ArrayList<>();
     List<Unidad> unidadList = new ArrayList<>();
     List<Facultad> facultadList = new ArrayList<>();

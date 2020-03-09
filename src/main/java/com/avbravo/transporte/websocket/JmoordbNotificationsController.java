@@ -69,6 +69,7 @@ public class JmoordbNotificationsController implements Serializable, IController
 
     //List
     List<JmoordbNotifications> jmoordbNotificationsList = new ArrayList<>();
+    List<JmoordbNotifications> jmoordbNotificationsListSelected = new ArrayList<>();
 
     //Repository
     @Inject

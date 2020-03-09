@@ -138,6 +138,7 @@ public class ViajeMarcarRealizadoController implements Serializable, IController
 
     //List
     List<Viaje> viajeList = new ArrayList<>();
+    List<Viaje> viajeListSelected = new ArrayList<>();
     List<Conductor> suggestionsConductor = new ArrayList<>();
     List<Vehiculo> suggestions = new ArrayList<>();
     List<Vehiculo> vehiculoList = new ArrayList<>();

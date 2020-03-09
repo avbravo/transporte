@@ -77,6 +77,7 @@ public class FacultadController implements Serializable, IController {
 
     //List
     List<Facultad> facultadList = new ArrayList<>();
+    List<Facultad> facultadListSelected = new ArrayList<>();
 
     // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">

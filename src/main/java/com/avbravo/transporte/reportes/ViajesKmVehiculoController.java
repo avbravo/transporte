@@ -87,6 +87,7 @@ public class ViajesKmVehiculoController implements Serializable, IController {
     //Entity
     Vehiculo vehiculoSearch = new Vehiculo();
     List<Vehiculo> vehiculoList = new ArrayList<>();
+    List<Vehiculo> vehiculoListSelected = new ArrayList<>();
     Viaje viaje = new Viaje();
     Viaje viajeSelected;
     Viaje viajeSearch = new Viaje();

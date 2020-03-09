@@ -75,6 +75,7 @@ public class TipovehiculoController implements Serializable, IController {
 
     //List
     List<Tipovehiculo> tipovehiculoList = new ArrayList<>();
+    List<Tipovehiculo> tipovehiculoListSelected = new ArrayList<>();
 
     // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="repository">

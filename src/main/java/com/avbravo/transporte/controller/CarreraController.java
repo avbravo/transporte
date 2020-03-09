@@ -78,6 +78,7 @@ public class CarreraController implements Serializable, IController {
 
     //List
     List<Carrera> carreraList = new ArrayList<>();
+    List<Carrera> carreraListSelected = new ArrayList<>();
 
     // </editor-fold>  
     

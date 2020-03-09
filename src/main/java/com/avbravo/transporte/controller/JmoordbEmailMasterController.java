@@ -77,6 +77,7 @@ public class JmoordbEmailMasterController implements Serializable, IController {
 
     //List
     List<JmoordbEmailMaster> jmoordbEmailMasterList = new ArrayList<>();
+    List<JmoordbEmailMaster> jmoordbEmailMasterListSelected = new ArrayList<>();
 
     // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">

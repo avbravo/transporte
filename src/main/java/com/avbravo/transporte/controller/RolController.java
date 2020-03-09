@@ -79,6 +79,7 @@ public class RolController implements Serializable, IController {
 
     //List
     List<Rol> rolList = new ArrayList<>();
+    List<Rol> rolListSelected = new ArrayList<>();
 
     // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="reposisitory">

@@ -78,6 +78,7 @@ public class ConductorController implements Serializable, IController {
 
     //List
     List<Conductor> conductorList = new ArrayList<>();
+    List<Conductor> conductorListSelected = new ArrayList<>();
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">
 

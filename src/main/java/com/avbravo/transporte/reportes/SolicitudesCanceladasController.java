@@ -82,6 +82,7 @@ public class SolicitudesCanceladasController implements Serializable, IControlle
 
     //List
     List<Solicitud> solicitudList = new ArrayList<>();
+    List<Solicitud> solicitudListSelected = new ArrayList<>();
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="repository">

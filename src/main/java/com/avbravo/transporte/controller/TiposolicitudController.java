@@ -75,6 +75,7 @@ public class TiposolicitudController implements Serializable, IController {
 
     //List
     List<Tiposolicitud> tiposolicitudList = new ArrayList<>();
+    List<Tiposolicitud> tiposolicitudListSelected = new ArrayList<>();
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">
 

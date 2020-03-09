@@ -78,6 +78,7 @@ public class UsuarioController implements Serializable, IController {
 
     //List
     List<Usuario> usuarioList = new ArrayList<>();
+    List<Usuario> usuarioListSelected = new ArrayList<>();
     //Para multiples roles
     List<Rol> rolList = new ArrayList();
 

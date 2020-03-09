@@ -85,12 +85,14 @@ public class ViajesKmConductorController implements Serializable, IController {
     //Entity
     Conductor conductorSearch = new Conductor();
     List<Conductor> conductorList = new ArrayList<>();
+    List<Conductor> conductorListSelected = new ArrayList<>();
     Viaje viaje = new Viaje();
     Viaje viajeSelected;
     Viaje viajeSearch = new Viaje();
 
     //List
     List<Viaje> viajeList = new ArrayList<>();
+
    
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="repository">

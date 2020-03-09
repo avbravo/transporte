@@ -86,6 +86,7 @@ public class VehiculoController implements Serializable, IController {
 
     //List
     List<Vehiculo> vehiculoList = new ArrayList<>();
+    List<Vehiculo> vehiculoListSelected = new ArrayList<>();
 
     //Repository
     @Inject

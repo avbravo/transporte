@@ -76,6 +76,7 @@ public class UnidadController implements Serializable, IController {
 
     //List
     List<Unidad> unidadList = new ArrayList<>();
+    List<Unidad> unidadListSelected = new ArrayList<>();
       // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="repository">
     

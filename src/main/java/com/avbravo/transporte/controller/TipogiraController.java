@@ -75,6 +75,7 @@ public class TipogiraController implements Serializable, IController {
 
     //List
     List<Tipogira> tipogiraList = new ArrayList<>();
+    List<Tipogira> tipogiraListSelected = new ArrayList<>();
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">
 

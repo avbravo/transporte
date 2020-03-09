@@ -93,6 +93,7 @@ public class ProgramacionVechicularController implements Serializable, IControll
     //List
     List<Viaje> viajeList = new ArrayList<>();
     List<ProgramacionVehicular> programacionVehicular = new ArrayList<>();
+    List<ProgramacionVehicular> programacionVehicularListSelected = new ArrayList<>();
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="repository">
 

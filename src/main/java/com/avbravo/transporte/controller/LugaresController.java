@@ -75,6 +75,7 @@ public class LugaresController implements Serializable, IController {
 
     //List
     List<Lugares> lugaresList = new ArrayList<>();
+    List<Lugares> lugaresListSelected = new ArrayList<>();
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">
 

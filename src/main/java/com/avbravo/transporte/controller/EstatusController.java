@@ -75,6 +75,7 @@ public class EstatusController implements Serializable, IController {
 
     //List
     List<Estatus> estatusList = new ArrayList<>();
+    List<Estatus> estatusListSelected = new ArrayList<>();
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">
 

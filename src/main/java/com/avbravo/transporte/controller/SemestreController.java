@@ -76,6 +76,7 @@ public class SemestreController implements Serializable, IController {
 
     //List
     List<Semestre> semestreList = new ArrayList<>();
+    List<Semestre> semestreListSelected = new ArrayList<>();
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">
 

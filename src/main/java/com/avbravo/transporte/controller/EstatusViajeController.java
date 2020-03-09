@@ -75,6 +75,7 @@ public class EstatusViajeController implements Serializable, IController {
 
     //List
     List<EstatusViaje> estatusViajeList = new ArrayList<>();
+    List<EstatusViaje> estatusViajeListSelected = new ArrayList<>();
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">
 

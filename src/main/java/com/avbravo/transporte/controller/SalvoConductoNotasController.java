@@ -74,6 +74,7 @@ public class SalvoConductoNotasController implements Serializable, IController {
 
     //List
     List<SalvoConductoNotas> salvoConductoNotasList = new ArrayList<>();
+    List<SalvoConductoNotas> salvoConductoNotasListSelected = new ArrayList<>();
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="repository">
 
