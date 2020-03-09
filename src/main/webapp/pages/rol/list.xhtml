@@ -15,7 +15,10 @@
         <style>
             .thumbnail { max-width: 100%; }
 
-
+  .ui-datatable tbody > tr.ui-widget-content.ui-state-highlight {
+                background-color: #ffffff;
+                color: #000000
+            }
 
         </style>
         <jmoordbjsf:csspanelgrid/>  
@@ -72,17 +75,26 @@
                     skip="ajax:rolController.skip()" 
                     url = "/pages/rol/new.xhtml"
                     />
-                <b:dataTable value="#{rolController.rolDataModel}"
+                <p:dataTable value="#{rolController.rolDataModel}"
                              var="item"
                              id="dataTable2"
-                             paginated="false"
-                             onpage="console.log('page');">
+                             paginator="false"
+                             selection="#{rolController.rolListSelected}"
+                             rowKey="#{item.idrol}" 
+                             style="margin-bottom:0"
+                             reflow="true">
+<p:column selectionMode="multiple" style="width:30px;text-align:center"/>
+                    <p:column  headerText="#{msg['field.idrol']}">
+                             <p:outputLabel value="#{item.idrol}"/>
+                    </p:column>
+                    <p:column  headerText="#{msg['field.rol']}" >
+                        <p:outputLabel value="#{item.rol}"/>
+                    </p:column>
+                    <p:column  headerText="#{msg['field.activo']}" >
+                       <p:outputLabel value="#{item.activo}"/>
+                    </p:column>
 
-                    <b:dataTableColumn value="#{item.idrol}" label="#{msg['field.idrol']}"/>
-                    <b:dataTableColumn value="#{item.rol}" label="#{msg['field.rol']}" />
-                    <b:dataTableColumn value="#{item.activo}" label="#{msg['field.activo']}" />
-
-                    <b:dataTableColumn label="">
+                    <p:column label="">
 
                         <jmoordbjsf:column
 
@@ -93,19 +105,33 @@
                             item="#{item}"
 
                             />
-                    </b:dataTableColumn>
+                    </p:column>
 
-                </b:dataTable>
+                    </p:dataTable>
             </b:panel>
 
 
-  <p:dialog header="#{app['dialog.delete']}"  widgetVar="deleteListDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false"
-                    width="650" height="350">
-              <p:outputPanel id="deleteListDetail" style="text-align:center;">
+            <p:dialog header="#{app['dialog.delete']}"  widgetVar="deleteListDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false"
+                      width="650" height="350">
+
+                <p:outputPanel id="deleteListDetail" style="text-align:center;">
+                    <p:dataList value="#{rolController.rolListSelected}" var="item" type="definition" >
+                        <f:facet name="header">
+                            <p:outputLabel value="#{app['dialogdelete.datafordelete']}"/>
+                        </f:facet>
+                        <p:outputLabel value="#{msg['field.idrol']}"/> <p:outputLabel value="#{item.idrol}" />
+
+                        <f:facet name="footer">
+                            <b:commandButton value="#{app['button.no']}" look="success" onclick="PF('deleteListDialog').hide();"/>
+                            <b:commandButton value="#{app['button.yes']}" look="danger" action="#{rolController.deleteSelected()}"
+                                             update=":form:dataTable"
+                                             onclick="PF('deleteListDialog').hide();"/>
+                        </f:facet> 
+                    </p:dataList>
 
 
-              </p:outputPanel>
-          </p:dialog>
+                </p:outputPanel>
+            </p:dialog>
 
 
         </b:form>

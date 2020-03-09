@@ -6,6 +6,7 @@
 package com.avbravo.transporte.controller;
 
 // <editor-fold defaultstate="collapsed" desc="imports">
+import com.avbravo.jmoordb.configuration.JmoordbConfiguration;
 import com.avbravo.jmoordb.configuration.JmoordbContext;
 import com.avbravo.jmoordb.configuration.JmoordbControllerEnvironment;
 import com.avbravo.jmoordb.interfaces.IController;
@@ -13,8 +14,10 @@ import com.avbravo.jmoordb.mongodb.history.services.AutoincrementableServices;
 import com.avbravo.jmoordbutils.printer.Printer;
 
 import com.avbravo.jmoordb.mongodb.history.services.ErrorInfoServices;
+import com.avbravo.jmoordb.mongodb.repository.Repository;
 import com.avbravo.jmoordb.pojos.JmoordbNotifications;
 import com.avbravo.jmoordb.profiles.repository.JmoordbNotificationsRepository;
+import com.avbravo.jmoordb.services.RevisionHistoryServices;
 import com.avbravo.jmoordbutils.DateUtil;
 import com.avbravo.jmoordbutils.JmoordbResourcesFiles;
 import com.avbravo.jmoordbutils.JsfUtil;
@@ -328,13 +331,14 @@ public class RolController implements Serializable, IController {
         ReportUtils.printPDF(baos);
         return "";
     }
+
     // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="String print">
     @Override
     public String print() {
 
         com.lowagie.text.Document document = new com.lowagie.text.Document(PageSize.A4);
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             PdfWriter.getInstance(document, baos);
@@ -342,8 +346,6 @@ public class RolController implements Serializable, IController {
 
             document.open();
             document.add(ReportUtils.paragraph("ROLES", FontFactory.getFont("arial", 12, Font.BOLD), Element.ALIGN_CENTER));
-
-
 
             Date currentDate = new Date();
             String texto = "REPORTE";
@@ -354,8 +356,8 @@ public class RolController implements Serializable, IController {
             document.add(ReportUtils.paragraph("Fecha: " + date, FontFactory.getFont("arial", 8, Font.BOLD), Element.ALIGN_RIGHT));
             document.add(new Paragraph("\n"));
 
-            document.add(ReportUtils.paragraph("Id: " + rol.getIdrol(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
-            document.add(ReportUtils.paragraph("Rol: " + rol.getIdrol(), FontFactory.getFont("arial",12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Id: " + rol.getIdrol(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
+            document.add(ReportUtils.paragraph("Rol: " + rol.getIdrol(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
             document.add(ReportUtils.paragraph("Activo: " + rol.getActivo(), FontFactory.getFont("arial", 12, Font.NORMAL), Element.ALIGN_JUSTIFIED));
 
         } catch (Exception e) {
@@ -367,4 +369,43 @@ public class RolController implements Serializable, IController {
         return "";
     }
     // </editor-fold>  
+
+    public String deleteSelected() {
+        try {
+            Integer deleteCount =0;
+            if (rolListSelected == null || rolListSelected.isEmpty() || rolListSelected.size() == 0) {
+                JsfUtil.warningDialog(rf.getAppMessage("warning.view"), rf.getMessage("warning.nohayseleccionparaeliminar"));
+            } else {
+                Usuario jmoordb_user = (Usuario) JmoordbContext.get("jmoordb_user");
+
+                for (Rol r : rolListSelected) {
+                    if (rolServices.isDeleted(r)) {
+                        if (rolRepository.delete("idrol", r.getIdrol())) {
+                            deleteCount++;
+                            //guarda el contenido anterior
+                            JmoordbConfiguration jmc = new JmoordbConfiguration();
+                            Repository repositoryRevisionHistory = jmc.getRepositoryRevisionHistory();
+                            RevisionHistoryServices revisionHistoryServices = jmc.getRevisionHistoryServices();
+                            repositoryRevisionHistory.save(revisionHistoryServices.getRevisionHistory(r.getIdrol().toString(), jmoordb_user.getUsername(),
+                                    "delete", "rol", rolRepository.toDocument(r).toString()));
+                            
+                        }
+
+                    }
+
+                }
+                if(deleteCount != rolListSelected.size()){
+                     JsfUtil.warningDialog(rf.getAppMessage("info.deleted"), rf.getAppMessage("warning.soloseeliminaron") + " "+deleteCount);
+                }else{
+                    JsfUtil.infoDialog(rf.getAppMessage("warning.view"),rf.getAppMessage("warning.todosdocumentosseleccionadoseliminados") );
+                }
+
+            }
+        } catch (Exception e) {
+            errorServices.errorMessage(nameOfClass(), nameOfMethod(), e.getLocalizedMessage(), e);
+        }
+        move(page);
+        return "";
+
+    }
 }

@@ -106,7 +106,14 @@
             </b:panel>
   <p:dialog header="#{app['dialog.delete']}"  widgetVar="deleteListDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false"
                     width="650" height="350">
+              
               <p:outputPanel id="deleteListDetail" style="text-align:center;">
+
+ <f:facet name="footer">
+                            <b:commandButton value="#{app['button.no']}" look="success" onclick="PF('deleteListDialog').hide();"/>
+                            <b:commandButton value="#{app['button.yes']}" look="danger" onclick="PF('deleteListDialog').hide();"/>
+                        </f:facet> 
+ 
 
 
               </p:outputPanel>
