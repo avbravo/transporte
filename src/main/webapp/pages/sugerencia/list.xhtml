@@ -92,7 +92,14 @@
 
                 </b:dataTable>
             </b:panel>
+  <p:dialog header="#{app['dialog.delete']}"  widgetVar="deleteListDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false"
+                    width="650" height="350">
+              <p:outputPanel id="deleteListDetail" style="text-align:center;">
 
+
+              </p:outputPanel>
+          </p:dialog>
+            
         </b:form>
 
         <jmoordbjsf:denegado rendered="#{!p:ifGranted('ADMINISTRADOR')}" />

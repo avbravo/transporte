@@ -34,23 +34,23 @@
                       showEffect="clip" hideEffect="clip">
                 <p:panelGrid id="searchDetails"  columns="2" styleClass="ui-panelgrid-blank" > 
 
-                <b:row>
-                    <b:column medium-screen="25" >
+                    <b:row>
+                        <b:column medium-screen="25" >
 
 
-                        <jmoordbjsf:searchBetweenDate 
-                         
-                            labelDesde="#{msg['field.fechainicio']}"
-                            valueDesde="#{solicitudesPendientesController.fechaDesde}"
-                            labelHasta="#{msg['field.fechafin']}"
-                            valueHasta="#{solicitudesPendientesController.fechaHasta}"
-                        
-                            search="#{solicitudesPendientesController.searchBy('_betweendates',solicitudesPendientesController.solicitud)}"
-                            update=":form:dataTable "
-                            />
-                    </b:column>
+                            <jmoordbjsf:searchBetweenDate 
 
-                </b:row>
+                                labelDesde="#{msg['field.fechainicio']}"
+                                valueDesde="#{solicitudesPendientesController.fechaDesde}"
+                                labelHasta="#{msg['field.fechafin']}"
+                                valueHasta="#{solicitudesPendientesController.fechaHasta}"
+
+                                search="#{solicitudesPendientesController.searchBy('_betweendates',solicitudesPendientesController.solicitud)}"
+                                update=":form:dataTable "
+                                />
+                        </b:column>
+
+                    </b:row>
 
 
                 </p:panelGrid>
@@ -75,13 +75,13 @@
                              id="dataTable2"
                              >
 
-                     <f:facet name="header">
+                    <f:facet name="header">
                         <p:outputLabel value="#{msg['titlelist.solicitudes']}"/>
                     </f:facet>
                     <p:column style="width:35px">
                         <p:rowToggler />
                     </p:column>
-                    
+
                     <p:column headerText="#{msg['field.idsolicitud']}" style="width:75px">
                         <h:outputText value="#{item.idsolicitud}"    />
                     </p:column>
@@ -99,14 +99,14 @@
 
                     <p:column headerText="#{msg['field.vistobueno']}"  >
                         <p:outputLabel value="#{subdirectorAdministrativoController.columnNameVistoBuenoSubdirectorAdministrativo(item.vistoBuenoSubdirectorAdministrativo)}" 
-                                     />
+                                       />
                     </p:column>
                     <p:column headerText="#{msg['field.estatus']}"  >
-                            <p:outputLabel  value="#{item.estatus.idestatus}"    />
+                        <p:outputLabel  value="#{item.estatus.idestatus}"    />
                     </p:column>
-                  
 
-                  
+
+
 
 
                     <p:rowExpansion>
@@ -164,7 +164,7 @@
                                 <i class="pi pi-home"></i>
                             </p:outputLabel>
                             <p:outputLabel value="#{item.lugarllegada}" />
-                           
+
 
                             <p:outputLabel  value="#{msg['field.coordinador']}"  />
                             <p:outputLabel value="#{solicitudesPendientesController.columnNameVistoBueno(item.vistoBueno)}"      />
@@ -177,7 +177,7 @@
 
                             <p:outputLabel value="#{msg['field.tiposolicitud']}" />
                             <p:outputLabel  value="#{item.tiposolicitud.idtiposolicitud}"    />
-                            
+
                             <p:outputLabel value="#{msg['field.estatus']}" />
                             <p:outputLabel  value="#{item.estatus.idestatus}"    />
 
@@ -185,7 +185,13 @@
                     </p:rowExpansion>
                 </p:dataTable>
             </b:panel>
+            <p:dialog header="#{app['dialog.delete']}"  widgetVar="deleteListDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false"
+                      width="650" height="350">
+                <p:outputPanel id="deleteListDetail" style="text-align:center;">
 
+
+                </p:outputPanel>
+            </p:dialog>
         </b:form>
 
         <jmoordbjsf:denegado rendered="#{!p:ifAnyGranted('ADMINISTRADOR, SUBDIRECTORADMINISTRATIVO')}" />
