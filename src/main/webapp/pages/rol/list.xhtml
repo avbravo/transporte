@@ -129,6 +129,10 @@
                             <b:commandButton value="#{app['button.yes']}" look="danger" action="#{rolController.deleteSelected()}"
                                              update=":form:dataTable"
                                              onclick="PF('deleteListDialog').hide();"/>
+                            
+                            <b:commandButton value="DELETE FROM LISTXHTML" look="danger" action="#{rolController.deleteFromListxhtml()}"
+                                             update=":form:dataTable"
+                                             onclick="PF('deleteListDialog').hide();"/>
                         </f:facet> 
                     </p:dataList>
 
