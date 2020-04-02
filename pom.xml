@@ -118,7 +118,7 @@ jmoordb
      <dependency>
             <groupId>com.github.avbravo</groupId>
             <artifactId>jmoordbutils</artifactId>
-            <version>0.82</version>
+            <version>0.83</version>
         </dependency>
         
         <!--        <dependency>
