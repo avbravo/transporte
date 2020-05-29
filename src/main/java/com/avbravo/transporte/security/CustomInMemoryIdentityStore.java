@@ -102,6 +102,7 @@ public class CustomInMemoryIdentityStore implements IdentityStore {
                 return true;
             }
         } catch (Exception e) {
+         JsfUtil.errorMessage("isValidUser() "+e.getLocalizedMessage());
         }
         return false;
     }
@@ -120,6 +121,7 @@ public class CustomInMemoryIdentityStore implements IdentityStore {
             }
             return true;
         } catch (Exception e) {
+         JsfUtil.errorMessage("isValidData() "+e.getLocalizedMessage());
         }
 
         return false;
