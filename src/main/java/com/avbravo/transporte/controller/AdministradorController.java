@@ -2996,4 +2996,94 @@ public class AdministradorController implements Serializable, IController {
     }
 // </editor-fold>
 
+    
+      // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
+    public Future<String> sendEmailAsync(String emailreceptor, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
+
+        CompletableFuture<String> completableFuture
+                = new CompletableFuture<>();
+
+        Executors.newCachedThreadPool().submit(new Callable<Object>() {
+
+            @Override
+            public Object call() throws Exception {
+
+                managerEmail.sendOutlook(emailreceptor, titulo, mensaje, emailemisor, passwordemisor);
+
+                completableFuture.complete("enviado");
+
+                return null;
+            }
+        });
+
+        return completableFuture;
+    }// </editor-fold>
+//    // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
+//
+
+    public Future<String> sendEmailCccBccAsync(String[] to, String[] cc, String[] bcc, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
+
+        CompletableFuture<String> completableFuture
+                = new CompletableFuture<>();
+
+        Executors.newCachedThreadPool().submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+
+                managerEmail.sendOutlook(to, cc, bcc, titulo, mensaje, emailemisor, passwordemisor, false);
+                completableFuture.complete("enviado");
+
+                return null;
+            }
+        });
+
+        return completableFuture;
+    }// </editor-fold>
+    
+    
+    
+      
+      // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
+    public Future<String> sendEmailAsync(String emailreceptor, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
+
+        CompletableFuture<String> completableFuture
+                = new CompletableFuture<>();
+
+        Executors.newCachedThreadPool().submit(new Callable<Object>() {
+
+            @Override
+            public Object call() throws Exception {
+
+                managerEmail.sendOutlook(emailreceptor, titulo, mensaje, emailemisor, passwordemisor);
+
+                completableFuture.complete("enviado");
+
+                return null;
+            }
+        });
+
+        return completableFuture;
+    }// </editor-fold>
+//    // <editor-fold defaultstate="collapsed" desc="Future<String> calculateAsync(">
+//
+
+    public Future<String> sendEmailCccBccAsync(String[] to, String[] cc, String[] bcc, String titulo, String mensaje, String emailemisor, String passwordemisor) throws InterruptedException {
+
+        CompletableFuture<String> completableFuture
+                = new CompletableFuture<>();
+
+        Executors.newCachedThreadPool().submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+
+                managerEmail.sendOutlook(to, cc, bcc, titulo, mensaje, emailemisor, passwordemisor, false);
+                completableFuture.complete("enviado");
+
+                return null;
+            }
+        });
+
+        return completableFuture;
+    }// </editor-fold>
+
 }

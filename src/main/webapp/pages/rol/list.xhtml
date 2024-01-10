@@ -15,13 +15,13 @@
         <style>
             .thumbnail { max-width: 100%; }
 
-  .ui-datatable tbody > tr.ui-widget-content.ui-state-highlight {
+            .ui-datatable tbody > tr.ui-widget-content.ui-state-highlight {
                 background-color: #ffffff;
                 color: #000000
             }
 
 
-            
+
 
         </style>
         <jmoordbjsf:csspanelgrid/>  
@@ -86,15 +86,15 @@
                              rowKey="#{item.idrol}" 
                              style="margin-bottom:0"
                              reflow="true">
-<p:column selectionMode="multiple" style="width:30px;text-align:center"/>
+                    <p:column selectionMode="multiple" style="width:30px;text-align:center"/>
                     <p:column  headerText="#{msg['field.idrol']}">
-                             <p:outputLabel value="#{item.idrol}"/>
+                        <p:outputLabel value="#{item.idrol}"/>
                     </p:column>
                     <p:column  headerText="#{msg['field.rol']}" >
                         <p:outputLabel value="#{item.rol}"/>
                     </p:column>
                     <p:column  headerText="#{msg['field.activo']}" style="width:80px">
-                       <p:outputLabel value="#{item.activo}"/>
+                        <p:outputLabel value="#{item.activo}"/>
                     </p:column>
 
                     <p:column headerText="" style="width:80px">
@@ -110,7 +110,7 @@
                             />
                     </p:column>
 
-                    </p:dataTable>
+                </p:dataTable>
             </b:panel>
 
 
@@ -129,7 +129,7 @@
                             <b:commandButton value="#{app['button.yes']}" look="danger" action="#{rolController.deleteSelected()}"
                                              update=":form:dataTable"
                                              onclick="PF('deleteListDialog').hide();"/>
-                            
+
                             <b:commandButton value="DELETE FROM LISTXHTML" look="danger" action="#{rolController.deleteFromListxhtml()}"
                                              update=":form:dataTable"
                                              onclick="PF('deleteListDialog').hide();"/>

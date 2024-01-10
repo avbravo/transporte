@@ -69,7 +69,7 @@ public class UsuarioController implements Serializable, IController {
 
     Integer page = 1;
     Integer rowPage = 25;
-    List<Integer> pages = new ArrayList<>();
+    List<Integer> pages9 = new ArrayList<>();
 
     //Entity
     Usuario usuario = new Usuario();
